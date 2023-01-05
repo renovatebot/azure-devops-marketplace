@@ -1,0 +1,131 @@
+{
+  "id": "3dad0d84-35db-4852-9355-43fd02e2e147",
+  "name": "SendKeptnEventTask",
+  "friendlyName": "Send cloud-event to Keptn",
+  "description": "Send cloud-event to Keptn",
+  "author": "Realdolmen (Bert Van der Heyden)",
+  "helpMarkDown": "TODO",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 2,
+    "Patch": 0
+  },
+  "groups": [
+    {
+      "name": "keptn-settings",
+      "displayName": "Keptn Settings",
+      "isExpanded": false
+    },
+    {
+      "name": "keptn-event",
+      "displayName": "Keptn Event Config",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+  	{
+      "name": "keptnApiEndpoint",
+      "type": "connectedService:Keptn",
+      "label": "Keptn API Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Connection to the Keptn API which is managed as a connectedService in AzureDevOps."
+    },
+    {
+      "name": "project",
+      "type": "string",
+      "label": "Keptn Project",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Keptn project. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "label": "Keptn Service",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Keptn service. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "stage",
+      "type": "string",
+      "label": "Keptn Stage",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Keptn stage. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "eventType",
+      "type": "pickList",
+      "label": "Type of event",
+      "defaultValue": "startEvaluation",
+      "options": {
+        "configurationChange": "configuration-change",
+        "deploymentFinished": "deployment-finished",
+        "startEvaluation": "start-evaluation",
+        "waitForEvaluationDone": "wait for evaluation-done"
+      },
+      "required": true,
+      "helpMarkDown": "The type of event send to Keptn",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "start",
+      "type": "string",
+      "label": "Start time for the evaluation",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Format: {yyyy-MM-ddTHH:mm:sszzz}",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "label": "End time for the evaluation",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Format: {yyyy-MM-ddTHH:mm:sszzz}. When not provided, current time is used.",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "teststrategy",
+      "type": "string",
+      "label": "Teststrategy for the evaluation",
+      "defaultValue": "performance",
+      "required": true,
+      "helpMarkDown": "Teststrategy which is used for the evaluation",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "waitForEvaluationDone",
+      "type": "boolean",
+      "label": "Wait for evaluation-done event",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Wait for the evaluation-done event and report result and score",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Send Keptn Event",
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

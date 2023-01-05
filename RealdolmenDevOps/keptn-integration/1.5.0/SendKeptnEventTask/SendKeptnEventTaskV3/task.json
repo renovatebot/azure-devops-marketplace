@@ -1,0 +1,203 @@
+{
+  "id": "3dad0d84-35db-4852-9355-43fd02e2e147",
+  "name": "SendKeptnEventTask",
+  "friendlyName": "Send cloud-event to Keptn",
+  "description": "Send cloud-event to Keptn",
+  "author": "Inetum-Realdolmen (Bert Van der Heyden)",
+  "helpMarkDown": "Send cloud-event to Keptn. Use startEvaluation to trigger Keptn to perform the SLI/SLO based validation.",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 3,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "groups": [
+    {
+      "name": "keptn-settings",
+      "displayName": "Keptn Settings",
+      "isExpanded": false
+    },
+    {
+      "name": "keptn-event",
+      "displayName": "Keptn Event Config",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+  	{
+      "name": "keptnApiEndpoint",
+      "type": "connectedService:Keptn",
+      "label": "Keptn API Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Connection to the Keptn API which is managed as a connectedService in AzureDevOps."
+    },
+    {
+      "name": "project",
+      "type": "string",
+      "label": "Keptn Project",
+      "defaultValue": "$(KeptnProject)",
+      "required": false,
+      "helpMarkDown": "The Keptn project. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "label": "Keptn Service",
+      "defaultValue": "$(KeptnService)",
+      "required": false,
+      "helpMarkDown": "The Keptn service. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "stage",
+      "type": "string",
+      "label": "Keptn Stage",
+      "defaultValue": "$(KeptnStage)",
+      "required": false,
+      "helpMarkDown": "The Keptn stage. When not provided it takes the settings from the Prepare Keptn environment task.",
+      "groupName": "keptn-settings"
+    },
+    {
+      "name": "eventType",
+      "type": "pickList",
+      "label": "Type of event",
+      "defaultValue": "startEvaluation",
+      "options": {
+        "configurationChanged": "configuration-changed (deprecated)",
+        "deploymentFinished": "deployment-finished (deprecated)",
+        "startEvaluation": "evaluation",
+        "delivery": "delivery",
+        "generic" : "generic"
+      },
+      "required": true,
+      "helpMarkDown": "The type of event send to Keptn",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "sequence",
+      "type": "string",
+      "label": "Sequence",
+      "defaultValue": "delivery",
+      "required": false,
+      "helpMarkDown": "The name of the sequence to trigger",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = delivery || eventType = generic"
+    },
+    {
+      "name": "start",
+      "type": "string",
+      "label": "Start time for the evaluation",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Format: {yyyy-MM-ddTHH:mm:sszzz}. When not provided, defaults to timeframe.",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "end",
+      "type": "string",
+      "label": "End time for the evaluation",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Format: {yyyy-MM-ddTHH:mm:sszzz}. When not provided, current time is used.",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "timeframe",
+      "type": "string",
+      "label": "Timeframe for the evaluation",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Format: for example '15m' goes 15 minutes back from now. When not provided, start - end is used. When they are also empty default is 30m. Note that this property is only supported from Keptn 0.7.3 onwards.",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = startEvaluation"
+    },
+    {
+      "name": "deploymentURI",
+      "type": "string",
+      "label": "Deployment URI",
+      "required": false,
+      "helpMarkDown": "The public deploymentURI which will be used to execute the tests against",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = deploymentFinished || eventType = delivery"
+    },
+    {
+      "name": "deploymentStrategy",
+      "type": "string",
+      "label": "Deployment Strategy",
+      "required": false,
+      "helpMarkDown": "The deployment stategy",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = delivery"
+    },
+    {
+      "name": "testStrategy",
+      "type": "string",
+      "label": "Testing Strategy",
+      "required": true,
+      "helpMarkDown": "The testing stategy which is used to perform the tests",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = deploymentFinished"
+    },
+    {
+      "name": "tag",
+      "type": "string",
+      "label": "Tag",
+      "required": true,
+      "helpMarkDown": "The tag of the deployment",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = deploymentFinished"
+    },
+    {
+      "name": "image",
+      "type": "string",
+      "label": "Image",
+      "required": false,
+      "helpMarkDown": "The image which is deployed",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = deploymentFinished || eventType = configurationChanged || eventType = delivery"
+    },
+    {
+      "name": "body",
+      "type": "multiLine",
+      "label": "Body",
+      "required": false,
+      "helpMarkDown": "Place the entire body of the event you want to send in JSON notation",
+      "groupName": "keptn-event",
+      "visibleRule": "eventType = generic"
+    },
+    {
+      "name": "labels",
+      "type": "multiLine",
+      "label": "Labels",
+      "required": false,
+      "helpMarkDown": "You can add a list of key-value pairs (example 'key:value' use semicolon) separated by a new line. You are able to extend or overwrite the default labels this way.\nDefault labels are:\n- buildId: $(Build.BuildNumber)\n- definition: $(Release.DefinitionName)\n- runby: $(Build.QueuedBy)\n- environment : $(Environment.Name)\n- pipeline : $(Release.ReleaseWebURL)",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "keptnContextVar",
+      "type": "string",
+      "label": "KeptnContext output variable",
+      "defaultValue": "keptnContext",
+      "required": true,
+      "helpMarkDown": "The name of the pipeline variable to store the keptnContext in",
+      "groupName": "keptn-event"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Send Keptn Event",
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

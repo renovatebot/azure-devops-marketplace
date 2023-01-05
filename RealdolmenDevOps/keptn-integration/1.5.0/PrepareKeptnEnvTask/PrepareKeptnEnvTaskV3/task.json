@@ -1,0 +1,125 @@
+{
+  "id": "872b7882-7628-4b7a-9d45-6fd14907c03f",
+  "name": "PrepareKeptnEnvTask",
+  "friendlyName": "Prepare Keptn environment",
+  "description": "Initialize Keptn environment",
+  "author": "Inetum-Realdolmen (Bert Van der Heyden)",
+  "helpMarkDown": "Initialize Keptn environment",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "groups": [
+    {
+      "name": "keptn",
+      "displayName": "Keptn Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "config",
+      "displayName": "Keptn Config",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+  	{
+      "name": "keptnApiEndpoint",
+      "type": "connectedService:Keptn",
+      "label": "Keptn API Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Connection to the Keptn API which is managed as a connectedService in AzureDevOps."
+    },
+    {
+      "name": "project",
+      "type": "string",
+      "label": "Keptn Project",
+      "defaultValue": "$(KeptnProject)",
+      "required": true,
+      "helpMarkDown": "The Keptn project",
+      "groupName": "keptn"
+    },
+    {
+      "name": "service",
+      "type": "string",
+      "label": "Keptn Service",
+      "defaultValue": "$(KeptnService)",
+      "required": true,
+      "helpMarkDown": "The Keptn service",
+      "groupName": "keptn"
+    },
+    {
+      "name": "stage",
+      "type": "string",
+      "label": "Keptn Stage",
+      "defaultValue": "$(KeptnStage)",
+      "required": true,
+      "helpMarkDown": "The Keptn stage",
+      "groupName": "keptn"
+    },
+    {
+      "name": "autoCreate",
+      "type": "boolean",
+      "label": "Create the service within the project when it doesn't exist",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Create the service within the project when it doesn't exist. Note that the project needs to be initialized via Keptn UI or CLI first. Automatic project creation is not supported anymore from within this extension!",
+      "groupName": "keptn"
+    },
+    {
+      "name": "monitoring",
+      "type": "pickList",
+      "label": "Type of monitoring to configure",
+      "options": {
+        "dynatrace": "Dynatrace",
+        "prometheus": "Prometheus"
+      },
+      "required": false,
+      "helpMarkDown": "The type of monitoring to configure",
+      "groupName": "config"
+    },
+    {
+      "name": "sli",
+      "type": "filePath",
+      "label": "Path to SLI file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to Service Level Indicator configuration",
+      "groupName": "config"
+    },
+    {
+      "name": "slo",
+      "type": "filePath",
+      "label": "Path to SLO file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to Service Level Objective configuration",
+      "groupName": "config"
+    },
+    {
+      "name": "dynatraceConf",
+      "type": "filePath",
+      "label": "Path to dynatrace.conf file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to dynatrace configuration",
+      "groupName": "config",
+      "visibleRule": "monitoring = dynatrace"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Prepare Keptn environment",
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}
