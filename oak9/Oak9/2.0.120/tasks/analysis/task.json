@@ -1,0 +1,63 @@
+{
+  "id": "2ca9d66a-2eae-413f-9c8a-231b7160e6fb",
+  "name": "oak9 Analysis Task",
+  "friendlyName": "oak9",
+  "description": "Azure Pipelines Task for oak9",
+  "helpMarkDown": "[More Information](https://oak9.io/)",
+  "category": "Build",
+  "visibility": ["Build"],
+  "author": "oak9",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 110
+  },
+  "instanceNameFormat": "Prepare analysis",
+  "inputs": [
+    {
+      "name": "serviceEndpoint",
+      "type": "connectedService:oak9",
+      "label": "Service Endpoint",
+      "required": false,
+      "helpMarkDown": "Select the service endpoint for your project. To create one, click the Manage link and create a new Service Endpoint, enter your oak9 Tenant ID and API Token."
+    },
+    {
+      "name": "projectName",
+      "type": "string",
+      "label": "Project ID",
+      "required": false,
+      "helpMarkDown": "oak9 Project ID"
+    },
+    {
+      "name": "qualityGate",
+      "type": "pickList",
+      "label": "Fail builds depending on severity",
+      "required": true,
+      "defaultValue": "Critical",
+      "options": {
+        "None": "None",
+        "Low": "Low",
+        "Moderate": "Moderate",
+        "High": "High"
+      },
+      "properties": {
+          "EditableOptions": "False"
+      }
+    },
+    {
+      "name": "pollingTimeoutSec",
+      "type": "string",
+      "label": "Timeout (s)",
+      "defaultValue": "300",
+      "required": true,
+      "helpMarkDown":
+        "This task will poll the oak9 server until the analysis is complete, or until the timeout is reached. It also adds a build property with the quality gate status of the current build(s) analysis."
+    }
+
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
