@@ -1,0 +1,82 @@
+{
+    "id": "866820e2-7f62-466f-94ec-afeeab860f89",
+    "name": "owaspzap",
+    "friendlyName": "OWASP Zap Scanner",
+    "description": "Utilize the OWASP/ZAP scanner within Azure DevOps",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Doyle Turner, Anthony Turner",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "ZAP Scanner", 
+    "inputs": [
+        {
+            "name": "aggressivemode",
+            "type": "boolean",
+            "helpMarkDown": "If unchecked a baseline-zap scan will be used.",
+            "defaultValue": false,
+            "label": "Aggressive Scan Mode"
+        },
+        {
+            "name": "threshold",
+            "type": "string",
+            "label": "Failure Threshold",
+            "defaultValue": 50,
+            "helpMarkDown": "Sets the minimum threshold for a passing zap scan. Defaults to 50"
+        },
+        {
+            "name": "scantype",
+            "type": "radio",
+            "label": "Scan Type",
+            "defaultValue": "agentScan",
+            "helpMarkDown": "Scan target type. By default scans a target URL defined below",
+            "required": false,
+            "options": {
+                "targetedScan": "Targeted Scan",
+                "agentScan": "Scan on agent"
+            }
+        },
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Root URL to begin crawling",
+            "visibleRule": "scantype = targetedScan",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "URL beginning with http:// or https:// is required for the scanner to initialize."
+        },
+        {
+            "name": "provideCustomContext",
+            "type": "boolean",
+            "label": "Provide Context File",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Allows passing a custom ZAP context file into the scanner"
+        },
+        {
+            "name": "contextPath",
+            "type": "string",
+            "label": "Path to Context",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path to your custom context file from working directory",
+            "visibleRule": "provideCustomContext = true"
+        },
+        {
+            "name": "port",
+            "type": "string",
+            "label": "Scan Port",
+            "required": false,
+            "defaultValue": 80,
+            "helpMarkDown": "Port to scan on the target. Scans port 80 by default."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
