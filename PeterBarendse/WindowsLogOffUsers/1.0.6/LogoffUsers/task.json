@@ -1,0 +1,76 @@
+{
+  "id": "db91fb36-decc-4883-b621-bc3877a2fbf8",
+  "name": "LogoffUsers",
+  "friendlyName": "Logoff Windows Users",
+  "description": "Logs off any logged in users",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "PeterBarendse",
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Logoff Users",
+  "inputs": [
+    {
+      "name": "MachineNames",
+      "type": "string",
+      "label": "Server(s)",
+      "required": false,
+      "helpMarkDown": "Provide a comma separated list of machine IP addresses or FQDNs.<br>Eg: dbserver.fabrikam.com,192.168.12.34<br>Or provide output variable of other tasks. Eg: $(variableName)"
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Admin Login",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Administrator login for the target machines."
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Password for administrator login for the target machines. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "CheckCA",
+      "type": "boolean",
+      "label": "Skip CA check",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol.",
+      "visibleRule": "UseSSL = true"
+    },
+    {
+      "name": "ExcludeUsers",
+      "type": "multiLine",
+      "label": "Exclude users",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide an enter seperated list of users to be excluded when logging off users from a server. IE: <br> User1<br>User2<br><br>Domain specification is not needed."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\LogoffUsers.ps1"
+    }
+  }
+}
