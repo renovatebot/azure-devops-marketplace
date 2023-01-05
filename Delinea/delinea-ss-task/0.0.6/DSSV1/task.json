@@ -1,0 +1,99 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "22D31716-0E3C-45D3-8B7C-675C4AAC0E20",
+    "name": "DelineaSS",
+    "friendlyName": "Delinea SS",
+    "description": "Retrieve secrets from Delinea Secret Server",
+    "helpUrl": "https://github.com/DelineaXPM/SecretServer.AzureDevOpsTask",
+    "helpMarkDown": "[Learn more about this task](https://github.com/DelineaXPM/SS-ADO-BuildTask)",
+    "category": "Deploy",
+    "author": "Delinea",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "instanceNameFormat": "Retrieve secret $(SecretId) from Delinea Secret Server",
+    "inputs": [
+        {
+            "name": "ServerUrl",
+            "type": "string",
+            "label": "Secret Server URL",
+            "defaultValue": "https://mytenant.secretservercloud.com",
+            "required": true,
+            "helpMarkDown": "Enter the URL for your Secret Server.",
+            "validation": {
+                "expression": "isUrl(value)",
+                "message": "That does not appear to be a valid url."
+            }
+        },
+        {
+            "name": "ApiPathUri",
+            "type": "string",
+            "label": "Api Path Uri",
+            "defaultValue": "api/v1",
+            "required": true,
+            "helpMarkDown": "Enter your Secret Server api path."
+        },
+        {
+            "name": "TokenPathUri",
+            "type": "string",
+            "label": "Token Path Uri",
+            "defaultValue": "oauth2/token",
+            "required": true,
+            "helpMarkDown": "Enter your Secret Server token path."
+        },
+        {
+            "name": "Username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter your Secret Server username."
+        },
+        {
+            "name": "Password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter your Secret Server password."
+        },
+        {
+            "name": "SecretId",
+            "type": "string",
+            "label": "Secret Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the id for your secret."
+        },
+        {
+            "name": "FieldFilter",
+            "type": "string",
+            "label": "Field Filter",
+            "defaultValue": "*",
+            "required": true,
+            "helpMarkDown": "Comma separated list of field/slug names or leave * to download all fields from your secret.",
+            "options": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "VariablePrefix",
+            "type": "string",
+            "label": "Variable Prefix",
+            "defaultValue": "DSS_",
+            "required": false,
+            "helpMarkDown": "Variable prefix which is applied to all field/slug names when storing the values in the environment.",
+            "validation": {
+                "expression": "isMatch(value, '(^[a-zA-Z]{1}[a-zA-Z0-9_]*$)', 'Multiline')",
+                "message": "Your variable prefix must start with a letter and may only contain letters, numbers and/or underscores."
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
