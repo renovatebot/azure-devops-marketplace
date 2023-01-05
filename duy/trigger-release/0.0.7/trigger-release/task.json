@@ -1,0 +1,49 @@
+{
+  "id": "c704915c-1f6c-4237-9edd-4330da1ad3e6",
+  "name": "trigger-release",
+  "friendlyName": "Trigger a Release.",
+  "description": "Trigger a Release by replacing the characters in it name. Cross platform (work on Windows/Linux/Mac)",
+  "helpMarkDown": "[More Information](https://github.com/baoduy/azure-devops-rename-variables)",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "author": "Duy",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "instanceNameFormat": "Trigger a Release",
+  "inputs": [
+    {
+      "name": "releaseIdInput",
+      "type": "pickList",
+      "label": "Release Definition",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Release Definition name.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "releaseStagesInput",
+      "type": "string",
+      "label": "Release Stages",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Target specific release stages (comma separated)."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "releaseIdInput",
+      "endpointId": "tfs:rm",
+      "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/release/definitions",
+      "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+      "parameters": { "project": "$(system.teamProject)" }
+    }
+  ],
+  "execution": { "Node": { "target": "index.js" } },
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json"
+}
