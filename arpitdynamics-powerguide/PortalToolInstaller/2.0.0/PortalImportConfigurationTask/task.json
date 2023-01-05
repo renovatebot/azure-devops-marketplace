@@ -1,0 +1,87 @@
+{
+    "id": "e2a17d84-d617-4e8a-8095-588ff1cec19f",
+    "name": "Import Portal Configuration",
+    "friendlyName": "Import Portal Configuration",
+    "description": "This task will import portal configuration to Power Platform Environment",
+    "author": "Arpit",
+    "helpMarkDown": "This task will import portal configuration to Target Microsoft Dataverse Environment",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "2",
+      "Minor": "0",
+      "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Import Portal Configuration $(message)",
+
+    "inputs": [
+      {
+        "name": "D365URL",
+        "type": "string",
+        "label": "Dynamics 365 URL",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "For Ex: https://<orgname>.crm11.dynamics.com"
+    },
+      {
+          "name": "ApplicationId",
+          "type": "string",
+          "label": "Application Id",
+          "defaultValue": "",
+          "required": true,
+          "helpMarkDown": "You can capture this value while doing app registration in Azure AD"
+      },
+      {
+        "name": "ClientSecret",
+        "type": "string",
+        "label": "Client Secret",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "You can capture this value while doing app registration in Azure AD"
+    },
+    {
+      "name": "TenantId",
+      "type": "string",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "You can capture this value from Azure AD"
+  },
+  {
+    "name": "PortalDataFolder",
+    "type": "filePath",
+    "label": "Portal data",
+    "defaultValue": "",
+    "required": true,
+    "helpMarkDown": "Folder where your portal configuration is stored"
+},
+{
+  "name": "IsUsingDeploymentProfile",
+  "type": "boolean",
+  "label": "Use Deployment Profile",
+  "defaultValue": "false",
+  "required": true,
+  "helpMarkDown": "This setting decide whether you want to use deployment profile for portal deployment"
+},
+{
+  "name": "DeploymentProfileName",
+  "type": "string",
+  "label": "Deployment Profile Name",
+  "defaultValue": "",
+  "required": true,
+  "visibleRule": "IsUsingDeploymentProfile = true",
+  "helpMarkDown": "Enter the name of deployment profile that you want to use to upload portal customization in different environment with different set of properties. You can find the deployment profile name in 'deployment-profiles' folder under portal configuration folder. For Ex: dev.deployment.yml"
+}
+  ],
+   
+    "execution": {
+      "PowerShell3": {
+        "target": "sample2.ps1"
+      }
+    }
+  }

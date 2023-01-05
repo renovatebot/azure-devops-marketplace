@@ -1,0 +1,115 @@
+{
+    "id": "a125d483-91fe-47f9-ba21-90a544e950f1",
+    "name": "Export Portal Configuration",
+    "friendlyName": "Export Portal Configuration",
+    "description": "This task will export portal configuration to Azure Repos",
+    "author": "Arpit",
+    "helpMarkDown": "This task will export portal configuration from the Microsoft Dataverse Environment",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "2",
+      "Minor": "0",
+      "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Export Portal Configuration $(message)",
+
+    "inputs": [
+      {
+        "name": "D365URL",
+        "type": "string",
+        "label": "Dynamics 365 URL",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "For Ex: https://<orgname>.crm11.dynamics.com"
+    },
+    {
+      "name": "PortalWebsiteid",
+      "type": "string",
+      "label": "Website Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "You can capture this value from Dynamics 365"
+  },
+      {
+          "name": "ApplicationId",
+          "type": "string",
+          "label": "Application Id",
+          "defaultValue": "",
+          "required": true,
+          "helpMarkDown": "You can capture this value while doing app registration in Azure AD"
+      },
+      {
+        "name": "ClientSecret",
+        "type": "string",
+        "label": "Client Secret",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "You can capture this value while doing app registration in Azure AD"
+    },
+    {
+      "name": "TenantId",
+      "type": "string",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "You can capture this value from Azure AD"
+  },
+  {
+    "name": "ExportPortalData",
+    "type": "pickList",
+    "label": "Export Portal Data",
+    "defaultValue": "All",
+    "required": true,
+    "helpMarkDown": "Choose whether you want to take portal data export of all Portal Entities or Only Selected Portal Entities. If you choose 'All' then it will take data export from all portal entities. In 'Include', you can specify all entities (in comma seperated format) that you want to include in the data export. In 'Exclude', you can specify all entities that you want to exclude from being exported from Microsoft Dataverse",
+    "options": {
+      "All": "All",
+      "Include": "Include",
+      "Exclude": "Exclude"
+    }
+},
+{
+  "name": "IncludedEntitiesName",
+  "type": "string",
+  "label": "Include Entities (logical name in comma seperated format)",
+  "defaultValue": "",
+  "required": true,
+  "visibleRule": "ExportPortalData = Include",
+  "helpMarkDown": "Specify the list of entities (logical name) that you want to include in the data export. For Ex. adx_webpage,adx_contentsnippet,adx_entitylist,adx_entityform"
+},
+{
+  "name": "ExcludedEntitiesName",
+  "type": "string",
+  "label": "Exclude Entities (logical name in comma seperated format)",
+  "defaultValue": "",
+  "required": true,
+  "visibleRule": "ExportPortalData = Exclude",
+  "helpMarkDown": "Specify the list of entities (logical name) that you want to exclude from the portal export. For Ex. adx_sitesetting,adx_entitypermission,adx_webrole,adx_weblinkset"
+},
+  {
+    "name": "TargetFolderAll",
+    "type": "filePath",
+    "label": "Target Folder to Export Portal Data",
+    "defaultValue": "",
+    "required": true,
+    "helpMarkDown": "Choose repository folder path, where you want to save the exported portal data"
+}
+  ],
+  "OutputVariables": [
+    {
+        "name": "ExcludedTables",
+        "description": "This sends the excluded table list to the next step of the pipeline."
+    }
+],
+   
+    "execution": {
+      "PowerShell3": {
+        "target": "sample1.ps1"
+      }
+    }
+  }
