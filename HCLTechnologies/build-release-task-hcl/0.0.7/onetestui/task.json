@@ -1,0 +1,137 @@
+{
+    "id": "46f0ed50-30cc-45e7-9826-b5d57a385c8e",
+    "name": "HCLOneTestUITask",
+    "friendlyName": "HCL OneTest UI Azure Task",
+    "description": "Run HCL OneTest UI tests.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "HCL",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "instanceNameFormat": "HCL OneTest UI Azure Task",
+    "inputs": [
+        {
+            "name": "selectedOption",
+            "type": "pickList",
+            "label": "Testcase Type",
+            "options": {
+                "webui": "WebUI",
+                "trad": "Traditional (Java)"
+            },
+			"helpMarkDown": "The type of the test to execute."
+        },
+        {
+            "name": "productpath",
+            "type": "filePath",
+            "label": "Product Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified path to the HCL OneTest UI application. Use '\\\\' or '/' as the file separator. This path must exist on the agent."
+        },
+        {
+            "name": "projectdir",
+            "type": "filePath",
+            "label": "Project Directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified path to HCL OneTest UI project directory. Use '\\\\' or '/' as the file separator. This path must exist on the agent.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "testsuite",
+            "type": "string",
+            "label": "Test Suite Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the script to be executed without the extension. For eg., Script1 or TestFolder.Script1 in case Script1 is in a folder named TestFolder.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "logformat",
+            "type": "pickList",
+            "label": "Log Format",
+            "defaultValue": "XML",
+            "required": true,
+            "helpMarkDown": "The format of the script logs. ",
+            "options": {
+                "XML": "XML",
+                "HTML": "HTML",
+                "TEXT": "Text",
+                "TPTP": "TPTP"
+            },
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "itercount",
+            "type": "string",
+            "label": "Iteration Count",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The number of Dataset iterations to be run.",
+            "visibleRule": "selectedOption = trad"
+        },
+
+        {
+            "name": "userargs",
+            "type": "string",
+            "label": "User Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional playback arguments, if any.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "imshared",
+            "type": "string",
+            "label": "IMShared Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to the IMShared folder in your local installation. This is where plugins and product dependencies will be located by the execution agent.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "workspace",
+            "type": "string",
+            "label": "Workspace Location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to the project workspace on the agent disk.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Project Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a project within the workspace to use.",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "vmargs",
+            "type": "string",
+            "label": "VM Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "VM Arguments separated by (,)",
+			"visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "suite",
+            "type": "string",
+            "label": "Test Suite Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a test within the project to use. A test can be WebUI test, Compound test, Performance schedule or Accelerated Functional Test (AFT) suite.",
+            "visibleRule": "selectedOption = webui"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
