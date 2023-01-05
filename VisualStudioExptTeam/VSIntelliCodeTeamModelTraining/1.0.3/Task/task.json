@@ -1,0 +1,74 @@
+{
+  "id": "a12be0e5-e040-4336-878a-59a493289795",
+  "name": "IntelliCodeTeamModels",
+  "friendlyName": "IntelliCode Team Models",
+  "description": "Train Visual Studio IntelliCode Team Models from Azure Pipelines.",
+  "helpMarkDown": "[More Information](https://aka.ms/intellicode/)",
+  "category": "Utility",
+  "continueOnError": true,
+  "runsOn":[
+    "Agent",
+    "Server"
+  ],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "demands": [
+    "msbuild",
+    "visualstudio"
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "cplusplus",
+      "displayName": "Advanced C++",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "branch",
+      "type": "string",
+      "label": "Branch",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Use this argument if you wish to filter training to an specific branch."
+    },
+    {
+      "name": "platform",
+      "groupName": "cplusplus",
+      "type": "string",
+      "label": "Platform",
+      "required": false,
+      "helpMarkDown": "Optional parameter. Defines the project target platform (i.e ARM, Any CPU) for C++ projects."
+    },
+    {
+      "name": "config",
+      "groupName": "cplusplus",
+      "type": "string",
+      "label": "Configuration",
+      "required": false,
+      "helpMarkDown": "Optional parameter. Defines the project configuration name (i.e Debug, Release) for C++ projects."
+    },
+    {
+      "name": "intelliCodeServiceEndpoint",
+      "type": "connectedService:intellicode3-scheme",
+      "label": "IntelliCode connection",
+      "required": false,
+      "helpMarkDown": "Optional parameter. Defines an account to be linked to the [repository asociated team model.](https://docs.microsoft.com/en-us/visualstudio/intellicode/custom-models#repository-associated-team-models)"
+    }
+  ],
+  "instanceNameFormat": "IntelliCode Team Models $(branch)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\IntelliCodeExtraction.ps1"
+    }
+  }
+}
