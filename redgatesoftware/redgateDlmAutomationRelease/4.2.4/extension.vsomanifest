@@ -1,0 +1,138 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "DlmAutomationReleaseTask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "TheTask"
+            }
+        },
+        {
+            "id": "sql-change-automation-connection-endpoint-type",
+            "description": "SQL Server endpoint type for SQL Change Automation tasks",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "SQLChangeAutomationTarget",
+                "displayName": "SQL Change Automation target",
+                "url": {
+                    "value": "https://www.red-gate.com/sca/",
+                    "isVisible": "false"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "Instance",
+                        "name": "SQL Server instance",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "Database",
+                        "name": "Database name",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "TrustServerCertificate",
+                        "name": "Trust server certificate",
+                        "inputMode": "checkBox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "Encrypt",
+                        "name": "Encrypt",
+                        "inputMode": "checkBox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "AuthenticationMethod",
+                        "name": "Authentication method",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true
+                        },
+                        "values": {
+                            "inputId": "AuthenticationMethod",
+                            "defaultValue": "windowsAuth",
+                            "isLimitedToPossibleValues": true,
+                            "possibleValues": [
+                                {
+                                    "displayValue": "Windows authentication (integrated)",
+                                    "value": "windowsAuth"
+                                },
+                                {
+                                    "displayValue": "Windows authentication (credentials)",
+                                    "value": "windowsAuthCredentials"
+                                },
+                                {
+                                    "displayValue": "Azure Active Directory password authentication",
+                                    "value": "azureActiveDirectoryPassword"
+                                },
+                                {
+                                    "displayValue": "SQL Server authentication",
+                                    "value": "sqlServerAuth"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "Username",
+                        "name": "Username",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "properties": {
+                            "visibleRule": "AuthenticationMethod != windowsAuth"
+                        }
+                    },
+                    {
+                        "id": "Password",
+                        "name": "Password",
+                        "inputMode": "passwordBox",
+                        "isConfidential": true,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "properties": {
+                            "visibleRule": "AuthenticationMethod != windowsAuth"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

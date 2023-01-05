@@ -1,0 +1,421 @@
+{
+  "id": "C1177C17-3934-4005-BA89-A4549FE4F0A1",
+  "name": "RedgateSqlChangeAutomationRelease",
+  "friendlyName": "Redgate SQL Change Automation: Release",
+  "description": "Safely deploy database changes with Redgate SQL Change Automation",
+  "helpMarkDown": "[More Information](https://www.red-gate.com/sca/ps/help)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Redgate Software",
+  "version": {
+    "Major": 4,
+    "Minor": 2,
+    "Patch": 4
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "moduleVersionGroup",
+      "displayName": "SQL Change Automation version",
+      "isExpanded": false
+    },
+    {
+      "name": "targetDatabase",
+      "displayName": "Target database",
+      "isExpanded": true
+    },
+    {
+      "name": "proxyConfigurationGroup",
+      "displayName": "Proxy configuration",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Operation",
+      "type": "pickList",
+      "label": "Operation",
+      "defaultValue": "Create",
+      "required": true,
+      "options": {
+        "Create": "Create a database release artifact",
+        "DeployFromPackage": "Deploy database changes from a build artifact",
+        "DeployFromResources": "Deploy database changes from a release artifact",
+        "DeployFromDatabase": "Deploy database changes from a live database"
+      },
+      "helpMarkDown": "Specify the SQL Change Automation release operation you want to perform"
+    },
+    {
+      "name": "NuGetFile",
+      "type": "filePath",
+      "label": "Database package",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown":
+        "Path to the SQL Change Automation build artifact. You can use $(Build.BuildId) or $(Build.BuildNumber) variables to customize it.",
+      "visibleRule": "Operation = Create"
+    },
+    {
+      "name": "ExportPath",
+      "type": "string",
+      "label": "Export path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Path to export the release artifact to. Leave blank if you want it to be automatically determined.",
+      "visibleRule": "Operation = Create"
+    },
+    {
+      "name": "PackagePath",
+      "type": "filePath",
+      "label": "Package path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown":
+        "Path to the SQL Change Automation build artifact that you wish to deploy from. You can use $(Build.BuildId) or $(Build.BuildNumber) variables to customize it.",
+      "visibleRule": "Operation = DeployFromPackage"
+    },
+    {
+      "name": "ImportPath",
+      "type": "string",
+      "label": "Deployment resources path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Path to the release artifact to be deployed. This should match the Export path on your Create a database release artifact step.",
+      "visibleRule": "Operation = DeployFromResources"
+    },
+    {
+      "name": "AppendEnvironment",
+      "type": "boolean",
+      "label": "Append environment name",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown":
+        "Append the environment name to the Export path. Use this option to export resources into a unique directory when multiple environments use the same release agent.",
+      "visibleRule": "Operation = Create || Operation = DeployFromResources"
+    },
+    {
+      "name": "SourceDatabaseServer",
+      "type": "string",
+      "label": "Source SQL Server instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The fully qualified SQL Server instance name for the source database.",
+      "visibleRule": "Operation = DeployFromDatabase"
+    },
+    {
+      "name": "SourceDatabaseName",
+      "type": "string",
+      "label": "Source database name",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "Operation = DeployFromDatabase"
+    },
+    {
+      "name": "SourceTrustServerCertificate",
+      "type": "boolean",
+      "label": "Source Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation.",
+      "visibleRule": "Operation = DeployFromDatabase"
+    },
+    {
+      "name": "SourceEncrypt",
+      "type": "boolean",
+      "label": "Source Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed.",
+      "visibleRule": "Operation = DeployFromDatabase"
+    },
+    {
+      "name": "SourceAuthMethod",
+      "type": "pickList",
+      "label": "Authentication method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication (integrated)",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication",
+        "sqlServerAuth": "SQL Server authentication"
+      },
+      "visibleRule": "Operation = DeployFromDatabase"
+    },
+    {
+      "name": "SourceDatabaseUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "SourceAuthMethod != windowsAuth",
+      "helpMarkDown": "The SQL Server username used to connect to the source database."
+    },
+    {
+      "name": "SourceDatabasePassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "visibleRule": "SourceAuthMethod != windowsAuth",
+      "helpMarkDown":
+        "For security reasons this field should be populated using a [secret variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=classic%2Cbatch#secret-variables)"
+    },
+    {
+      "name": "TargetDatabaseConnectionType",
+      "type": "radio",
+      "label": "Target database connection type",
+      "required": true,
+      "defaultValue": "explicit",
+      "options": {
+        "explicit": "Explicit",
+        "serviceConnection": "Service connection"
+      },
+      "groupName": "targetDatabase"
+    },
+    {
+      "name": "TargetDatabaseServiceConnection",
+      "type": "connectedService:SQLChangeAutomationTarget",
+      "label": "Target database connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the SQL Change Automation SQL Server endpoint.",
+      "visibleRule": "TargetDatabaseConnectionType = serviceConnection",
+      "groupName": "targetDatabase"
+    },
+    {
+      "name": "TargetDatabaseServer",
+      "type": "string",
+      "label": "Target SQL Server instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The fully qualified SQL Server instance name for the target database.",
+      "groupName": "targetDatabase",
+      "visibleRule": "TargetDatabaseConnectionType = explicit"
+    },
+    {
+      "name": "TargetDatabaseName",
+      "type": "string",
+      "label": "Target database name",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "targetDatabase",
+      "visibleRule": "TargetDatabaseConnectionType = explicit"
+    },
+    {
+      "name": "TargetTrustServerCertificate",
+      "type": "boolean",
+      "label": "Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation.",
+      "groupName": "targetDatabase",
+      "visibleRule": "TargetDatabaseConnectionType = explicit"
+    },
+    {
+      "name": "TargetEncrypt",
+      "type": "boolean",
+      "label": "Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed.",
+      "groupName": "targetDatabase",
+      "visibleRule": "TargetDatabaseConnectionType = explicit"
+    },
+    {
+      "name": "TargetAuthMethod",
+      "type": "pickList",
+      "label": "Authentication method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication (integrated)",
+        "windowsAuthCredentials": "Windows authentication (credentials)",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication",
+        "sqlServerAuth": "SQL Server authentication"
+      },
+      "groupName": "targetDatabase",
+      "visibleRule": "TargetDatabaseConnectionType = explicit"
+    },
+    {
+      "name": "TargetDatabaseUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "TargetDatabaseConnectionType = explicit && TargetAuthMethod != windowsAuth",
+      "helpMarkDown": "The SQL Server username used to connect to the database.",
+      "groupName": "targetDatabase"
+    },
+    {
+      "name": "TargetDatabasePassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "visibleRule": "TargetDatabaseConnectionType = explicit && TargetAuthMethod != windowsAuth",
+      "required": true,
+      "groupName": "targetDatabase",
+      "helpMarkDown":
+        "For security reasons this field should be populated using a [secret variable](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=classic%2Cbatch#secret-variables)"
+    },
+    {
+      "name": "DeleteFilesInExportFolder",
+      "type": "boolean",
+      "label": "Delete files in export folder",
+      "defaultValue": "true",
+      "required": false,
+      "visibleRule": "Operation = Create"
+    },
+    {
+      "name": "IgnoreStaticData",
+      "type": "boolean",
+      "label": "Ignore static data",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Excludes changes to static data.",
+      "visibleRule": "Operation = Create || Operation = DeployFromPackage"
+    },
+    {
+      "name": "SqlCompareOptions",
+      "type": "string",
+      "label": "SQL Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Compare options, or remove default options to be used when generating the update script. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "SqlDataCompareOptions",
+      "type": "string",
+      "label": "SQL Data Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Data Compare options, or remove default options to be used when generating the update script. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "QueryBatchTimeout",
+      "type": "string",
+      "label": "Query batch timeout (in seconds)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The execution timeout, in seconds, for each batch of queries in the update script. The default value is 30 seconds. A value of zero indicates no execution timeout.",
+      "visibleRule": "Operation != Create"
+    },
+    {
+      "name": "FilterPath",
+      "type": "string",
+      "label": "Filter path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The path to a .scpf filter file. Overrides any existing Filter.scpf file present in the package/source control repository, and is used when creating the update SQL. Filter files can be generated by SQL Source Control and SQL Compare.",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "TransactionIsolationLevel",
+      "type": "pickList",
+      "label": "Transaction isolation level",
+      "defaultValue": "serializable",
+      "required": true,
+      "options": {
+        "serializable": "Serializable",
+        "snapshot": "Snapshot",
+        "repeatableRead": "Repeatable Read",
+        "readCommitted": "Read Committed",
+        "readUncommitted": "Read Uncommitted"
+      },
+      "helpMarkDown": "Transaction isolation level. The isolation level for the transactions in the update script.",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "DriftFiltering",
+      "type": "pickList",
+      "label": "Drift filtering",
+      "defaultValue": "ModifiedObjectsOnly",
+      "required": true,
+      "options": {
+        "ModifiedObjectsOnly": "Modified objects only",
+        "AllObjects": "All objects",
+        "ObjectsToBeUpdatedOnly": "Objects to be updated only"
+      },
+      "helpMarkDown":
+        "Schema Drift occurs when a target database deviates from the codebase that was used to originally deploy it. [More Information](https://documentation.red-gate.com/sca/deploying-database-changes/automated-deployments-with-sql-change-automation-projects/handling-schema-drift)",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "AbortOnWarning",
+      "type": "pickList",
+      "label": "Abort on warning",
+      "defaultValue": "none",
+      "required": true,
+      "options": {
+        "none": "None",
+        "information": "Information",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "helpMarkDown":
+        "Use this parameter to set the minimum warning level that will cause the release generation operation to abort.",
+      "visibleRule": "Operation != DeployFromResources"
+    },
+    {
+      "name": "SkipPostUpdateSchemaCheck",
+      "type": "boolean",
+      "label": "Skip post update schema check",
+      "defaultValue": "false",
+      "helpMarkDown": "Don't check that the target database has the correct schema after the update has run.",
+      "visibleRule": "Operation != Create"
+    },
+    {
+      "name": "requiredVersionOfDlma",
+      "type": "radio",
+      "label": "Required version of SQL Change Automation",
+      "required": true,
+      "helpMarkDown":
+        "By default the latest version of SQL Change Automation will be used. If you want to use a specific version you can specify it here.",
+      "defaultValue": "latest",
+      "groupName": "moduleVersionGroup",
+      "options": {
+        "latest": "Latest",
+        "latestInstalled": "Latest installed",
+        "specific": "Specific"
+      }
+    },
+    {
+      "name": "requiredVersion",
+      "type": "string",
+      "label": "Specific version of SQL Change Automation to be used",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "requiredVersionOfDlma = specific",
+      "groupName": "moduleVersionGroup"
+    },
+    {
+      "name": "ProxyUrl",
+      "type": "string",
+      "label": "Proxy URL",
+      "defaultValue": "",
+      "helpMarkDown":
+        "By default, no proxy is used when connecting to Powershell Gallery. Alternatively, a proxy URL can be specified here that can be used for Powershell Gallery.",
+      "required": false,
+      "groupName": "proxyConfigurationGroup"
+    }
+  ],
+  "instanceNameFormat": "Perform $(Operation)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\RunSqlChangeAutomation.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
