@@ -1,0 +1,87 @@
+{
+  "id": "21e730bf-0430-4a4d-b0e8-234e63b94f26",
+  "name": "cboroson-ManageAppServices",
+  "friendlyName": "Manage App Services",
+  "description": "Stop, start or verify all app services in a resource group.",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/ManageAppServices)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "pickList",
+      "label": "Resource Group",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the Azure Resource Group that contains the App Services to manage."
+    },
+    {
+      "name": "Action",
+      "type": "picklist",
+      "label": "Action",
+      "defaultValue": "check",
+      "required": true,
+      "options": {
+        "check": "Verify app status",
+        "stop": "Stop all app services",
+        "start": "Start all app services"
+      },   
+      "helpMarkDown": "This is the secret value associated with a service integration in your PagerDuty subscription."
+    },
+    {
+      "name": "IncludeWebjobs",
+      "type": "boolean",
+      "label": "Include webjobs",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Choosing this option will perform the requested action on all continuous webjobs in the resource group."
+    },
+    {
+      "name": "FailTask",
+      "type": "boolean",
+      "label": "Fail task if services do not respond to the requested action",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "If the selected action is 'Stop' or 'Start' and the services do not respond to the action, the task will fail.  When this option is not selected, the task will not check the status of the services after performing the action."
+    }
+],
+"dataSourceBindings": [
+  {
+    "target": "resourceGroupName",
+    "endpointId": "$(ConnectedServiceName)",
+    "dataSourceName": "AzureResourceGroups"
+  }
+],
+"instanceNameFormat": "Manage App Services",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ManageAppServices.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
