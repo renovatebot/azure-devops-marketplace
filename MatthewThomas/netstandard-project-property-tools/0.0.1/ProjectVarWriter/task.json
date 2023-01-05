@@ -1,0 +1,69 @@
+{
+  "id": "9147289a-2501-4ad1-b2e3-aa3f7817b007",
+  "name": "ProjectVarWriter",
+  "friendlyName": "Write Project Property",
+  "description": "Writes value to a .Net standard project property",
+  "author": "Matthew Thomas",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Write $(propertyName)",
+  "inputs": [
+    {
+      "name": "searchPattern",
+      "type": "filePath",
+      "label": "Path to csproj/vbproj file",
+      "defaultValue": "**\\*.??proj",
+      "helpMarkDown": "Pattern to use for finding the Project file",
+      "required": true
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "label": "The value to write to the property",
+      "required": true
+    },
+    {
+      "name": "propertyName",
+      "type": "pickList",
+      "label": "The project property to write",
+      "defaultValue": "Version",
+      "required": true,
+      "options":{
+        "AssemblyVersion": "AssemblyVersion",
+        "Company": "Company",
+        "Copyright": "Copyright",
+        "Custom": "Custom",
+        "FileVersion": "FileVersion",
+        "GeneratePackageOnBuild": "GeneratePackageOnBuild",
+        "TargetFramework": "TargetFramework",
+        "Version": "Version"
+        },
+        "properties":{
+          "EditableOptions":"False"
+        }
+      },
+      {
+        "name": "customPropertyName",
+        "type": "string",
+        "label": "The custom project property to write",
+        "required":true,
+        "visibleRule":"propertyName = custom"
+      }
+  ],
+  "execution": {    
+    "PowerShell3": {
+      "target": "$(CurrentDirectory)\\ProjectVarWriter.ps1"
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "9d912aa0-a422-11e8-ab65-756997c8fe7a",
+  "name": "ProjectVarReader",
+  "friendlyName": "Project Property To Environment Variable",
+  "description": "Converts a project property from a .Net Standard project to an environment variable",
+  "author": "Matthew Thomas",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Read $(propertyName)",
+  "inputs": [
+    {
+      "name": "searchPattern",
+      "type": "filePath",
+      "label": "Path to csproj/vbproj file",
+      "defaultValue": "**\\*.??proj",
+      "helpMarkDown": "Pattern to use for finding the Project file",
+      "required": true
+    },
+    {
+      "name": "variablePrefix",
+      "type": "string",
+      "label": "Variable Prefix",
+      "defaultValue": "",
+      "helpMarkDown": "The generated variable will be prefixed with this value",
+      "required": false
+    },
+    {
+      "name": "propertyName",
+      "type": "pickList",
+      "label": "The project property to read",
+      "defaultValue": "Version",
+      "required": true,
+      "options":{
+        "AssemblyVersion": "AssemblyVersion",
+        "Company": "Company",
+        "Copyright": "Copyright",
+        "Custom": "Custom",
+        "FileVersion": "FileVersion",
+        "GeneratePackageOnBuild": "GeneratePackageOnBuild",
+        "TargetFramework": "TargetFramework",
+        "Version": "Version"
+        },
+        "properties":{
+          "EditableOptions":"False"
+        }
+      },
+      {
+        "name": "customPropertyName",
+        "type": "string",
+        "label": "The custom project property to read",
+        "required":true,
+        "visibleRule":"propertyName = custom"
+      }
+  ],
+  "execution": {    
+    "PowerShell3": {
+      "target": "$(CurrentDirectory)\\ProjectVarReader.ps1"
+    }
+  }
+}
