@@ -1,0 +1,63 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.release",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "Service endpoint",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "grafana",
+                "displayName": "Grafana server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url of the Grafana server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "Grafana",
+                        "endpointUrl": "{{endpoint.url}}",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "Personal Access Token ",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "build-task",
+            "description": "Task with a dynamic property getting data from an endpoint REST data source",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "GrafanaAnnotations"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
