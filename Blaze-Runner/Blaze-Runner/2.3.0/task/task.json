@@ -1,0 +1,179 @@
+{
+  "id": "818a331c-35d4-4db9-9e28-b335f3fce492",
+  "name": "BlazeMeter Integration",
+  "friendlyName": "BlazeMeter Integration",
+  "description": "Allows you to run blazemeter tests in azure pipelines.",
+  "helpMarkDown": "[More Information](https://blazerunner.io/)",
+  "author": "BlazeRunner",
+  "preview": false,
+  "showEnvironmentVariables": true,
+  "instanceNameFormat": "BlazeMeter Integration",
+  "category": "Test",
+  "version": {
+    "Major": 2,
+    "Minor": 3,
+    "Patch": 0
+  },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "groups": [
+    {
+      "name": "LoadConfig",
+      "displayName": "Load Configuration",
+      "isExpanded": true,
+      "visibleRule": "createtest = true"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "createtest",
+      "type": "boolean",
+      "label": "Create a Performance Test",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select this to create a new performance test."
+    },
+    {
+      "name": "testurl",
+      "type": "string",
+      "label": "Test URL",
+      "defaultValue": "https://a.blazemeter.com/app/#/accounts/$(AccounID)/workspaces/$(WorkSpaceID)/projects/$(ProjectID)/tests/$(TestID)/edit",
+      "required": true,
+      "helpMarkDown": "Login to BlazeMeter account. Click on Tests from top nav bar. Select name of your test. Copy the URL of test page.",
+      "visibleRule": "createtest = false"
+    },
+    {
+      "name": "apikey",
+      "type": "string",
+      "label": "API Key",
+      "defaultValue": "$(APIKEY)",
+      "required": true,
+      "helpMarkDown": "[API Key to authenticate to BlazeMeter](https://guide.blazemeter.com/hc/en-us/articles/115002213289-BlazeMeter-API-keys--BlazeMeter-API-keys)"
+    },
+    {
+      "name": "apisecret",
+      "type": "string",
+      "label": "API Secret",
+      "defaultValue": "$(APISECRET)",
+      "required": true,
+      "helpMarkDown": "[API Secret to authenticate to BlazeMeter](https://guide.blazemeter.com/hc/en-us/articles/115002213289-BlazeMeter-API-keys--BlazeMeter-API-keys)"
+    },
+    {
+      "name": "reportName",
+      "type": "string",
+      "label": "Report Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter Report Name"
+    },
+    {
+      "name": "updateMainTestFile",
+      "type": "boolean",
+      "label": "Update Main Test File",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "createtest = false",
+      "helpMarkDown": "Select this to upload main test file for existing test"
+    },
+    {
+      "name": "inputstartfile",
+      "type": "filePath",
+      "label": "Upload Test Script",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Upload test script like JMX, selenium etc.",
+      "visibleRule": "createtest = true || updateMainTestFile = true"
+    },
+    {
+      "name": "Uploadfilechk",
+      "type": "boolean",
+      "label": "Upload Dependencies",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select this to upload tests dependant script."
+    },
+    {
+      "name": "inputallfiles",
+      "type": "filePath",
+      "label": "Upload Dependent Scripts",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Upload tests dependant scripts.",
+      "visibleRule": "Uploadfilechk = true"
+
+    },
+    {
+      "name": "testname",
+      "type": "string",
+      "label": "Test Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Enter test name.",
+      "visibleRule": "createtest = true"
+    },
+    {
+      "name": "projectID",
+      "type": "string",
+      "label": "Project ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter the project ID. If you don't specify project ID, test will get created in the default project.",
+      "visibleRule": "createtest = true"
+    },
+
+    {
+      "name": "totalusers",
+      "type": "string",
+      "label": "Total Users",
+      "defaultValue": "20",
+      "required": false,
+      "groupName": "LoadConfig",
+      "helpMarkDown": "Select the number of users you want to deploy at the peak of your test."
+    },
+    {
+      "name": "duration",
+      "type": "string",
+      "label": "Duration (min)",
+      "defaultValue": "20",
+      "required": false,
+      "groupName": "LoadConfig",
+      "helpMarkDown": "You can configure your test to run for a specified duration."
+    },
+    {
+      "name": "rampup",
+      "type": "string",
+      "label": "Ramp up Time (min)",
+      "defaultValue": "1",
+      "required": false,
+      "groupName": "LoadConfig",
+      "helpMarkDown": "Select how fast you want the test to ramp-up.  This is the elapsed time in minutes from test start until all users are running."
+
+    },
+    {
+      "name": "showtaillog",
+      "type": "boolean",
+      "label": "Show Log",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "When this flag is checked, log file will be displayed in the console."
+    },
+    {
+      "name": "buildStatus",
+      "type": "boolean",
+      "label": "Ignore SLA",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "When this flag is checked, regardless of the SLA, build will succeed"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "task.ps1",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}
