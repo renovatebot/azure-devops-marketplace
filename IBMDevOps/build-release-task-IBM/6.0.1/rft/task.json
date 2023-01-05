@@ -1,0 +1,240 @@
+{
+    "id": "09ecb8bf-a21a-47db-832f-8ec8a024a72c",
+    "name": "IBMRTASUITask",
+    "friendlyName": "IBM Rational Functional Tester Task",
+    "description": "Run IBM Rational Functional Tester tests.",
+    "helpUrl": "https://help.blueproddoc.com/rationaltest/rationalfunctionaltester/10.2.1/com.ibm.rational.test.lt.ditaval.doc/topics/t_int_azure_devops.html",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "IBM",
+    "version": {
+        "Major": 0,
+        "Minor": 8,
+        "Patch": 1
+    },
+    "instanceNameFormat": "IBM Rational Functional Tester Task",
+    "inputs": [
+        {
+            "name": "selectedOption",
+            "type": "pickList",
+            "label": "Testcase Type",
+            "options": {
+                "webui": "Web UI",
+                "trad": "Traditional (Java)"
+            },
+			"helpMarkDown": "The type of the test to execute."
+        },
+        {
+            "name": "productpath",
+            "type": "filePath",
+            "label": "Product Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified path to the IBM Rational Functional Tester application. Use '\\\\' or '/' as the file separator. This path must exist on the agent."
+        },
+        {
+            "name": "projectdir",
+            "type": "filePath",
+            "label": "Project Directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified path to IBM Rational Functional Tester project directory. Use '\\\\' or '/' as the file separator. This path must exist on the agent.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "testsuite",
+            "type": "string",
+            "label": "Test Suite Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the script to be executed without the extension. For eg., Script1 or TestFolder.Script1 in case Script1 is in a folder named TestFolder.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "logformat",
+            "type": "pickList",
+            "label": "Log Format",
+            "defaultValue": "Default",
+            "required": true,
+            "helpMarkDown": "The format of the script logs. ",
+            "options": {
+                "Default": "Default",
+                "xml": "XML",
+                "html": "HTML",
+                "text": "Text",
+                "TPTP": "TPTP"
+            },
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "itercount",
+            "type": "string",
+            "label": "Iteration Count",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The number of Dataset iterations to be run.",
+            "visibleRule": "selectedOption = trad"
+        },
+
+        {
+            "name": "userargs",
+            "type": "string",
+            "label": "User Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional playback arguments, if any.",
+            "visibleRule": "selectedOption = trad"
+        },
+        {
+            "name": "imshared",
+            "type": "string",
+            "label": "IMShared Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to the IMShared folder in your local installation. This is where plugins and product dependencies will be located by the execution agent.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "workspace",
+            "type": "string",
+            "label": "Workspace Location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The complete path to the Eclipse workspace.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Project Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a project within the workspace to use.",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "vmargs",
+            "type": "string",
+            "label": "VM Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "VM Arguments separated by (,)",
+			"visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "suite",
+            "type": "string",
+            "label": "Test Suite Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a test within the project to use. A test can be WebUI test, Compound test, Performance schedule or Accelerated Functional Test (AFT) suite.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "varfile",
+            "type": "string",
+            "label": "Var File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The complete path to the XML file that contains the variable name and value pairs.",
+            "visibleRule": "selectedOption = webui"
+        },
+        {
+            "name": "swapdatasets",
+            "type": "string",
+            "label": "Dataset Override",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to replace dataset values during a test or schedule run. You must ensure that both original and new datasets are in the same workspace and have the same column names. You must also include the path to the dataset. For example, /project_name/ds_path/ds_filename.csv:/project_name/ds_path/new_ds_filename.csv",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "configfile",
+            "type": "string",
+            "label": "Configuration File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to specify the complete path to a file that contains the parameters for a test run",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "results",
+            "type": "string",
+            "label": "Results",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to specify the name of the results file. The default result file name is the test name with a time stamp appended. Specify a folder name that is relative to the project to store the test results. For example, -results folder/resultname",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "overwrite",
+            "type": "string",
+            "label": "Overwrite",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Determines whether a results file with the same name is overwritten. The default value, false, indicates that the new results file is created. If the value is true, the file is overwritten and retains the same file name.",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "exportstats",
+            "type": "string",
+            "label": "Export Stats",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to export reports in comma-separated values (CSV) format",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "exportstatreportlist",
+            "type": "string",
+            "label": "Export stat report list",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to specify a comma-separated list of report IDs along with exportstats or exportstatshtml to list the reports that you want to export in place of the default reports, or the reports selected under Preferences. To view this setting, navigate to Window > Preferences > Test > Performance Test Reports > Export Reports.To copy the report IDs list into your command line, navigate to Window > Preferences > Test > Performance Test Reports > Export Reports. UnderSelect reports to export, select the required reports, and click Copy ID to clipboard",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "exportstatshtml",
+            "type": "string",
+            "label": "Export stats html",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option if you want to export web analytic results only. The results are exported in the specified directory. You can then analyze the results on a web browser without using the test workbench.",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "usercomments",
+            "type": "string",
+            "label": "User Comments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Add text within double quotation mark to display it in the User Comments row of the report",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "protocolinput",
+            "type": "string",
+            "label": "Protocol Input",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this parameter to run a Web UI test in parallel on different browsers, for example - all.available.targets.in.parallel=chrome,ff,ie",
+            "visibleRule": "selectedOption = webui"
+        },
+		{
+            "name": "exportreport",
+            "type": "string",
+            "label": "Export Report",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this option to export the unified report that is generated for UI tests to any of the formats - PDF, XML or HTML. For example, type=unified;format=pdf;folder=path;filename=testreport",
+            "visibleRule": "selectedOption = webui"
+        }
+		
+		
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
