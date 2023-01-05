@@ -1,0 +1,88 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "FB692F50-03A7-44CF-9110-2A943AFEB976",
+  "name": "InstallMSITask",
+  "friendlyName": "Install MSI",
+  "description": "Installs an msi on the local machine",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "MachineGroup"
+  ],
+  "demands": [],
+  "author": "POFerro",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 20
+  },
+  "instanceNameFormat": "Install $(msiFilePath)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "msiFilePath",
+      "type": "string",
+      "label": "MSI File Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the MSI file to install (ex: $(System.DefaultWorkingDirectory)/$(Build.DefinitionName)/drop/MyProductInstaller.msi)"
+    },
+    {
+      "name": "msiProperties",
+      "type": "string",
+      "label": "MSI Properties",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "MSI properties sent as command line (ex: INSTALLFOLDER=\"c:\\Program Files\\MyProduct\" MYPROPERTY=value)"
+    },
+    {
+      "name": "logFilePath",
+      "type": "filePath",
+      "label": "Log File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Log file to be written by installation (ex: \"c:\\logs\\msi.log\")",
+      "groupName": "advanced"
+    },
+    {
+      "name": "logLevel",
+      "type": "pickList",
+      "label": "Log Level",
+      "defaultValue": "0",
+      "required": false,
+      "options": {
+        "0": "None",
+        "1": "FatalExit",
+        "2": "Error",
+        "4": "Warning",
+        "8": "User",
+        "16": "Info",
+        "4096": "Verbose",
+        "8192": "ExtraDebug"
+      },
+      "helpMarkDown": "Detail level of written log file",
+      "groupName": "advanced"
+    }
+
+
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "installmsi.ps1",
+      "platforms": [
+        "windows"
+      ],
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
