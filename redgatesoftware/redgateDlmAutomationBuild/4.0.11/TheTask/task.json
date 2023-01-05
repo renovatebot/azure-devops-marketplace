@@ -1,0 +1,841 @@
+{
+  "id": "7345FE1B-D099-46F0-A0D1-7292CD17FEEE",
+  "name": "RedgateSqlChangeAutomationBuild",
+  "friendlyName": "Redgate SQL Change Automation: Build",
+  "description": "Build and test databases with Redgate SQL Change Automation",
+  "helpMarkDown": "[More Information](https://www.red-gate.com/sca/ps/help)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Redgate Software",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "moduleVersionGroup",
+      "displayName": "SQL Change Automation version",
+      "isExpanded": false
+    },
+    {
+      "name": "nuGetPackageVersionGroup",
+      "displayName": "NuGet package version",
+      "isExpanded": false,
+      "visibleRule": "operation != Test SQL Change Automation Project && operation != Run tSQLt tests"
+    },
+    {
+      "name": "proxyConfigurationGroup",
+      "displayName": "Proxy configuration",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "operation",
+      "type": "pickList",
+      "label": "Operation",
+      "defaultValue": "Build SQL Change Automation Project",
+      "required": true,
+      "options": {
+        "Build SQL Change Automation Project": "Build a SQL Change Automation project",
+        "Build": "Build a SQL Source Control project",
+        "Test SQL Change Automation Project": "Test a SQL Change Automation project using tSQLt tests",
+        "Test": "Test a build artifact from a SQL Source Control project using tSQLt tests",
+        "Run tSQLt tests": "Run tSQLt tests in an existing database",
+        "Publish": "Publish a build artifact to a NuGet feed",
+        "Sync": "Sync a build artifact from a SQL Source Control project to a target database"
+      },
+      "helpMarkDown": "Specify the SQL Change Automation operation you want to perform. Build, test, publish or sync."
+    },
+    {
+      "name": "sqlProj",
+      "type": "filePath",
+      "label": "SQL Change Automation project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown":
+        "Specify the location of the source-controlled SQL Change Automation project file (.sqlproj) you want to build.",
+      "visibleRule": "operation = Build SQL Change Automation Project || operation = Test SQL Change Automation Project"
+    },
+    {
+      "name": "dbFolder",
+      "type": "pickList",
+      "label": "Database folder",
+      "defaultValue": "SubFolder",
+      "required": true,
+      "options": {
+        "RootFolder": "Database scripts folder is in VCS root",
+        "SubFolder": "Database scripts folder is a sub-folder of the VCS root"
+      },
+      "helpMarkDown": "Specify the location of the source-controlled database you want to build.",
+      "visibleRule": "operation = Build"
+    },
+    {
+      "name": "subFolderPath",
+      "type": "filePath",
+      "label": "Subfolder Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the path to your source-controlled database.",
+      "visibleRule": "dbFolder = SubFolder"
+    },
+    {
+      "name": "packageName",
+      "type": "string",
+      "label": "Output NuGet package ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "A name for the NuGet package you want to build.",
+      "visibleRule": "operation = Build || operation = Build SQL Change Automation Project"
+    },
+    {
+      "name": "tempServerTypeBuild",
+      "type": "pickList",
+      "label": "Temporary server type",
+      "defaultValue": "localDB",
+      "required": true,
+      "options": {
+        "localDB": "SQL LocalDB (recommended)",
+        "sqlServer": "SQL Server"
+      },
+      "helpMarkDown":
+        "During the build step, SQL Change Automation builds a copy of your database on a temporary server. By default, it uses LocalDB for this. If your database uses features that are not supported by LocalDB, such as Full-Text Search, you can use a temporary SQL Server database.",
+      "visibleRule": "operation = Build || operation = Build SQL Change Automation Project"
+    },
+    {
+      "name": "tempServerNameBuild",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerTypeBuild = sqlServer"
+    },
+    {
+      "name": "tempDatabaseNameBuild",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "tempServerTypeBuild = sqlServer",
+      "helpMarkDown": "Specify an existing database if you wish to use the same database for each build."
+    },
+    {
+      "name": "tempTrustServerCertificateBuild",
+      "type": "boolean",
+      "label": "Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation.",
+      "visibleRule": "tempServerTypeBuild = sqlServer"
+    },
+    {
+      "name": "tempEncryptBuild",
+      "type": "boolean",
+      "label": "Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed.",
+      "visibleRule": "tempServerTypeBuild = sqlServer"
+    },
+    {
+      "name": "authMethodBuild",
+      "type": "pickList",
+      "label": "Authentication method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication",
+        "sqlServerAuth": "SQL Server authentication",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication"
+      },
+      "visibleRule": "tempServerTypeBuild = sqlServer"
+    },
+    {
+      "name": "usernameBuild",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerTypeBuild = sqlServer && authMethodBuild != windowsAuth"
+    },
+    {
+      "name": "passwordBuild",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerTypeBuild = sqlServer && authMethodBuild != windowsAuth",
+      "helpMarkDown": "Password should reference a secret variable defined on the Variables tab"
+    },
+    {
+      "name": "buildAdvanced",
+      "type": "boolean",
+      "label": "Show advanced options",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "operation = Build"
+    },
+    {
+      "name": "useDlmDashboard",
+      "type": "boolean",
+      "label": "DLM Dashboard integration",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown":
+        "Send schema information to DLM Dashboard. When the package is built, SQL Change Automation sends schema information, as well as the package ID and package version to DLM Dashboard so any subsequent deployments can be recognised.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "DlmDashboardHost",
+      "type": "string",
+      "label": "DLM Dashboard host",
+      "defaultValue": "localhost",
+      "required": true,
+      "visibleRule": "useDlmDashboard = true",
+      "helpMarkDown": "The hostname of your DLM Dashboard installation."
+    },
+    {
+      "name": "DlmDashboardPort",
+      "type": "string",
+      "label": "DLM Dashboard port",
+      "defaultValue": "19528",
+      "required": true,
+      "visibleRule": "useDlmDashboard = true"
+    },
+    {
+      "name": "publishArtifact",
+      "type": "boolean",
+      "label": "Publish Artifact",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Publish the output NuGet package as a build artifact.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "publishSqlChangeAutomationArtifact",
+      "type": "boolean",
+      "label": "Publish Artifact",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Publish the output NuGet package as a build artifact.",
+      "visibleRule": "operation = Build SQL Change Automation Project"
+    },
+    {
+      "name": "filterPathBuild",
+      "type": "string",
+      "label": "Filter path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The path to a .scpf filter file. Overrides any existing Filter.scpf file present in the source control repository, and is used when validating the schema. Filter files can be generated by SQL Source Control and SQL Compare.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "compareOptionsBuild",
+      "type": "string",
+      "label": "SQL Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "dataCompareOptionsBuild",
+      "type": "string",
+      "label": "SQL Data Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Data Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "transactionIsolationLevelBuild",
+      "type": "pickList",
+      "label": "Transaction isolation level",
+      "defaultValue": "serializable",
+      "required": true,
+      "options": {
+        "serializable": "Serializable",
+        "snapshot": "Snapshot",
+        "repeatableRead": "Repeatable Read",
+        "readCommitted": "Read Committed",
+        "readUncommitted": "Read Uncommitted"
+      },
+      "helpMarkDown":
+        "Transaction isolation level. The isolation level for the transactions during the build operation. Set this to Read Committed or lower if you are experiencing difficulties with linked servers.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "queryBatchTimeoutBuild",
+      "type": "string",
+      "label": "Query batch timeout (in seconds)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The execution timeout in seconds, for each batch of queries. The default value is 30 seconds. A value of zero indicates no execution timeout.",
+      "visibleRule": "buildAdvanced = true"
+    },
+    {
+      "name": "useSqlDoc",
+      "type": "boolean",
+      "label": "Use Redgate Sql Doc",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "buildAdvanced = true || operation = Build SQL Change Automation Project",
+      "helpMarkDown": "Select this option if you want SQL Doc to generate documentation to include in your project."
+    },
+    {
+      "name": "packageId",
+      "type": "string",
+      "label": "NuGet package ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the package you want to test, this should be the same as your build step.",
+      "visibleRule": "operation = Test"
+    },
+    {
+      "name": "testDatabaseAuthMethod",
+      "type": "pickList",
+      "label": "Authentication Method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication",
+        "sqlServerAuth": "SQL Server authentication",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication"
+      },
+      "visibleRule": "operation = Run tSQLt tests"
+    },
+    {
+      "name": "testDatabaseServerName",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Run tSQLt tests"
+    },
+    {
+      "name": "testDatabaseName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Run tSQLt tests",
+      "helpMarkDown": "Specify an existing database with tSQLt tests."
+    },
+    {
+      "name": "testTrustServerCertificate",
+      "type": "boolean",
+      "label": "Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed.",
+      "visibleRule": "operation = Run tSQLt tests"
+    },
+    {
+      "name": "testEncrypt",
+      "type": "boolean",
+      "label": "Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation.",
+      "visibleRule": "operation = Run tSQLt tests"
+    },
+    {
+      "name": "testDatabaseUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Run tSQLt tests && testDatabaseAuthMethod != windowsAuth"
+    },
+    {
+      "name": "testDatabasePassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Run tSQLt tests && testDatabaseAuthMethod != windowsAuth",
+      "helpMarkDown": "Password should reference a secret variable defined on the Variables tab"
+    },
+    {
+      "name": "tempServerType",
+      "type": "pickList",
+      "label": "Temporary server type",
+      "defaultValue": "localDB",
+      "required": true,
+      "options": {
+        "localDB": "SQL LocalDB (recommended)",
+        "sqlServer": "SQL Server"
+      },
+      "helpMarkDown":
+        "During the test step, SQL Change Automation creates a copy of your database on a temporary server. By default, it uses LocalDB for this. If your database uses features that are not supported by LocalDB, such as Full-Text Search, you can use a temporary SQL Server database.",
+      "visibleRule": "operation = Test || operation = Test SQL Change Automation Project"
+    },
+    {
+      "name": "tempServerName",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerType = sqlServer"
+    },
+    {
+      "name": "tempDatabaseName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "tempServerType = sqlServer",
+      "helpMarkDown": "Specify an existing database if you wish to use the same database for each test step."
+    },
+    {
+      "name": "tempTrustServerCertificate",
+      "type": "boolean",
+      "label": "Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "tempServerType = sqlServer",
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed."
+    },
+    {
+      "name": "tempEncrypt",
+      "type": "boolean",
+      "label": "Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "tempServerType = sqlServer",
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation."
+    },
+    {
+      "name": "authMethod",
+      "type": "pickList",
+      "label": "Authentication Method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication",
+        "sqlServerAuth": "SQL Server authentication",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication"
+      },
+      "visibleRule": "tempServerType = sqlServer"
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerType = sqlServer && authMethod != windowsAuth"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "tempServerType = sqlServer && authMethod != windowsAuth",
+      "helpMarkDown": "Password should reference a secret variable defined on the Variables tab."
+    },
+    {
+      "name": "testAdvanced",
+      "type": "boolean",
+      "label": "Show advanced options",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "operation = Test || operation = Test SQL Change Automation Project || operation = Run tSQLt tests"
+    },
+    {
+      "name": "runOnly",
+      "type": "string",
+      "label": "Run only specified class/test",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Enter a single test or test class enclosed in square brackets, for example [testclass].[testname]",
+      "visibleRule": "testAdvanced = true"
+    },
+    {
+      "name": "useSqlDataGenerator",
+      "type": "boolean",
+      "label": "Use Redgate Sql Data Generator",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "testAdvanced = true",
+      "helpMarkDown":
+        "Select this option if you want SQL Data Generator to populate your temporary database with test data. Use of SQL Data Generator is not available on hosted build agents."
+    },
+    {
+      "name": "excludeEnviromentVariables",
+      "type": "string",
+      "label": "Exclude enviroment variables",
+      "defaultValue": "AGENT_*;BUILD_*;SYSTEM_*",
+      "helpMarkDown":
+        "We are converting enviroment variables to sqlCmd parameters for InvokeDatabaseBuild commandlet, please exclude enviroment variables, which you do not want be converted to sqlCmd parameters. You can define many enviroment variables to exclude separated with semicolon, use wildcards is allowed. For example: AGENT_*;TEMP;BUILD_* ",
+      "required": false,
+      "visibleRule": "operation = Build SQL Change Automation Project || operation = Build"
+    },
+    {
+      "name": "autoSqlDataGenerator",
+      "type": "pickList",
+      "label": "Generate data",
+      "defaultValue": "autoDataGenerator",
+      "required": true,
+      "options": {
+        "autoDataGenerator": "Generate data using SQL Data Generator defaults",
+        "dataGeneratorFile": "Generate data using an existing SQL Data Generator project file"
+      },
+      "visibleRule": "useSqlDataGenerator = true",
+      "helpMarkDown":
+        "Choose whether to specify a project file to generate data, or use the SQL Data Generator defaults. By default, SQL Data Generator will automatically generate 1000 rows of test data per table, generated intelligently based on a column's datatype, name and any keys."
+    },
+    {
+      "name": "sqlDataGeneratorFile",
+      "type": "filePath",
+      "label": "SQL Data Generator project file",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "autoSqlDataGenerator = dataGeneratorFile",
+      "helpMarkDown":
+        "If you already have a SQL Data Generator project file you wish you use, include the path and filename here."
+    },
+    {
+      "name": "publishTestResults",
+      "type": "boolean",
+      "label": "Publish test results",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Display the test results in the build summary.",
+      "visibleRule": "testAdvanced = true"
+    },
+    {
+      "name": "testResultsFileName",
+      "type": "string",
+      "label": "Test results file name",
+      "defaultValue": "TestResults",
+      "required": false,
+      "helpMarkDown":
+        "The file name to be used for the test results file. There is no need to include a file extension.",
+      "visibleRule": "publishTestResults = true"
+    },
+    {
+      "name": "filterPathTest",
+      "type": "string",
+      "label": "Filter path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The path to a .scpf filter file. Overrides any existing Filter.scpf file present in the source control repository, and is used when building the schema for testing. Filter files can be generated by SQL Source Control and SQL Compare.",
+      "visibleRule": "testAdvanced = true && operation = Test"
+    },
+    {
+      "name": "compareOptionsTest",
+      "type": "string",
+      "label": "SQL Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "testAdvanced = true && operation = Test"
+    },
+    {
+      "name": "dataCompareOptionsTest",
+      "type": "string",
+      "label": "SQL Data Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Data Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "testAdvanced = true && operation = Test"
+    },
+    {
+      "name": "queryBatchTimeoutTest",
+      "type": "string",
+      "label": "Query batch timeout (in seconds)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The execution timeout in seconds, for each batch of queries. The default value is 30 seconds. A value of zero indicates no execution timeout.",
+      "visibleRule": "testAdvanced = true"
+    },
+    {
+      "name": "packageIdPublish",
+      "type": "string",
+      "label": "NuGet package ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the package you want to publish, this should be the same as your build step.",
+      "visibleRule": "operation = Publish"
+    },
+    {
+      "name": "nugetFeedUrl",
+      "type": "string",
+      "label": "NuGet feed URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The fully-qualified URL for your NuGet feed.",
+      "visibleRule": "operation = Publish"
+    },
+    {
+      "name": "nugetFeedApiKey",
+      "type": "string",
+      "label": "NuGet feed API key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If you're using a private NuGet feed, enter an API key to access the NuGet feed.",
+      "visibleRule": "operation = Publish"
+    },
+    {
+      "name": "packageIdSync",
+      "type": "string",
+      "label": "NuGet package ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown":
+        "Enter the name of the package you want to use to update the target database. It must be a package built by SQL Change Automation and should be the same as your build step.",
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "targetServerName",
+      "type": "string",
+      "label": "Server",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "targetDatabaseName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "targetTrustServerCertificate",
+      "type": "boolean",
+      "label": "Trust Server Certificate",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether SSL encryption is used by SQL Server when a certificate is installed.",
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "targetEncrypt",
+      "type": "boolean",
+      "label": "Encrypt",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify whether to force SQL Server to skip certificate validation.",
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "authMethodSync",
+      "type": "pickList",
+      "label": "Authentication Method",
+      "defaultValue": "windowsAuth",
+      "required": true,
+      "options": {
+        "windowsAuth": "Windows authentication",
+        "sqlServerAuth": "SQL Server authentication",
+        "azureActiveDirectoryPassword": "Azure Active Directory password authentication"
+      },
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "usernameSync",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Sync && authMethodSync != windowsAuth"
+    },
+    {
+      "name": "passwordSync",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "operation = Sync && authMethodSync != windowsAuth",
+      "helpMarkDown": "Password should reference a secret variable defined on the Variables tab."
+    },
+    {
+      "name": "syncAdvanced",
+      "type": "boolean",
+      "label": "Show advanced options",
+      "defaultValue": "false",
+      "required": false,
+      "visibleRule": "operation = Sync"
+    },
+    {
+      "name": "filterPathSync",
+      "type": "string",
+      "label": "Filter path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The path to a .scpf filter file. Overrides any existing Filter.scpf file present in the source control repository, and is used when comparing and updating the target database. Filter files can be generated by SQL Source Control and SQL Compare.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "compareOptionsSync",
+      "type": "string",
+      "label": "SQL Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "dataCompareOptionsSync",
+      "type": "string",
+      "label": "SQL Data Compare options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Specify additional SQL Data Compare options, or remove default options. Comma separated list, prefix a default option with - to remove it.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "scriptFileSync",
+      "type": "string",
+      "label": "Script file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Write the update SQL to a file and upload it as an artifact. If you supply this optional argument, when the target is updated, the update SQL written is also written to the specified file.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "abortOnWarningsSync",
+      "type": "pickList",
+      "label": "Abort on warnings",
+      "defaultValue": "none",
+      "required": true,
+      "options": {
+        "none": "None",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low",
+        "information": "Information"
+      },
+      "helpMarkDown":
+        "If there are deployment warnings at this level or higher, the target database will not be modified. The default value of 'None' means that warnings will be ignored.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "transactionIsolationLevelSync",
+      "type": "pickList",
+      "label": "Transaction isolation level",
+      "defaultValue": "serializable",
+      "required": true,
+      "options": {
+        "serializable": "Serializable",
+        "snapshot": "Snapshot",
+        "repeatableRead": "Repeatable Read",
+        "readCommitted": "Read Committed",
+        "readUncommitted": "Read Uncommitted"
+      },
+      "helpMarkDown":
+        "Specify the Transaction Isolation Level to be used for the transactions during the sync operation. Set this to Read Committed or lower if you are experiencing difficulties with linked servers.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "queryBatchTimeoutSync",
+      "type": "string",
+      "label": "Query batch timeout (in seconds)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "The execution timeout in seconds, for each batch of queries in the update script. The default value is 30 seconds. A value of zero indicates no execution timeout.",
+      "visibleRule": "syncAdvanced = true"
+    },
+    {
+      "name": "nugetPackageVersionSelector",
+      "type": "pickList",
+      "label": "NuGet package version",
+      "defaultValue": "Specific",
+      "required": true,
+      "options": {
+        "Specific": "Specify the NuGet package version",
+        "BuildNumber": "Use the full build number as the NuGet package version"
+      },
+      "groupName": "nuGetPackageVersionGroup",
+      "helpMarkDown":
+        "Specify the version number for each NuGet package, or use the full Build Number used in this Build Definition. This should be consistent across all SQL Change Automation build tasks."
+    },
+    {
+      "name": "nugetPackageVersion",
+      "type": "string",
+      "label": "NuGet package version",
+      "defaultValue": "1.0",
+      "required": true,
+      "helpMarkDown":
+        "The version number in the NuGet package name. This should be consistent across all SQL Change Automation build tasks. For example: 2.1.",
+      "groupName": "nuGetPackageVersionGroup",
+      "visibleRule": "nugetPackageVersionSelector = Specific"
+    },
+    {
+      "name": "nugetPackageVersionUseBuildId",
+      "type": "boolean",
+      "label": "Append BuildId to the NuGet package version",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown":
+        "Make the package version unique for each build by appending the BuildID to the NuGet package version",
+      "groupName": "nuGetPackageVersionGroup",
+      "visibleRule": "nugetPackageVersionSelector = Specific"
+    },
+    {
+      "name": "requiredVersionOfDlma",
+      "type": "radio",
+      "label": "Required version of SQL Change Automation",
+      "required": true,
+      "helpMarkDown":
+        "By default the latest version of SQL Change Automation will be used. If you want to use a specific version you can specify it here.",
+      "defaultValue": "latest",
+      "groupName": "moduleVersionGroup",
+      "options": {
+        "latest": "Latest",
+        "latestInstalled": "Latest installed",
+        "specific": "Specific"
+      }
+    },
+    {
+      "name": "requiredVersion",
+      "type": "string",
+      "label": "Specific version of SQL Change Automation to be used",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "requiredVersionOfDlma = specific",
+      "groupName": "moduleVersionGroup"
+    },
+    {
+      "name": "ProxyUrl",
+      "type": "string",
+      "label": "Proxy URL",
+      "defaultValue": "",
+      "helpMarkDown":
+        "By default, no proxy is used when connecting to Powershell Gallery. Alternatively, a proxy URL can be specified here that can be used for Powershell Gallery.",
+      "required": false,
+      "groupName": "proxyConfigurationGroup"
+    }
+  ],
+  "instanceNameFormat": "$(operation) $(packageName)$(packageId)$(packageIdPublish)$(packageIdSync)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\SqlChangeAutomationBuild.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
