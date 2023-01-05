@@ -1,0 +1,97 @@
+{
+    "id": "11f18d28-72b3-41e0-a85b-291e2739752c",
+    "name": "CosmosDbThroughputScalerExtension",
+    "friendlyName": "Cosmos DB Throughput Scaler",
+    "description": "Scale Cosmos DB version 1.0.0",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=williamoconnor.CosmosDbThroughputScalerExtension)",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "William O'Connor",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [ "PowerShell" ],
+    "instanceNameFormat": "Scale Cosmos DB throughput for $(cosmosDbAccountName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager connection to use when authenticating to Azure",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group where the Cosmos DB instance is located",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The resource group in which the Cosmos DB account is."
+        },
+        {
+            "name": "cosmosDbAccountName",
+            "type": "pickList",
+            "label": "Account name for the Cosmos DB instance",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Cosmos DB account name (the server name without \"documents.azure.com\")"
+        },
+        {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Name of database / collection",
+            "required": "true",
+            "helpMarkDown": "Enter the name of the database or collection you want to scale"
+        },
+        {
+            "name": "throughputScaleInt",
+            "type": "int",
+            "label": "Throughput (RU's)",
+            "required": "true",
+            "defaultValue": 400,
+            "helpMarkDown": "Enter RU throughput that will be set on the database"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "cosmosDbAccountName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(ResourceGroupName)/providers/Microsoft.DocumentDB/databaseAccounts/?api-version=2015-04-08",
+            "resultSelector": "jsonpath:$.value[*].name"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "CosmosDbThroughputScalerExtension.ps1"
+        }
+    }
+}
