@@ -1,0 +1,100 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "c2399c77-038c-48ca-86cf-f46ef717596e",
+    "name": "PsiTransferBuildArtifact",
+    "friendlyName": "Publish Build Artifact to psiTransfer",
+    "description": "Publishes an build artifact to an psiShare endpoint",
+    "helpMarkDown": "Uploads/Publishes an build artifact to a [psiShare](https://github.com/psi-4ward/psitransfer) host.",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "evy Solutions GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "",
+    "inputs": [
+        {
+            "name": "endpoint",
+            "type": "string",
+            "label": "Endpoint URI",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Endpoint URI for psiTransfer host"
+        },
+        {
+            "name": "pathToPublish",
+            "type": "string",
+            "label": "File Path to Publish",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "File or Directory Path to Publish"
+        },
+        {
+            "name": "withPathPhrase",
+            "type": "boolean",
+            "label": "Enable Password Protection",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Switch to control if the artifact should be protected by an automatically generated passphrase"
+        },
+        {
+            "name": "exportsUploadUriTo",
+            "type": "string",
+            "label": "Name of the build variable provided psiTransfer URI should be stored in",
+            "defaultValue": "PsiTransferUri",
+            "required": false,
+            "helpMarkDown": "Name of the build variable the generated upload uri should be exported to"
+        },
+        {
+            "name": "exportsPassphraseTo",
+            "type": "string",
+            "label": "Name of the build variable provided passphrase should be stored in",
+            "defaultValue": "PsiTransferPassphrase",
+            "required": false,
+            "helpMarkDown": "Name of the secured build variable the generated passphrase should be exported to"
+        },
+        {
+            "name": "exportsProtectedUploadUriTo",
+            "type": "string",
+            "label": "Name of the build variable provided protected psiTransfer URI should be stored in",
+            "defaultValue": "PsiProtectedTransferUri",
+            "required": false,
+            "helpMarkDown": "Name of the build variable the generated password protected upload uri should be exported to"
+        },
+        {
+            "name": "retention",
+            "type": "string",
+            "label": "Keep at least for",
+            "defaultValue": "2w",
+            "required": false,
+            "helpMarkDown": "Duration which indicates who long the published artifact(s) should been kept on the endpoint/psiShare host. Uses [parse-duration](https://www.npmjs.com/package/parse-duration) to parse this input."
+        },
+        {
+            "name": "passphraseLength",
+            "type": "int",
+            "label": "Lenght of generated passphrase",
+            "defaultValue": "32",
+            "required": false,
+            "helpMarkDown": "Indicates the lenght of the generated passphrase. Please consider that size does matter in this case."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "psiTransferArtifact.js"
+        }
+    },
+    "messages": {
+        "PsiTransferArtifactSucceeded": "Published %s artifact(s) to %s",
+        "PsiTransferArtifactMissingInputVariable": "Invalid input received. Missing %s.",
+        "PsiTransferArtifactFailed": "Failed to publish %s to %s. Cause: %s",
+        "PsiTransferArtifactFilePathRequired": "%s is not a valid file path. Only full file path can be published."
+    }
+}
