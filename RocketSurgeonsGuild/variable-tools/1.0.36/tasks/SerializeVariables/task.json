@@ -1,0 +1,66 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/vsts-task-lib/master/tasks.schema.json",
+    "id": "05758a2d-f7ba-4d75-ae4e-bee2e06fa88a",
+    "name": "SerializeVariables",
+    "friendlyName": "Serialize Variables",
+    "description": "Serialize variables with the given prefixes",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": ["Build"],
+    "author": "David Driscoll",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 36
+    },
+    "instanceNameFormat": "Serialize Variables: $(prefixes)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "filename",
+            "type": "filePath",
+            "label": "Filename",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)/meta.json",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "The file path to save the variables too"
+        },
+        {
+            "name": "publishArtifact",
+            "type": "boolean",
+            "label": "Publish Artifact",
+            "defaultValue": "false",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Publish the artifact to the build artifacts."
+        },
+        {
+            "name": "artifactName",
+            "type": "string",
+            "label": "Artifact Name",
+            "defaultValue": "variables-{prefixes}",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "The artifact name. Use `{prefixes}` to be replaced with the prefixes that are being serialized.  (only used it publishing artifacts is turned on)"
+        },
+        {
+            "name": "prefixes",
+            "type": "string",
+            "label": "Prefixes",
+            "defaultValue": "GITVERSION,BUILD",
+            "required": true,
+            "helpMarkDown": "the prefixes to export"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}
