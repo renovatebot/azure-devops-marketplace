@@ -90,7 +90,8 @@ foreach ($extension in $extensions)
 {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
-    
+    $shouldCommit = $false
+
     mkdir -path "$publisherId/$extensionId/" -Force | out-null
 
     $extensionDataFile = "$publisherId/$extensionId/extension.json"
@@ -108,6 +109,7 @@ foreach ($extension in $extensions)
     {
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
+        $shouldCommit = $true
     }
     
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 } )
@@ -122,13 +124,17 @@ foreach ($extension in $extensions)
                 $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
+                $shouldCommit = $true
             }finally{
                 Remove-Item $savepath
             }
         }
     }
 
-    commit-changes -message "Update $publisherId/$extensionId"
+    if ($shouldCommit)
+    {
+        commit-changes -message "Update $publisherId/$extensionId"
+    }
     write-host "##### COUNT: $count / $max "
     $count += 1
 }
