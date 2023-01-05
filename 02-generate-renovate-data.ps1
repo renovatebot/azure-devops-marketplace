@@ -6,7 +6,8 @@ function add-version
         $name,
         $version
     )
-
+    $name = $name.ToLowerInvariant()
+    
     if (-not $renovateData."$name")
     {
         $renovateData."$name" = [string[]]@()
