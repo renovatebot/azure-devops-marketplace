@@ -1,0 +1,167 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "azureml-mms-artifact-type",
+            "description": "Azure Machine Learning Model Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "AzureMLMMS",
+                "displayName": "AzureML Model Artifact",
+                "endpointTypeId": "AzureRM",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}",
+                "artifactType": "Build",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service Endpoint",
+                        "description": "Service Endpoint Id",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "properties": {
+                            "EndpointFilterRule": "ScopeLevel == AzureMLWorkspace"
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Model Names",
+                        "description": "Name(s) of the Model(s), separated by coma",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest version for the specified models"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "ModelVersion",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "ModelVersion",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{name}}}:{{{version}}}\", DisplayValue : \"{{{name}}}:{{{version}}}\", data: { itemType: \"file\" } }"
+                    },
+                    {
+                        "target": "createwebhook",
+                        "dataSourceName": "CreateWebhook"
+                    },
+                    {
+                        "target": "deletewebhook",
+                        "dataSourceName": "DeleteWebhook"
+                    },
+                    {
+                        "target": "listwebhook",
+                        "dataSourceName": "ListWebhook"
+                    },
+                    {
+                        "target": "linkwebhook",
+                        "dataSourceName": "LinkWebhook"
+                    },
+                    {
+                        "target": "unlinkwebhook",
+                        "dataSourceName": "UnlinkWebhook"
+                    }
+                ],
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": true,
+                    "isTriggerSupportedOnlyInHosted": false,
+                    "isWebhookSupportedAtServerLevel": false,
+                    "resources": {
+                        "TriggerDisabledMessage": "Enabling the trigger will create a new release every time a new AzureML model is registered"
+                    },
+                    "webhookPayloadMapping": {
+                        "version": "{{EntityVersion}}",
+                        "definition": "{{EntityName}}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "azureml-model-deploy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLModelDeploy"
+            }
+        },
+        {
+            "id": "azureml-model-profile-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLProfileModel"
+            }
+        },
+        {
+            "id": "azureml-restApi-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/MLRESTAPITask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

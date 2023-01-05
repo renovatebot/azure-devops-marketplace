@@ -1,0 +1,142 @@
+{
+    "id": "fc69b969-74e9-4cc1-8aef-f11f6f2fb783",
+    "name": "AMLModelProfile",
+    "friendlyName": "AzureML Model Profile",
+    "description": "AzureML Model Profiling to get optimal approximate value for CPU and memory reuired by container.",
+    "helpUrl": "https://somelink.microsoft.com/",
+    "helpMarkDown": "https://somelink.microsoft.com/",
+    "category": "Deploy",
+    "releaseNotes": "Works with cross-platform agents (Linux, macOS, or Windows)",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "ms-air-aiagility",
+    "version": {
+        "Major": 0,
+        "Minor": 8,
+        "Patch": 29
+    },
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:azuremlws",
+            "label": "AML Workspace",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Machine Learning Workspace"
+        },
+        {
+            "name": "modelSourceType",
+            "type": "radio",
+            "label": "Model Source",
+            "required": true,
+            "defaultValue": "modelArtifact",
+            "helpMarkDown": "Model Source type: Model Artifact or Manual Specify",
+            "options": {
+                "modelArtifact": "Model Artifact",
+                "manualSpec": "Manual Specify"
+            }
+        },
+        {
+            "name": "modelName",
+            "type": "pickList",
+            "label": "Model Name",
+            "visibleRule": "modelSourceType = manualSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Model name to be deployed."
+        },
+        {
+            "name": "modelVersion",
+            "type": "pickList",
+            "label": "Model Version",
+            "visibleRule": "modelSourceType = manualSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Model version to be deployed."
+        }, 
+        {
+            "name": "modelProfileName",
+            "type": "string",
+            "label": "Profile name for model.",
+            "defaultValue": "testmodel",
+            "required": false,
+            "helpMarkDown": "Profile name for model.",
+            "options": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "modelConfigFilePath",
+            "type": "filePath",
+            "label": "Model Configuration File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Fully qualified path to YAML file for model configuration."
+        },
+        {
+            "name": "inputData",
+            "type": "radio",
+            "label": "Input Data",
+            "required": true,
+            "defaultValue": "filePath",
+            "helpMarkDown": "Input JSON data for profiling image.",
+            "options": {
+                "filePath": "File path",
+                "inline": "Inline"
+            }
+        },
+        {
+            "name": "testInputDataPath",
+            "type": "filePath",
+            "label": "Input Data Path",
+            "visibleRule": "inputData = filePath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the input JSON file. Must be a fully qualified path or relative to `$(System.DefaultWorkingDirectory)`."
+        },
+        {
+            "name": "jsonData",
+            "type": "multiLine",
+            "label": "JSON Data",
+            "visibleRule": "inputData = inline",
+            "required": true,
+            "defaultValue": "",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },
+            "helpMarkDown": "JSON for profiling image."
+        }        
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "modelName",
+            "endpointId": "$(connectedServiceName)",
+            "dataSourceName": "Models",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "modelVersion",
+            "endpointId": "$(connectedServiceName)",
+            "dataSourceName": "Models",
+            "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }"
+        }
+    ],
+    "instanceNameFormat": "AML Profile Model: $(serviceNamePrefix)",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "AmlCliNotAvailable": "AzureML CLI is not available",
+        "InvalidWorkspace": "Invalid AML workspace name: %s",
+        "ErrorInSettingUpSubscription": "Failed to set default subscription"
+    }
+}

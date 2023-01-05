@@ -1,0 +1,124 @@
+{
+    "id": "D9237456-3431-4C1D-B7BF-D6B937425F0F",
+    "name": "AMLModelDeploy",
+    "friendlyName": "AML Model Deploy",
+    "description": "AzureML Deploy Model",
+    "helpUrl": "https://go.microsoft.com/fwlink/?linkid=848891",
+    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?linkid=848891)",
+    "category": "Deploy",
+    "releaseNotes": "Works with cross-platform agents (Linux, macOS, or Windows)",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "ms-air-aiagility",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 123
+    },
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:azuremlws",
+            "label": "AML Workspace",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Machine Learning Workspace"
+        },
+        {
+            "name": "modelSourceType",
+            "type": "radio",
+            "label": "Model Source",
+            "required": true,
+            "defaultValue": "modelArtifact",
+            "helpMarkDown": "Model Source type: Model Artifact or Manual Specify",
+            "options": {
+                "modelArtifact": "Model Artifact",
+                "manualSpec": "Manual Specify"
+            }
+        },
+        {
+            "name": "modelArtifactItem",
+            "type": "filePath",
+            "label": "Model Artifact Item",
+            "visibleRule": "modelSourceType = modelArtifact",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Model Artifact Item"
+        },
+        {
+            "name": "modelName",
+            "type": "pickList",
+            "label": "Model Name",
+            "visibleRule": "modelSourceType = manualSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Model name to be deployed."
+        },
+        {
+            "name": "modelVersion",
+            "type": "pickList",
+            "label": "Model Version",
+            "visibleRule": "modelSourceType = manualSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Model version to be deployed."
+        }, 
+        {
+            "name": "scoreScriptPath",
+            "type": "filePath",
+            "label": "Execution Script Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Fully qualified path of execution script for model deployment"
+        },        
+        {
+            "name": "condaEnvPath",
+            "type": "filePath",
+            "label": "Conda Environment Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Fully qualified path of conda environment for model deployment"
+        },
+        {
+            "name": "serviceNamePrefix",
+            "type": "string",
+            "label": "Service Name Prefix",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Prefix of the deployed service name.",
+            "options": {
+                "EditableOptions": "True"
+            }
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "modelName",
+            "endpointId": "$(connectedServiceName)",
+            "dataSourceName": "Models",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "modelVersion",
+            "endpointId": "$(connectedServiceName)",
+            "dataSourceName": "Models",
+            "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }"
+        }
+    ],
+    "instanceNameFormat": "AML Model Deploy: $(serviceNamePrefix)",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "AmlCliNotAvailable": "AzureML CLI is not available",
+        "InvalidWorkspace": "Invalid AML workspace name: %s",
+        "ErrorInSettingUpSubscription": "Failed to set default subscription"
+    }
+}
