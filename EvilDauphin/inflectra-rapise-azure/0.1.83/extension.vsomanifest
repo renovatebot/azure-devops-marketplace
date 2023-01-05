@@ -1,0 +1,96 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/inflectra/"
+    },
+    "contributions": [
+        {
+            "id": "spira-service-endpoint",
+            "description": "Service endpoint type for Spira connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "spira",
+                "displayName": "Spira server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the Spira server to connect to.",
+                    "defaultValue": "https://companyname.spiraservice.net/",
+                    "isVisible": "true"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}Services/v5_0/RestService.svc/projects",
+                        "resultSelector": "jsonpath:$[0].Name"
+                    },
+                    {
+                        "name": "Spira Projects",
+                        "endpointUrl": "{{endpoint.url}}Services/v5_0/RestService.svc/projects",
+                        "resultSelector": "jsonpath:$[*]",
+                        "resultTemplate": "{ \"Value\" : {{{ProjectId}}}, \"DisplayValue\":\"{{{Name}}}\"}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "username",
+                                "value": "{{endpoint.username}}"
+                            },
+                            {
+                                "name": "api-key",
+                                "value": "{{endpoint.password}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API Key",
+                                "description": "Spira User API Key",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://rapisedoc.inflectra.com/\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "RapiseLauncherTask-V1",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "RapiseLauncherTask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

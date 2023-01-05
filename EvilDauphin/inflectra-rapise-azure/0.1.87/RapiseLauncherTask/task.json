@@ -1,0 +1,206 @@
+{
+  "id": "42b7290f-1fcb-49de-9c79-c6ac09cee380",
+  "name": "RapiseLauncherTask",
+  "friendlyName": "Run Rapise Test Set",
+  "description": "Install Rapise & Run Test Set using RapiseLauncher",
+  "author": "Alexey Grinevich, Inflectra",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "3",
+    "Patch": "6"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Rapise Tests Execute",
+  "groups": [
+    {
+      "name": "spira",
+      "displayName": "SpiraTeam",
+      "isExpanded": true
+    },
+    {
+        "name": "executionOptions",
+        "displayName": "Execution Options",
+        "isExpanded": true
+    },
+    {
+        "name": "advancedExecutionOptions",
+        "displayName": "Advanced Execution Options",
+        "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "spiraConnection",
+      "type": "connectedService:Spira",
+      "label": "Spira service/server end point",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "spira",
+      "helpMarkDown": "Select the Spira end point to use. If needed, click 'Project Settings', select 'Service Connections' and add a new service endpoint of type 'Spira server connection'"
+    },
+    {
+      "name": "spiraProjectId",
+      "type": "pickList",
+      "label": "Spira Product",
+      "required": true,
+      "helpMarkDown": "Select the name of the Spira Product.",
+      "groupName": "spira",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "spiraConnection != \"\" "
+    },
+    {
+      "name": "spiraTestSetId",
+      "type": "pickList",
+      "label": "Spira Test Set",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test Set ID (one or many)",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "spira",
+      "visibleRule": "spiraProjectId != \"\" "
+    },
+    {
+      "name": "spiraAutomationHost",
+      "type": "pickList",
+      "label": "Automation Host",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Automation Host Token defined for a given project",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "spira",
+      "visibleRule": "spiraProjectId != \"\" "
+    },
+    {
+      "name": "installRapise",
+      "type": "boolean",
+      "label": "Rapise Needs to Be Installed",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "You may have rapise already installed, or install it by enabling this option.",
+      "groupName": "executionOptions"
+    },
+    {
+      "name": "rapiseVersion",
+      "type": "string",
+      "label": "Rapise Version",
+      "defaultValue": "6.7.22.30",
+      "required": false,
+      "helpMarkDown": "Rapise Version to Install",
+      "visibleRule": "installRapise == true",
+      "groupName": "executionOptions"
+    },
+    {
+      "name": "setScreenSize",
+      "type": "boolean",
+      "label": "Set Screen Resolution",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "When executed under RDP or unattended session, the screen resolution may be automatically set to minial or default. Use this option to set specific screen size for test execution.",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "screenWidth",
+      "type": "int",
+      "label": "Width",
+      "defaultValue": 1920,
+      "required": false,
+      "visibleRule": "setScreenSize == true",
+      "helpMarkDown": "Screen Width, should be in range (1024..7680)",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "screenHeight",
+      "type": "int",
+      "label": "Height",
+      "defaultValue": 1080,
+      "required": false,
+      "visibleRule": "setScreenSize == true",
+      "helpMarkDown": "Screen Height, should be in range (768..4320)",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "recordVideo",
+      "type": "boolean",
+      "label": "Record Video of Execution",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Video recording will be enabled for Execution and uploaded to Spira Test Run",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "recordVideoOptions",
+      "type": "string",
+      "label": "Video Recording Options",
+      "defaultValue": "-noaudio -bitRate 512 -frameRate 2",
+      "required": false,
+      "visibleRule": "recordVideo == true",
+      "helpMarkDown": "Video recording options",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "publishRapiseLauncherLog",
+      "type": "boolean",
+      "label": "Publish RapiseLauncher Log",
+      "defaultValue": "True",
+      "required": false,
+      "helpMarkDown": "Publish RapiseLauncher Execution log as pipeline artifact.",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "gitRoot",
+      "type": "string",
+      "label": "GITROOT",
+      "defaultValue": "$(Build.SourcesDirectory)",
+      "required": false,
+      "helpMarkDown": "Path to Git project (for Spira tests stored in Git).",
+      "groupName": "advancedExecutionOptions"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+          "windows"
+      ]
+    }
+  },
+
+  "dataSourceBindings": [
+    {
+      "target": "spiraProjectId",
+      "endpointId": "$(spiraConnection)",
+      "endpointUrl": "{{endpoint.url}}Services/v5_0/RestService.svc/projects",
+      "resultSelector": "jsonpath:$[*]",
+      "resultTemplate": "{ \"Value\" : {{{ProjectId}}}, \"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "spiraTestSetId",
+      "endpointId": "$(spiraConnection)",
+      "endpointUrl": "{{endpoint.url}}Services/v5_0/RestService.svc/projects/$(spiraProjectId)/test-sets?starting_row=0&number_of_rows=100&sort_field=Name&sort_direction=ASC",
+      "resultSelector": "jsonpath:$[*]",
+      "resultTemplate": "{ \"Value\" : {{{TestSetId}}}, \"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "spiraAutomationHost",
+      "endpointId": "$(spiraConnection)",
+      "endpointUrl": "{{endpoint.url}}Services/v5_0/RestService.svc/projects/$(spiraProjectId)/automation-hosts",
+      "resultSelector": "jsonpath:$[*].Token"
+    }
+
+  ]
+}
