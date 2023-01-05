@@ -98,7 +98,7 @@ foreach ($extension in $extensions)
     & git config --local user.name "Jesse Houwing"
     
     & git add .
-    & git diff HEAD --exit-code
+    (& git diff HEAD --exit-code) | Out-null
     if ($LASTEXITCODE -ne 0)
     {
         & git commit -m "Update $publisherId/$extensionId"
