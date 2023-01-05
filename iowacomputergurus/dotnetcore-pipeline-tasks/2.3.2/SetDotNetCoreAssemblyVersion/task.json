@@ -1,0 +1,62 @@
+{
+    "id": "9a4aaa5b-0edd-4018-b9eb-60dbba0ab713",
+    "name": "set-dotnetcore-assembly-version",
+    "friendlyName": "Set .NET Core Assembly Version",
+    "description": "Patches all discovered .NET Core .csproj files with the supplied build number",
+    "helpMarkDown": "This task should be sequenced directly after sources have been downloaded to ensure proper inclusion in build/release",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "IowaComputerGurus, Inc.",
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "releaseNotes": "Initial public release",
+    "instanceNameFormat": "Set .NET Core Assembly Version",
+    "inputs": [
+        {
+            "name": "sourceDirectory",
+            "type": "string",
+            "label": "Source Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "The directory to traverse looking for project files"
+        },
+        {
+            "name": "solutionSearchPattern",
+            "type": "string",
+            "label": "Solution Search Pattern",
+            "defaultValue": "**/*!(tests).csproj",
+            "required": true,
+            "helpMarkDown": "The search pattern to identity project files for patching.  By default excludes test projects using the tests suffix convention."
+        },
+        {
+            "name": "assemblyVersion",
+            "type": "string",
+            "label": "Assembly Version #",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "The version number to set on the assembly.    Must be in the format #.#.# or #.#.#.#"
+        }		
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "InvalidVersion": "Supplied version number %s does not match format of #.#.# or #.#.#.#",
+        "NoProjectsFound": "No .csproj files found",
+        "LookingIn": "Looking for projects in: %s",
+        "SettingVersion": "Setting version to: %s",
+        "UnableToFindVersion": "Unable to find required version definition in file %s",
+        "FilePatched": "\t%s Patched Successfully"
+    }
+}
