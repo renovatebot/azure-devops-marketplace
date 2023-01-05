@@ -1,0 +1,167 @@
+{
+  "id": "e3b19710-626e-11e6-865c-3771efe12c4b",
+  "name": "lambda3docker",
+  "friendlyName": "Docker",
+  "description": "Runs Docker commands",
+  "author": "Giovanni Bassi <giggio@giggio.net>",
+  "helpMarkDown": "Runs docker commands",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "sh"
+  ],
+  "version": {
+    "Major": "0",
+    "Minor": "7",
+    "Patch": "3"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Docker $(command)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The command you want docker to perform.",
+      "options": {
+        "clean": "Clean",
+        "build": "Build",
+        "compose": "Compose",
+        "push": "Push"
+      }
+    },
+    {
+      "name": "imageClean",
+      "type": "string",
+      "label": "Image Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The image from Docker Hub you want to use.",
+      "visibleRule": "command = clean"
+    },
+    {
+      "name": "imageBuild",
+      "type": "string",
+      "label": "Image Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The image you want to build.",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "imagePush",
+      "type": "string",
+      "label": "Image Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The image you want to push to the Docker Hub.",
+      "visibleRule": "command = push"
+    },
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Current working directory when Docker is run. Empty is the root of the repo (build) or artifacts (release), which is $(System.DefaultWorkingDirectory).",
+      "groupName": "advanced"
+    },
+    {
+      "name": "composeDir",
+      "type": "filePath",
+      "label": "Compose Directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Directory where the compose files are.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "sshServer",
+      "type": "string",
+      "label": "SSH Server",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The SSH Server to connect to.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "sshPort",
+      "type": "string",
+      "label": "SSH Port",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The SSH port to connect to.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "sshUser",
+      "type": "string",
+      "label": "SSH User",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The SSH User to connect with.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "sshKey",
+      "type": "string",
+      "label": "SSH Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The private key used by the SSH connection. This should be a one line string with \\n separating each line.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "project",
+      "type": "string",
+      "label": "Project Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The project name used by compose to create the containers. Defaults to the current directory name.",
+      "visibleRule": "command = compose"
+    },
+    {
+      "name": "context",
+      "type": "filePath",
+      "label": "Context",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The directory to use as your build context, defaults to the working directory.",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "env",
+      "type": "pickList",
+      "label": "Environment",
+      "defaultValue": "Debug",
+      "required": false,
+      "helpMarkDown": "Environment: Debug, Release, or type another.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "options": {
+        "Debug": "Debug",
+        "Release": "Release"
+      },
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "dockerTask.js",
+      "argumentFormat": ""
+    }
+  }
+}
