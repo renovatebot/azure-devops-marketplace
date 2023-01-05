@@ -19,6 +19,8 @@ function add-version
 }
 
 $renovateData = @{}
+add-version -name "automatedanalysis-marketplace" -version "0.198.0"
+add-version -name "automatedanalysis-marketplace" -version "0.171.0"
 
 foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
@@ -96,12 +98,12 @@ foreach ($extension in $extensions) {
     write-host "::endgroup::"
 }
 
-$renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "renovate-data.json"
+$renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
 & git add renovate-data.json
-& git diff HEAD --exit-code
+& git diff HEAD --exit-code | Out-Null
 if ($LASTEXITCODE -ne 0)
 {    
     & git commit -m "Regenerating renovate-data.json"
