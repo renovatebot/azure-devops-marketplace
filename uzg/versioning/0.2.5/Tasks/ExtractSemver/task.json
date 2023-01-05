@@ -1,0 +1,93 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "C791ABE6-9ACF-4302-BCBD-AF77C84F72C0",
+  "name": "ExtractSemver",
+  "friendlyName": "Extract SemVer",
+  "description": "Extract Semantic Version.",
+  "author": "Ghent University Hospital",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 5
+  },
+  "groups": [
+    {
+      "displayName": "Advanced",
+      "isExpanded": false,
+      "name": "advanced"
+    }
+  ],
+  "instanceNameFormat": "Extract SemVer from $(input)",
+  "inputs": [
+    {
+      "name": "input",
+      "type": "string",
+      "label": "Input",
+      "defaultValue": "$(Build.SourceBranchName)",
+      "required": true,
+      "helpMarkDown": "The input to extract a semantic version from."
+    },
+    {
+      "name": "inputFormat",
+      "type": "string",
+      "label": "Input format",
+      "groupName": "advanced",
+      "defaultValue": "^[Vv]?{semver}$",
+      "required": false,
+      "helpMarkDown": "A regular expression where {semver} is the semver to parse."
+    },
+    {
+      "name": "outputFormat",
+      "type": "string",
+      "label": "Output format",
+      "groupName": "advanced",
+      "defaultValue": "{major}.{minor}.{patch}{prerelease}",
+      "required": false,
+      "helpMarkDown": "Use {major}, {minor}, {patch}, {prerelease} and {buildmetadata} to refer to the respective parts of the version.\n\n{prerelease} will always start with a \"-\", {buildmetadata} with a \"+\"."
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "isValid",
+      "description": "Version is valid"
+    },
+    {
+      "name": "match",
+      "description": "The matched semver from 'input'."
+    },
+    {
+      "name": "formatted",
+      "description": "The fully parsed semver using 'outputformat'."
+    },
+    {
+      "name": "major",
+      "description": "Major version."
+    },
+    {
+      "name": "minor",
+      "description": "Minor version."
+    },
+    {
+      "name": "patch",
+      "description": "Patch version."
+    },    
+    {
+      "name": "prerelease",
+      "description": "Pre-release label."
+    },
+    {
+      "name": "buildmetadata",
+      "description": "Build metadata label."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "ExtractSemver.ps1"
+    }
+  }
+}
