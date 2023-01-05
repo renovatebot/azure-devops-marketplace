@@ -1,0 +1,63 @@
+{
+  "id": "12b5d650-8bcf-11eb-b0c0-cd3671b48319",
+  "name": "ScriptArgumentParser",
+  "friendlyName": "ScriptArgumentParser",
+  "description": "This task parses optional, predefined parameters to one PowerShell argument",
+  "author": "Tim Schaeps",
+  "helpMarkDown": "This task helps you to create the arguments variable that can be used in a powershell task. For each task that you set up in the build, you can define a related variable in the build definition. When that is done, the build can work with this variable. If the variable is not defined, then it is not explecitely referenced in the argument variable ",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "54"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "ScriptArgumentParser $(VariableName)",
+  "inputs": [
+    {
+      "name": "VariableName",
+      "type": "string",
+      "label": "Variable Name",
+      "required": true,
+      "helpMarkDown": "The variable that needs to be checked in the build variables, needs to be something understandable"
+    },
+    {
+      "name": "VariableBinder",
+      "type": "string",
+      "label": "The string that binds together the Variablename and Variable value",
+      "required": false,
+      "helpMarkDown": "Defaults to a space between parameter and value"
+    },
+    {
+      "name": "DefaultValue",
+      "type": "string",
+      "label": "Default Value (Optional)",
+      "required": false,
+      "helpMarkDown": "You can specify a default value if you want: it will be set when no variable with VariableName is defined in the pipeline"
+    }    ,
+    {
+      "name": "VariableNameInTool",
+      "type": "string",
+      "label": "Variable Name In Tool for which we are building the argumentlist",
+      "required": true,
+      "helpMarkDown": "The property that needs to be used in the argument list that we are building"
+    },
+    {
+      "name": "ParsedArgumentListName",
+      "type": "string",
+      "label": "The name of the argumentlist that is being build",
+      "required": true,
+      "helpMarkDown": "The name of the argumentlist that is being build"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "scriptparser.js"
+    }
+  }
+}
