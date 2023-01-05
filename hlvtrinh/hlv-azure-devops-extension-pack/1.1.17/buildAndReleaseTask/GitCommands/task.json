@@ -1,0 +1,103 @@
+{
+  "id": "1e654a42-4fcd-41f4-81cf-e31b5161190b",
+  "name": "hlv-git-commands",
+  "friendlyName": "[DevOps] Git Commands",
+  "description": "Run git commands cross-platforms",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "hlvtrinh",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 8
+  },
+  "instanceNameFormat": "[DevOps] Git Commands",
+  "groups": [
+    {
+      "name": "input",
+      "displayName": "The repository information",
+      "isExpanded": true
+    },
+    {
+      "name": "command",
+      "displayName": "The command",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "remoteUrl",
+      "type": "string",
+      "label": "Remote URL",
+      "required": true,
+      "groupName": "input",
+      "helpMarkDown": "The remote repository URL"
+    },
+    {
+      "name": "userName",
+      "type": "string",
+      "label": "The git config.user",
+      "required": false,
+      "groupName": "input",
+      "helpMarkDown": "The git `config.user`"
+    },
+    {
+      "name": "userEmail",
+      "type": "string",
+      "label": "The git config.email",
+      "required": false,
+      "groupName": "input",
+      "helpMarkDown": "The git `config.email`"
+    },
+    {
+      "name": "gitDirectory",
+      "type": "string",
+      "label": "Git Directory",
+      "defaultValue": "$(Build.SourcesDirectory)",
+      "required": true,
+      "groupName": "input",
+      "helpMarkDown": "Git Directory"
+    },
+    {
+      "name": "gitCommand",
+      "type": "pickList",
+      "label": "The command to run",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "command",
+      "helpMarkDown": "The command to run is `Sync` and `Commit` (TODO)",
+      "options": {
+        "sync": "Sync source to remote",
+        "commit": "Commit and push to remote"
+      }
+    },
+    {
+      "name": "remoteBranch",
+      "type": "string",
+      "label": "Remote Branch",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "command",
+      "helpMarkDown": "Remote Branch"
+    },
+    {
+      "name": "excludeFile",
+      "type": "multiLine",
+      "label": "Exclude files",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "command",
+      "helpMarkDown": "Exclude files",
+      "visibleRule": "gitCommand = commit"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "GitCommands.js"
+    }
+  }
+}
