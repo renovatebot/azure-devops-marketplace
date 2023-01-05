@@ -1,0 +1,76 @@
+{
+    "id": "277cec78-f24a-4659-9d27-9768df99b5f5",
+    "name": "ChangeF5PoolStatus",
+    "friendlyName": "Change F5 Load Balancer Pool Status",
+    "description": "Changes the status all members of a Local Traffic Manager pool (F5)",
+    "helpMarkDown": "Version 0.3.6.  Be excellent to one another.",
+    "category": "Deploy",
+    "author": "Reuben Cabrera",
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 6
+    },
+    "visibility": ["Release"],
+    "instanceNameFormat": "$(action) $(pool) pool members",
+    "inputs": [
+        {
+            "name": "ltm",
+            "type": "string",
+            "label": "Local Traffic Manager Instance",
+            "defaultValue": "f5-lan",
+            "required": true,
+            "helpMarkDown": "The F5 Local Traffic Manager name (DNS-resolvable).  Examples: *f5-lan*, *f5-dev*"
+        },
+        {
+            "name": "pool",
+            "type": "string",
+            "label": "Pool Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Local Traffic Pool Name. This is *case-sensitive*."
+        },
+        {
+            "name": "action",
+            "type": "radio",
+            "label": "Action",
+            "defaultValue": "Enable",
+            "required": true,
+            "helpMarkDown": "Choose to *Enable*, *Disable*, or *Force Offline* the members of the pool.",
+            "options": {
+                "Enable": "Enable",
+                "Disable": "Disable",
+                "ForceOffline": "Force Offline"
+            }
+        },
+        {
+            "name": "failIfConnections",
+            "type": "boolean",
+            "label": "Fail if Connections Exist",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Checks all members in a pool to see if there are current connections active.  If the **Action** is *Disable* or *Force Offline*, and if any connections exist, then that member will not be changed and the task will fail."
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Username to use for authenticating to the F5 BIG-IP device."
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "$(F5Password)",
+            "required": true,
+            "helpMarkDown": "Password to use for authenticating to the F5 BIG-IP device.  You should probably use a *secret variable* for this value."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "F5-ChangePoolStatus.ps1"
+        }
+    }
+}
