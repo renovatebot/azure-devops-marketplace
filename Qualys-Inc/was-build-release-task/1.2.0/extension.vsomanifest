@@ -1,0 +1,193 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.build",
+        "vso.serviceendpoint",
+        "vso.serviceendpoint_manage",
+        "vso.release_manage",
+        "vso.taskgroups_manage"
+    ],
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Qualys WAS connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "was",
+                "displayName": "Qualys WAS server connection",
+                "url": {
+                    "displayName": "API Server URL:",
+                    "helpText": "API Server URL link to connect - Example: https://qualysapi.qualys.com (Please do not add a forward slash (/) at the end of URL)"
+                },
+                "dataSources": [
+                    {
+                        "name": "WasApplications",
+                        "endpointUrl": "{{endpoint.url}}qps/rest/3.0/getall/was/webapp?verbose=true&limitResults=1000&startFromId={{lastId}}",
+                        "resultSelector": "jsonpath:ServiceResponse.data[*].WebApp",
+                        "requestVerb": "Get",
+                        "callbackContextTemplate": "{\"lastId\" : \"{{{response.ServiceResponse.lastId}}}\" }",
+                        "callbackRequiredTemplate": "{{{response.ServiceResponse.hasMoreRecords}}}",
+                        "initialContextTemplate": "{\"lastId\" : 1}"
+                    },
+                    {
+                        "name": "WasOptionProfiles",
+                        "endpointUrl": "{{endpoint.url}}qps/rest/3.0/getall/was/optionprofile?verbose=true&limitResults=1000&startFromId={{lastId}}",
+                        "resultSelector": "jsonpath:ServiceResponse.data[*].OptionProfile",
+                        "requestVerb": "Get",
+                        "callbackContextTemplate": "{\"lastId\" : \"{{{response.ServiceResponse.lastId}}}\" }",
+                        "callbackRequiredTemplate": "{{{response.ServiceResponse.hasMoreRecords}}}",
+                        "initialContextTemplate": "{\"lastId\" : 1}"
+                    },
+                    {
+                        "name": "WasAuthRecords",
+                        "endpointUrl": "{{endpoint.url}}qps/rest/3.0/getall/was/webappauthrecord?verbose=true&limitResults=1000&startFromId={{lastId}}",
+                        "resultSelector": "jsonpath:ServiceResponse.data[*].WebAppAuthRecord",
+                        "requestVerb": "Get",
+                        "callbackContextTemplate": "{\"lastId\" : \"{{{response.ServiceResponse.lastId}}}\" }",
+                        "callbackRequiredTemplate": "{{{response.ServiceResponse.hasMoreRecords}}}",
+                        "initialContextTemplate": "{\"lastId\" : 1}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/xml"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "isConfidential": false,
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "useProxy",
+                                "name": "Use Proxy",
+                                "description": "Select the checkbox to use the proxy",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            },
+                            {
+                                "id": "proxyServerName",
+                                "name": "Proxy Server",
+                                "description": "Enter the proxy URL - Examples: 10.15.201.155, corp.proxyserver.company.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPort",
+                                "name": "Proxy Port",
+                                "description": "Enter the proxy port",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyUserName",
+                                "name": "Proxy Username",
+                                "description": "Enter the proxy username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPassword",
+                                "name": "Proxy Password",
+                                "description": "Enter the proxy password",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://www.qualys.com/docs/qualys-was-getting-started-guide.pdf\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Qualys WAS Scan Status",
+                "uri": "infoTab.html"
+            }
+        },
+        {
+            "id": "release-management-tab",
+            "type": "ms.vss-releaseManagement-web.release-summary-tab",
+            "description": "Adds a 'Qualys WAS Scan Status' tab to the release environment.",
+            "targets": [
+                "ms.vss-releaseManagement-web.release-details-view"
+            ],
+            "properties": {
+                "name": "Qualys WAS Scan Status",
+                "order": "99",
+                "uri": "infoTab.html",
+                "supportsTasks": [
+                    "7a06fda6-b456-11ea-b3de-0242ac130003"
+                ]
+            },
+            "includes": [
+                "ms.vss-releaseManagement-web.release-service-data-external"
+            ]
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
