@@ -1,0 +1,85 @@
+{
+   "id": "7ac70744-b353-498a-b1c4-9e64f2a6f681",
+   "name": "SendCampaignTask",
+   "friendlyName": "Send Campaign",
+   "description": "Send a campaign within Campaign Monitor",
+   "helpMarkDown": "[More Information](https://github.com/gregpakes/vsts.extensions)",
+   "category": "Deploy",
+   "visibility": ["Release"],
+   "author": "Greg Pakes",
+   "version": {
+      "Major": 0,
+      "Minor": 0,
+      "Patch": 3
+   },
+   "demands": [],
+   "inputs": [
+        {
+            "name": "CampaignMonitorAuthenticationType",
+            "type": "pickList",
+            "label": "Authentication Type",
+            "defaultValue": "ApiKey",
+            "required": true,
+            "options": {
+                "ApiKey": "Api Key",
+                "AuthToken": "Auth Token"
+            },
+            "helpMarkDown": "Select the authentication type"
+        },
+        {
+            "name": "CampaignMonitorApiKey",
+            "type": "string",
+            "label": "Api Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Api Key for CampaignMonitor",
+            "visibleRule": "CampaignMonitorAuthenticationType = ApiKey"
+        },
+        {
+            "name": "CampaignMonitorAuthToken",
+            "type": "string",
+            "label": "Auth Token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Auth Token for CampaignMonitor",
+            "visibleRule": "CampaignMonitorAuthenticationType = AuthToken"
+        },
+        {
+            "name": "CampaignMonitorCampaignId",
+            "type": "string",
+            "label": "Campaign Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Client Id for Campaign"
+        },
+        {
+            "name": "CampaignMonitorConfirmationEmail",
+            "type": "string",
+            "label": "Confirmation Email",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A comma seperated list of up to 5 email addresses for the confirmation to be sent to. (eg. user@domain.com,user2@domain.com)"
+        },
+        {
+            "name": "CampaignMonitorSendImmediately",
+            "type": "boolean",
+            "label": "Send Immediately",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Whether the campaign should be sent immediately."
+        },
+        {
+            "name": "CampaignMonitorSendDateTime",
+            "type": "string",
+            "label": "Send Date Time",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The date the campaign should be scheduled to be sent. This date should be in the client's timezone and formatted as YYYY-MM-DD HH:MM.",
+            "visibleRule": "CampaignMonitorSendImmediately = false"
+        }
+    ],
+    "outputVariables": [],
+    "instanceNameFormat": "Send Campaign",
+    "execution":
+        {"Node":{"target":"SendCampaignTask.js"}}
+}

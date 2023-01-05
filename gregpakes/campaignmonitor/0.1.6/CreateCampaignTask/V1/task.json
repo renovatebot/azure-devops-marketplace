@@ -1,0 +1,175 @@
+{
+   "id": "2148d21b-683e-4ca3-b51b-c696c7e326ae",
+   "name": "CreateCampaignTask",
+   "friendlyName": "Create Campaign",
+   "description": "Creates a campaign within Campaign Monitor",
+   "helpMarkDown": "[More Information](https://github.com/gregpakes/vsts.extensions)",
+   "category": "Utility",
+   "visibility": ["Release"],
+   "author": "Greg Pakes",
+   "version": {
+      "Major": 0,
+      "Minor": 0,
+      "Patch": 25
+   },
+   "demands": [],
+   "inputs": [
+        {
+            "name": "CampaignMonitorClientId",
+            "type": "string",
+            "label": "Client Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Client Id for CampaignMonitor"
+        },
+        {
+            "name": "CampaignMonitorAuthenticationType",
+            "type": "pickList",
+            "label": "Authentication Type",
+            "defaultValue": "ApiKey",
+            "required": true,
+            "options": {
+                "ApiKey": "Api Key",
+                "AuthToken": "Auth Token"
+            },
+            "helpMarkDown": "Select the authentication type"
+        },
+        {
+            "name": "CampaignMonitorApiKey",
+            "type": "string",
+            "label": "Api Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Api Key for CampaignMonitor",
+            "visibleRule": "CampaignMonitorAuthenticationType = ApiKey"
+        },
+        {
+            "name": "CampaignMonitorAuthToken",
+            "type": "string",
+            "label": "Auth Token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Auth Token for CampaignMonitor",
+            "visibleRule": "CampaignMonitorAuthenticationType = AuthToken"
+        },
+        {
+            "name": "CampaignMonitorListId",
+            "type": "string",
+            "label": "List Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The List Id for list within CampaignMonitor you wish to use."
+        },
+        {
+            "name": "CampaignMonitorTemplateId",
+            "type": "string",
+            "label": "Template Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Template Id for the template you wish to use in CampaignMonitor"
+        },
+        {
+            "name": "CampaignMonitorFromEmailAddress",
+            "type": "string",
+            "label": "From Email Address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The from email address"
+        },
+        {
+            "name": "CampaignMonitorReplyToEmailAddress",
+            "type": "string",
+            "label": "Reply To Email Address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The reply to email address"
+        },
+        {
+            "name": "CampaignMonitorCampaignName",
+            "type": "string",
+            "label": "Campaign Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The campaign name"
+        },
+        {
+            "name": "CampaignMonitorCampaignSubject",
+            "type": "string",
+            "label": "Email Subject",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The campaign email subject"
+        },
+        {
+            "name": "CampaignMonitorSingleLines",
+            "type": "multiLine",
+            "label": "Single Lines",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The JSON object for the single lines object.  Example: [{ \"Content\": \"Support Centre\" }]"
+        },     
+        {
+            "name": "CampaignMonitorMultipleLinesSourceType",
+            "type": "pickList",
+            "label": "Multiple Lines Source",
+            "helpMarkDown": "The source for the Multiple Lines text.",
+            "options": {
+                "Inline": "Inline",
+                "File": "File"
+            }
+        },
+        {
+            "name": "CampaignMonitorMultipleLinesInline",
+            "type": "multiLine",
+            "label": "Multiple Lines",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The JSON object for the multiple lines object.  Example: [{ \"Content\": \"<p>Hello</p>\" }]",
+            "visibleRule": "CampaignMonitorMultipleLinesSourceType = Inline"
+        },
+        {
+            "name": "CampaignMonitorMultipleLinesFilePath",
+            "type": "filePath",
+            "label": "Multiple Lines",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to the JSON file that contains the mutiple lines text.",
+            "visibleRule": "CampaignMonitorMultipleLinesSourceType = File"
+        },   
+        {
+            "name": "CampaignMonitorFromName",
+            "type": "string",
+            "label": "From Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name that you want the email to come from."
+        },
+        {
+            "name": "CampaignMonitorSendPreview",
+            "type": "boolean",
+            "label": "Send Preview",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Whether a preview of the campaign should be sent."
+        },
+        {
+            "name": "CampaignMonitorPreviewRecipients",
+            "type": "string",
+            "label": "Preview Recipients",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The recipients to send a preview email to.  You can enter comma seperated email addresses.",
+            "visibleRule": "CampaignMonitorSendPreview = true"
+        }
+
+    ],
+    "outputVariables": [
+        {
+            "name": "CampaignMonitorCampaignId",
+            "description": "The id of the created draft campaign."
+        }
+    ],
+    "instanceNameFormat": "Create Campaign",
+    "execution":
+        {"Node":{"target":"CreateCampaignTask.js"}}
+}
