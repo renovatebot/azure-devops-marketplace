@@ -29,6 +29,25 @@ function Get-Extensions
     return ($result.Content | ConvertFrom-Json).results[0];
 }
 
+function commit-changes
+{
+    [cmdletbinding()]
+    Param (
+        [string]$message
+    )
+
+    & git config --local user.email "jesse.houwing@gmail.com"
+    & git config --local user.name "Jesse Houwing"
+    
+    & git add .
+    (& git diff HEAD --exit-code) | Out-null
+    if ($LASTEXITCODE -ne 0)
+    {
+        & git commit -m $message
+        & git push
+    }
+}
+
 & npm install tfx-cli@^0 -g --no-fund
 
 $pageSize= 100;
@@ -51,6 +70,7 @@ if (-not (Test-Path -path $cacheFile -PathType Leaf))
     while ($totalFetched -lt $max)
 
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
+    commit-changes -message "Update extensions cache"
 }
 else {
     $extensions = Get-Content -raw -Path $cacheFile | ConvertFrom-Json
@@ -73,8 +93,22 @@ foreach ($extension in $extensions)
     
     mkdir -path "$publisherId/$extensionId/" -Force | out-null
 
-    $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
-    $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path "$publisherId/$extensionId/extension.json"
+    $extensionDataFile = "$publisherId/$extensionId/extension.json"
+    $fetchExtensionData = $true
+    if (Test-Path -Path $extensionDataFile -PathType Leaf)
+    {
+        $extensionData = gc -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
+        if ($extensionData.lastUpdated -le $extension.lastUpdated)
+        {
+            $fetchExtensionData = $false
+        }
+    }
+
+    if ($fetchExtensionData)
+    {
+        $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
+        $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
+    }
     
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 } )
     {
@@ -94,16 +128,7 @@ foreach ($extension in $extensions)
         }
     }
 
-    & git config --local user.email "jesse.houwing@gmail.com"
-    & git config --local user.name "Jesse Houwing"
-    
-    & git add .
-    (& git diff HEAD --exit-code) | Out-null
-    if ($LASTEXITCODE -ne 0)
-    {
-        & git commit -m "Update $publisherId/$extensionId"
-        & git push
-    }
+    commit-changes -message "Update $publisherId/$extensionId"
     write-host "##### COUNT: $count / $max "
     $count += 1
 }
