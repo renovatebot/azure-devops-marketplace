@@ -1,0 +1,276 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "76fdf717-3934-43da-94f3-3a4d75429686",
+    "name": "ClickOnceMore-Build",
+    "friendlyName": "ClickOnceMore Build",
+    "description": "Build a ClickOnceMore project to publish ClickOnce manifests",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Red Sky Software",
+    "version": {
+        "Major": 0,
+        "Minor": 43,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ClickOnceMore Build $(projectFile)",
+    "groups": [
+        {
+            "name": "optionalOverrides",
+            "displayName": "Optional Overrides",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "projectFile",
+            "type": "string",
+            "label": "Project File (.cmproj)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The ClickOnceMore project file (.cmproj) which can be created using ClickOnceMore (www.clickoncemore.net)"
+        },
+        {
+            "name": "buildLicence",
+            "type": "string",
+            "label": "Build Licence",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your ClickOnceMore build licence. Email support@redskysoftware.com for more info"
+        },
+        {
+            "name": "configuration",
+            "type": "pickList",
+            "label": "Configuration",
+            "defaultValue": "release",
+            "required": true,
+            "helpMarkDown": "This will replace the [DebugOrRelease] macro with the value 'Release' or 'Debug' in all macro affected fields.",
+            "options": {
+                "release": "Release",
+                "debug": "Debug"
+            }            
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Version",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the application version specified in the project file. Version must be in the form x.x.x.x (Major, Minor, Release, Build). This uses the given version to build the ClickOnce manifests as well as using the given version to replace the [ProductVersion] macro."
+        },
+        {
+            "name": "macroScheme",
+            "type": "string",
+            "label": "Macro Scheme",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the macro scheme to be used for this build. This ensures that all macros will be replaced by the values for the named scheme. If the specified macro scheme does not exist, or does not have a value for a given macro, default values will be used."
+        },
+        {
+            "name": "macroValues",
+            "type": "multiLine",
+            "label": "Macro Values",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "One override per line in format name=value. Override the macro 'name' with 'value' for this build. One /mv will be added to command line per line. This allows you to override the value of an individual macro instead of an entire scheme."
+        },
+        {
+            "name": "outputDirectory",
+            "type": "string",
+            "label": "Output Directory",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the output directory used by the project. This will cause the ClickOnce manifests to be built to the specified location, rather than the output directory set in the project."
+        },
+        {
+            "name": "deploymentManifestFilename",
+            "type": "string",
+            "label": "Deployment Manifest Filename",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the deployment manifest filename. This will cause the ClickOnce deployment manifest to be built with the specified filename, rather than the filename set in the project."
+        },
+        {
+            "name": "applicationManifestFilename",
+            "type": "string",
+            "label": "Application Manifest Filename",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the application manifest filename. This will cause the ClickOnce application manifest to be built with the specified filename, rather than the filename set in the project."
+        },
+        {
+            "name": "deploymentUrl",
+            "type": "string",
+            "label": "Deployment URL",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the deployment URL (the URL the application will be deployed from). This overrides the setting specified in the project file."
+        },
+        {
+            "name": "signingCertificateFilename",
+            "type": "string",
+            "label": "Signing Certificate Filename",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the signing certificate filename to use a different certificate than the one specified in the project file. You can also override the password and timestamp URL for the certificate."
+        },
+        {
+            "name": "signingCertificatePassword",
+            "type": "string",
+            "label": "Signing Certificate Password",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the signing certificate password."
+        },
+        {
+            "name": "signingCertificateTimestamp",
+            "type": "string",
+            "label": "Signing Certificate Timestamp",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the signing certificate URL timestamp."
+        },
+        {
+            "name": "useDotDeploy",
+            "type": "pickList",
+            "label": "Use .deploy File Extensions",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Use .deploy file extensions'. See Project Properties for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "allowUrlParams",
+            "type": "pickList",
+            "label": "Allow URL Params",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Allow URL params to be passed to application'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "availableOffline",
+            "type": "pickList",
+            "label": "Available Offline",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Make application available to users offline and online'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "multipleUrls",
+            "type": "pickList",
+            "label": "Multiple URLs",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Allow Multiple URLs (exclude installation path from manifest)'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "regFreeCom",
+            "type": "pickList",
+            "label": "Reg Free COM",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Retain reg-free COM details from existing manifest file'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "desktopShortcut",
+            "type": "pickList",
+            "label": "Desktop Shortcut",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Create desktop shortcut'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "blockUrlActivation",
+            "type": "pickList",
+            "label": "Block URL Activation",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Block application from being activated via a URL'. See Advanced for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "signManifests",
+            "type": "pickList",
+            "label": "Sign Manifests",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Sign ClickOnce manifests'. See Signing for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "enableUpdates",
+            "type": "pickList",
+            "label": "Enable Updates",
+            "required": true,
+            "defaultValue": "project",
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Override the value of 'Enable ClickOnce automatic updates'. See Automatic Updates for more details.",
+            "options": {
+                "project": "From ClickOnceMore project",
+                "true": "True",
+                "false": "False"
+            }
+        },
+        {
+            "name": "additionalCommandLineArgs",
+            "type": "string",
+            "label": "Additional Command Line Arguments",
+            "required": false,
+            "groupName": "optionalOverrides",
+            "helpMarkDown": "Value of this input will be appended to the final command line for running ClickOnceMore."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
