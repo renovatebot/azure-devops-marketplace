@@ -1,0 +1,110 @@
+{
+    "id": "047393e1-82e4-4d24-8275-237409bb378c",
+    "name": "runbctestincontainer",
+    "friendlyName": "Business Central - Run Tests in container",
+    "description": "Run test suite in container and saves output to file",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Kine",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "groups": [
+        {
+            "name": "envgroup",
+            "displayName": "Environment"
+        }
+    ],
+    "instanceNameFormat": "Run tests $(appname) in container $(containername)",
+    "inputs": [
+        {
+            "name": "containername",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the container",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "tenant",
+            "type": "string",
+            "label": "Tenant",
+            "defaultValue": "default",
+            "required": true,
+            "helpMarkDown": "Tenant to use",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "testfile",
+            "type": "filePath",
+            "label": "Test result file name",
+            "required": true,
+            "helpMarkDown": "Path and file name of the file with test results"
+        },
+        {
+            "name": "testsuite",
+            "type": "string",
+            "label": "Test suite to run",
+            "defaultValue": "DEFAULT",
+            "required": true,
+            "helpMarkDown": "Name of the test suite to run"
+        },
+        {
+            "name": "resultonerror",
+            "type": "pickList",
+            "label": "Result on failed test",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Result of the task if test fails",
+            "options": {
+                "no": "Task Succeded",
+                "error": "Task fails",
+                "warning": "Task succeded with warning"
+              }
+        },
+        {
+            "name": "auth",
+            "type": "pickList",
+            "label": "Authentication",
+            "defaultValue": "Windows",
+            "required": true,
+            "helpMarkDown": "Type of authentication",
+            "options": {
+                "Windows": "Windows",
+                "NavUserPassword": "NavUserPassword"
+              }
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "User name to be used for connection"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password for the user."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "runtestsdockerTask.ps1",
+            "platform": [
+                "windows"
+            ]
+
+        }
+    }
+}

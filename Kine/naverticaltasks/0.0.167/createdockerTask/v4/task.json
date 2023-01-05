@@ -1,0 +1,178 @@
+{
+    "id": "047393e1-82e4-4d24-8275-237409bb378a",
+    "name": "createbccontainer",
+    "friendlyName": "Business Central - Create docker container",
+    "description": "Create container for Dynamics 365 Business Central",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Kine",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "groups": [
+        {
+            "name": "envgroup",
+            "displayName": "Environment"
+        }
+    ],
+    "instanceNameFormat": "Create container $(containername)",
+    "inputs": [
+        {
+            "name": "containername",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the container"
+        },
+        {
+            "name": "artifactUrl",
+            "type": "string",
+            "label": "Artifact URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "URL of artifact to install into container"
+        },
+        {
+            "name": "isolation",
+            "type": "pickList",
+            "label": "Isolation",
+            "defaultValue": "default",
+            "required": true,
+            "helpMarkDown": "Type of process isolation. Default - let it be on navcontainerhelper.",
+            "options": {
+                "default": "default",
+                "process": "Process isolation",
+                "hyperv": "Hyper-V isolation"
+              }
+        },
+        {
+            "name": "fastcontainer",
+            "type": "boolean",
+            "label": "Create fast container",
+            "defaultValue": "false",
+            "helpMarkDown": "Check if you want to create container only for using powershell module from it."
+        },
+        {
+            "name": "ram",
+            "type": "string",
+            "label": "Container RAM size",
+            "defaultValue": "4GB",
+            "required": true,
+            "helpMarkDown": "Size of the RAM for container",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "licensefile",
+            "type": "string",
+            "label": "License file name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the license file",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "auth",
+            "type": "pickList",
+            "label": "Authentication",
+            "defaultValue": "Windows",
+            "required": true,
+            "helpMarkDown": "Type of authentication",
+            "options": {
+                "Windows": "Windows",
+                "NavUserPassword": "NavUserPassword"
+              },
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the user",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "User password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password of the user",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "importtestsuite",
+            "type": "boolean",
+            "label": "Import test suite",
+            "defaultValue": "false",
+            "helpMarkDown": "Import test suite after container is created",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "testlibraryonly",
+            "type": "boolean",
+            "label": "Import test library only",
+            "defaultValue": "false",
+            "helpMarkDown": "Import only test libraries after container is created",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "enablesymbolloading",
+            "type": "boolean",
+            "label": "Enable symbol loading",
+            "defaultValue": "false",
+            "helpMarkDown": "Enable hybrid development",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "includeCSide",
+            "type": "boolean",
+            "label": "Iclude CSide in the container (should be disabled for containers v15.x+)",
+            "defaultValue": "true",
+            "helpMarkDown": "Include CSide in the container",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "useBestContainerOS",
+            "type": "boolean",
+            "label": "Use Best Container OS",
+            "defaultValue": "false",
+            "helpMarkDown": "Use BestContainerOS switch when creating the container"
+        },
+        {
+            "name": "alwaysPull",
+            "type": "boolean",
+            "label": "Always Pull",
+            "defaultValue": "false",
+            "helpMarkDown": "Use AlwaysPull switch when creating the container",
+            "visibleRule": "fastcontainer=false"
+        },
+        {
+            "name": "optionalparams",
+            "type": "string",
+            "label": "Additional optional parameters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Add your own parameters for creating the container"
+        }
+
+
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "createdockerTask.ps1",
+            "platform": [
+                "windows"
+            ]
+
+        }
+    }
+}
