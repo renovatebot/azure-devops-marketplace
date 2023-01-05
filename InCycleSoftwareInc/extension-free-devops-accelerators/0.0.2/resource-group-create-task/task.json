@@ -1,0 +1,105 @@
+{
+  "id": "3dc35620-c50e-4beb-8078-c5066de7fa43",
+  "name": "ResourceGroupProvisionTask",
+  "friendlyName": "Accelerators - Create Resource Group",
+  "description": "Creates and updates a resource group",
+  "author": "InCycleSoftwareInc-DEV",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "3",
+    "Minor": "3",
+    "Patch": "5"
+  },
+  "minimumAgentVersion": "1.94.0",
+  "groups": [
+    {
+      "name": "general",
+      "displayName": "General",
+      "isExpanded": true
+    },
+    {
+      "name": "subscription",
+      "displayName": "Azure Subscription Deployment",
+      "isExpanded": true
+    },
+    {
+      "name": "taskOutput",
+      "displayName": "Task Output Variables",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Azure DevOps Accelerators - resource group: $(resourceGroupName)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to target deployment.",
+      "groupName": "subscription",
+      "properties": { }
+    },
+    {
+      "name": "location",
+      "type": "pickList",
+      "label": "Location",
+      "defaultValue": "East US",
+      "required": true,
+      "helpMarkDown": "Location for deploying the resource group.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "general"
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "string",
+      "defaultValue": "",
+      "label": "Resource Group Name",
+      "required": true,
+      "helpMarkDown": "Provide the resource group name.",
+      "groupName": "general",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "location",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureLocations"
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "Name",
+      "type": "string",
+      "description": "The variable that will hold the name output for the create Resource Group task. The variable can be used as $(variableName) to refer to the Resource Group in subsequent tasks."
+    },
+    {
+      "name": "Location",
+      "type": "string",
+      "description": "The variable that will hold the location output for the create Resource Group task. The variable can be used as $(variableName) to refer to the Resource Group in subsequent tasks."
+    },
+    {
+      "name": "Subscription",
+      "type": "string",
+      "description": "The variable that will hold the subscription name output for the create Resource Group task. The variable can be used as $(variableName) to refer to the Resource Group in subsequent tasks."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Main.ps1",
+      "argumentFormat": ""
+    }
+  }
+}
