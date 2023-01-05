@@ -1,0 +1,91 @@
+{
+  "id": "e9f7244b-5080-4012-9cad-9b0453b6b781",
+  "name": "ResourceGroupCreation",
+  "friendlyName": "Creates a Resource Group",
+  "description": "Creates a new resource group if it isnt in the subscription",
+  "author": "code88",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "4"
+  },
+  
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "ResourceGroup $(message)",
+
+
+  "inputs": [
+    {
+            "name": "ConnectedServiceNameSelector",
+            "type": "pickList",
+            "label": "Azure Connection Type",
+            "required": false,
+            "helpMarkDown": "",
+            "defaultValue": "Azure Resource Manager",
+            "options": {
+                "ConnectedServiceNameARM": "Azure Resource Manager"
+            }
+        },
+        {
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "string",
+            "label": "Resource Group Name",
+            "required": true
+        },
+        {
+      "name": "ResourceLocation",
+      "type": "pickList",
+      "label": "Resource Location",
+      "required": false,
+      "helpMarkDown": "ms-resource:loc.input.help.geoLocation",
+      "defaultValue": "East US",
+      "options": {
+        "East US": "East US (Virginia)",
+        "East US 2": "East US 2 (Virginia)",
+        "Central US": "Central US (Iowa)",
+        "West US": "West US (California)",
+        "North Central US": "North Central US (Illinois)",
+        "South Central US": "South Central US (Texas)",
+        "North Europe": "North Europe (Ireland)",
+        "West Europe": "West Europe (Netherlands)",
+        "Southeast Asia": "Southeast Asia (Singapore)",
+        "East Asia": "East Asia (Hong Kong)",
+        "Japan East": "Japan East (Saitama Prefecture)",
+        "Japan West": "Japan West (Osaka Prefecture)",
+        "Brazil South": "Brazil South (Sao Paulo State)",
+        "Australia East": "Australia East (New South Wales)",
+        "Australia Southeast": "Australia Southeast (Victoria)"
+      }
+    }
+  ],
+"dataSourceBindings": [
+        {
+            "target": "ServiceName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureHostedServiceNames"
+        }
+],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\sample.ps1"
+    }
+  }
+}
