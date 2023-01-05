@@ -1,0 +1,170 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "HCL-endpoint",
+            "description": "Service endpoint connection to HCL AppScan on Cloud",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Application Security Test",
+                "displayName": "HCL AppScan on Cloud",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "HCL AppScan On Cloud Server URL to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/V2/Apps",
+                        "resultSelector": "jsonpath:$.[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ #getTokenUsingBasicAuth { 'KeyId' : 'endpoint.username', 'KeySecret' : 'endpoint.password', 'resultSelector' : 'jsonpath:$.Token', 'method':'post', 'authServerUrl':'endpoint.url/api/V2/Account/ApiKeyLogin', 'body' : {'KeyId' : 'endpoint.username', 'keySecret' : 'endpoint.password'} } }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "KeyID",
+                                "description": "The API key ID.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "KeySecret",
+                                "description": "The API key secret.",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "HCL-ase-endpoint",
+            "description": "Service endpoint connection to HCL AppScan Enterprise",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Application Enterprise Security Test",
+                "displayName": "HCL AppScan Enterprise",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "HCL AppScan Enterprise Server URL to connect to."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "KeyID",
+                                "description": "The API key ID.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "KeySecret",
+                                "description": "The API key secret.",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask/asoc/asocV01"
+            }
+        },
+        {
+            "id": "custom-asoc-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask/asoc/asocV02"
+            }
+        },
+        {
+            "id": "custom-ase-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask/ase/aseV02"
+            }
+        },
+        {
+            "id": "display-scan-report",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "HCL AppScan Report",
+                "uri": "scan-report.html",
+                "supportsTasks": [
+                    "6e743613-d4b8-48d2-8ee3-1b8ec3ab00fe"
+                ]
+            }
+        },
+        {
+            "id": "display-scan-report-asocV02",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "HCL AppScan on Cloud Report",
+                "uri": "scan-report-asocV02.html",
+                "supportsTasks": [
+                    "46d7c5c4-ec5a-461f-98e9-f8adce322b4e"
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}

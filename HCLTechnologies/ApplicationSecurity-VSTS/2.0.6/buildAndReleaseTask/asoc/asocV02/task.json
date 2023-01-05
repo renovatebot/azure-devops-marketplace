@@ -1,0 +1,459 @@
+{
+    "id": "46d7c5c4-ec5a-461f-98e9-f8adce322b4e",
+    "name": "HCLAppScanOnCloud",
+    "friendlyName": "HCL AppScan on Cloud",
+    "description": "Perform static, dynamic and open source security tests for your applications in AppScan on Cloud.",
+    "author": "HCLTechnologies",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=HCLTechnologies.ApplicationSecurity-VSTS)",
+    "category": "Build",
+    "visibility": [
+      "Build"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "2",
+      "Minor": "0",
+      "Patch": "6"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Run HCL AppScan on Cloud Security Test",
+    "groups": [
+      {
+        "name": "addOptsStatic",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=static",
+        "isExpanded": false
+      },
+      {
+        "name": "addOptsDynamic",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=dynamic && dynamicType=DAST",
+        "isExpanded": false
+      }, {
+        "name": "addOptsDynamicFile",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=dynamic && dynamicType=DASTFile",
+        "isExpanded": false
+      },
+      {
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": false
+      }
+    ],
+    "inputs": [
+      {
+        "name": "AppSecTestService",
+        "type": "connectedService:Application Security Test",
+        "label": "Credentials",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the credentials to use for running a scan. Add credentials using the HCL AppScan on Cloud Service. <a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/ASoC/appseccloud_generate_api_key_cm.html\"> How do I get my credentials?</a>"
+      },
+      {
+        "name": "applications",
+        "type": "pickList",
+        "label": "Application",
+        "required": true,
+        "helpMarkDown": "The application that this scan will be associated with. If the list is empty ensure that you have a valid selection in the Credentials field."
+      },
+      {
+        "name": "scanname",
+        "type": "string",
+        "label": "Scan Name",
+        "required": false,
+        "helpMarkDown": "An optional name for the scan. This name is used to differentiate results on the Build page."
+      },
+      {
+        "name": "scantype",
+        "type": "pickList",
+        "label": "Scan Type",
+        "required": true,
+        "defaultValue": "static",
+        "options": {
+          "static": "Static Analyzer",
+          "dynamic": "Dynamic Analyzer"
+        },
+        "helpMarkDown": "The type of test to run."
+      },
+      {
+        "name": "scanloc",
+        "type": "filepath",
+        "label": "Repository Subdirectory To Scan",
+        "required": false,
+        "visibleRule": "scantype=static",
+        "helpMarkDown": "Limits the scan to a subdirectory of the repository. Leave this field blank to scan the entire repository."
+      },
+      {
+        "name": "dynamicType",
+        "type": "radio",
+        "label": "Dynamic Scan Type",
+        "defaultValue": "DAST",
+        "visibleRule": "scantype=dynamic",
+        "required":true,
+        "options": {
+          "DAST": "Dynamic (DAST)",
+          "DASTFile": "Dynamic (upload file)"
+        },
+        "helpMarkDown": "Dynamic (DAST) -- Scan Web applications or web services. <p>Dynamic (upload file) -- Scan from AppScan Standard file</p>"
+      },
+      {
+        "name": "scanURL",
+        "type": "string",
+        "label": "Starting URL",
+        "required": true,
+        "visibleRule": "scantype=dynamic && dynamicType=DAST",
+        "helpMarkDown": "The URL where the scan will start exploring the site.",
+        "validation": {
+          "expression": "isMatch(value,'^$|(http|https)://..*','Multiline')",
+          "message": "Enter a valid Starting URL."
+        }
+      },
+      {
+        "name":"scanfile",
+        "type":"filepath",
+        "label":"Scan File",
+        "required":true,
+        "visibleRule": "scantype=dynamic && dynamicType=DASTFile",
+        "validation": {
+          "expression":"isMatch(value,'^$|\\.(?i:)(?:scan|scant|config)$','IgnoreCase')",
+          "message": "Choose a valid .scan or .scant or .config file."
+        },
+        "helpMarkDown":"The path to a scan template file (.scan or .scant or .config)"
+      },
+      {
+        "name": "OpenSourceScanOnly",
+        "type": "boolean",
+        "label": "Open Source Only",
+        "required": false,             
+        "groupName": "addOptsStatic",
+        "helpMarkDown":"To run static analysis with the open source only option, the user must have open source only enabled in the cloud subscription."
+      },
+      {
+        "name": "ScanSpeedOptions",
+        "type": "radio",
+        "label": "Select Scan Speed",
+        "required": false,
+        "defaultValue": "deep",
+        "options": {
+          "simple": "Simple - A simple scan performs a surface-level analysis of your files to identify the most pressing issues for remediation. It takes the least amount of time to complete.",
+          "balanced": "Balanced - A balanced scan provides a medium level of detail on the analysis and identification of security issues, and takes a bit more time to complete than the 'Simple' scan.",
+          "deep":"Deep - A deep scan performs a more complete analysis of your files to identify vulnerabilities, and usually takes longer to complete",
+          "thorough":"Thorough - A thorough scan performs a comprehensive analysis to identify the most comprehensive list of vulnerabilities and will take the longest time to complete."
+        },        
+        "groupName": "addOptsStatic",
+        "helpMarkDown":"Options to determine the scan speed"
+      },
+      {
+        "name": "type",
+        "type": "radio",
+        "label": "Environment",
+        "required":true,
+        "defaultValue": "production",
+        "options": {
+          "production": "Live Production Site  -  During the Scan we will not automatically fill out forms or execute JavaScript code. The scan is less likely to affect the site or the structure of the scan but might take longer.",
+          "staging": "Staging or Testing Environment  -  During the scan we will fill out forms automatically and execute JavaScript code to try and discover as much content as possible. This is a much more comprehensive scan, but also more likely to affect the structure and stability of the site."
+        },
+        "helpMarkDown": "<b>Environment</b> <p>Selecting an environment will affect the Explore stage of the scan</p>",
+        "groupName": "addOptsDynamic",
+        "validation": {
+          "expression": "isMatch(value,'(production|staging)','Multiline')",
+          "message":"Select either Live Production Site or Staging or Testing Environment."
+        }  
+      },
+      {
+        "name": "loginMethod",
+        "type": "radio",
+        "label": "Application Login",
+        "defaultValue": "Required",
+        "options": {
+          "None": "Login not required",
+          "Required": "Login required: Username and password",
+          "Record": "Login required: Record login"
+        },
+        "helpMarkDown": "<b>Application Login</b> <p>Provide login credentials so AppScan can scan pages that require authentication.</p> <p>You can either type username and password manually, or record the login process using AppScan Activity Recorder (browser extension for Chrome and Edge).</p> <p><b>Note</b>:The login credentials are stored safely, but we recommend that you use a dedicated test account.</p> <p>[Learn more](https://help.hcltechsw.com/appscan/ASoC/asd_scanning_CM.html)</p>",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"dynamicuser",
+        "type":"string",
+        "label":"Username",
+        "required":true,
+        "visibleRule": "loginMethod=Required",
+        "helpMarkDown":"<b>Username</b> <p>Provide a valid username for HCL AppScan on Cloud to use to log in when scanning your app.</p>",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"dynamicloginpassword",
+        "type":"string",
+        "label":"Password",
+        "required":true,
+        "visibleRule": "loginMethod=Required",
+        "helpMarkDown":"<b>Password</b> <p>Enter the password for the provided username. Use a new variable with its lock enabled on the Variables tab to encrypt this value.</p>",
+        "groupName":"addOptsDynamic"
+      },
+      {
+        "name":"dynamicextra",
+        "type":"string",
+        "label":"Third Credential",
+        "required":false,
+        "visibleRule": "loginMethod=Required",
+        "helpMarkDown":"<b>Third Credential</b> <p>If your application login process requires a third credential, add it here.</p>",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name": "logintrafficFile",
+        "type": "filepath",
+        "label": "Login Sequence File",
+        "required": true,
+        "visibleRule": "loginMethod=Record",
+        "groupName":"addOptsDynamic",
+        "validation": {
+          "expression": "isMatch(value,'^$|\\.(?i:)(?:CONFIG)$','IgnoreCase')",
+          "message": "Enter a valid .config file."
+        },
+        "helpMarkDown": "<b>Login Sequence File</b> <p>Provide a path to the Login Traffic File data. Supported file type: CONFIG: AppScan Activity Recorder file.</p> <p><b>How to record login?</b></p><p>To use the AppScan Activity Recorder extension (for Chrome or Edge):</p><p><ol><li>Install [AppScan Activity Recorder](https://chrome.google.com/webstore/detail/appscan-activity-recorder/ijbfdoojnepibegmkhhilmeijonibmcn?hl=en%E2%80%8B).</li><li>Open a new tab, enter the Starting URL.</li><li>Click the extension icon, and record your login sequence.<br>Note: You must be logged out of the application before you start the recording.</li><li>When finished, click the extension icon again, to stop the recording. You will be prompted to save the CONFIG file.</li><li>Select the file here.</li></ol>[Learn more](https://help.hcltechsw.com/appscan/ASoC/r_record_traffic.html)</p>"
+      },
+      {
+        "name": "network",
+        "type": "radio",
+        "label": "Network",
+        "defaultValue": "private",
+        "required":true,
+        "options": {
+          "public": "Public network",
+          "private": "Private network"
+        },
+        "groupName":"addOptsDynamic",
+        "helpMarkDown": "<b>Network</b> <p>If your server is located in a private network, and not accessible to the internet, AppScan needs a Presence to gain access to the server.To set up, go to AppScan Presence</p><p>[Learn more](https://help.hcltechsw.com/appscan/ASoC/appseccloud_scanning_presence.html)</p>"
+      },
+      {
+        "name":"dynamicpresence",
+        "type":"picklist",
+        "label":"Presence",
+        "required":true,
+        "visibleRule": "network=private",
+        "helpMarkDown":"<b>Presence</b> <p>An [AppScan Presence](https://help.hcltechsw.com/appscan/ASoC/appseccloud_scanning_presence.html) on your server enables you to scan sites not accessible from the Internet, and to incorporate scanning as part of your functional testing.</p>",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"optimization",
+        "type":"picklist",
+        "label":"Test Optimization",
+        "defaultValue": "Fast",
+        "options": {          
+          "false": "No Optimization",
+          "true": "Fast"          ,
+          "faster": "Faster",
+          "fastest": "Fastest"
+        },
+        "helpMarkDown":"<b>Test Optimization</b> <p>You can reduce scan time by choosing a balance between speed and issue coverage. Optimized scans omit tests defined in the Test policy for less severe or less likely vulnerabilities, based on ongoing statistical analyses.\n\n <b>Note</b>: The actual reduction in time, and extent of issue coverage, will vary depending on your application.</p><p>[Learn more](https://help.hcltechsw.com/appscan/ASoC/dast_test_optimization.html)</p>",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name": "networkFile",
+        "type": "radio",
+        "label": "Network",
+        "defaultValue": "private",
+        "required":true,
+        "options": {
+          "public": "Public network",
+          "private": "Private network"
+        },
+        "groupName":"addOptsDynamicFile",
+        "helpMarkDown": "<b>Network</b> <p>If your server is located in a private network, and not accessible to the internet, AppScan needs a Presence to gain access to the server.To set up, go to AppScan Presence</p><p>[Learn more](https://help.hcltechsw.com/appscan/ASoC/appseccloud_scanning_presence.html)</p>"
+      },
+      {
+        "name":"dynamicpresenceUploadFile",
+        "type":"picklist",
+        "label":"Presence",
+        "required":true,
+        "visibleRule": "networkFile=private",
+        "helpMarkDown":"<b>Presence</b> <p>An [AppScan Presence](https://help.hcltechsw.com/appscan/ASoC/appseccloud_scanning_presence.html) on your server enables you to scan sites not accessible from the Internet, and to incorporate scanning as part of your functional testing.</p>",
+        "groupName": "addOptsDynamicFile"
+      },
+      {
+        "name":"email",
+        "type":"boolean",
+        "label":"Email Notification",
+        "required":false,
+        "defaultValue":false,
+        "helpMarkDown":"Send the user an email when analysis is complete.",
+        "groupName": "advanced"
+      },
+      {
+        "name":"personalScan",
+        "type":"boolean",
+        "label":"Run as a personal scan",
+        "required":false,
+        "defaultValue":false,
+        "helpMarkDown":"<b>Personal scan</b> <p>A personal scan does not affect the application data and compliance until it is promoted. If not promoted it is deleted after 30 days.</p> <p>[Learn more](https://help.hcltechsw.com/appscan/ASoC/appseccloud_scans_personal.html)</p> ",
+        "groupName": "advanced"
+      },
+      {
+        "name":"intervention",
+        "type":"boolean",
+        "label":"Allow intervention by scan enablement team",
+        "required":false,
+        "defaultValue":true,
+        "helpMarkDown":"<b>Allow intervention</b> <p> When selected (default), our scan enablement team will step in if the scan fails, or if no issues are found, and try to fix the configuration. This may delay the scan result. </p>", 
+        "groupName": "advanced"
+      },
+      {
+        "name":"suspend",
+        "type":"boolean",
+        "label":"Suspend job until security analysis completes",
+        "required":false,
+        "defaultValue":true,
+        "helpMarkDown":"When selected, scan report and summary are available in Azure. Otherwise, download the report from HCL AppScan on Cloud portal.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "FailBuildConfiguration",
+        "type": "boolean",
+        "label": "Fail Build Configuration",
+        "required": false,
+        "defaultValue":false,
+        "groupName": "advanced",
+        "visibleRule": "suspend=true",
+        "helpMarkDown":"Configure the conditions that will cause the build to fail based on the results of the security scan."
+      },
+      {
+        "name": "FailBuildChoice",
+        "type": "radio",
+        "label": "Choose One:",
+        "required": false,
+        "defaultValue": "noncomplaint",
+        "options": {
+          "noncomplaint": "For noncompliance with application policies",
+          "conditionset": "When following conditions are met:"
+        },
+        "visibleRule": "FailBuildConfiguration=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build either based on a set of conditions or if one or more issues are found which are non compliant with respect to the selected application's policies."
+      },
+      {
+        "name": "buildfailTotal",
+        "type": "boolean",
+        "label": "Total",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "defaultValue": true,        
+        "helpMarkDown":"Fail the build if the total number of security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionTotal",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailTotal=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for total count of issues"
+      },
+      {
+        "name": "buildfailHigh",
+        "type": "boolean",
+        "label": "High",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of High severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionHigh",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailHigh=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for high count of issues"
+      },
+      {
+        "name": "buildfailMedium",
+        "type": "boolean",
+        "label": "Medium",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Medium severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionMedium",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailMedium=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for medium count of issues"
+      },
+      {
+        "name": "buildfailLow",
+        "type": "boolean",
+        "label": "Low",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Low severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionLow",
+        "type": "string",
+        "label": "Security Issues is greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailLow=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for low count of issues"
+      }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "applications",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL":"{{endpoint.url}}/api/V2/Apps?$select=Name,Id&$orderby=Name",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+      },
+      {
+        "target": "dynamicpresence",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL": "{{endpoint.url}}/api/V2/Presences?$orderby=PresenceName",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{PresenceName}}}\" }"
+      },
+      {
+        "target": "dynamicpresenceUploadFile",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL": "{{endpoint.url}}/api/V2/Presences?$orderby=PresenceName",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{PresenceName}}}\" }"
+      }
+    ],
+     "execution": {
+      "Node": {
+        "target": "scan.js",
+		    "workingDirectory": "$(currentDirectory)",
+        "argumentFormat": ""
+      }
+    }
+  }

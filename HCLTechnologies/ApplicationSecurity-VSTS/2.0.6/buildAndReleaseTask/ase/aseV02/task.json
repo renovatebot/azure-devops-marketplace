@@ -1,0 +1,301 @@
+{
+  "id": "06aeb232-6a2a-49d4-a521-d39835851b26",
+  "name": "HCL AppScan Enterprise",
+  "friendlyName": "HCL AppScan Enterprise",
+  "description": "Perform dynamic scans via creation and execution of DAST scans in AppScan Enterprise.",
+  "author": "HCLTechnologies",
+  "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=HCLTechnologies.ApplicationSecurity-VSTS)",
+  "category": "Build",
+  "showEnvironmentVariables": "true",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "6"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Run HCL AppScan Enterprise Security Test",
+  "inputs": [
+    {
+      "name": "ServiceEndPointAse",
+      "type": "connectedService:Application Enterprise Security Test",
+      "label": "Credentials",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the credentials to use for running a scan. Add credentials using the HCL AppScan Enterprise Service.<a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/t_appscan_enterprise_rest_APIs_list.html\"> How do I get my credentials?</a>"
+    },
+    {
+      "name": "jobName",
+      "type": "string",
+      "label": "Job Name",
+      "required": true,
+      "helpMarkDown": "The name for the scan job. The job name will be suffixed with the job creation time stamp."
+    },
+    {
+      "name": "folderId",
+      "type": "int",
+      "label": "Folder ID",
+      "required": true,
+      "helpMarkDown": "The folder ID for the scan.<a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/t_appscan_enterprise_rest_APIs_list.html\"> How do I get my Folder ID?</a>",
+      "validation": {
+        "expression": "isMatch(value,'^[1-9][0-9]*$','Multiline')",
+        "message": "Enter a valid number."
+      }
+    },
+    {
+      "name": "templateId",
+      "type": "int",
+      "label": "Template ID",
+      "required": true,
+      "helpMarkDown": "The template ID for the scan.<a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/t_appscan_enterprise_rest_APIs_list.html\"> How do I get my Template ID?</a>",
+      "validation": {
+        "expression": "isMatch(value,'^[1-9][0-9]*$','Multiline')",
+        "message": "Enter a valid number."
+      }
+    },
+    {
+      "name": "testPolicyId",
+      "type": "int",
+      "label": "Test Policy ID",
+      "required": true,
+      "helpMarkDown": "The test policy ID for the scan.<a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/t_appscan_enterprise_rest_APIs_list.html\"> How do I get my Test Policy ID?</a>",
+      "validation": {
+        "expression": "isMatch(value,'^[1-9][0-9]*$','Multiline')",
+        "message": "Enter a valid number."
+      }
+    },
+    {
+      "name": "applicationId",
+      "type": "int",
+      "label": "Application ID",
+      "required": false,
+      "helpMarkDown": "The application ID for the scan.<a target=\"_blank\" href=\"https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/t_appscan_enterprise_rest_APIs_list.html\"> How do I get my Application ID?</a> Application ID is required to generate a PDF report.",
+      "validation": {
+        "expression": "isMatch(value,'^$|[1-9][0-9]*$','Multiline')",
+        "message": "Enter a valid number."
+      }
+    },
+    {
+      "name": "startingURL",
+      "type": "string",
+      "label": "Starting URL",
+      "required": false,
+      "helpMarkDown": "The URL where the scan will start exploring the site.",
+      "validation": {
+        "expression": "isMatch(value,'^$|(http|https)://..*','Multiline')",
+        "message": "Enter a valid Starting URL."
+      }
+    },
+    {
+      "name": "loginMethod",
+      "type": "radio",
+      "label": "Select the login method",
+      "defaultValue": "Manual",
+      "options": {
+        "Manual": "Recorded Login - Login to the application using recorded login sequence.",
+        "Automatic": "Automatic Login - Login to the application automatically using the credentials.",
+        "None": "None - Login is not required."
+      },
+      "helpMarkDown": "Select the login method for web application."
+    },
+    {
+      "name": "trafficFile",
+      "type": "filepath",
+      "label": "Login Traffic File",
+      "required": true,
+      "visibleRule": "loginMethod=Manual",
+      "validation": {
+        "expression": "isMatch(value,'^$|\\.(?i:)(?:EXD|HAR|DAST.CONFIG|LOGIN)$','IgnoreCase')",
+        "message": "Enter a valid .exd or .har or .dast.config or .login file."
+      },
+      "helpMarkDown": "Provide a path to the Login Traffic File data, to use as part of a new scan. Supported file formats are EXD, HAR, DAST.CONFIG and LOGIN."
+    },
+    {
+      "name": "autoUserName",
+      "type": "string",
+      "label": "User Name",
+      "required": true,
+      "visibleRule": "loginMethod=Automatic",
+      "helpMarkDown": "Provide the user name for your web application."
+    },
+    {
+      "name": "autoPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "visibleRule": "loginMethod=Automatic",
+      "helpMarkDown": "Provide the password for your web application. Use a new variable with its lock enabled on the Variables tab to encrypt this value."
+    },
+    {
+      "name": "scanOptions",
+      "type": "radio",
+      "label": "Scan",
+      "defaultValue": "1",
+      "options": {
+        "1": "Full automatic scan - Automatically explore and test your web application. The test stage will run on both automatic and manual explore data.",
+        "3": "Test Only - The test will run only on external recorded manual explore data. Add the path in Manual explore."
+      },
+      "helpMarkDown": "Select the scan option."
+    },
+    {
+      "name": "manualExplorePathAuto",
+      "type": "filepath",
+      "label": "Manual explore (externally recorded) Path",
+      "required": false,
+      "visibleRule": "scanOptions=1",
+      "validation": {
+        "expression": "isMatch(value,'^$|\\.(?i:)(?:EXD|HAR|DAST.CONFIG)$','IgnoreCase')",
+        "message": "Enter a valid .exd or .har or .dast.config file."
+      },
+      "helpMarkDown": "Provide a path to the Manual explore data, to use as part of a new scan. Supported Manual explore file formats are: EXD, HAR and DAST.CONFIG."
+    },
+    {
+      "name": "manualExplorePathTest",
+      "type": "filepath",
+      "label": "Manual explore (externally recorded) Path",
+      "required": true,
+      "visibleRule": "scanOptions=3",
+      "validation": {
+        "expression": "isMatch(value,'^$|\\.(?i:)(?:EXD|HAR|DAST.CONFIG)$','IgnoreCase')",
+        "message": "Enter a valid .exd or .har or .dast.config file."
+      },
+      "helpMarkDown": "Provide a path to the Manual explore data, to use as part of a new scan. Supported Manual explore file formats are: EXD, HAR and DAST.CONFIG."
+    },
+    {
+      "name": "optimization",
+      "type": "radio",
+      "label": "Test Optimization",
+      "defaultValue": "Fast",
+      "options": {
+        "Fast": "Fast - Scan will find about 97% vulnerabilities of equivalent non-optimized scan. Recommended for security experts for more frequent scans.",
+        "Faster": "Faster - Scan will find about 85% vulnerabilities of equivalent non-optimized scan. Recommended for DevSecOps during ongoing evaluation.",
+        "Fastest": "Fastest - Scan will find about 70% vulnerabilities of equivalent non-optimized scan. Recommended for Dev and QA during initial evaluation.",
+        "Optimization": "No Optimization - Scan will test for all issues in the selected Test Policy Longest scan. Recommended for security experts before major releases, compliance and benchmarks."
+      },
+      "helpMarkDown": "You can reduce scan time by choosing a balance between speed and issue coverage. Optimized scans omit tests defined in the Test policy for less severe or less likely vulnerabilities, based on ongoing statistical analyses. [Read more about test optimization](https://help.hcltechsw.com/appscan/Enterprise/10.0.6/topics/r_TestTestOptimization.html) \n\n Note: The actual reduction in time, and extent of issue coverage, will vary depending on your application."
+    },
+    {
+      "name": "designatedAgentServerId",
+      "type": "int",
+      "label": "Designated Agent Server ID",
+      "required": false,
+      "helpMarkDown": "The designated agent server ID for the scan. To get Designated Agent Server ID use GET /agentServer API.",
+      "validation": {
+        "expression": "isMatch(value,'^$|[1-9][0-9]*$','Multiline')",
+        "message": "Enter a valid number."
+      }
+    },
+    {
+      "name": "suspend",
+      "type": "boolean",
+      "label": "Suspend job until security analysis completes",
+      "required": false,
+      "defaultValue": true,
+      "helpMarkDown": "Suspend the job until the security analysis results are available."
+    },
+    {
+      "name": "failBuildConfiguration",
+      "type": "boolean",
+      "label": "Fail the build if one of the following conditions apply:",
+      "required": false,
+      "defaultValue": false,
+      "visibleRule": "suspend=true",
+      "helpMarkDown": "Configure the conditions that will cause the build to fail based on the results of the security scan."
+    },
+    {
+      "name": "buildfailTotal",
+      "type": "boolean",
+      "label": "Total",
+      "required": false,
+      "visibleRule": "failBuildConfiguration=true",
+      "defaultValue": true,
+      "helpMarkDown": "Fail the build if the total number of security issues is greater than the specified value."
+    },
+    {
+      "name": "buildfailconditionTotal",
+      "type": "string",
+      "label": "Security Issues greater than:",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "buildfailTotal=true",
+      "validation": {
+        "expression": "isMatch(value,'^([0-9])*$','Multiline')",
+        "message": "Enter a valid number."
+      },
+      "helpMarkDown": "Threshold value to fail the build for total count of issues."
+    },
+    {
+      "name": "buildfailHigh",
+      "type": "boolean",
+      "label": "High",
+      "required": false,
+      "visibleRule": "failBuildConfiguration=true",
+      "helpMarkDown": "Fail the build if the number of High severity security issues is greater than the specified value."
+    },
+    {
+      "name": "buildfailconditionHigh",
+      "type": "string",
+      "label": "Security Issues greater than:",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "buildfailHigh=true",
+      "validation": {
+        "expression": "isMatch(value,'^([0-9])*$','Multiline')",
+        "message": "Enter a valid number."
+      },
+      "helpMarkDown": "Threshold value to fail the build for high count of issues."
+    },
+    {
+      "name": "buildfailMedium",
+      "type": "boolean",
+      "label": "Medium",
+      "required": false,
+      "visibleRule": "failBuildConfiguration=true",
+      "helpMarkDown": "Fail the build if the number of Medium severity security issues is greater than the specified value."
+    },
+    {
+      "name": "buildfailconditionMedium",
+      "type": "string",
+      "label": "Security Issues greater than:",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "buildfailMedium=true",
+      "validation": {
+        "expression": "isMatch(value,'^([0-9])*$','Multiline')",
+        "message": "Enter a valid number."
+      },
+      "helpMarkDown": "Threshold value to fail the build for medium count of issues."
+    },
+    {
+      "name": "buildfailLow",
+      "type": "boolean",
+      "label": "Low",
+      "required": false,
+      "visibleRule": "failBuildConfiguration=true",
+      "helpMarkDown": "Fail the build if the number of Low severity security issues is greater than the specified value."
+    },
+    {
+      "name": "buildfailconditionLow",
+      "type": "string",
+      "label": "Security Issues is greater than:",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "buildfailLow=true",
+      "validation": {
+        "expression": "isMatch(value,'^([0-9])*$','Multiline')",
+        "message": "Enter a valid number."
+      },
+      "helpMarkDown": "Threshold value to fail the build for low count of issues."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "scan.js",
+      "workingDirectory": "$(currentDirectory)",
+      "argumentFormat": ""
+    }
+  }
+}

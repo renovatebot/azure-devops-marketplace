@@ -1,0 +1,406 @@
+{
+    "id": "6e743613-d4b8-48d2-8ee3-1b8ec3ab00fe",
+    "name": "HCLAppScan",
+    "friendlyName": "HCL AppScan",
+    "description": "Perform static, dynamic, mobile and open source security tests for your applications.",
+    "author": "HCLTechnologies",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=HCLTechnologies.ApplicationSecurity-VSTS)",
+    "category": "Build",
+    "visibility": [
+      "Build"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "2",
+      "Patch": "10"
+    },
+    "deprecated": true,
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Run HCL AppScan Security Test",
+    "groups": [
+      {
+        "name": "addOptsStatic",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=static",
+        "isExpanded": false
+      },
+      {
+        "name": "addOptsDynamic",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=dynamic",
+        "isExpanded": false
+      },
+      {
+        "name": "addOptsMobile",
+        "displayName": "Additional Options",
+        "visibleRule": "scantype=mobile",
+        "isExpanded": false
+      },
+      {
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": false
+      }
+    ],
+    "inputs": [
+      {
+        "name": "AppSecTestService",
+        "type": "connectedService:Application Security Test",
+        "label": "Credentials",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the credentials to use for running a scan. Add credentials using the HCL AppScan Service."
+      },
+      {
+        "name": "applications",
+        "type": "pickList",
+        "label": "Application",
+        "required": true,
+        "helpMarkDown": "The application that this scan will be associated with. If the list is empty ensure that you have a valid selection in the Credentials field."
+      },
+      {
+        "name": "scanname",
+        "type": "string",
+        "label": "Scan Name",
+        "required": false,
+        "helpMarkDown": "An optional name for the scan. This name is used to differentiate results on the Build page."
+      },
+      {
+        "name": "scantype",
+        "type": "pickList",
+        "label": "Scan Type",
+        "required": true,
+        "defaultValue": "static",
+        "options": {
+          "static": "Static Analyzer",
+          "dynamic": "Dynamic Analyzer",
+          "mobile": "Mobile Analyzer"
+        },
+        "helpMarkDown": "The type of test to run."
+      },
+      {
+        "name": "scanloc",
+        "type": "filepath",
+        "label": "Repository Subdirectory To Scan",
+        "required": false,
+        "visibleRule": "scantype=static",
+        "helpMarkDown": "Limits the scan to a subdirectory of the repository. Leave this field blank to scan the entire repository."
+      },
+      {
+        "name": "scanURL",
+        "type": "string",
+        "label": "Starting URL",
+        "required": true,
+        "visibleRule": "scantype=dynamic",
+        "helpMarkDown": "The URL where the scan will start exploring the site."
+      },
+      {
+        "name": "appFile",
+        "type": "filepath",
+        "label": "Application File",
+        "required": true,
+        "visibleRule": "scantype=mobile",
+        "validation": {          
+          "expression":"isMatch(value,'^$|\\.(?i:)(?:ipa|apk)$','IgnoreCase')",
+          "message": "Choose a valid .apk or .ipa file."
+        },
+        "helpMarkDown": "The .apk or .ipa file to be scanned."
+      },
+      {
+        "name": "OpenSourceScanOnly",
+        "type": "boolean",
+        "label": "Open source only",
+        "required": false,             
+        "groupName": "addOptsStatic",
+        "helpMarkDown":"To run static analysis with the open source only option, the user must have open source only enabled in the cloud subscription."
+      },
+      {
+        "name": "ScanSpeedOptions",
+        "type": "radio",
+        "label": "Select Scan Speed",
+        "required": false,
+        "defaultValue": "deep",
+        "options": {
+          "simple": "Simple - A simple scan performs a surface-level analysis of your files to identify the most pressing issues for remediation. It takes the least amount of time to complete.",
+          "balanced": "Balanced - A balanced scan provides a medium level of detail on the analysis and identification of security issues, and takes a bit more time to complete than the 'Simple' scan.",
+          "deep":"Deep - A deep scan performs a more complete analysis of your files to identify vulnerabilities, and usually takes longer to complete",
+          "thorough":"Thorough - A thorough scan performs a comprehensive analysis to identify the most comprehensive list of vulnerabilities and will take the longest time to complete."
+        },        
+        "groupName": "addOptsStatic",
+        "helpMarkDown":"Options to determine the scan speed"
+      },
+      {
+        "name":"type",
+        "type":"picklist",
+        "label":"Site Type",
+        "options": {
+          "staging": "Staging",
+          "production": "Production",
+          "none":"NA"
+        },
+        "required":false, 
+        "helpMarkDown":"Defines whether the site is Staging or Production.",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"optimization",
+        "type":"picklist",
+        "label":"Test Optimization",
+        "defaultValue": "Fast",
+        "options": {          
+          "false": "No Optimization",
+          "true": "Fast"          ,
+          "faster": "Faster",
+          "fastest": "Fastest"
+        },
+        "helpMarkDown":"You can reduce scan time by choosing a balance between speed and issue coverage. Optimized scans omit tests defined in the Test policy for less severe or less likely vulnerabilities, based on ongoing statistical analyses. [Read more about test optimization](https://help.hcltechsw.com/appscan/ASoC/dast_test_optimization.html) \n\n Note: The actual reduction in time, and extent of issue coverage, will vary depending on your application.",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"dynamicuser",
+        "type":"string",
+        "label":"Login User",
+        "required":false,
+        "defaultValue": "",
+        "helpMarkDown":"Provide a valid username for HCL AppScan on Cloud to use to log in when scanning your app.",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"dynamicloginpassword",
+        "type":"string",
+        "label":"Login Password",
+        "defaultValue":"",
+        "helpMarkDown":"Enter the password for the provided username. Use a new variable with its lock enabled on the Variables tab to encrypt this value.",
+        "groupName":"addOptsDynamic"
+      },
+      {
+        "name":"dynamicextra",
+        "type":"string",
+        "label":"Third Credential",
+        "required":false,
+        "defaultValue": "",
+        "helpMarkDown":"If your application login process requires a third credential, add it here..",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"dynamicpresence",
+        "type":"picklist",
+        "label":"Presence",
+        "required":false,
+        "helpMarkDown":"For sites not available on the internet, provide the ID of the AppScan Presence that can be used for the scan.",
+        "groupName": "addOptsDynamic"
+      },
+      {
+        "name":"scanfile",
+        "type":"filepath",
+        "label":"Scan File",
+        "required":false,
+        "validation": {
+          "expression":"isMatch(value,'^$|\\.(?i:)(?:scan|scant)$','IgnoreCase')",
+          "message": "Choose a valid .scan or .scant file."
+          },
+        "helpMarkDown":"The path to a scan template file (.scan or .scant)",
+        "groupName":"addOptsDynamic"
+      },
+      {
+        "name":"mobileuser",
+        "type":"string",
+        "label":"Login User",
+        "required":false,
+        "defaultValue": "",
+        "helpMarkDown":"Provide a valid username for HCL AppScan on Cloud to use to log in when scanning your app.",
+        "groupName": "addOptsMobile"
+      },
+      {
+        "name":"mobileloginpassword",
+        "type":"string",
+        "label":"Login Password",
+        "defaultValue":"",
+        "helpMarkDown":"Enter the password for the provided username. Use a new variable with its lock enabled on the Variables tab to encrypt this value.",
+        "groupName":"addOptsMobile"
+      },
+      {
+        "name":"mobileextra",
+        "type":"string",
+        "label":"Third Credential",
+        "required":false,
+        "defaultValue": "",
+        "helpMarkDown":"If your application login process requires a third credential, add it here..",
+        "groupName": "addOptsMobile"
+      },
+      {
+        "name":"mobilepresence",
+        "type":"picklist",
+        "label":"Presence",
+        "required":false,
+        "helpMarkDown":"For sites not available on the internet, provide the ID of the AppScan Presence that can be used for the scan.",
+        "groupName": "addOptsMobile"
+      },
+      {
+        "name":"email",
+        "type":"boolean",
+        "label":"Email Notification",
+        "required":false,
+        "defaultValue":false,
+        "helpMarkDown":"Send the user an email when analysis is complete.",
+        "groupName": "advanced"
+      },
+      {
+        "name":"suspend",
+        "type":"boolean",
+        "label":"Suspend job until security analysis completes",
+        "required":false,
+        "defaultValue":true,
+        "helpMarkDown":"Suspend the job until the security analysis results are available.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "FailBuildConfiguration",
+        "type": "boolean",
+        "label": "Fail Build Configuration",
+        "required": false,
+        "defaultValue":false,
+        "groupName": "advanced",
+        "visibleRule": "suspend=true",
+        "helpMarkDown":"Configure the conditions that will cause the build to fail based on the results of the security scan."
+      },
+      {
+        "name": "FailBuildChoice",
+        "type": "radio",
+        "label": "Choose One:",
+        "required": false,
+        "defaultValue": "noncomplaint",
+        "options": {
+          "noncomplaint": "For noncompliance with application policies",
+          "conditionset": "When following conditions are met:"
+        },
+        "visibleRule": "FailBuildConfiguration=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build either based on a set of conditions or if one or more issues are found which are non compliant with respect to the selected application's policies."
+      },
+      {
+        "name": "buildfailTotal",
+        "type": "boolean",
+        "label": "Total",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "defaultValue": true,        
+        "helpMarkDown":"Fail the build if the total number of security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionTotal",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailTotal=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for total count of issues"
+      },
+      {
+        "name": "buildfailHigh",
+        "type": "boolean",
+        "label": "High",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of High severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionHigh",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailHigh=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for high count of issues"
+      },
+      {
+        "name": "buildfailMedium",
+        "type": "boolean",
+        "label": "Medium",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Medium severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionMedium",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailMedium=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for medium count of issues"
+      },
+      {
+        "name": "buildfailLow",
+        "type": "boolean",
+        "label": "Low",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Low severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionLow",
+        "type": "string",
+        "label": "Security Issues is greater than:",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "buildfailLow=true",
+        "groupName": "advanced",
+        "validation": {          
+          "expression":"isMatch(value,'^([0-9])*$','Multiline')",
+          "message": "Enter a valid number."
+        },
+        "helpMarkDown":"Threshold value to fail the build for low count of issues"
+      }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "applications",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL":"{{endpoint.url}}/api/V2/Apps?$select=Name,Id",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+      },
+      {
+        "target": "mobilepresence",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL": "{{endpoint.url}}/api/V2/Presences/",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{PresenceName}}}\" }"
+      },
+      {
+        "target": "dynamicpresence",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL": "{{endpoint.url}}/api/V2/Presences/",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{PresenceName}}}\" }"
+      }
+    ],
+     "execution": {
+      "Node": {
+        "target": "scan.js",
+		    "workingDirectory": "$(currentDirectory)",
+        "argumentFormat": ""
+      }
+    }
+  }
