@@ -1,0 +1,101 @@
+{
+  "id": "c6e03830-0f0f-4a14-a8e1-bf346ed737e4",
+  "name": "EventLogSource",
+  "friendlyName": "Event Log Source",
+  "description": "To add or delete event log sources",
+  "author": "Baskar Lingam Ramachandran <bskr.psgtech@gmail.com>",
+  "helpMarkDown": "Use this task to Add or Delete Event Log Sources. Contact author for more details.",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "14"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "$(LogSourceAction) Event Log Source(s)",
+  "inputs": [
+    {
+      "name": "LogSourceNames",
+      "type": "multiLine",
+      "label": "Log Source Names",
+      "required": true,
+      "defaultValue": "LogSourceName",
+	  "helpMarkDown": "Enter Event Log Source names one in each line without any other delimiter",
+	  "properties": {
+        "resizable": "true",
+        "rows": "3"
+		}
+    },
+    {
+      "name": "LogSourceAction",
+      "type": "radio",
+      "label": "Log Source Action",
+      "required": true,
+      "defaultValue": "Create",
+      "helpMarkDown": "Choose 'Create' to create event log source or Choose 'Delete' to delete event log source",
+      "options": {
+        "Create": "Create Event Log Source",
+        "Delete": "Delete Event Log Source"
+      }
+    },
+	{
+      "name": "LogName",
+      "type": "radio",
+      "label": "Log Name",
+      "required": true,
+      "defaultValue": "Application",
+      "helpMarkDown": "Choose event log name in where the log sources should be created or from where the log sources should be deleted.",
+	  "options": {
+        "Application": "Application",
+        "System": "System",
+		"Security": "Security"
+      }
+    },
+	{
+      "name": "RecreateExisting",
+      "type": "boolean",
+      "label": "Recreate Existing?",
+      "required": false,
+      "defaultValue": "false",
+	  "helpMarkDown": "If any of the event log sources exist mark this field to delete the existing log sources and recreate them.",
+	  "visibleRule": "LogSourceAction = Create"
+    },
+	{
+      "name": "CategoryResourceFile",
+      "type": "string",
+      "label": "CategoryResourceFile",
+      "required": false,
+      "defaultValue": "",
+	  "helpMarkDown": "This file contains category strings for the source events. This file is also known as the Category Message File. Leave this empty if not required.[For More Information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-eventlog)",
+	  "visibleRule": "LogSourceAction = Create"
+    },
+	{
+      "name": "MessageResourceFile",
+      "type": "string",
+      "label": "MessageResourceFile",
+      "required": false,
+      "defaultValue": "",
+	  "helpMarkDown": "This file contains message formatting strings for the source events. This file is also known as the Event Message File. Leave this empty if not required. The value of 'C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\EventLogMessages.dll' will be used if not specified. [For More Information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-eventlog)",
+	  "visibleRule": "LogSourceAction = Create"
+    },
+	{
+      "name": "ParameterResourceFile",
+      "type": "string",
+      "label": "ParameterResourceFile",
+      "required": false,
+      "defaultValue": "",
+	  "helpMarkDown": "This file contains strings used for parameter substitutions in event descriptions. This file is also known as the Parameter Message File. Leave this empty if not required.[For More Information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-eventlog)",
+	  "visibleRule": "LogSourceAction = Create"
+    }
+  ],
+  "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\task.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
