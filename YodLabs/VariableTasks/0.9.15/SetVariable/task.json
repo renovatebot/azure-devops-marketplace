@@ -1,0 +1,171 @@
+{
+    "id": "fabce42f-1d38-4004-a1ec-49c90d18e8ea",
+    "name": "SetVariable",
+    "friendlyName": "Set/changes the value of variable",
+    "description": "Sets or changes the value of a variable. Either a new or an existing one. Optionally a transform can be applied.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=YodLabs.VariableTasks) Version 0.9.11",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Yod Labs",
+    "version": {
+        "Major": 0,
+        "Minor": 9,
+        "Patch": 11
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.83.0",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "variableName",
+            "type": "string",
+            "label": "Variable Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the variable you wish to set the value. Either a new or an existing one."
+        },
+        {
+            "name": "value",
+            "type": "string",
+            "label": "Variable new value",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The new value of the variable, you can use other variables values."
+        },
+        {
+            "name": "transform",
+            "type": "pickList",
+            "label": "Transformation",
+            "defaultValue": "",
+            "options": {
+                "": "no transformation",
+                "toUpperCase": "upper case",
+                "toLowerCase": "lower case",
+                "replace": "replace",
+                "substring": "sub set",
+                "regexpMatch": "regular expression match",
+                "regexpReplace": "regular expression replace"
+            },
+            "required": false,
+            "helpMarkDown": "The transformation to be applied to the value. You can do nothing, uppercase it, lowercase it or replace parts of the string"
+        },
+        {
+            "name": "searchValue",
+            "type": "string",
+            "label": "search value",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "transform = replace",
+            "helpMarkDown": " The value or regular expression that will be replaced by the new value (all ocurrences)."
+        },
+        {
+            "name": "newValue",
+            "type": "string",
+            "label": "replace with",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "transform = replace",
+            "helpMarkDown": "The value to replace the search value with."
+        },
+        {
+            "name": "indexStart",
+            "type": "string",
+            "label": "Index start (0 based)",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "transform = substring",
+            "helpMarkDown": "An integer between 0 and the length of the string, specifying the offset into the string of the first character to include in the returned substring."
+        },
+        {
+            "name": "indexEnd",
+            "type": "string",
+            "label": "Index end (0 based)",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "transform = substring",
+            "helpMarkDown": "An integer between 0 and the length of the string, which specifies the offset into the string of the first character not to include in the returned substring."
+        },
+        {
+            "name": "regexpExpression",
+            "type": "string",
+            "label": "Regular Expression",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "transform = regexpMatch",
+            "helpMarkDown": "Regular expression."
+        },
+        {
+            "name": "regexpMatchNumber",
+            "type": "string",
+            "label": "Match group number",
+            "defaultValue": "0",
+            "required": true,
+            "visibleRule": "transform = regexpMatch",
+            "helpMarkDown": "The match number to set, zero for the entire match. 1 for the first group match, etc"
+        },
+        {
+            "name": "regexpCaseInsensitive",
+            "type": "boolean",
+            "label": "Case Insensitive",
+            "defaultValue": "true",
+            "required": true,
+            "visibleRule": "transform = regexpMatch",
+            "helpMarkDown": "Should the match be case insensitive or not."
+        },
+        {
+            "name": "regexpFailNoMatch",
+            "type": "boolean",
+            "label": "Fail if no match",
+            "defaultValue": "false",
+            "required": true,
+            "visibleRule": "transform = regexpMatch",
+            "helpMarkDown": "If there is no match fail build."
+        },
+        {
+            "name": "regexpReplaceExpression",
+            "type": "string",
+            "label": "regular expression",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "transform = regexpReplace",
+            "helpMarkDown": "Replacement Regular expression ."
+        },
+        {
+            "name": "regexpReplaceValue",
+            "type": "string",
+            "label": "Replacement Value/Expression",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "transform = regexpReplace",
+            "helpMarkDown": "Replace with. Supports replacement patterns $<number> for grouping,, $& for matched substring,etc.  etc. It uses Javascript Regular Expression replacement rules"
+        },
+        {
+            "name": "regexpReplaceCaseInsensitive",
+            "type": "boolean",
+            "label": "Case Insensitive",
+            "defaultValue": "true",
+            "required": true,
+            "visibleRule": "transform = regexpReplace",
+            "helpMarkDown": "Should the match be case insensitive or not."
+        },
+        {
+            "name": "regexpReplaceReplaceAll",
+            "type": "boolean",
+            "label": "Replace all",
+            "defaultValue": "false",
+            "required": true,
+            "visibleRule": "transform = regexpReplace",
+            "helpMarkDown": "replace all ocurrences or only one."
+        }
+    ],
+    "instanceNameFormat": "Set Variable $(variableName) to $(value) with $(transform) applied",
+    "execution": {
+        "Node": {
+            "target": "SetVariable.js",
+            "argumentFormat": ""
+        }
+    }
+}
