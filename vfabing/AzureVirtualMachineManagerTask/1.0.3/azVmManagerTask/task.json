@@ -1,0 +1,90 @@
+{
+    "id":  "d8a5bb69-bcfa-43eb-943d-692e191805fd",
+    "name":  "AzureVirtualMachineManagerTask",
+    "friendlyName":  "Azure Virtual Machine Manager",
+    "description":  "Start / Stop individual Azure Virtual Machine",
+    "helpMarkDown":  "",
+    "author":  "Vivien FABING",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "runsOn":  [
+                   "Agent",
+                   "DeploymentGroup"
+               ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  0,
+                    "Patch":  3
+                },
+    "instanceNameFormat":  "Azure VM",
+    "inputs":  [
+                   {
+                       "name":  "Action",
+                       "type":  "pickList",
+                       "label":  "Action",
+                       "defaultValue":  "Start VM",
+                       "required":  true,
+                       "helpMarkDown":  "Start or Stop an Azure Virtual Machine",
+                       "options":  {
+                                       "Start VM":  "Start an Azure Virtual Machine",
+                                       "Stop VM":  "Stop an Azure Virtual Machine"
+                                   }
+                   },
+                   {
+                       "name":  "ConnectedServiceName",
+                       "aliases":  [
+                                       "azureSubscription"
+                                   ],
+                       "type":  "connectedService:AzureRM",
+                       "label":  "Azure subscription",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Select the Azure Resource Manager subscription for the deployment."
+                   },
+                   {
+                       "name":  "ResourceGroupName",
+                       "type":  "pickList",
+                       "label":  "Resource group",
+                       "required":  true,
+                       "helpMarkDown":  "Provide the name of a resource group.",
+                       "properties":  {
+                                          "EditableOptions":  true
+                                      }
+                   },
+                   {
+                       "name":  "VmName",
+                       "type":  "pickList",
+                       "label":  "Virtual machine name",
+                       "required":  true,
+                       "helpMarkDown":  "Provide the name of a virtual machine.",
+                       "properties":  {
+                                          "EditableOptions":  true
+                                      }
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "ResourceGroupName",
+                                   "endpointId":  "$(ConnectedServiceName)",
+                                   "dataSourceName":  "AzureResourceGroups"
+                               },
+                               {
+                                   "target":  "VmName",
+                                   "endpointId":  "$(ConnectedServiceName)",
+                                   "dataSourceName":  "AzureRMResourcesInRGBasedOnType",
+                                   "parameters":  {
+                                                      "ResourceGroupName":  "$(ResourceGroupName)",
+                                                      "ResourceType":  "Microsoft.Compute/virtualMachines"
+                                                  },
+                                   "resultTemplate":  "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+                               }
+                           ],
+    "execution":  {
+                      "Node":  {
+                                   "target":  "azurevmmanager.js"
+                               }
+                  }
+}
