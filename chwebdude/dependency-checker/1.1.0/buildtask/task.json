@@ -1,0 +1,131 @@
+{
+    "id": "7ab49694-b37b-4b64-b96e-b66d76deec22",
+    "name": "dependency-checker",
+    "friendlyName": "NuGet Dependency Check",
+    "description": "Tool for checking NuGet dependencies.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "chwebdude",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Check Dependencies",
+    "groups": [
+        {
+            "name": "search",
+            "displayName": "Search",
+            "isExpanded": true
+        },
+        {
+            "name": "badge",
+            "displayName": "Badge",
+            "isExpanded": true
+        },
+        {
+            "name": "report",
+            "displayName": "Report",
+            "isExpanded": true
+        },
+         {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "path",
+            "type": "string",
+            "label": "Search Path",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Path to check for the packages.config files.",
+            "groupName": "search"
+        },
+        
+        {
+            "name": "searchRecursive",
+            "type": "boolean",
+            "label": "Search Recursive",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Search subdirectories for the packages files.",
+            "groupName": "search"
+        },
+        {
+            "name": "projectFormat",
+            "type": "pickList",
+            "label": "Project Format",
+            "defaultValue": "Both",
+            "required": true,
+            "options": {
+                "Both": "Both", 
+                "New": "New (Dependencies in *.csproj)",
+                "Old":"Old (Dependencies in packages.config)",            
+            },
+            "helpMarkDown": "Switch if only old, new or both dependencies formats should be used.",
+            "groupName": "search"
+        },
+        {
+            "name": "createBadge",
+            "type": "boolean",
+            "label": "Create Badge",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Create a badge using shields.io. Requires a internet connection!",
+            "groupName": "badge"
+        },
+        {
+            "name": "badgePath",
+            "type": "string",
+            "label": "Badge Path",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)\\dependenciesStatus.svg",
+            "required": true,
+            "helpMarkDown": "Where to save the badge and its name.",
+            "groupName": "badge",
+            "visibleRule": "createBadge = true"
+        },
+
+        {
+            "name": "style",
+            "type": "pickList",
+            "label": "Badge Style",
+            "defaultValue": "plastic",
+            "options": {
+                "plastic": "Plastic", 
+                "flat": "Flat",
+                "flat-square":"Flat Square",
+                "social": "Social"
+            },
+            "helpMarkDown": "The style of the badge. See https://shields.io/#styles",
+            "groupName": "badge",
+            "visibleRule": "createBadge = true"
+        },
+        {
+            "name": "createReport",
+            "type": "boolean",
+            "label": "Create Report",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Create a report of the packages.",
+            "groupName": "report"
+        },
+        {
+            "name": "reportPath",
+            "type": "string",
+            "label": "Report Path",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)\\dependencies.html",
+            "required": true,
+            "helpMarkDown": "Location and name where to save report.",
+            "groupName": "report",
+            "visibleRule": "createReport = true"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/index.js"
+        }
+    }
+}
