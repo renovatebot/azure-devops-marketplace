@@ -1,0 +1,102 @@
+{
+	"id": "61b7c2a7-092d-4b61-8b25-2e09f04e21b6",
+	"name": "DisableIISApplication",
+	"friendlyName": "Disable IIS Application",
+	"description": "Utilizes the app_offline.htm file in ASP.NET to take a website or webapplication offline.",
+	"author": "pwshliquori",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": [ ],
+	"version": {
+        "Major": "1",
+        "Minor": "2",
+        "Patch": "0"
+	},
+	"instanceNameFormat": "Disable IIS Application",
+	"inputs": [
+		{
+			"name": "filePath",
+			"type": "filePath",
+			"label": "File Path",
+			"defaultValue": "$(System.DefaultWorkingDirectory)\\app_offline.htm",
+			"required": true,
+			"helpMarkDown": "Source file path to the app_offline.htm file. The file path must include the app_offline.htm file. e.g. C:/Temp/app_offline.htm"
+		},
+		{
+			"name": "targetType",
+			"type": "radio",
+			"label": "Type",
+			"defaultValue": "unc",
+			"required": false,
+			"helpMarkDown": "Target destination path: UNC path or remote computer local path.",
+			"options": {
+				"unc": "UNC Path",
+				"remoteComputer": "Remote Computer"
+			}
+		},
+		{
+			"name": "uncPath",
+			"type": "textbox",
+			"label": "UNC Path",
+			"visibleRule": "targetType = unc",
+			"required": true,
+			"defaultValue": "",
+			"helpMarkDown": "UNC path destination path to copy the app_offline.htm file."
+		},
+		{
+			"name": "computerName",
+			"type": "multiLine",
+			"label": "Computer Names:",
+			"visibleRule": "targetType = remoteComputer",
+			"required": true,
+			"helpMarkDown": "A comma separated list of remote computers to copy the app_offline.htm file to."
+		},
+		{
+			"name": "localPath",
+			"type": "textbox",
+			"label": "Local Path",
+			"visibleRule": "targetType = remoteComputer",
+			"defaultValue": "C:\\inetpub\\wwwroot",
+			"required": true,
+			"helpMarkDown": "Local folder to copy the app_offline.htm file."
+		},
+		{
+			"name": "userName",
+			"type": "textbox",
+			"label": "Admin Username",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Administrator username to run on the remote computer."
+		},
+		{
+			"name": "password",
+			"type": "textbox",
+			"label": "Password",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Administrator password to run on the remote computer."
+		},
+		{
+			"name": "authentication",
+			"type": "textbox",
+			"label": "Authentication",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Authentication method to be use to run Invoke-Command. e.g. CredSSP"
+		},
+		{
+			"name": "configurationName",
+			"type": "textbox",
+			"label": "Configuration Name",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "PSSession Configuration name if using a custom configuration or JEA Constrained Endpoint."
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)/Disable-IISApplication.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
