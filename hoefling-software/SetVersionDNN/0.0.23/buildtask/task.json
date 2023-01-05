@@ -1,0 +1,56 @@
+{
+    "id": "56f0425f-e612-4eaa-a8f5-4717ceb54617",
+    "name": "SetVersionDNN",
+    "friendlyName": "DNN Module Set Version",
+    "description": "Sets the DNN Module Version before the build executes",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Andrew Hoefling",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 23
+    },
+    "instanceNameFormat": "Set DNN Module Version Number",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourceDirectory",
+            "type": "filePath",
+            "label": "Source Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Source directory where the manifest file *.dnn is located. This directory can be root since the task will recursively search and update all *.dnn manifest files"
+        },
+        {
+            "name": "moduleVersion",
+            "type": "string",
+            "label": "Module Version",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Provide the module version. The module version must be in the format #.#.#, if it is not in this format the task will fail."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
