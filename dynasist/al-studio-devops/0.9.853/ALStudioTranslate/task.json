@@ -1,0 +1,95 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "871897e6-5941-40f1-ac2a-da4c0507ef72",
+  "name": "ALStudioTranslate",
+  "friendlyName": "AL Studio Translation Helper",
+  "description": "Synchronize, pre-translate, collect XLIFF resources.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "dynasist",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "instanceNameFormat": "AL Studio Translation Helper",
+  "inputs": [
+    {
+      "name": "workspace",
+      "type": "filePath",
+      "label": "Workspace Folder",
+      "defaultValue": "./",
+      "required": true,
+      "helpMarkDown": "Main folder of workspace or folder of XLIFF files."
+    },
+    {
+      "name": "output",
+      "type": "filePath",
+      "label": "Output Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Output folder of processed translation files."
+    },
+    {
+      "name": "useMachineTranslation",
+      "type": "boolean",
+      "label": "Use Machine Translation",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Use machine translation for missing entries."
+    },
+    {
+      "name": "translationProvider",
+      "type": "pickList",
+      "options": {
+        "deepl": "DeepL (https://deepl.com)",
+        "azure": "Azure Cognitive Services"
+      },
+      "label": "Translation provider",
+      "defaultValue": "azure",
+      "required": false,
+      "helpMarkDown": "Select Machine Translation provider."
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "Translation Provider API Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify API Key for Machine Translation provider."
+    },
+    {
+      "name": "references",
+      "type": "multiLine",
+      "label": "Reference Cache folders",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Folder paths for reference dictionary XLIFF files."
+    },
+    {
+      "name": "preserveFolderStructure",
+      "type": "boolean",
+      "label": "Preserve Folder Structure",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Preserve folder structure when copy XLIFF files to output path."
+    },
+    {
+      "name": "zip",
+      "type": "boolean",
+      "label": "Zip Output folder",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Create a ZIP file from output files to the Output Path"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\translate.ps1"
+    }
+  }
+}
