@@ -1,0 +1,77 @@
+{
+  "id": "165925C8-5F13-4729-ACC1-89AA3B15518A",
+  "name": "APIContractSecurityAudit",
+  "friendlyName": "42Crunch API Contract Security Audit",
+  "description": "Security Audit discovers your OpenAPI files, and checks and scores them for well-formedness and security.",
+  "helpMarkDown": "[More information]( https://docs.42crunch.com/latest/content/tasks/integrate_azure_pipelines.htm )",
+  "category": "Utility",
+  "author": "42Crunch",
+  "version": {
+    "Major": 3,
+    "Minor": 3,
+    "Patch": 1
+  },
+  "minimumAgentVersion": "2.144.0",
+  "instanceNameFormat": "42Crunch API Contract Security Audit",
+  "inputs": [
+    {
+      "name": "apiToken",
+      "type": "string",
+      "label": "API token to access 42Crunch Platform",
+      "defaultValue": "$(42C_API_TOKEN)",
+      "required": true,
+      "helpMarkDown": "Add a variable with this name to the variables of your pipeline, and set the value to the API token you created in 42Crunch Platform. [More information](https://docs.42crunch.com/latest/content/tasks/integrate_azure_pipelines.htm"
+    },
+    {
+      "name": "minScore",
+      "type": "string",
+      "label": "Minimum score for OpenAPI files",
+      "defaultValue": "75",
+      "required": false,
+      "helpMarkDown": "The minimum API score that the found APIs must get in the audit. If any of the APIs scores lower than the minimum you set, the whole task fails. [More information](https://docs.42crunch.com/latest/content/tasks/integrate_azure_pipelines.htm)"
+    },
+    {
+      "name": "platformUrl",
+      "type": "string",
+      "label": "Platform URL",
+      "defaultValue": "https://platform.42crunch.com",
+      "required": false,
+      "helpMarkDown": "The URL where you access 42Crunch Platform. You _only_ need to change this if you are an enterprise customer not using the default URL."
+    },
+    {
+      "name": "defaultCollectionName",
+      "type": "string",
+      "label": "Default collection name",
+      "required": false,
+      "helpMarkDown": "The default collection name used when creating collections for discovered apis."
+    },
+    {
+      "name": "rootDirectory",
+      "type": "string",
+      "label": "Root directory",
+      "required": false,
+      "helpMarkDown": "The root directory that contains the 42c-conf.yaml configuration file and the APIs. If not specified, the current working directory for the plugin is used instead, which normally corresponds to the root of the checked out repository."
+    },
+    {
+      "name": "logLevel",
+      "type": "string",
+      "label": "Log level",
+      "defaultValue": "INFO",
+      "required": false,
+      "helpMarkDown": "Log level, one of: FATAL, ERROR, WARN, INFO, DEBUG"
+    },
+    {
+      "name": "shareEveryone",
+      "type": "string",
+      "label": "Share new API collections with everyone",
+      "defaultValue": "OFF",
+      "required": false,
+      "helpMarkDown": "Sharing of new API collections with everyone, one of: OFF, READ_ONLY, READ_WRITE"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
