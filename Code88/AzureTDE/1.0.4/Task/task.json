@@ -1,0 +1,66 @@
+{
+  "id": "c6a502ac-8c12-4572-96ae-e902a94a291e",
+  "name": "AzureDBTDE",
+  "friendlyName": "Encrypts all azure DB's in Subscription",
+  "description": "TDE Encryption",
+  "author": "code88",
+  "helpMarkDown": "Enables TDE on all Databases",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "4"
+  },
+  
+  "minimumAgentVersion": "1.104.0",
+  "instanceNameFormat": "TDE $(message)",
+
+
+  "inputs": [
+
+      {
+            "name": "ConnectedServiceNameSelector",
+            "type": "pickList",
+            "label": "Azure Connection Type",
+            "required": false,
+            "helpMarkDown": "",
+            "defaultValue": "Azure Subscription",
+            "options": {
+                "ConnectedServiceNameARM": "Azure Resource Manager"
+            }
+        },
+
+
+        {
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        }
+    
+  ],
+  
+"dataSourceBindings": [
+        {
+            "target": "ConnectedServiceName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureHostedServiceNames"
+        }
+],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\sample.ps1"
+    }
+  }
+}
