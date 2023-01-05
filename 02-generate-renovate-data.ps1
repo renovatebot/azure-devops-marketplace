@@ -14,7 +14,7 @@ function add-version
         $renovateData."$name" = @()
     }
     
-    $renovateData."$name" = ($renovateData."$name" + @($version)) | Sort-Object -Unique
+    $renovateData."$name" = ($renovateData."$name", @($version)) | Sort-Object -Unique
 }
 
 $renovateData = @{}
@@ -23,13 +23,17 @@ foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
 
+    $extensionDataFile = "$publisherId/$extensionId/extension.json"
+    if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
     $extensionData = gc -raw "$publisherId/$extensionId/extension.json" | ConvertFrom-Json
 
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 })
     {
         $extensionVersion = $version.version
 
-        $extensionManifest = gc -raw "$publisherId/$extensionId/$extensionVersion/extension.vsomanifest" | ConvertFrom-Json
+        $extensionManifestFile = "$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
+        if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
+        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json
 
         $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
         foreach ($taskContribution in $taskContributions)

@@ -74,15 +74,14 @@ foreach ($extension in $extensions)
     mkdir -path "$publisherId/$extensionId/" -Force | out-null
 
     $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
-    $vsixUrl = $extensionData.versions[0].files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
-    
     $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path "$publisherId/$extensionId/extension.json"
     
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 } )
     {
         $savePath = "$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = "$publisherId/$extensionId/$($version.version)/"
-        
+        $vsixUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
+
         if (-not (Test-Path -Path $extractedPath -PathType Container))
         {
             try{
