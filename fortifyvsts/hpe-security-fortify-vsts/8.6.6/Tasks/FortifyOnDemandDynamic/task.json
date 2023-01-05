@@ -1,0 +1,159 @@
+﻿{
+  "id": "343B35C4-A54A-486A-BE99-FFF8919773ED",
+  "name": "FortifyOnDemandDynamic",
+  "friendlyName": "Fortify on Demand Dynamic Assessment",
+  "description": "Start Fortify assessment of website",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 7,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "AuthenticationMethods",
+      "displayName": "Authentication Methods",
+      "isExpanded": true
+    },
+    {
+      "name": "EntitlementOptions",
+      "displayName": "Entitlement Options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "APIUrl",
+      "type": "string",
+      "label": "The root API Url",
+      "defaultValue": "https://api.ams.fortify.com",
+      "required": true,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "ReleaseId",
+      "type": "string",
+      "label": "Release Id",
+      "required": true,
+      "helpMarkDown": "The release id for the application."
+    },
+    {
+      "name": "APIAuthenticationType",
+      "type": "pickList",
+      "label": "API Authentication Type",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Select the API authentication type to use",
+      "groupName": "AuthenticationMethods",
+      "options": {
+        "1": "API Key/Secret",
+        "2": "Personal Access Token"
+      }
+    },
+    {
+      "name": "APIKey",
+      "type": "string",
+      "label": "API Key",
+      "required": true,
+      "helpMarkDown": "Use secret build variables to protect your API Key",
+      "visibleRule": "APIAuthenticationType = 1",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "APISecret",
+      "type": "string",
+      "label": "API Secret",
+      "required": true,
+      "helpMarkDown": "Use secret build variables to protect your API Secret",
+      "visibleRule": "APIAuthenticationType = 1",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "Username",
+      "type": "string",
+      "label": "Username",
+      "required": true,
+      "helpMarkDown": "Use secret build variables to protect your Username",
+      "visibleRule": "APIAuthenticationType = 2",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "PersonalAccessTokenSecret",
+      "type": "string",
+      "label": "Personal Access Token Secret",
+      "required": true,
+      "helpMarkDown": "Use secret build variables to protect your Personal Access Token Secret",
+      "visibleRule": "APIAuthenticationType = 2",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "TenantID",
+      "type": "string",
+      "label": "Tenant ID",
+      "required": true,
+      "helpMarkDown": "Use secret build variables to protect your Tenant ID",
+      "visibleRule": "APIAuthenticationType = 2",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "ProxyHost",
+      "type": "string",
+      "label": "Proxy host",
+      "required": false,
+      "helpMarkDown": "Proxy host",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "ProxyPort",
+      "type": "string",
+      "label": "Proxy port",
+      "required": false,
+      "helpMarkDown": "Proxy port",
+      "groupName": "AuthenticationMethods"
+    },
+    {
+      "name": "EntitlementPreference",
+      "type": "pickList",
+      "label": "Entitlement Preference",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Select the Entitlement Preference",
+      "groupName": "EntitlementOptions",
+      "options": {
+        "1": "Single Scan",
+        "2": "Subscription"
+      }
+    },
+    {
+      "name": "PurchaseEntitlements",
+      "type": "boolean",
+      "label": "Purchase Entitlements",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "EntitlementOptions"
+    },
+    {
+      "name": "PreferRemediation",
+      "type": "boolean",
+      "label": "Prefer Remediation",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "EntitlementOptions"
+    }
+  ],
+  "instanceNameFormat": "Run Fortify on Demand dynamic assessment on $(FortifyProjects)",
+  "execution": {
+    "Node10": {
+      "target": "FODDynamic.js",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

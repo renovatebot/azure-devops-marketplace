@@ -1,0 +1,564 @@
+﻿{
+  "id": "cbe8d5fd-a02d-4157-8bfa-21f98fcaa217",
+  "name": "FortifyOnDemandStatic",
+  "friendlyName": "Fortify on Demand Static Assessment",
+  "description": "Submit code for Fortify on Demand security assessment",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 8,
+    "Minor": 6,
+    "Patch": 0
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "AuthenticationMethods",
+      "displayName": "Authentication Methods",
+      "isExpanded": true
+    },
+    {
+      "name": "AppReleaseOptions",
+      "displayName": "Application/Release Options",
+      "isExpanded": true
+    },
+    {
+      "name": "EntitlementOptions",
+      "displayName": "Entitlement Options",
+      "isExpanded": true
+    },
+    {
+      "name": "ScanOptions",
+      "displayName": "Scan Options",
+      "isExpanded": true
+    },
+    {
+      "name": "PollOptions",
+      "displayName": "Poll Options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "FortifyProjects",
+      "type": "filePath",
+      "label": "Source code location",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The path on the agent where your source code files are located."
+    },
+    {
+      "name": "ScanCentralLocation",
+      "type": "filePath",
+      "label": "ScanCentral file location",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The path on the agent where your scan central files are located."
+    },
+    {
+      "name": "FodConnection",
+      "type": "connectedService:fortify",
+      "label": "Fortify Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the endpoint to Fortify"
+    },
+    {
+      "name": "ReleaseOptions",
+      "type": "pickList",
+      "label": "Pick a Release",
+      "groupName": "AppReleaseOptions",
+      "required": true,
+      "options": {
+        "0": "Release Id",
+        "1": "BSI Token",
+        "2": "New Application and Release"
+      },
+      "helpMarkDown": "Pick a release to use for scanning"
+    },
+    {
+      "name": "ReleaseId",
+      "type": "integer",
+      "label": "Release ID",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "The release ID provides a CI token that never changes. The release ID is HIGHLY recommended for CI usage as the BSI token is being sunset in 2021",
+      "visibleRule": "ReleaseOptions = 0"
+    },
+    {
+      "name": "BSIToken",
+      "type": "string",
+      "label": "Build Server Integration Token",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "Generate a BSI Token. For more information, see https://ams.fortify.com/Docs/en/Content/20_Applications/1_Tenant_Apps/06_App_Tabs/09_BuildServer/BSI_Using.htm",
+      "visibleRule": "ReleaseOptions = 1"
+    },
+    {
+      "name": "ApplicationName",
+      "type": "string",
+      "label": "Application Name",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "Specify or type the name of your application.",
+      "visibleRule": "ReleaseOptions = 2"
+    },
+    {
+      "name": "BusinessCriticality",
+      "type": "pickList",
+      "label": "Business Criticality",
+      "required": false,
+      "defaultValue": "2",
+      "groupName": "AppReleaseOptions",
+      "options": {
+        "3": "Low",
+        "2": "Medium",
+        "1": "High"
+      },
+      "visibleRule": "ReleaseOptions = 2",
+      "helpMarkDown": "High: Security issues could have catastrophic consequences for the business. Medium: Security issues would have non-trivial consequences, but ones which do not pose a lift-or-death threat to the business. Low: Security issues can be ignored or addressed gradually as time possible."
+    },
+    {
+      "name": "ApplicationAttributes",
+      "type": "string",
+      "label": "Application Attributes",
+      "required": false,
+      "groupName": "AppReleaseOptions",
+      "visibleRule": "ReleaseOptions = 2",
+      "helpMarkDown": "Required application attributes must be specified. Example: Attribute Name1: Attribute Value1; Attribute Name2: Attribute Value2"
+    },
+    {
+      "name": "ApplicationType",
+      "type": "pickList",
+      "label": "Application Type",
+      "required": false,
+      "defaultValue": "1",
+      "groupName": "AppReleaseOptions",
+      "options": {
+        "1": "Web/Thick-Client",
+        "2": "Mobile"
+      },
+
+      "visibleRule": "ReleaseOptions = 2",
+      "helpMarkDown": "Select the application type: Web/Thick-Client or Mobile."
+    },
+    {
+      "name": "MicroserviceApplication",
+      "type": "boolean",
+      "label": "Microservice Application",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "AppReleaseOptions",
+      "visibleRule": "ReleaseOptions = 2"
+    },
+    {
+      "name": "MicroserviceName",
+      "type": "string",
+      "label": "Microservice Name",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "Select the check box to scan the application as a microservice appication.Important ! The designation of a microservice application is permanent and cannot be changed after the application has been created.",
+      "visibleRule": "MicroserviceApplication = true"
+    },
+    {
+      "name": "ReleaseName",
+      "type": "string",
+      "label": "Release Name",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "Specify or type the name of your release.",
+      "visibleRule": "ReleaseOptions = 2"
+    },
+    {
+      "name": "SDLCStatus",
+      "type": "pickList",
+      "label": "SDLC Status",
+      "required": false,
+      "groupName": "AppReleaseOptions",
+      "defaultValue": "1",
+      "options": {
+        "1": "Production",
+        "2": "QA/Test",
+        "3": "Development"
+      },
+      "visibleRule": "ReleaseOptions = 2",
+      "helpMarkDown": "Select the software development life cycle from the list. Retired is not available."
+    },
+    {
+      "name": "Owner",
+      "type": "integer",
+      "label": "Owner ID",
+      "groupName": "AppReleaseOptions",
+      "required": false,
+      "helpMarkDown": "The owner will receive email notifications of scan status updates for the release",
+      "visibleRule": "ReleaseOptions = 2"
+    },
+    {
+      "name": "EntitlementSelection",
+      "type": "pickList",
+      "label": "Entitlement Options",
+      "required": true,
+      "groupName": "EntitlementOptions",
+      "options": {
+        "0": "User-selected Entitlement",
+        "1": "Auto-selected Entitlement"
+      }
+    },
+    {
+      "name": "Entitlement",
+      "type": "integer",
+      "label": "Entitlement ID",
+      "groupName": "EntitlementOptions",
+      "required": false,
+      "helpMarkDown": "Select an entitlement to use.",
+      "visibleRule": "EntitlementSelection = 0"
+    },
+    {
+      "name": "EntitlementPreference",
+      "type": "pickList",
+      "label": "Entitlement Preference",
+      "required": true,
+      "groupName": "EntitlementOptions",
+      "defaultValue": "2",
+      "options": {
+        "0": "Single Scan Only",
+        "1": "Subscription Only",
+        "2": "Single Scan First Then Subscription",
+        "3": "Subscription First Then Single Scan"
+      }
+    },
+    {
+      "name": "PurchaseEntitlements",
+      "type": "boolean",
+      "label": "Purchase Entitlements",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "EntitlementOptions",
+      "visibleRule": "EntitlementSelection = 1"
+    },
+    {
+      "name": "OverrideScanSettings",
+      "type": "pickList",
+      "label": "Choose Scan Settings Source (Always applicable to New App/Release)",
+      "required": true,
+      "helpMarkDown": "Select a source of scan settings to be used for starting a scan.",
+      "groupName": "ScanOptions",
+      "options": {
+        "1": "Create/Override Existing Scan Settings if any",
+        "2": "Use Existing Saved Scan Settings"
+      }
+    },
+    {
+      "name": "AssessmentTypeId",
+      "type": "number",
+      "label": "Assessment Type Id",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Please find the assessment Type Id from GET /api/v3/releases/{releaseId}/assessment-types.",
+      "visibleRule": "OverrideScanSettings = 1"
+    },
+    {
+      "name": "AuditPreference",
+      "type": "pickList",
+      "label": "Audit Preference",
+      "defaultValue": "2",
+      "required": false,
+      "helpMarkDown": "Select Audit Preference.",
+      "groupName": "ScanOptions",
+      "options": {
+        "1": "Manual",
+        "2": "Automated"
+      },
+      "visibleRule": "OverrideScanSettings = 1"
+    },
+    {
+      "name": "InProgressScanActionType",
+      "type": "pickList",
+      "label": "Action if Scan In Progress",
+      "required": true,
+      "helpMarkDown": "How to handle a new scan if a scan is already in progress",
+      "groupName": "ScanOptions",
+      "options": {
+        "0": "Do Not Start Scan",
+        "1": "Cancel Scan In Progress",
+        "2": "Queue"
+      }
+    },
+    {
+      "name": "RemediationScanPreference",
+      "type": "pickList",
+      "label": "Remediation Preference Type",
+      "helpMarkDown": "How to handle remediation scans",
+      "required": true,
+      "groupName": "ScanOptions",
+      "options": {
+        "0": "Remediation Scan If Available",
+        "1": "Remediation Scan Only",
+        "2": "Non Remediation Scan Only"
+      }
+    },
+    {
+      "name": "BuildType",
+      "type": "pickList",
+      "label": "Build Type",
+      "defaultValue": "none",
+      "required": true,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Specifies the build tool name used for the project or technology stack if it's PHP or Python to use ScanCentral Client for packaging your source.",
+      "options": {
+        "mvn": "Maven",
+        "gradle": "Gradle",
+        "msbuild": "MSBuild",
+        "php": "PHP (Scan Central)",
+        "python": "Python",
+        "go": "Go (Scan Central)",
+        "none": "None"
+      }
+    },
+    {
+      "name": "TechnologyStackNet",
+      "type": "pickList",
+      "label": "Technology Stack",
+      "defaultValue": "1",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Technology Stack",
+      "options": {
+        "1": ".NET",
+        "23": ".NET Core"
+      },
+      "visibleRule": "OverrideScanSettings = 1 && BuildType = msbuild"
+    },
+    {
+      "name": "TechnologyStackJavaOne",
+      "type": "pickList",
+      "label": "Technology Stack",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Technology Stack",
+      "options": {
+        "7": "Java/J2EE"
+      },
+      "visibleRule": "OverrideScanSettings = 1 && BuildType = mvn"
+    },
+    {
+      "name": "TechnologyStackJavaTwo",
+      "type": "pickList",
+      "label": "Technology Stack",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Technology Stack",
+      "options": {
+        "7": "Java/J2EE"
+      },
+      "visibleRule": "OverrideScanSettings = 1 && BuildType = gradle"
+    },
+    {
+      "name": "TechnologyStackOthers",
+      "type": "pickList",
+      "label": "Technology Stack",
+      "defaultValue": "7",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Technology Stack",
+      "options": {
+        "1": ".NET",
+        "23": ".NET Core",
+        "7": "Java/J2EE/Kotlin",
+        "2": "ABAP",
+        "21": "Apex/Visualforce",
+        "3": "ASP",
+        "5": "CFML",
+        "6": "COBOL",
+        "16": "JS/TS/HTML",
+        "18 ": "MBS/C/C++/Scala",
+        "17": "Ruby",
+        "11": "VB6",
+        "14": "VBScript",
+        "12": "Swift/Objective C/C++",
+        "22": "GO",
+        "9": "PHP",
+        "27": "Infrastructure-As-Code/Dockerfile"
+      },
+      "visibleRule": "OverrideScanSettings = 1 && BuildType = none"
+    },
+    {
+      "name": "LanguageLevelDotNet",
+      "type": "pickList",
+      "label": "Language Level",
+      "defaultValue": "2",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Language Level",
+      "options": {
+        "2": "2.0",
+        "3": "3.0",
+        "4": "3.5",
+        "5": "4.0",
+        "11": "4.5",
+        "15": "4.6",
+        "16": "4.7",
+        "30": "4.8",
+        "32": "5",
+        "33": "6"
+      },
+      "visibleRule": "TechnologyStackNet = 1 || TechnologyStackOthers = 1"
+    },
+    {
+      "name": "LanguageLevelDotNetCore",
+      "type": "pickList",
+      "label": "Language Level",
+      "defaultValue": "23",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Language Level",
+      "options": {
+        "23": "1",
+        "24": "1.1",
+        "25": "2",
+        "26": "2.1",
+        "27": "2.2",
+        "28": "3.0",
+        "29": "3.1"
+      },
+      "visibleRule": "TechnologyStackNet = 23 || TechnologyStackOthers = 23"
+    },
+    {
+      "name": "LanguageLevelJava",
+      "type": "pickList",
+      "label": "Language Level",
+      "required": false,
+      "defaultValue": "8",
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Select a Language Level",
+      "options": {
+        "8": "1.5",
+        "9": "1.6",
+        "10": "1.7",
+        "12": "1.8",
+        "17": "1.9",
+        "19": "10",
+        "20": "11",
+        "21": "12",
+        "22": "13",
+        "31": "14"
+      },
+      "visibleRule": "TechnologyStackJavaOne = 7 || TechnologyStackJavaTwo = 7 || TechnologyStackOthers = 7"
+    },
+    {
+      "name": "OpenSourceComponent",
+      "type": "boolean",
+      "label": "Open Source Component Analysis",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Check the box to perform open source scan. Note: Refer to the Debricked documentation for the list of required files to be submitted in the payload for a successful Debricked scan",
+      "visibleRule": "TechnologyStackNet = 1 || TechnologyStackNet = 23 || TechnologyStackJavaOne = 7 ||TechnologyStackJavaTwo = 7|| TechnologyStackOthers = 1 || TechnologyStackOthers = 22 || TechnologyStackOthers = 23 || TechnologyStackOthers = 9 ||TechnologyStackOthers = 16 || TechnologyStackOthers = 17 || TechnologyStackOthers = 7 || BuildType = python || BuildType = php || BuildType = go"
+    },
+    {
+      "name": "BuildCommand",
+      "type": "string",
+      "label": "Build Command",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Specify custom build parameters for preparing and building a project.",
+      "visibleRule": "BuildType = mvn || BuildType = gradle || BuildType = msbuild"
+    },
+    {
+      "name": "BuildFile",
+      "type": "string",
+      "label": "Build File",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Specify the build file if you are not using a default name such as build.gradle or pom.xml.",
+      "visibleRule": "BuildType = mvn || BuildType = gradle || BuildType = msbuild"
+    },
+    {
+      "name": "IncludeTests",
+      "type": "boolean",
+      "label": "Include Tests",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Include test source set (Gradle or test scope  (Maven in the scan  (for Java projects only).",
+      "visibleRule": "BuildType = mvn || BuildType = gradle"
+    },
+    {
+      "name": "SkipBuild",
+      "type": "boolean",
+      "label": "Skip Build",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Skips the build invocation that prepares generated sources and libraries before collecting the project information.",
+      "visibleRule": "BuildType = gradle || BuildType = msbuild || BuildType = mvn"
+    },
+    {
+      "name": "PythonVersion",
+      "type": "picklist",
+      "label": "Python Version",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Specifies the Python version to automatically find the isntalled Python.",
+      "options": {
+        "13": "2",
+        "14": "2(Django)",
+        "18": "3"
+      },
+      "visibleRule": "OverrideScanSettings = 1 && BuildType = python"
+    },
+    {
+      "name": "PythonVirtualEnvironment",
+      "type": "string",
+      "label": "Python Virtual Environment",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Python virtual environment location",
+      "visibleRule": "BuildType = python"
+    },
+    {
+      "name": "PythonRequirementsFile",
+      "type": "string",
+      "label": "Python Requirements File",
+      "required": false,
+      "groupName": "ScanOptions",
+      "helpMarkDown": "Specifies the Python project requirements file to install and collect dependencies.",
+      "visibleRule": "BuildType = python"
+    },
+    {
+      "name": "PollingInterval",
+      "type": "integer",
+      "label": "Polling Interval",
+      "groupName": "PollOptions",
+      "required": false,
+      "defaultValue": 1
+    },
+    {
+      "name": "PolicyFailAction",
+      "type": "pickList",
+      "label": "Action if Failing Policy",
+      "helpMarkDown": "How to handle if a security policy fails",
+      "required": true,
+      "groupName": "PollOptions",
+      "options": {
+        "0": "Complete Build Task and Warn",
+        "1": "Fail Build Task"
+      }
+    }
+  ],
+  "instanceNameFormat": "Run Fortify on Demand static assessment on $(FortifyProjects)",
+  "execution": {
+    "Node10": {
+      "target": "FODStatic.js",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

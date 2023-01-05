@@ -1,0 +1,464 @@
+﻿{
+  "id": "818386e5-c8a5-46c3-822d-954b3c8fb130",
+  "name": "FortifySCA",
+  "friendlyName": "Fortify Static Code Analyzer Assessment",
+  "description": "Run Fortify Static Code Analyzer",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 7,
+    "Minor": 2,
+    "Patch": 3
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "groups": [
+    {
+      "name": "build",
+      "displayName": "Translation Options",
+      "isExpanded": true
+    },
+    {
+      "name": "scan",
+      "displayName": "Scan Options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "licenseFile",
+      "type": "string",
+      "label": "Fortify SCA license file",
+      "required": false,
+      "helpMarkDown": "If the Fortify SCA license is specified, it will overwrite the current Fortify SCA license on the build agent."
+    },
+    {
+      "name": "runBuildTranslate",
+      "type": "boolean",
+      "label": "Run Fortify SCA translation",
+      "defaultValue": "true",
+      "helpMarkDown": "If selected, runs the translation phase.",
+      "groupName": "build"
+    },
+    {
+      "name": "applicationType",
+      "type": "pickList",
+      "label": "Application type",
+      "defaultValue": "dotnet",
+      "required": true,
+      "helpMarkDown": "The type of application to be analyzed.",
+      "options": {
+        "dotnet": ".NET",
+        "java": "Java",
+        "other": "Other"
+      },
+      "visibleRule": "runBuildTranslate = true",
+      "groupName": "build"
+    },
+    {
+      "name": "fortifyProjects",
+      "type": "filePath",
+      "label": "Projects for Fortify SCA analysis",
+      "defaultValue": "**\\*.sln",
+      "required": true,
+      "helpMarkDown": "The relative path to the project or solution to scan with Fortify SCA. Wildcards can be used. For example, `**\\*.sln` for all sln files in all sub folders.",
+      "visibleRule": "applicationType = dotnet",
+      "groupName": "build"
+    },
+    {
+      "name": "buildClasspath",
+      "type": "string",
+      "label": "Classpath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the path to look for jars/classes for class resolution.",
+      "visibleRule": "applicationType = java",
+      "groupName": "build"
+    },
+    {
+      "name": "buildSourceVersion",
+      "type": "pickList",
+      "label": "Source version",
+      "defaultValue": "8",
+      "options": {
+        "7": "Java 7",
+        "8": "Java 8",
+        "9": "Java 9",
+        "10": "Java 10",
+        "11": "Java 11",
+        "12": "Java 12",
+        "13": "Java 13",
+        "14": "Java 14",
+        "17": "Java 17"
+      },
+      "required": false,
+      "helpMarkDown": "Specifies the JDK version used for the source code.",
+      "visibleRule": "applicationType = java",
+      "groupName": "build"
+    },
+    {
+      "name": "buildSourcePath",
+      "type": "string",
+      "label": "Sourcepath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the location of source files which will not be included in the scan but will be used for name resolution. Equivalent to the -sourcepath option to javac. Path is relative to the project root.",
+      "visibleRule": "applicationType = java",
+      "groupName": "build"
+    },
+    {
+      "name": "buildAnalyzerParams",
+      "type": "string",
+      "label": "Additional Fortify SCA translation options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters to pass to sourceanalyzer during the translation process.",
+      "visibleRule": "runBuildTranslate = true",
+      "groupName": "build"
+    },
+    {
+      "name": "buildToolOptions",
+      "type": "string",
+      "label": "Build tool options",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "These options are used when integrating Micro Focus Fortify SCA with a build tool. The build tool (e.g. Maven, Gradle, etc.) must be on the agent's PATH.",
+      "visibleRule": "applicationType != dotnet",
+      "groupName": "build"
+    },
+    {
+      "name": "fortifySourceTranslate",
+      "type": "multiLine",
+      "label": "Source files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Expressions denoting a file or a group of files (one per line), optionally matching a pattern. For example, path/file1.java - a single file, path/file*.java - files matching an expression, path/**/*.java - recursive expression matches. Paths are relative to the project root. This is ignored if build tool options are used.",
+      "visibleRule": "applicationType != dotnet",
+      "groupName": "build"
+    },
+    {
+      "name": "fortifyOtherTranslate",
+      "type": "string",
+      "label": "Additional files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the location of any additional files for Fortify SCA to analyze with this scan. Full paths are allowed. This is ignored if build tool options are used.",
+      "visibleRule": "applicationType != dotnet",
+      "groupName": "build"
+    },
+    {
+      "name": "fortifyBuildId",
+      "type": "string",
+      "label": "Build ID for Fortify SCA",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The build ID is used to track which files are compiled and linked as part of a build and later to scan those files."
+    },
+    {
+      "name": "runFortifyRulepackUpdate",
+      "type": "boolean",
+      "label": "Update Fortify Security Content",
+      "defaultValue": "false",
+      "helpMarkDown": "Compares installed security content to the most current version and updates your installation security content by downloading the latest Micro Focus Fortify Secure Coding Rulepacks and metadata from the Fortify Customer Portal."
+    },
+    {
+      "name": "runFortifyClean",
+      "type": "boolean",
+      "label": "Run SCA clean",
+      "defaultValue": "true",
+      "helpMarkDown": "Clears the build ID and all associated intermediate data for that build ID from the previous scan."
+    },
+    {
+      "name": "scaVerbose",
+      "type": "boolean",
+      "label": "Enable verbose logging",
+      "defaultValue": false,
+      "helpMarkDown": "Run Fortify SCA in verbose logging mode."
+    },
+    {
+      "name": "scaDebug",
+      "type": "boolean",
+      "label": "Enable debug logging",
+      "defaultValue": false,
+      "helpMarkDown": "Run Fortify SCA in debug logging mode."
+    },
+    {
+      "name": "runFortifyScan",
+      "type": "boolean",
+      "label": "Run Fortify SCA scan",
+      "defaultValue": "true",
+      "helpMarkDown": "If selected, runs the scan (analysis) phase.",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyScanType",
+      "type": "pickList",
+      "label": "Scan type",
+      "defaultValue": "LocalScan",
+      "options": {
+        "LocalScan": "Local",
+        "ScanCentralScan": "ScanCentral"
+      },
+      "required": "true",
+      "helpMarkDown": "To run a scan on your local machine, select Local. To run a scan on distributed machines, select ScanCentral.",
+      "visibleRule": "runFortifyScan = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "additionalScanParams",
+      "type": "string",
+      "label": "Additional Fortify SCA scan options",
+      "defaultValue": null,
+      "required": false,
+      "helpMarkDown": "Additional parameters to be used for the scan.",
+      "visibleRule": "fortifyScanType = LocalScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "customFortifyRulepacks",
+      "type": "filePath",
+      "label": "Custom Rulepacks",
+      "defaultValue": null,
+      "required": false,
+      "helpMarkDown": "Specifies a custom Rulepack or directory. If you specify a directory, includes all of the files in the directory with the .bin and .xml extensions.",
+      "visibleRule": "fortifyScanType = LocalScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "runFortifyUpload",
+      "type": "boolean",
+      "label": "Upload results to SSC",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "When enabled, the SCA result will be transmitted to the application version in SSC that is specified below.",
+      "visibleRule": "fortifyScanType = LocalScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyServerName",
+      "type": "connectedService:Generic",
+      "label": "Fortify SSC service connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the SSC service connection in your project.",
+      "visibleRule": "runFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyApplicationIdentifierType",
+      "type": "radio",
+      "label": "Specify SSC application",
+      "defaultValue": "byName",
+      "required": false,
+      "options": {
+          "byName": "Use application name and version",
+          "byId": "Use application version ID"
+      },
+      "visibleRule": "runFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyApplicationName",
+      "type": "string",
+      "label": "SSC application name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application name. Application names in SSC are case-sensitive.",
+      "visibleRule": "runFortifyUpload = true && fortifyApplicationIdentifierType = byName",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyApplicationVersion",
+      "type": "string",
+      "label": "SSC application version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application version. Application versions in SSC are case-sensitive.",
+      "visibleRule": "runFortifyUpload = true && fortifyApplicationIdentifierType = byName",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyApplicationVersionId",
+      "type": "string",
+      "label": "SSC application version ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application version ID. The application version ID is a numeric value.",
+      "visibleRule": "runFortifyUpload = true && fortifyApplicationIdentifierType = byId",
+      "groupName": "scan"
+    },
+    {
+      "name": "uploadProxyURL",
+      "type": "string",
+      "label": "Proxy URL",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Proxy server URL (ex: https://proxy.example.com:8080)",
+      "visibleRule": "runFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "uploadProxyUser",
+      "type": "string",
+      "label": "Proxy username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "visibleRule": "runFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "uploadProxyPass",
+      "type": "string",
+      "label": "Proxy password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "visibleRule": "runFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralAdditionalScanParams",
+      "type": "string",
+      "label": "Additional scan options",
+      "defaultValue": null,
+      "required": false,
+      "helpMarkDown": "Additional Fortify SCA scan options.",
+      "visibleRule": "fortifyScanType = ScanCentralScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralCustomFortifyRulepacks",
+      "type": "filePath",
+      "label": "Custom Rulepacks",
+      "defaultValue": null,
+      "required": false,
+      "helpMarkDown": "Specifies a custom Rulepack or directory. If you specify a directory, includes all of the files in the directory with the .bin and .xml extensions.",
+      "visibleRule": "fortifyScanType = ScanCentralScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralFortifyServerName",
+      "type": "connectedService:Generic",
+      "label": "Fortify SSC service connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the SSC service connection in your project.",
+      "visibleRule": "fortifyScanType = ScanCentralScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralRunFortifyUpload",
+      "type": "boolean",
+      "label": "Upload results to SSC",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select this check box to upload the scan results to the application version in Fortify Software Security Center.",
+      "visibleRule": "fortifyScanType = ScanCentralScan",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralFortifyApplicationIdentifierType",
+      "type": "radio",
+      "label": "Specify SSC application",
+      "defaultValue": "byName",
+      "required": false,
+      "options": {
+          "byName": "Use application name and version",
+          "byId": "Use application version ID"
+      },
+      "visibleRule": "scanCentralRunFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralFortifyApplicationName",
+      "type": "string",
+      "label": "SSC application name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application name. Application names in SSC are case-sensitive.",
+      "visibleRule": "scanCentralRunFortifyUpload = true && scanCentralFortifyApplicationIdentifierType = byName",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralFortifyApplicationVersion",
+      "type": "string",
+      "label": "SSC application version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application version. Application versions in SSC are case-sensitive.",
+      "visibleRule": "scanCentralRunFortifyUpload = true && scanCentralFortifyApplicationIdentifierType = byName",
+      "groupName": "scan"
+    },
+    {
+      "name": "scanCentralFortifyApplicationVersionId",
+      "type": "string",
+      "label": "SSC application version ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the SSC application version ID. The application version ID is a numeric value.",
+      "visibleRule": "scanCentralRunFortifyUpload = true && scanCentralFortifyApplicationIdentifierType = byId",
+      "groupName": "scan"
+    },
+    {
+      "name": "fortifyBuildFailureCriteria",
+      "type": "string",
+      "label": "Build failure criteria",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify a search query to trigger a build failure. For example, the search query '[fortify priority order]:critical' causes the build to fail if any critical issues exist in the analysis results.",
+      "visibleRule": "runFortifyUpload = true || scanCentralRunFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "taskResultForBuildFailureCriteria",
+      "type": "pickList",
+      "label": "Task result when build failure criteria is met",
+      "defaultValue": "WARN",
+      "required": false,
+      "helpMarkDown": "Select the task result when the build failure criteria is met.",
+      "options": {
+          "WARN": "WARN",
+          "FAIL": "FAIL"
+      },
+      "visibleRule": "runFortifyUpload = true || scanCentralRunFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "timeoutForPollingArtifactState",
+      "type": "int",
+      "label": "Polling timeout",
+      "required": false,
+      "helpMarkDown": "Specify how long (in minutes) to poll Fortify Software Security Center to check if FPR processing is complete. The valid values are 0 to 10080. A timeout value of 0 causes the polling to continue until FPR processing finishes or stops due to errors.",
+      "visibleRule": "runFortifyUpload = true || scanCentralRunFortifyUpload = true",
+      "groupName": "scan"
+    },
+    {
+      "name": "intervalForPollingArtifactState",
+      "type": "int",
+      "label": "Polling interval",
+      "defaultValue": "1",
+      "required": false,
+      "helpMarkDown": "Specify how frequently (in minutes) to poll the Fortify Software Security Center server to determine if the FPR processing is complete. The valid values are 1 to 60.",
+      "visibleRule": "runFortifyUpload = true || scanCentralRunFortifyUpload = true",
+      "groupName": "scan"
+    }
+  ],
+  "instanceNameFormat": "Run Fortify on $(FortifyProjects)",
+  "execution": {
+    "Node10": {
+      "target": "Fortify.js",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  },
+  "messages": {
+    "conditionalFieldRequirement": "%s is required for %s",
+    "password": "Password/Token",
+    "version.failure": "You must have Fortify Static Code Analyzer version 16.11 or later installed. It may also be necessary to restart the agent from a new command-window or restart the agent service so any changes to executable PATH environment are visible to the agent."
+  }
+}
