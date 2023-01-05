@@ -1,0 +1,317 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "8d678442-a3a4-4a75-af3f-0b9c329ce374",
+    "name": "manageb2capp",
+    "friendlyName": "Manage B2C app registration",
+    "description": "Manages an app registration in a B2C tenant.",
+    "author": "DarkLoop",
+    "helpMarkDown": "[More info](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-app-registration)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-app-registration",
+    "category": "Deploy",
+    "visibility": [
+        "Release",
+        "Build"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "groups": [
+        {
+            "displayName": "Web Authentication",
+            "isExpanded": false,
+            "name": "web-auth"
+        },
+        {
+            "displayName": "SPA Authentication",
+            "isExpanded": false,
+            "name": "spa-auth"
+        },
+        {
+            "displayName": "Mobile/Desktop Authentication",
+            "isExpanded": false,
+            "name": "deskmob-auth"
+        },
+        {
+            "displayName": "iOS Authentication",
+            "isExpanded": false,
+            "name": "ios-auth"
+        },
+        {
+            "displayName": "Android Authentication",
+            "isExpanded": false,
+            "name": "android-auth"
+        },
+        {
+            "displayName": "API permissions",
+            "isExpanded": false,
+            "name": "api-permissions"
+        },
+        {
+            "displayName": "Expose an API",
+            "isExpanded": false,
+            "name": "expose-api"
+        },
+        {
+            "displayName": "Output Environment Variable",
+            "isExpanded": true,
+            "name": "out-env-variable"
+        }
+    ],
+    "inputs": [
+        {
+            "label": "Azure AD B2C Connection",
+            "type": "connectedService:darkloopaadb2c",
+            "name": "b2cTenantConnection",
+            "helpMarkDown": "Connection to the Azure AD B2C tenant. [How to setup your service connection](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#create-a-connection-to-your-b2c-tenant).",
+            "required": true
+        },
+        {
+            "label": "Application name",
+            "name": "appName",
+            "type": "string",
+            "helpMarkDown": "The display name for the application in the directory.",
+            "required": true
+        },
+        {
+            "label": "Create app with compatibility for",
+            "name": "compatibility",
+            "type": "radio",
+            "helpMarkDown": "Allows you to select the kind of application that needs to be registered in the tenant.<br />Use `Azure AD` for tenant management activities, use `Azure AD B2C` for consumer applications.<br />This setting is used when creating the application only, once created changing this setting will not affect the existing application.",
+            "options": {
+                "AADB2C": "Azure AD B2C",
+                "AAD": "Azure AD"
+            },
+            "defaultValue": "AADB2C",
+            "required": true
+        },
+        {
+            "label": "Application is a native client",
+            "name": "isNativeApp",
+            "type": "boolean",
+            "helpMarkDown": "Used when targeting a native desktop or mobile application in order to enable native authentication protocols such ROPC."
+        },
+        {
+            "label": "Configure web authentication",
+            "name": "configureWeb",
+            "type": "boolean",
+            "defaultValue": "false",
+            "groupName": "web-auth"
+        },
+        {
+            "label": "Web Redirect URIs",
+            "name": "webReplyUris",
+            "type": "multiLine",
+            "helpMarkDown": "The line separated redirect URIs to be used for the user flows.",
+            "defaultValue": "",
+            "groupName": "web-auth",
+            "visibleRule": "configureWeb = true",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.web-uris-grid",
+                "resizable": "true",
+                "rows": "6"
+            }
+        },
+        {
+            "label": "Logout URI",
+            "name": "webLogoutUri",
+            "type": "string",
+            "defaultValue": "",
+            "groupName": "web-auth",
+            "visibleRule": "configureWeb = true",
+            "required": false,
+            "helpMarkDown": "The Logout URI used by web clients to remove user session.",
+            "validation": {
+                "expression": "isMatch(value, '(^$)|(^((http:\\/\\/localhost)|(https:\\/\\/(?!-)([a-zA-Z0-9-]{2,62})(?<!-)(\\.(?!-)([a-zA-Z0-9-]{2,62})(?<!-))*))(:\\d{1,5})?(\\/[^*`^&#;<>(){}[\\]!@/?]*)*(\\?)?([^*`^#;<>(){}[\\]!@?]*)*(\\#)?([^*`^#;<>(){}[\\]!@?]*)*$)', 'IgnoreCase')",
+                "message": "Invalid URL entered"
+            }
+        },
+        {
+            "label": "Allow implicit flow ID tokens",
+            "name": "webImplicitIdTokens",
+            "type": "boolean",
+            "defaultValue": "true",
+            "groupName": "web-auth",
+            "visibleRule": "configureWeb = true",
+            "required": false,
+            "helpMarkDown": "Allows issuing ID tokens for a client on behalf of the user."
+        },
+        {
+            "label": "Allow implicit flow access tokens",
+            "name": "webImplicitAccessTokens",
+            "type": "boolean",
+            "defaultValue": "false",
+            "groupName": "web-auth",
+            "visibleRule": "configureWeb = true",
+            "required": false,
+            "helpMarkDown": "Allows issuing access tokens for a client on behalf of the user."
+        },
+        {
+            "label": "Configure SPA authentication",
+            "name": "configureSpa",
+            "type": "boolean",
+            "defaultValue": "false",
+            "groupName": "spa-auth",
+            "helpMarkDown": "Configure SPA redirect URIs to enable Authorization Code Flow with PKCE"
+        },
+        {
+            "label": "SPA Redirect URIs",
+            "name": "spaReplyUris",
+            "type": "multiLine",
+            "helpMarkDown": "The line separated redirect URIs to be used for SPAs under the Authorization Code Flow with PKCE.",
+            "defaultValue": "",
+            "groupName": "spa-auth",
+            "visibleRule": "configureSpa = true",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.web-uris-grid",
+                "resizable": "true",
+                "rows": "6"
+            }
+        },
+        {
+            "label": "Configure mobile and desktop authentication",
+            "name": "configureDeskMobAuth",
+            "type": "boolean",
+            "defaultValue": "false",
+            "groupName": "deskmob-auth"
+        },
+        {
+            "label": "Custom redirect URIs",
+            "name": "mobdeskRedirectUris",
+            "type": "multiLine",
+            "groupName": "deskmob-auth",
+            "visibleRule": "configureDeskMobAuth = true",
+            "helpMarkDown": "The custom redirect URIs to be used by the application when requesting tokens.",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.web-uris-grid",
+                "resizable": "true",
+                "rows": "6"
+            }
+        },
+        {
+            "label": "Enable MSAL redirect URI",
+            "name": "deskMobMsalEnabled",
+            "type": "boolean",
+            "groupName": "deskmob-auth",
+            "visibleRule": "configureDeskMobAuth = true",
+            "helpMarkDown": "Indicate if the 'msal{app-id}://auth' redirect URI should be configured."
+        },
+        {
+            "label": "Enable native redirect URI",
+            "name": "deskMobNativeEnabled",
+            "type": "boolean",
+            "groupName": "deskmob-auth",
+            "visibleRule": "configureDeskMobAuth = true",
+            "helpMarkDown": "Indicate if the native redirect URI should be configured (https://{tenant-name}.b2clogin.com/oauth2/nativeclient)."
+        },
+        {
+            "label": "Configure iOS authentication",
+            "name": "configureIosAuth",
+            "type": "boolean",
+            "groupName": "ios-auth",
+            "defaultValue": "false"
+        },
+        {
+            "label": "Bundle IDs",
+            "name": "iosBundleIds",
+            "type": "multiLine",
+            "groupName": "ios-auth",
+            "required": true,
+            "visibleRule": "configureIosAuth = true",
+            "helpMarkDown": "Line separated list of bundle IDs that can be found in XCode in the Info.plist or `Build Settings`.",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.bundle-ids-grid"
+            }
+        },
+        {
+            "label": "Configure Android authentication",
+            "name": "configureAndroidAuth",
+            "type": "boolean",
+            "defaultValue": "false",
+            "groupName": "android-auth"
+        },
+        {
+            "label": "Package name/Signature Hash pairs",
+            "name": "androidPackHash",
+            "type": "multiLine",
+            "groupName": "android-auth",
+            "helpMarkDown": "Line separated pairs of package name/hash `{package-name}:{base64-encoded-signature-hash}`.",
+            "visibleRule": "configureAndroidAuth = true",
+            "required": true,
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.android-pcks-grid"
+            }
+        },
+        {
+            "label": "Configure API permissions",
+            "name": "configureApiPermissions",
+            "type": "boolean",
+            "groupName": "api-permissions"
+        },
+        {
+            "label": "Permissions",
+            "name": "apiPermissions",
+            "type": "multiLine",
+            "required": true,
+            "defaultValue": "Microsoft Graph|openid|delegated\nMicrosoft Graph|offline_access|delegated",
+            "visibleRule": "configureApiPermissions = true",
+            "helpMarkDown": "Line separated list of permissions for the application in the format: `{api-name}|{permission-name}|{type}`<br/>**`type`** can be `delegated` or `application`.",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.app-permisions-grid",
+                "resizable": "true",
+                "rows": "6"
+            },
+            "groupName": "api-permissions"
+        },
+        {
+            "label": "Configue API exposure",
+            "name": "configureExposeApi",
+            "type": "boolean",
+            "groupName": "expose-api"
+        },
+        {
+            "label": "Application API URI",
+            "name": "appApiUri",
+            "type": "string",
+            "groupName": "expose-api",
+            "visibleRule": "configureExposeApi = true",
+            "helpMarkDown": "Globally unique URI to identify the API",
+            "required": true
+        },
+        {
+            "label": "Scopes",
+            "name": "exposedScopes",
+            "type": "multiLine",
+            "groupName": "expose-api",
+            "visibleRule": "configureExposeApi = true",
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.app-scopes-grid",
+                "resizable": "true",
+                "rows": "6"
+            },
+            "helpMarkDown": "Line separated list of scopes defined by this API in the format:<br/>`{scope-name}|{admin-consent-name}|{admin-consent-description}|[{state}]`<br/>**`State`** can be `enabled` or `disabled`; default value is `enabled`. This determines whether this scope is available for clients to request. Set it to “Disabled” for scopes that you do not want to be visible to clients. Only disabled scopes can be deleted, and we recommend waiting at least a week after a scope has been disabled before deleting it to ensure no clients are still using it."
+        },
+        {
+            "label": "Application Client ID variable",
+            "name": "appClientIdVariable",
+            "type": "string",
+            "groupName": "out-env-variable",
+            "helpMarkDown": "The name of the variable to assign the application's `Client ID`.",
+            "required": false
+        }
+    ],
+    "instanceNameFormat": "Manage Application",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\ManageApplication.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}

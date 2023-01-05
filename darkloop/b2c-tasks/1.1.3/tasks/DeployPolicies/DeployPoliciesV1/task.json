@@ -1,0 +1,71 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a936562a-2105-4331-a0f9-753ae90ebdf9",
+    "name": "deployb2cpolicies",
+    "friendlyName": "Deploy B2C Policies",
+    "description": "Allows Trust Framework Policy XML files to be deployed to a B2C tenant.",
+    "author": "DarkLoop",
+    "helpMarkDown": "[More info](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#deploy-b2c-policies)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#deploy-b2c-policies",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "inputs": [
+        {
+            "label": "Azure AD B2C Connection",
+            "type": "connectedService:darkloopaadb2c",
+            "name": "b2cTenantConnection",
+            "helpMarkDown": "Connection to the Azure AD B2C Tenant. [How to setup your service connection](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#create-a-connection-to-your-b2c-tenant).",
+            "required": true
+        },
+        {
+            "label": "Root Directory",
+            "type": "filePath",
+            "name": "rootFolder",
+            "required": false,
+            "helpMarkDown": "The root directory to look for specified policies"
+        },
+        {
+            "label": "Policies",
+            "type": "multiLine",
+            "name": "policies",
+            "helpMarkDown": "Comma or line separated paths to the policies to upload. When specifying a folder, all XML files contained in it will be uploaded.",
+            "required": true
+        },
+        {
+            "label": "Skip if exists",
+            "type": "multiLine",
+            "name": "ignoreIfExist",
+            "helpMarkDown": "Comma or line separated policy IDs that should be ignored if the policy already exists in the target B2C tenant. The prefix `B2C_1A_` can be ommited.",
+            "required": false,
+            "groupName": "advanced"
+        }
+    ],
+    "groups": [
+        {
+            "displayName": "Advanced",
+            "isExpanded": false,
+            "name": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Deploy B2C Policies",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\DeployB2CPolicies.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}

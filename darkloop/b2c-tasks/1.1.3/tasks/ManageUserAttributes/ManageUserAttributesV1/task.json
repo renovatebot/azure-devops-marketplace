@@ -1,0 +1,54 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ecf83a43-ce18-4aa1-9b89-6c6a68619a18",
+    "name": "manageb2cuserattributes",
+    "friendlyName": "Manage B2C user attributes",
+    "description": "Manages B2C user attributes used in custom policies.",
+    "author": "DarkLoop",
+    "category": "Deploy",
+    "helpMarkDown": "Custom attributes managed with this extension will not be registered in the **User attributes** section of you B2C tenant, but it will give you same experience for **custom policies** as if you had created them in the portal and also allow you to create attributes with types not available in the portal like `DateTime`. [More info](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-user-attributes)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-user-attributes",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "inputs": [
+        {
+            "label": "Azure AD B2C Connection",
+            "type": "connectedService:darkloopaadb2c",
+            "name": "b2cTenantConnection",
+            "helpMarkDown": "Connection to the Azure AD B2C tenant. [How to setup your service connection](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#create-a-connection-to-your-b2c-tenant).",
+            "required": true
+        },
+        {
+            "label": "User custom attributes",
+            "name": "attributes",
+            "type": "multiLine",
+            "helpMarkDown": "Line separated user attributes in the format: `<attribute-name>|<attribute-type>`.<br/>**attribute-name** alfanumeric characters only.<br/>**attribute-type** valid values are `Boolean`, `DateTime`, `Integer` and `String`.",
+            "required": true,
+            "properties": {
+                "editorExtension": "darkloop.b2c-tasks.ext-attributes-grid",
+                "resizable": "true",
+                "rows": "6"
+            }
+        }
+    ],
+    "instanceNameFormat": "Manage tenant user custom attributes",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\ManageUserAttributes.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}

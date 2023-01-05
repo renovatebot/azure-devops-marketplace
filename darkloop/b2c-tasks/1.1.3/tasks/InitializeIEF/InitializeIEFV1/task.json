@@ -1,0 +1,113 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "66d5d20a-6276-4bfe-8e5c-e92a63909ad0",
+    "name": "initializeb2cief",
+    "friendlyName": "Ensure B2C IEF setup",
+    "description": "Ensures Identity Experience Framework is in place to work with custom policies.",
+    "author": "DarkLoop",
+    "category": "Deploy",
+    "helpMarkDown": "[More info](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#ensure-b2c-ief-setup)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#ensure-b2c-ief-setup",
+    "visibility": [
+        "Release",
+        "Build"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "groups": [
+        {
+            "displayName": "Extensions",
+            "name": "extensions",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "label": "Azure AD B2C Connection",
+            "type": "connectedService:darkloopaadb2c",
+            "name": "b2cTenantConnection",
+            "helpMarkDown": "Connection to the Azure AD B2C tenant. [How to setup your service connection](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#create-a-connection-to-your-b2c-tenant).",
+            "required": true
+        },
+        {
+            "label": "Identity experience framework app name",
+            "name": "iefAppName",
+            "type": "string",
+            "helpMarkDown": "The name of the application to use as the Identity Experience Framework.",
+            "defaultValue": "IdentityExperienceFramework",
+            "required": true
+        },
+        {
+            "label": "Identity experience framework ID variable name",
+            "name": "iefAppIdVariable",
+            "type": "string",
+            "helpMarkDown": "The name of the variable to apply the ID of the application to use as the Identity Experience Framework so that it can be used in next steps.",
+            "defaultValue": "B2C.IEFAppId",
+            "required": false
+        },
+        {
+            "label": "Identity experience framework proxy app name",
+            "name": "iefProxyAppName",
+            "type": "string",
+            "helpMarkDown": "The name of the application to use as the Proxy Identity Experience Framework.",
+            "defaultValue": "ProxyIdentityExperienceFramework",
+            "required": true
+        },
+        {
+            "label": "Identity experience framework proxy ID variable name",
+            "name": "iefProxyAppIdVariable",
+            "type": "string",
+            "helpMarkDown": "The name of the variable to apply the ID of the application to use as the Proxy Identity Experience Framework so that it can be used in next steps.",
+            "defaultValue": "B2C.ProxyIEFAppId",
+            "required": false
+        },
+        {
+            "label": "Tokens signing key container name",
+            "name": "tokenSigningKey",
+            "type": "string",
+            "helpMarkDown": "The name of the container hosting the key to sign tokens. If a name other than the default value is used it will have to be configured in the policies.",
+            "required": true,
+            "defaultValue": "TokenSigningKeyContainer"
+        },
+        {
+            "label": "Tokens encryption key container name",
+            "name": "tokenEncryptionKey",
+            "type": "string",
+            "helpMarkDown": "The name of the container hosting the key to encrypt tokens. If a name other than the default value is used it will have to be configured in the policies.",
+            "required": true,
+            "defaultValue": "TokenEncryptionKeyContainer"
+        },
+        {
+            "label": "Extensions app object ID variable name",
+            "name": "extObjectId",
+            "groupName": "extensions",
+            "type": "string",
+            "required": false,
+            "helpMarkDown": "The name of the variable to assign the object ID of the extensions application."
+        },
+        {
+            "label": "Extensions app ID variable name",
+            "name": "extAppId",
+            "groupName": "extensions",
+            "type": "string",
+            "required": false,
+            "helpMarkDown": "The name of the variable to assign the app ID of the extensions application."
+        }
+    ],
+    "instanceNameFormat": "Ensure B2C IEF setup on tenant",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\InitializeIEF.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}
