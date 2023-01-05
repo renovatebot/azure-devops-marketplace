@@ -1,0 +1,92 @@
+{
+	"id": "cb0a440f-9006-4115-b09c-53e21ad250c7",
+	"name": "CompileAzureDscPullServerMofs",
+	"friendlyName": "Compile Azure DSC Pull Server MOFs",
+	"description": "Compile DSC configurations into MOF files for your Azure Automation DSC Pull Server. This should be run after the Publish DSC Configurations to ensure required modules as available.",
+	"helpMarkDown": "Version: #{Build.BuildNumber}#. [More Information](https://github.com/chrislgardner/AzureDscPullServerExtension/wiki/)",
+	"category": "Test",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Chris Gardner",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 4
+	},
+	"demands": [],
+	"minimumAgentVersion": "1.95.0",
+	"groups": [],
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:AzureRM",
+			"label": "Azure Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"
+		},
+		{
+			"name": "ResourceGroupName",
+			"type": "pickList",
+			"label": "Resource group",
+			"required": true,
+			"helpMarkDown": "Provide the name of a resource group.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "automationAccountName",
+			"type": "pickList",
+			"label": "Automation Account",
+			"required": true,
+			"helpMarkDown": "Provide the name of the Azure Automation Account.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "ConfigurationParametersPath",
+			"type": "filePath",
+			"label": "Configuration parameters path",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Any parameters needed by the configurations to compile in a json or psd1 file. Any credentials should be the name of a credential in Azure Automation's credntial store. Check the documentation for formats accepted."
+		},
+		{
+			"name": "Psd1SourcePath",
+			"type": "filePath",
+			"label": "Configuration Data Source",
+			"defaultValue": "$(System.DefaultWorkingDirectory)",
+			"required": false,
+			"helpMarkDown": "Path of the source folder, or file on the local machine, or a UNC share. This will filter for any PSD1 files within it based on input from the Configuration Parameters input."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "ResourceGroupName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureResourceGroups"
+		},
+		{
+			"name": "AutomationAccounts",
+			"target": "automationAccountName",
+			"endpointId": "$(ConnectedServiceName)",
+			"EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31",
+			"resultSelector": "jsonpath:$.value[*].name",
+			"parameters": {
+				"ResourceGroupName": "$(ResourceGroupName)"
+			}
+		}
+	],
+	"instanceNameFormat": "Compile Azure DSC Mofs",
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\CompileMofs.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
