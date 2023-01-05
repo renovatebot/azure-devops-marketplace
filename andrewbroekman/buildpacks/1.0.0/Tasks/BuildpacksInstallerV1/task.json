@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "d60ed968-adb6-49c7-ab38-bd295c606993",
+  "name": "BuildpacksInstaller",
+  "friendlyName": "Buildpacks.io installer",
+  "description": "Find in cache or download a specific version of Buildpacks and prepend it to the PATH",
+  "author": "Andrew Broekman",
+  "helpMarkDown": "[Learn more about this task]()",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Install Buildpacks.io CLI $(buildpacksVersion)",
+  "inputs": [
+    {
+      "name": "buildpacksVersion",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "0.16.0",
+      "required": true,
+      "helpMarkDown": "The version of Buildpacks which should be installed on the agent if not already present"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "src/index.js"
+    }
+  },
+  "outputVariables": [
+    {
+      "name": "buildpacksLocation",
+      "description": "The location of the buildpacks binary that was installed on the agent."
+    }
+  ],
+  "messages": {
+    "VerifyBuildpacksInstallation": "Verifying Buildpacks installation...",
+    "InputVersionNotValidSemanticVersion": "Input version %s is not a valid semantic version",
+    "BuildpacksNotFoundInFolder": "Buildpacks executable not found in path %s",
+    "OperatingSystemNotSupported": "Operating system %s is not supported",
+    "ArchitectureNotSupported": "Architecture %s is not supported",
+    "BuildpacksDownloadFailed": "Failed to download Buildpacks from url %s. Error %s"
+  }
+}

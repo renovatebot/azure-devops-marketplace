@@ -1,0 +1,188 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "c16c681e-20c7-49f7-8f86-5b5a39eff63a",
+  "name": "BuildpacksTask",
+  "friendlyName": "Buildpacks.io",
+  "description": "Execute Buildpacks.io pack commands to create modern cloud native containers hassle-free",
+  "author": "Andrew Broekman",
+  "helpMarkDown": "[Learn more about this task]()",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Buildpacks.io pack",
+  "execution": {
+    "Node": {
+      "target": "src/index.js"
+    }
+  },
+  "inputs": [
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "build",
+      "required": true,
+      "helpMarkDown": "The pack command to run. Select 'Custom' to add arguments or use a command not listed here.",
+      "options": {
+        "build": "build",
+        "custom": "custom",
+        "version": "version"
+      },
+      "properties": {
+        "EditableOptions": "False"
+      }
+    },
+    {
+      "name": "imageName",
+      "type": "string",
+      "label": "Image name",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "builder",
+      "type": "string",
+      "label": "Builder image",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Builder image that should be used to build the OCI container image",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "buildpacks",
+      "type": "multiLine",
+      "label": "Buildpacks",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Buildpack to use. One of:\na buildpack by id and version in the form of '<buildpack>@<version>',\npath to a buildpack directory (not supported on Windows),\npath/URL to a buildpack .tar or .tgz file, or\na packaged buildpack image name in the form of '<hostname>/<repo>[:<tag>]'",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "clearCache",
+      "type": "boolean",
+      "label": "Clear Cache",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Clear image's associated cache before building",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "defaultProcess",
+      "type": "string",
+      "label": "Default process type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Set the default process type. (default 'web')",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "descriptor",
+      "type": "string",
+      "label": "Descriptor file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the project descriptor file",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "envVariables",
+      "type": "multiLine",
+      "label": "Build-time environment variables",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build-time environment variable, in the form 'VAR=VALUE' or 'VAR'. When using latter value-less form, value will be taken from current environment at the time this command is executed. This flag will override individual values defined by --env-file.",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "envFiles",
+      "type": "multiLine",
+      "label": "Build-time environment variables files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "One variable per line, of the form 'VAR=VALUE' or 'VAR'. When using latter value-less form, value will be taken from current environment at the time this command is executed",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "projectPath",
+      "type": "string",
+      "label": "Project path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to app dir or zip-formatted file (defaults to current working directory)",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "pullPolicy",
+      "type": "pickList",
+      "label": "Pull policy",
+      "defaultValue": "always",
+      "required": true,
+      "options": {
+        "always": "always",
+        "never": "never",
+        "if-not-present": "if-not-present"
+      },
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "runImage",
+      "type": "string",
+      "label": "Run image",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Defaults to default stack's run image",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "tags",
+      "type": "multiLine",
+      "label": "Tags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional tags to push the output image to.",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "trustBuilder",
+      "type": "string",
+      "label": "Trust builder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Trust the provided builder",
+      "visibleRule": "command = build"
+    },
+    {
+      "name": "customCommand",
+      "type": "string",
+      "label": "Custom command",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The command to pass to pack for execution.",
+      "visibleRule": "command = custom"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "Arguments",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Arguments to the selected command. The arguments depend on the command selected.",
+      "visibleRule": "command = custom"
+    }
+  ],
+  "messages": {
+    "CommandNotRecognized": "Command not recognized"
+  }
+}
