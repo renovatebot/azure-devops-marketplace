@@ -1,0 +1,128 @@
+{
+  "id": "bad9770c-4811-4fb9-801b-650a6966f454",
+  "name": "RSAT",
+  "friendlyName": "Regression Suite Automation Tool",
+  "description": "Generate and/or execute automation files for your test suites using the Regression Suite Automation Tool (RSAT)",
+  "author": "Microsoft Corporation",
+  "helpMarkDown": "https://docs.microsoft.com/en-us/dynamics365/fin-ops-core/dev-itpro/perf-test/rsat/rsat-overview",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "2.119.1",
+  "instanceNameFormat": "RSAT $(command)",
+  "inputs": [
+    {
+      "name": "command",
+      "type": "radio",
+      "label": "Command",
+      "defaultValue": "Build",
+      "required": true,
+      "options": {
+        "Build": "Build test cases",
+        "Execute": "Execute test cases"
+      },
+      "helpMarkDown": "Type of command to be executed through RSAT"
+    },
+    {
+      "name": "rsatLocation",
+      "type": "string",
+      "label": "RSAT location",
+      "defaultValue": "C:\\Program Files (x86)\\Regression Suite Automation Tool",
+      "required": true,
+      "helpMarkDown": "Folder path to root folder of where RSAT is located"
+    },
+    {
+      "name": "rsatSettingsFilePath",
+      "type": "string",
+      "label": "RSAT Settings file location",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File path to RSAT Settings file"
+    },
+    {
+      "name": "download",
+      "type": "boolean",
+      "label": "Download",
+      "defaultValue": "True",
+      "helpMarkDown": "Flag (True or false) indicate whether the test case attachments are downloaded before test automation files are generated",
+      "visibleRule": "command = Execute"
+    },
+    {
+      "name": "dllOnly",
+      "type": "boolean",
+      "label": "Generate test execution files only",
+      "defaultValue": "True",
+      "helpMarkDown": "Flag (True or false) indicate whether the test case attachments are generated together with Excel parameters file",
+      "visibleRule": "command = Build"
+    },
+    {
+      "name": "parametersType",
+      "type": "radio",
+      "label": "Use test suite",
+      "defaultValue": "Names",
+      "required": true,
+      "options": {
+        "Names": "Names",
+        "IDs": "IDs"
+      },
+      "helpMarkDown": "Type of used parameters"
+    },
+    {
+      "name": "testSuites",
+      "type": "string",
+      "label": "Test Suites",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Comma separated Names/IDs of test suites",
+      "visibleRule": "command = Execute"
+    },
+    {
+      "name": "testSuite",
+      "type": "string",
+      "label": "Test Suite",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name/ID of test suite",
+      "visibleRule": "command = Build"
+    },
+    {
+      "name": "retry",
+      "type": "boolean",
+      "label": "Retry playback if test cases are blocked",
+      "defaultValue": "False",
+      "helpMarkDown": "Retry playback an extra time if one or more test cases are blocked on the first attempt. A pause is done before retrying playback"
+    },
+    {
+      "name": "retryPause",
+      "type": "int",
+      "defaultValue": "120",
+      "label": "Retry pause before attempting playback",
+      "helpMarkDown": "Pause in seconds before attempting playback",
+      "visibleRule": "retry = true"
+    },
+    {
+      "name": "comments",
+      "type": "string",
+      "label": "Comments",
+      "defaultValue": "",
+      "helpMarkDown": "Optional comment to include with test results",
+      "visibleRule": "command = Execute"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "RunRSAT.ps1",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}
