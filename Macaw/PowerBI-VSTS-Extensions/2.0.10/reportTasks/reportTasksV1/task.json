@@ -1,0 +1,162 @@
+{
+  "id": "e42cbc98-47bd-48a7-8da5-258698afc839",
+  "name": "reportTasksV1",
+  "friendlyName": "Power BI: Report Tasks",
+  "description": "Creates, update or delete PowerBI reports",
+  "author": "Macaw: Ton Swart",
+  "helpMarkDown": "[More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/imports)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "9"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power BI Report Task: $(Action) $(groupName)",
+  "groups": [
+    {
+      "name": "AzureDetails",
+      "displayName": "Azure Details",
+      "isExpanded": true
+    },
+    {
+      "name": "pbix",
+      "displayName": "PowerBI Details",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "clientId",
+      "type": "string",
+      "label": "Client ID",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Client id of your Azure AD app registration [More Information](https://docs.microsoft.com/en-us/power-bi/developer/register-app)"
+    },
+    {
+      "name": "userName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "The username for authenticating against Azure AD"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "The password for authenticating against Azure AD"
+    },
+    {
+      "name": "Action",
+      "label": "Action",
+      "type": "pickList",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Select the action you would like to perform",
+      "defaultValue": "Create",
+      "options": {
+        "CreateReport": "Create or Update PowerBI Report",
+        "DeleteReport": "Delete PowerBI Report",
+        "DeleteDataSet": "Delete PowerBI DataSet",
+        "UpdateDataSource": "Update the datasources of the specified dataset",
+        "UpdateParameters": "Update the parameters values for the specified dataset"
+      }
+    },
+    {
+      "name": "groupName",
+      "type": "string",
+      "label": "Group name",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "The name of the PowerBI workspace"
+    },
+    {
+      "name": "PowerBIPath",
+      "type": "filePath",
+      "label": "PowerBI file",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Absolute path of the file(s)",
+      "visibleRule": "Action = CreateReport"
+    },
+    {
+      "name": "PowerBIFile",
+      "type": "string",
+      "label": "PowerBI Report",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Report name in PowerBI.com workspace",
+      "visibleRule": "Action = DeleteReport"
+    },
+    {
+      "name": "Recurse",
+      "type": "boolean",
+      "label": "Remove datasets",
+      "defaultValue": "false",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Recursively delete linked datasets",
+      "visibleRule": "Action = DeleteReport"
+    },
+    {
+      "name": "Dataset",
+      "type": "string",
+      "label": "Dataset",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "The name of the PowerBI.com DataSet",
+      "visibleRule": "Action != CreateReport && Action != DeleteReport"
+    },
+    {
+      "name": "OldConnectionDetails",
+      "type": "string",
+      "label": "Current ConnectionDetails",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Connection details [More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/datasets/updatedatasourcesingroup#datasourceconnectiondetails)",
+      "visibleRule": "Action = UpdateDataSource"
+    },
+    {
+      "name": "NewConnectionDetails",
+      "type": "string",
+      "label": "New ConnectionDetails",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Connection details [More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/datasets/updatedatasourcesingroup#datasourceconnectiondetails)",
+      "visibleRule": "Action = UpdateDataSource"
+    },
+    {
+      "name": "ParameterDetails",
+      "type": "string",
+      "label": "Parameter details",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Power BI dataset parameter update details [More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/datasets/updateparametersingroup#updatemashupparameterdetails)",
+      "visibleRule": "Action = UpdateParameters"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "reportTasks.ps1"
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "id": "707ba97d-ac1d-4c0a-b520-4c27f7ed69d6",
+  "name": "groupTasksV1",
+  "friendlyName": "Power BI: Group Tasks",
+  "description": "Creates or update PowerBI workspace",
+  "author": "Macaw: Ton Swart",
+  "helpMarkDown": "[More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/groups)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "5",
+    "Patch": "8"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power BI Group Tasks: $(Action) - $(groupName)",
+  "groups": [
+    {
+      "name": "AzureDetails",
+      "displayName": "Azure Details",
+      "isExpanded": true
+    },
+    {
+      "name": "pbix",
+      "displayName": "PowerBI Details",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "clientId",
+      "type": "string",
+      "label": "Client ID",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Client id of your Azure AD app registration https://docs.microsoft.com/en-us/power-bi/developer/register-app"
+    },
+    {
+      "name": "userName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "The username for authenticating against Azure AD"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "The password for authenticating against Azure AD"
+    },
+    {
+      "name": "Action",
+      "label": "Action",
+      "type": "pickList",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Select the action you would like to perform",
+      "defaultValue": "Create",
+      "options": {
+        "Create": "Create or Update PowerBI workspace",
+        "Delete": "Delete PowerBI workspace",
+        "GroupInfo": "Write all group info in JSON format to logfile"
+      }
+    },
+    {
+      "name": "groupName",
+      "type": "string",
+      "label": "Group name",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "The name of the PowerBI workspace"
+    },
+    {
+      "name": "synchronize",
+      "type": "boolean",
+      "label": "Synchronize workspace users",
+      "defaultValue": "false",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "If set to true, members in de workspace wich are not set by the Email address field, will be deleted",
+      "visibleRule": "Action = Create"
+    },
+    {
+      "name": "enablepremium",
+      "type": "boolean",
+      "label": "Dedicated capacity",
+      "defaultValue": "false",
+      "required": true,
+      "groupName": "pbix",
+      "helpMarkDown": "Indicates whether this workspace is part of a dedicated capacity.",
+      "visibleRule": "Action = Create"
+    },
+    {
+      "name": "capacity",
+      "type": "string",
+      "label": "Name of dedicated capacity",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "pbix",
+      "helpMarkDown": "The name of the dedicated capacity.",
+      "visibleRule": "enablepremium = true"
+    },
+    {
+      "name": "emailAddress",
+      "type": "string",
+      "label": "Email address",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "pbix",
+      "helpMarkDown": "Email addresses of the user in JSON format [{\"emailaddress\":\"value\",\"groupUserAccessRight\":\"value\"}]",
+      "visibleRule": "Action = Create"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "groupTasks.ps1"
+    }
+  }
+}

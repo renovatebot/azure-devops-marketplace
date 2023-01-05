@@ -1,0 +1,123 @@
+{
+    "id": "e42cbc98-47bd-48a7-8da5-258698afc839",
+    "name": "reportTasksV2",
+    "friendlyName": "Power BI: Report Tasks",
+    "description": "Creates, update or delete PowerBI reports (v2.0.9)",
+    "author": "Macaw: Ton Swart",
+    "helpMarkDown": "[More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/imports)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "2",
+        "Minor": "0",
+        "Patch": "9"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Power BI Report Task: $(Action) $(groupName)",
+    "groups": [
+        {
+            "name": "AzureDetails",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "pbix",
+            "displayName": "PowerBI Details",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "DevOpsServiceConnection",
+            "type": "connectedService:PowerBI-SC",
+            "label": "Power BI service connection",
+            "defaultValue": "",
+            "required": "true",
+            "groupName": "AzureDetails",
+            "helpMarkDown": "Select a service connection to log in to the Power BI service"
+        },
+        {
+            "name": "Action",
+            "label": "Action",
+            "type": "pickList",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Select the action you would like to perform",
+            "defaultValue": "CreateReport",
+            "options": {
+                "CreateReport": "Create or Update PowerBI Report",
+                "DeleteReport": "Delete PowerBI Report",
+                "DeleteDataSet": "Delete PowerBI DataSet",
+                "UpdateParameters": "Update the parameters values for the specified dataset"
+            }
+        },
+        {
+            "name": "workspaceName",
+            "type": "string",
+            "label": "Workspace name",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "The name of the Power BI workspace"
+        },
+        {
+            "name": "PowerBIPath",
+            "type": "filePath",
+            "label": "Power BI file",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Absolute path of the file(s)",
+            "visibleRule": "Action = CreateReport"
+        },
+        {
+            "name": "PowerBIFile",
+            "type": "string",
+            "label": "Power BI report",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Report name in Power BI workspace",
+            "visibleRule": "Action = DeleteReport"
+        },
+        {
+            "name": "RecurseDelete",
+            "type": "boolean",
+            "label": "Remove datasets",
+            "defaultValue": "false",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Recursively delete linked datasets",
+            "visibleRule": "Action = DeleteReport"
+        },
+        {
+            "name": "DatasetName",
+            "type": "string",
+            "label": "Dataset name or id",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "The name or id of the Power BI dataSet",
+            "visibleRule": "Action != CreateReport && Action != DeleteReport"
+        },
+        {
+            "name": "ParameterDetails",
+            "type": "string",
+            "label": "Parameter details",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Power BI dataset parameter update details [More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/datasets/updateparametersingroup#updatemashupparameterdetails)",
+            "visibleRule": "Action = UpdateParameters"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "reportTasks.ps1"
+        }
+    }
+}

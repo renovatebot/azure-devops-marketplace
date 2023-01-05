@@ -1,0 +1,166 @@
+{
+    "id": "27856c43-4103-40cf-bda5-ab012f21098d",
+    "name": "pipelineTasksV2",
+    "friendlyName": "Power BI: Pipeline Tasks",
+    "description": "Runs Power BI deployment pipelines (v1.3.6)",
+    "author": "Macaw: Ton Swart",
+    "helpMarkDown": "[More Information](https://docs.microsoft.com/en-us/rest/api/power-bi/pipelines)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "3",
+        "Patch": "6"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Power BI Pipeline Tasks: $(deployAction) - $(pipelineName)",
+    "showEnvironmentVariables": true,
+    "groups": [
+        {
+            "name": "AzureDetails",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "pbix",
+            "displayName": "Power BI Details",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "DevOpsServiceConnection",
+            "type": "connectedService:PowerBI-SC",
+            "label": "Power BI service connection",
+            "defaultValue": "",
+            "required": "true",
+            "groupName": "AzureDetails",
+            "helpMarkDown": "Select a service connection to log in to the Power BI service"
+        },
+        {
+            "name": "pipelineName",
+            "type": "string",
+            "label": "Pipeline name or id",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "The name or id of the Power BI deployment pipeline"
+        },
+        {
+            "name": "targetStageName",
+            "type": "pickList",
+            "label": "Target stage name",
+            "defaultValue": "Test",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "The name of the Power BI deployment pipeline target stage",
+            "options": {
+                "Test": "Test",
+                "Production": "Production"
+            }
+        },
+        {
+            "name": "deployAction",
+            "type": "pickList",
+            "label": "Deploy Action",
+            "defaultValue": "DeployAll",
+            "required": true,
+            "groupName": "pbix",
+            "helpMarkDown": "Select your type of deployment",
+            "options": {
+                "DeployAll": "Deploy all content from a stage",
+                "DeploySpecific": "Deploy specific content from a stage"
+            }
+        },
+        {
+            "name": "dashboards",
+            "type": "string",
+            "label": "Dashboards name or id's",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Semicolon seperated list of dashboard's that needs to be deployed.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "includeReleatedDashboardsArtifacts",
+            "type": "boolean",
+            "label": "Include related dashboards artifacts",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Indicates whether all related artifacts is part of the deployment.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "reports",
+            "type": "string",
+            "label": "Report name or id's",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Semicolon seperated list of report's that needs to be deployed.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "includeReleatedReportArtifacts",
+            "type": "boolean",
+            "label": "Include related report artifacts",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Indicates whether all related artifacts is part of the deployment.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "datasets",
+            "type": "string",
+            "label": "Dataset name or id's",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Semicolon seperated list of dataset's that needs to be deployed.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "includeReleatedDatasetArtifacts",
+            "type": "boolean",
+            "label": "Include related dataset artifacts",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Indicates whether all related artifacts is part of the deployment.",
+            "visibleRule": "deployAction = DeploySpecific"
+        },
+        {
+            "name": "allowPurgeData",
+            "type": "boolean",
+            "label": "Purge data from the target artifact",
+            "defaultValue": "true",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Whether deleting all data from the target artifact is allowed when needed, i.e. schema mismatch, if required but not allowed deploy will fail."
+        },
+        {
+            "name": "updateAppSettings",
+            "type": "boolean",
+            "label": "Update org app in the target workspace settings",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "pbix",
+            "helpMarkDown": "Whether to update the app in the target workspace"
+        }
+   ],
+    "execution": {
+        "PowerShell3": {
+            "target": "pipelineTasks.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

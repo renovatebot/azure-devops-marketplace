@@ -1,0 +1,178 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "PowerBI-VSTS-Extensions-Group-Tasks",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "groupTasks"
+            }
+        },
+        {
+            "id": "PowerBI-VSTS-Extensions-Report-Tasks",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "reportTasks"
+            }
+        },
+        {
+            "id": "PowerBI-VSTS-Extensions-Pipeline-Tasks",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "pipelineTasks"
+            }
+        },
+        {
+            "id": "service-endpoint-type-powerbi",
+            "description": "Power BI Service Connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "icons": {
+                "default": "images/PowerBI.16x16.png",
+                "large": "images/PowerBI.32x32.png"
+            },
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "PowerBI-SC",
+                "displayName": "Power BI Service Connection",
+                "url": {
+                    "isVisible": "false",
+                    "dependsOn": {
+                        "input": "environment",
+                        "map": [
+                            {
+                                "key": "Public",
+                                "value": "https://api.powerbi.com/v1.0/myorg"
+                            },
+                            {
+                                "key": "USGov",
+                                "value": "https://api.powerbigov.us/v1.0/myorg"
+                            },
+                            {
+                                "key": "USGovHigh",
+                                "value": "https://api.high.powerbigov.us/v1.0/myorg"
+                            },
+                            {
+                                "key": "USGovMil",
+                                "value": "https://api.mil.powerbigov.us/v1.0/myorg"
+                            },
+                            {
+                                "key": "Germany",
+                                "value": "https://api.powerbi.de/v1.0/myorg"
+                            },
+                            {
+                                "key": "China",
+                                "value": "https://api.powerbi.cn/v1.0/myorg"
+                            }
+                        ]
+                    }
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "environment",
+                        "name": "Power BI environment",
+                        "description": "Power BI environment",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "EnvironmentValues",
+                            "defaultValue": "Public",
+                            "possibleValues": [
+                                {
+                                    "displayValue": "Public version",
+                                    "value": "Public"
+                                },
+                                {
+                                    "displayValue": "U.S. Government Community Cloud (USGov)",
+                                    "value": "USGov"
+                                },
+                                {
+                                    "displayValue": "U. S. Government Community Cloud High (USGovHigh)",
+                                    "value": "USGovHigh"
+                                },
+                                {
+                                    "displayValue": "U. S. Military Contractors (USGovHigh)",
+                                    "value": "USGovHigh"
+                                },
+                                {
+                                    "displayValue": "U. S. Military (USGovMil)",
+                                    "value": "USGovMil"
+                                },
+                                {
+                                    "displayValue": "Power BI for Germany cloud",
+                                    "value": "Germany"
+                                },
+                                {
+                                    "displayValue": "Power BI for China cloud",
+                                    "value": "China"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "Username/Password"
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "Service Principal",
+                        "inputDescriptors": [
+                            {
+                                "id": "TenantId",
+                                "name": "Tenant ID",
+                                "description": "Tenant ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "guid",
+                                    "maxLength": 38
+                                }
+                            },
+                            {
+                                "id": "ClientId",
+                                "name": "Client ID",
+                                "description": "Client ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "guid"
+                                }
+                            },
+                            {
+                                "id": "ClientSecret",
+                                "name": "Client Secret",
+                                "description": "Client Secret",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
