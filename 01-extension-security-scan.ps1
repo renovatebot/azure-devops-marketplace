@@ -29,7 +29,7 @@ function Get-Extensions
     return ($result.Content | ConvertFrom-Json).results[0];
 }
 
-& fnm use v16
+& npm install tfx-cli@^0 -g
 
 $pageSize= 100;
 $page = 1
