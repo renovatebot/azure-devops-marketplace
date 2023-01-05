@@ -1,0 +1,106 @@
+{
+    "id": "16e7624f-1531-47bc-b81e-7274655f7d13",
+    "name": "BicepBuild",
+    "friendlyName": "Run Bicep CLI build command",
+    "description": "Run Bicep CLI build command",
+    "helpMarkDown": "Runs the Bicep CLI build command",
+    "author": "Raúl Piracés",
+    "preview": true,
+    "showEnvironmentVariables": false,
+    "runsOn": [
+      "Agent",
+      "MachineGroup",
+      "Server"
+    ],
+    "category": "Azure Pipelines",
+    "version": {
+      "Major": 0,
+      "Minor": 3,
+      "Patch": 8
+    },
+    "instanceNameFormat": "Run Bicep CLI build command",
+    "inputs": [
+      {
+        "name": "process",
+        "type": "pickList",
+        "label": "Directory of files or single file",
+        "defaultValue": "multiple",
+        "required": true,
+        "helpMarkDown": "Choose between an input directory of .bicep files to process or a single file",
+        "options": {
+          "multiple": "Directory",
+          "single": "Single file"
+        },
+        "properties": {
+          "EditableOptions": "False"
+        }
+      },
+      {
+        "type": "filePath",
+        "name": "sourceDirectory",
+        "label": "Source Directory for .bicep file(s)",
+        "defaultValue": "$(System.DefaultWorkingDirectory)",
+        "required": true,
+        "helpMarkDown": "The source directory for .bicep file(s) to compile",
+        "visibleRule": "process = multiple"
+      },
+      {
+        "type": "filePath",
+        "name": "sourceFile",
+        "label": "Source .bicep file",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The source .bicep file to compile",
+        "visibleRule": "process = single"
+      },
+      {
+        "name": "outputProcess",
+        "type": "pickList",
+        "label": "Output options for processed files",
+        "defaultValue": "default",
+        "required": true,
+        "helpMarkDown": "Choose between an output directory, and output file (only when processing a single file), or stdout for the output of the compilation",
+        "options": {
+          "default": "Default (same name and directory as input files)",
+          "outDir": "Directory",
+          "outFile": "Single file",
+          "stdout": "Standard output (stdout)"
+        },
+        "properties": {
+          "EditableOptions": "False"
+        }
+      },
+      {
+        "type": "boolean",
+        "name": "stdout",
+        "label": "Print the output to standard output (stdout)",
+        "defaultValue": "false",
+        "required": false,
+        "helpMarkDown": "To print the output to standard output (stdout) or not",
+        "visibleRule": "outputProcess = none"
+      },
+      {
+        "type": "string",
+        "name": "outputDirectory",
+        "label": "Output directory for .json generated file(s) by Bicep",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "outputProcess = outDir",
+        "helpMarkDown": "The output directory for .json generated file(s) by Bicep (will have preference over 'filePath')"
+      },
+      {
+        "type": "string",
+        "name": "outputFile",
+        "label": "Output filename for the .json generated file by Bicep",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "outputProcess = outFile && process = single",
+        "helpMarkDown": "The output filename for the .json generated file by Bicep"
+      }
+    ],
+    "execution": {
+      "Node": {
+        "target": "index.js"
+      }
+    }
+  }
