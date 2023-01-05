@@ -1,0 +1,128 @@
+{
+	"id": "7441A4C7-34B7-4296-8FB4-EC2363B30BB0",
+	"name": "ManageWindowService",
+	"friendlyName": "Manage Window Service",
+	"description": "Action Based Window service Management",
+	"author": "Mohammed Jawed",
+    "helpMarkDown": "https://github.com/JawedCIA/ManageWindowService/blob/master/README.md",
+	"category": "Utility",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "0",
+		"Patch": "1"
+	},
+	"minimumAgentVersion": "1.83.0",
+	"groups": [{
+		"name": "advanced",
+		"displayName": "Advanced",
+		"isExpanded": false
+	}],
+	"instanceNameFormat": "Manage Window service for $(Action)",
+	"inputs": [{
+			"name": "Action",
+			"type": "pickList",
+			"label": "Action To Be Performed",
+			"required": true,
+			"defaultValue": "Create",
+			"helpMarkDown": "Select an action to manage window service.",
+			"options": {
+				"Create": "Create",
+				"Config": "Config",
+				"Delete": "Delete",
+				"Start": "Start",
+				"Stop": "Stop",
+				"Restart": "Restart"
+			}
+		},
+		{
+			"name": "ServiceName",
+			"type": "string",
+			"label": "Service Name",
+			"defaultValue": "",
+			"required": true,
+			"visibleRule": "Action = Create || Action = Config",
+			"helpMarkDown": "Name of the service to be created and Configured."
+
+		},
+		{
+			"name": "ServicesName",
+			"type": "multiline",
+			"label": "Service(s) Name",
+			"defaultValue": "",
+			"required": true,
+			"visibleRule": "Action = Delete || Action = Start || Action = Stop || Action = Restart",
+			"helpMarkDown": "Name of the service(s),Multiple services(each service name should be as new line) name are supported for start,stop,restart and Delete."
+
+		},
+		{
+			"name": "BinPath",
+			"type": "string",
+			"label": "Service Bin Path",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Path to executable",
+			"visibleRule": "Action = Create || Action = Config"
+		},
+		{
+			"name": "User",
+			"type": "string",
+			"label": "Log on Account",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Account for service",
+			"visibleRule": "Action = Create || Action = Config"
+		},
+		{
+			"name": "Password",
+			"type": "string",
+			"label": "Log on Account Password",
+			"defaultValue": "$(_Password)",
+			"required": false,
+			"helpMarkDown": "Password for service,Please Add Password in Release Variable",
+			"visibleRule": "Action = Create || Action = Config"
+		},
+		{
+			"name": "StartMode",
+			"type": "pickList",
+			"label": "StartMode",
+			"defaultValue": "automatic",
+			"required": false,
+			"helpMarkDown": "Mode of Service",
+			"visibleRule": "Action = Create || Action = Config",
+			"options": {
+				"automatic": "automatic",
+				"manual": "manual",
+				"disabled": "disabled"
+			}
+		},
+		{
+			"name": "DisplayName",
+			"type": "string",
+			"label": "Service DisplayName",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "DisplayName For Service",
+			"visibleRule": "Action = Create || Action = Config"
+		},
+		{
+			"name": "Description",
+			"type": "string",
+			"label": "Service Description",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Description For Service",
+			"visibleRule": "Action = Create || Action = Config"
+		}
+	],
+	"execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\ManageWindowsServices.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
