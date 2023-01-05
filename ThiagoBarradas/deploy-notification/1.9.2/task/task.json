@@ -1,0 +1,97 @@
+{
+    "id": "3f834fb2-9630-4118-9110-43111780d2b5",
+    "name": "notification",
+    "friendlyName": "Deploy Notification",
+    "description": "Send notification with new version and rollback version to Slack",
+    "helpMarkDown": "[More Information](https://github.com/ThiagoBarradas/deploy-notification-vss-ext)",
+    "author": "Thiago Barradas",
+    "preview": false,
+    "showEnvironmentVariables": true,
+    "instanceNameFormat" : "Deploy Notification",
+    "category": "Utility",
+    "version": {
+      "Major": 1,
+      "Minor": 9,
+      "Patch": 2
+    },
+    "inputs": [
+      {
+        "name": "app_name",
+        "type": "string",
+        "label": "App Name",
+        "defaultValue": "$(System.DefinitionName)",
+        "required": true
+      },
+      {
+        "name": "environment",
+        "type": "string",
+        "label": "Environment Name",
+        "defaultValue": "$(Release.EnvironmentName)",
+        "required": true
+      },
+      {
+        "name": "slack_url",
+        "type": "string",
+        "label": "Slack Webhook Url",
+        "defaultValue": "$(SlackChannelUrl)",
+        "required": true
+      },
+      {
+        "name": "new_version",
+        "type": "string",
+        "label": "New Version",
+        "defaultValue": "$(Build.BuildNumber)",
+        "required": true
+      },
+      {
+        "name": "new_url",
+        "type": "string",
+        "label": "New URL",
+        "defaultValue": "$(Release.ReleaseWebUrl)",
+        "required": true
+      },
+      {
+        "name": "azure_conn",
+        "type": "string",
+        "label": "Azure Storage Connection String",
+        "defaultValue": "$(AzureStorageConnectionString)",
+        "required": true,
+        "helpMarkDown": "Used to keep release state"
+      },
+      {
+        "name": "azure_container",
+        "type": "string",
+        "label": "Azure Storage Container",
+        "defaultValue": "$(AzureStorageContainer)",
+        "required": true,
+        "helpMarkDown": "Used to keep release state"
+      },
+      {
+        "name": "is_hotfix",
+        "type": "string",
+        "label": "IsHotfix?",
+        "defaultValue": "$(IsHotfix)",
+        "required": false
+      },
+      {
+        "name": "google_script_url",
+        "type": "string",
+        "label": "Google Script Url",
+        "defaultValue": "$(GoogleScriptUrl)",
+        "required": false,
+        "helpMarkDown": "Url to call (doGet) with parameter {data} with properties in json"
+      },
+      {
+        "name": "team",
+        "type": "string",
+        "label": "Team",
+        "defaultValue": "$(System.TeamProject)",
+        "required": false
+      }
+    ],
+    "execution": {
+      "Node": {
+        "target": "index.js"
+      }
+    }
+  }
