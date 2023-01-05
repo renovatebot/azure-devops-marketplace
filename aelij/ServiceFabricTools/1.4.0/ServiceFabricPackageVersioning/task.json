@@ -1,0 +1,176 @@
+{
+  "id": "346e3d65-2f3f-4bba-9e59-4137b41fd79e",
+  "name": "ServiceFabricPackageVersioning",
+  "friendlyName": "Service Fabric package versioning",
+  "description": "Applies versions to a Service Fabric package",
+  "instanceNameFormat": "Service Fabric package versioning",
+  "author": "Eli Arbel",
+  "helpMarkDown": "",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "4",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PackagePath",
+      "type": "filePath",
+      "label": "Package Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "VersionMode",
+      "type": "pickList",
+      "label": "Version Mode",
+      "required": true,
+      "defaultValue": "Append",
+      "options": {
+        "Append": "Append",
+        "Replace": "Replace"
+      }
+    },
+    {
+      "name": "ApplicationVersion",
+      "type": "string",
+      "label": "Application Version",
+      "defaultValue": "$(Release.ReleaseName)",
+      "required": true,
+      "helpMarkDown": "Appends the specified string to the appication version"
+    },
+    {
+      "name": "ServiceVersion",
+      "type": "string",
+      "label": "Service Version",
+      "defaultValue": "$(Release.ReleaseName)",
+      "required": true,
+      "helpMarkDown": "Appends the specified string to the appication version"
+    },
+    {
+      "name": "CodePackageMode",
+      "type": "pickList",
+      "label": "Code Package Mode",
+      "required": true,
+      "helpMarkDown": "**Specify**: appends the specified string to the version. **Hash**: hashes all the files and appends the hash value to the version.",
+      "defaultValue": "Hash",
+      "options": {
+        "None": "None",
+        "Specify": "Specify",
+        "Hash": "Hash"
+      }
+    },
+    {
+      "name": "CodePackageVersion",
+      "type": "string",
+      "label": "Code Package Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "visibleRule": "CodePackageMode = Specify"
+    },
+    {
+      "name": "ConfigPackageMode",
+      "type": "pickList",
+      "label": "Config Package Mode",
+      "required": true,
+      "helpMarkDown": "**Specify**: appends the specified string to the version. **Hash**: hashes all the files and appends the hash value to the version.",
+      "defaultValue": "Hash",
+      "options": {
+        "None": "None",
+        "Specify": "Specify",
+        "Hash": "Hash"
+      }
+    },
+    {
+      "name": "ConfigPackageVersion",
+      "type": "string",
+      "label": "Config Package Version",
+      "defaultValue": "$(Release.ReleaseName)",
+      "required": true,
+      "helpMarkDown": "",
+      "visibleRule": "ConfigPackageMode = Specify"
+    },
+    {
+      "name": "DataPackageMode",
+      "type": "pickList",
+      "label": "Data Package Mode",
+      "required": true,
+      "helpMarkDown": "**Specify**: appends the specified string to the version. **Hash**: hashes all the files and appends the hash value to the version.",
+      "defaultValue": "None",
+      "options": {
+        "None": "None",
+        "Specify": "Specify",
+        "Hash": "Hash"
+      }
+    },
+    {
+      "name": "DataPackageVersion",
+      "type": "string",
+      "label": "Data Package Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "visibleRule": "DataPackageMode = Specify"
+    },
+    {
+      "name": "DifferentialPackage",
+      "type": "boolean",
+      "label": "Build a Differential Package",
+      "required": true,
+      "defaultValue": "true",
+      "helpMarkDown": "Differential packages contain only changed code/config/data packages, and so can potentially perform upgrades much faster and with less disruptions to running services. Note that for C# code packages to be binary-compatible, you must [enable deterministic builds](https://gist.github.com/aelij/b20271f4bd0ab1298e49068b388b54ae) and exclude PDBs from hashing (latter is the default)."
+    },
+    {
+      "name": "ServiceConnectionName",
+      "type": "connectedService:servicefabric",
+      "label": "Cluster Connection",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "DifferentialPackage = true",
+      "helpMarkDown": "Required for differential packages to retrieve the currently deployed version"
+    },
+    {
+      "name": "HashAlgorithm",
+      "type": "pickList",
+      "label": "Hash Algorithm",
+      "defaultValue": "SHA1",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced",
+      "options": {
+        "SHA1": "SHA1",
+        "SHA256": "SHA256",
+        "SHA384": "SHA384"
+      }
+    },
+    {
+      "name": "HashExcludes",
+      "type": "string",
+      "label": "Hash Excludes",
+      "defaultValue": "*.pdb",
+      "required": true,
+      "helpMarkDown": "A semicolon-separated list of files to exclude from hashing.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "UpdatePackageVersions.ps1"
+    }
+  }
+}
