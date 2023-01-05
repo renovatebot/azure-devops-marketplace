@@ -1,0 +1,136 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "18640aa5-f942-4487-877b-21cd3615fe4e",
+    "name": "DatadogScheduleDowntime",
+    "friendlyName": "Datadog Schedule a downtime",
+    "description": "Schedule a downtime",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Luciano Reichert Eger",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Datadog Schedule a downtime",
+    "inputs": [
+        {
+            "name": "ddApiKey",
+            "type": "string",
+            "label": "Datadog API key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "[Datadog API key.](https://docs.datadoghq.com/account_management/api-app-keys/)"
+        },
+        {
+            "name": "ddApplicationKey",
+            "type": "string",
+            "label": "Datadog Application key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "[Datadog Application key.](https://docs.datadoghq.com/account_management/api-app-keys/)"
+        },
+        {
+            "name": "ddOptionSilence",
+            "type": "pickList",
+            "label": "Choose what to silence",
+            "defaultValue": "bymonitorid",
+            "required": false,
+            "options": {
+                "bymonitorid": "By Monitor",
+                "bymonitortags": "By Monitor Tags"
+            },
+            "helpMarkDown": "Choose what to silence"
+        },
+        {
+            "name": "ddMonitorId",
+            "type": "int",
+            "label": "Monitor ID",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "ddOptionSilence = bymonitorid",
+            "helpMarkDown": "A single monitor to which the downtime applies. If not provided, the downtime applies to all monitors."
+        },
+        {
+            "name": "ddMonitorTags",
+            "type": "string",
+            "label": "Monitor Tags",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "ddOptionSilence = bymonitortags",
+            "helpMarkDown": "A comma-separated list of monitor tags. For example, tags that are applied directly to monitors, not tags that are used in monitor queries (which are filtered by the scope parameter), to which the downtime applies. The resulting downtime applies to monitors that match ALL provided monitor tags. For example, service:postgres AND team:frontend."
+        },
+        {
+            "name": "ddGroupScope",
+            "type": "multiLine",
+            "label": "Group scope",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The scope(s) to which the downtime applies. For example, host:app2. Provide multiple scopes as a comma-separated list like env:dev,env:prod. The resulting downtime applies to sources that matches ALL provided scopes (env:dev AND env:prod)."
+        },
+        {
+            "name": "ddOptionDate",
+            "type": "pickList",
+            "label": "Choose when to silence",
+            "defaultValue": "reportstartend",
+            "required": false,
+            "options": {
+                "reportstartend": "Report start and end of inactivity",
+                "reportminutes": "Report minutes of inactivity"
+            },
+            "helpMarkDown": "Choose when to silence"
+        },
+        {
+            "name": "ddStart",
+            "type": "int",
+            "label": "Start",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "ddOptionDate = reportstartend",
+            "helpMarkDown": "POSIX timestamp to start the downtime. If not provided, the downtime starts the moment it is created."
+        },
+        {
+            "name": "ddEnd",
+            "type": "int",
+            "label": "End",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "ddOptionDate = reportstartend",
+            "helpMarkDown": "POSIX timestamp to end the downtime. If not provided, the downtime is in effect indefinitely until you cancel it."
+        },
+        {
+            "name": "ddMinutes",
+            "type": "int",
+            "label": "Minutes",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "ddOptionDate = reportminutes",
+            "helpMarkDown": "Enter how many minutes you want to silence (starting from the current time)."
+        },
+        {
+            "name": "ddTimeZone",
+            "type": "string",
+            "label": "TimeZone",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The timezone in which to display the downtime's start and end times in Datadog applications."
+        },
+        {
+            "name": "ddMessage",
+            "type": "multiLine",
+            "label": "Message",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A message to include with notifications for this downtime. Email notifications can be sent to specific users by using the same @username notation as events."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
