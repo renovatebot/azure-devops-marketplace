@@ -1,0 +1,61 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EC5",
+    "name": "PropertiesExclusionVerify",
+    "friendlyName": "Properties exclusion verification",
+    "description": "Properties exclusion verification in pom.xml",
+    "helpMarkDown": "Properties exclusion verification in pom.xml",
+    "author": "Almatoolbox",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 7
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "maven"
+    ],
+    "instanceNameFormat": "Property exclusion rule",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "mavenPOMFile",
+            "aliases": [
+                "mavenPomFile"
+            ],
+            "type": "filePath",
+            "label": "Maven POM file to analize",
+            "defaultValue": "pom.xml",
+            "required": true,
+            "helpMarkDown": "Relative path from the repository root to the Maven POM file to analize."
+        },
+        {
+            "name": "propertyExclusion",
+            "type": "string",
+            "label": "property to verify",
+            "defaultValue": "sonar.exclusions",
+            "required": true,
+            "helpMarkDown": "Maven property whose presence in the pom will cause the build to fail."
+        },
+        {
+            "name": "fail",
+            "type": "boolean",
+            "label": "true will make fail the build",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If true this rule make fail the build."
+        }
+    ],
+    "execution": {
+         "Node": {
+            "target": "task.js",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+}
