@@ -1,0 +1,120 @@
+{
+    "id": "2c7fd6a2-7276-43ca-bb16-3caae1dd4698",
+    "name": "acme-cross-assemble-task",
+    "friendlyName": "ACME Cross Assembler Build Task",
+    "description": "Assembles machine code programs using the ACME Cross Assembler",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"      
+    ],
+    "author": "Todd Whitehead",
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 1
+    },
+    "demands": [],
+    "satisfies": [],
+    "instanceNameFormat": "Assemble $(fileFormat) $(targetCPU) code",
+    "inputs": [
+        {
+            "name": "sourcePath",
+            "type": "filePath",
+            "label": "Source Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to sourcecode files"
+        },
+        {
+            "name": "sourceFile",
+            "type": "string",
+            "label": "Source File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Main program file to assemble"
+        },
+        {
+            "name": "targetCPU",
+            "type": "pickList",
+            "label": "Target CPU",
+            "required": true,
+            "options": {
+                "6502": "6502",
+                "6510": "6510",
+                "65c02": "65c02",
+                "r65c02": "r65c02",
+                "w65c02": "w65c02",
+                "65816": "65816",
+                "65ce02": "65ce02",
+                "4502": "4502",
+                "c64dtv2": "c64dtv2"               
+            },
+            "defaultValue": "6510",
+            "helpMarkDown": "Select the target CPU architecture"
+        },
+        {
+            "name": "fileFormat",
+            "type": "pickList",
+            "label": "File Format",
+            "required": true,
+            "options": {
+                "cbm": "Commodore",
+                "apple": "Apple",
+                "plain": "Plain"
+            },
+            "defaultValue": "cbm",
+            "helpMarkDown": "Select the output file format flavour"
+        },
+        {
+            "name": "verbosityLevel",
+            "type": "pickList",
+            "label": "Assembler Verbosity",
+            "required": true,
+            "options": {
+                "0": "Silent",
+                "1": "Quiet",
+                "2": "Normal",
+                "3": "Detailed"           
+            },
+            "defaultValue": "2",
+            "helpMarkDown": "Verbosity of Assembler Output"
+        },
+        {
+            "name": "outputFilename",
+            "type": "string",
+            "label": "Output Filename",
+            "defaultValue": "myprog.prg",
+            "required": true,
+            "helpMarkDown": "Name of the program (prg) file to generate"
+        },  
+        {
+            "name": "compressOutput",
+            "type": "boolean",
+            "label": "Compress Assembled Program",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Compress the assembled program to decrease filesize"
+        },
+        {
+            "name": "otherCommands",
+            "type": "string",
+            "label": "Other Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Other parameters to pass to the assembler"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "acme-assemble.js"
+        }
+    },
+    "messages": {
+        "DownloadACMEFailedFromLocation": "Failed to download ACME from location %s. Error %s",
+        "ACMENotFoundInFolder": "ACME executable not found in path %s",
+        "ACMEDownloadFailed": "Failed to download ACME from location %s. Error %s",
+        "VerifyACMEInstallation": "Verifying ACME installation..."
+    }
+}
