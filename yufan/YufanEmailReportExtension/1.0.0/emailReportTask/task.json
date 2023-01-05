@@ -1,0 +1,234 @@
+{
+  "id": "36fd41b1-8024-4ce9-a5a0-53c3e54ed667",
+  "name": "YufanEmailReport",
+  "friendlyName": "Yufan Email Report",
+  "description": "Send rich email report for test results and for tasks in this stage",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Yufan Ltd.",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 8
+  },
+  "groups": [
+    {
+      "name": "emailConfiguration",
+      "displayName": "Email Configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "emailContent",
+      "displayName": "Email Content",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "sendMailConditionConfig",
+      "type": "pickList",
+      "label": "Send Email",
+      "defaultValue": "Always",
+      "required": true,
+      "helpMarkDown": "",
+      "options": {
+        "Always": "Always",
+        "On Failure": "On Failure",
+        "On Success": "On Success",
+        "On New Failures Only": "On New Failures Only"
+      },
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "subject",
+      "type": "string",
+      "label": "Email Subject",
+      "defaultValue": "[{environmentStatus}] {passPercentage} tests passed in $(Release.EnvironmentName) stage for $(Build.BuildNumber) ",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "includeInToSectionStr",
+      "type": "pickList",
+      "label": "Include in To Section",
+      "defaultValue": "1",
+      "required": false,
+      "helpMarkDown": "",
+      "options": {
+        "1": "Include Commit Owners",
+        "2": "Include Failed Test Owners",
+        "3": "Include Active Bug Owners",
+        "4": "Include Created By"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "toAddress",
+      "type": "string",
+      "label": "To",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "includeInCcSectionStr",
+      "type": "pickList",
+      "label": "Include in Cc Section",
+      "required": false,
+      "helpMarkDown": "",
+      "options": {
+        "1": "Include Commit owners",
+        "2": "Include Failure Test Owners",
+        "3": "Include Active Bug Owners",
+        "4": "Include Created By"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "ccAddress",
+      "type": "string",
+      "label": "Cc",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "defaultDomain",
+      "type": "string",
+      "label": "Default Domain for Addresses",
+      "defaultValue": "maestrosurgical.com",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "emailConfiguration"
+    },
+    {
+      "name": "groupTestSummaryByStr",
+      "type": "pickList",
+      "label": "Group Test Summary",
+      "defaultValue": "1",
+      "required": false,
+      "helpMarkDown": "",
+      "options": {
+        "0": "Priority",
+        "1": "Run"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "groupName": "emailContent"
+    },
+    {
+      "name": "includeResultsStr",
+      "type": "pickList",
+      "label": "Include Test Results",
+      "required": false,
+      "defaultValue": "1",
+      "helpMarkDown": "",
+      "options": {
+        "1": "Failed Tests",
+        "2": "Other Tests"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "groupName": "emailContent"
+    },
+    {
+      "name": "groupTestResultsBy",
+      "type": "radio",
+      "label": "Group Test Results",
+      "required": true,
+      "defaultValue": "run",
+      "helpMarkDown": "",
+      "options": {
+        "run": "Run",
+        "Priority": "Priority"
+      },
+      "groupName": "emailContent"
+    },
+    {
+      "name": "includeCommits",
+      "type": "boolean",
+      "label": "Include Commits",
+      "required": true,
+      "defaultValue": "true",
+      "helpMarkDown": "",
+      "groupName": "emailContent"
+    },
+    {
+      "name": "maxTestFailuresToShow",
+      "type": "string",
+      "label": "Maximum Test Results to show",
+      "required": true,
+      "defaultValue": "15",
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "includeOthersInTotal",
+      "type": "boolean",
+      "label": "Include Others in Total count",
+      "required": true,
+      "defaultValue": "false",
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "usePreviousEnvironment",
+      "type": "boolean",
+      "label": "Use Previous Stage",
+      "required": true,
+      "defaultValue": "false",
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "enableSSLOnSmtpConnection",
+      "aliases": [
+        "enableTLS"
+      ],
+      "type": "boolean",
+      "label": "Enable TLS",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "smtpConnectionEndpoint",
+      "type": "connectedService:Generic",
+      "label": "SMTP credentials",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    }
+  ],
+  "instanceNameFormat": "Send Email Report $(sendMailConditionConfig)",
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}
