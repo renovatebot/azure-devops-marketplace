@@ -1,0 +1,98 @@
+{
+    "id": "A0515EC8-6254-5FFD-932C-86772E2B5960",
+    "name": "updateconfig",
+    "friendlyName": "Update config",
+    "description": "Update config variables in files",
+    "helpMarkDown": "v1.4.3 - [More Information](https://github.com/digitalmedia34/updateconfig#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Digitalmedia34",
+    "version": {
+        "Major": 1,
+        "Minor": 4,
+        "Patch": 3
+    },
+    "minimumAgentVersion": "2.105.0",
+    "groups": [
+        {
+            "name": "missing",
+            "displayName": "Missing variables",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "rootDirectory",
+            "type": "filePath",
+            "label": "Root directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Base directory for searching files. If not specified the default working directory will be used."
+        },
+        {
+            "name": "targetFiles",
+            "type": "multiLine",
+            "label": "Target files",
+            "defaultValue": "**/*.config",
+            "required": true,
+            "helpMarkDown": "Absolute or relative comma or newline-separated paths to the files to replace tokens. Wildcards can be used.<br/>Eg: `**/*.config` for all config files in all sub folders."
+        },
+        {
+            "name": "encoding",
+            "type": "pickList",
+            "label": "Files encoding",
+            "defaultValue": "auto",
+            "required": true,
+            "options": {
+                "auto": "auto",
+                "ascii": "ascii",
+                "utf-7": "utf-7",
+                "utf-8": "utf-8",
+                "utf-16le": "utf-16",
+                "utf-16be": "utf-16 (big endian)"
+            },
+            "helpMarkDown": "Specify the files encoding.<br/>The 'auto' value will determine the encoding based on the Byte Order Mark (BOM) if present; otherwise it will use ascii."
+        },
+        {
+            "name": "writeBOM",
+            "type": "boolean",
+            "label": "Write unicode BOM",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If checked writes an unicode Byte Order Mark (BOM).",
+            "visibleRule": "encoding != ascii"
+        },
+        {
+            "name": "tokenPrefix",
+            "type": "string",
+            "label": "Token prefix",
+            "defaultValue": "#{",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The prefix of the tokens to search in the target files. Only used when replacing nested variables"
+        },
+        {
+            "name": "tokenSuffix",
+            "type": "string",
+            "label": "Token suffix",
+            "defaultValue": "}#",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The suffix of the tokens to search in the target files. Only used when replacing nested variables"
+        }
+    ],
+    "instanceNameFormat": "Update config variables",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
