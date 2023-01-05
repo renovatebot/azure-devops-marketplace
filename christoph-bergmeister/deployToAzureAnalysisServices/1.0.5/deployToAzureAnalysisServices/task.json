@@ -1,0 +1,48 @@
+{
+    "id": "f3013eb7-8703-4198-aa5a-77b90daea7dd",
+    "name": "deployToAzureAnalysisServices",
+    "friendlyName": "Deploy to Azure Analysis Services",
+    "description": "Deploys XMLA file produced by Analysis Services model to Azure Analysis Services",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Christoph Bergmeister",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Deploy to Azure Analysis Services server $(azureAnalysisServerName)",
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager service endpoint for the deployment."
+        },
+        {
+            "name": "xmlaFilePath",
+            "type": "filePath",
+            "label": "XMLA File Path",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the XMLA file. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+        },
+        {
+            "name": "azureAnalysisServerName",
+            "type": "string",
+            "label": "Azure Analysis Server name",
+            "defaultValue": "asazure://region.asazure.windows.net/MyAzureAnalysisServerName",
+            "required": true,
+            "helpMarkDown": "Azure Analysis Server Name"
+        }
+    ],
+    "execution": {
+		"PowerShell3": {
+			"target":  "$(currentDirectory)\\deploy.ps1",
+			"argumentFormat":  "",
+			"workingDirectory":  "$(currentDirectory)"
+		}
+    }
+}
