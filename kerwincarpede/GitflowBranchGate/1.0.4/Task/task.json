@@ -1,0 +1,299 @@
+{
+  "id": "1E82DE95-4ACB-4D2E-BD41-370CDB2B05F3",
+  "name": "GitflowBranchGate",
+  "friendlyName": "Gitflow Branch Gate",
+  "description": "Apply a set of branch commit rules to help prevent stale branches and rolling back changes.",
+  "author": "Kerwin Carpede",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "4"
+  },
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "Gitflow Branch Gate",
+  "groups": [
+    {
+      "name": "branches",
+      "displayName": "Gitflow Branches",
+      "isExpanded": true
+    },
+    {
+      "name": "limits",
+      "displayName": "Limits",
+      "isExpanded": true
+    },
+    {
+      "name": "rules",
+      "displayName": "Rules",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "repository",
+      "type": "string",
+      "label": "Repository",
+      "defaultValue": "$(Build.Repository.Name)",
+      "required": true,
+      "helpMarkDown": "Specify the name of the repository to analyze"
+    },
+    {
+      "name": "masterBranch",
+      "type": "string",
+      "label": "Master Branch",
+      "defaultValue": "master",
+      "required": true,
+      "helpMarkDown": "Specify the master branch. A valid branch must be provided.",
+      "groupName": "branches"
+    },
+    {
+      "name": "developBranch",
+      "type": "string",
+      "label": "Develop Branch",
+      "defaultValue": "develop",
+      "required": true,
+      "helpMarkDown": "Specify the develop branch. A valid branch must be provided.",
+      "groupName": "branches"
+    },
+    {
+      "name": "hotfixBranches",
+      "type": "string",
+      "label": "Hotfix Branches",
+      "defaultValue": "hotfix/*",
+      "required": true,
+      "helpMarkDown": "Specify the prefix or pattern for hotfix branches",
+      "groupName": "branches"
+    },
+    {
+      "name": "releaseBranches",
+      "type": "string",
+      "label": "Release Branches",
+      "defaultValue": "release/*",
+      "required": true,
+      "helpMarkDown": "Specify the prefix or pattern for release branches",
+      "groupName": "branches"
+    },
+    {
+      "name": "featureBranches",
+      "type": "string",
+      "label": "Feature Branches",
+      "defaultValue": "feature/*",
+      "required": true,
+      "helpMarkDown": "Specify the prefix or pattern for feature branches",
+      "groupName": "branches"
+    },
+    {
+      "name": "hotfixBranchLimit",
+      "type": "string",
+      "label": "Hotfix branch limit (number of branches)",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Limit the number of hotfix branches that can exist any any given time.",
+      "groupName": "limits"
+    },
+    {
+      "name": "hotfixBranchDaysLimit",
+      "type": "string",
+      "label": "Hotfix branches must not be older than (days)",
+      "defaultValue": "10",
+      "required": true,
+      "helpMarkDown": "Limit the number of days any hotfix branch can go without a commit i.e. go stale.",
+      "groupName": "limits"
+    },
+    {
+      "name": "releaseBranchLimit",
+      "type": "string",
+      "label": "Release branch limit (number of branches)",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Limit the number of release branches that can exist any any given time.",
+      "groupName": "limits"
+    },
+    {
+      "name": "releaseBranchDaysLimit",
+      "type": "string",
+      "label": "Release branches must not be older than (days)",
+      "defaultValue": "10",
+      "required": true,
+      "helpMarkDown": "Limit the number of days any release branch can go without a commit i.e. go stale.",
+      "groupName": "limits"
+    },
+    {
+      "name": "featureBranchLimit",
+      "type": "string",
+      "label": "Feature branch limit (number of branches)",
+      "defaultValue": "50",
+      "required": true,
+      "helpMarkDown": "Limit the number of feature branches that can exist any any given time.",
+      "groupName": "limits"
+    },
+    {
+      "name": "featureBranchDaysLimit",
+      "type": "string",
+      "label": "Feature branches must not be older than (days)",
+      "defaultValue": "45",
+      "required": true,
+      "helpMarkDown": "Limit the number of days any feature branch can go without a commit i.e. go stale.",
+      "groupName": "limits"
+    },
+    {
+      "name": "masterMustNotHavePendingPullRequests",
+      "type": "boolean",
+      "label": "Master must not have any active Pull Requests",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if there are any Pull Requests targeting the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "hotfixBranchesMustNotHavePendingPullRequests",
+      "type": "boolean",
+      "label": "Hotfix branches must not have any active Pull Requests",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if there are any Pull Requests from hotfix branches (Source = hotfix/*).",
+      "groupName": "rules"
+    },
+    {
+      "name": "releaseBranchesMustNotHavePendingPullRequests",
+      "type": "boolean",
+      "label": "Release branches must not have any active Pull Requests",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if there are any Pull Requests from release branches (Source = release/*).",
+      "groupName": "rules"
+    },
+    {
+      "name": "hotfixMustNotBeBehindMaster",
+      "type": "boolean",
+      "label": "Hotfix branches must not be behind master",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if any hotfix branches are behind the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "releaseMustNotBeBehindMaster",
+      "type": "boolean",
+      "label": "Release branches must not be behind master",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if any release branches are behind the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "mustNotHaveHotfixAndReleaseBranches",
+      "type": "boolean",
+      "label": "Must not have hotfix and release branches at the same time",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if there are any hotfix and release branches created at the same time.",
+      "groupName": "rules"
+    },
+    {
+      "name": "developMustNotBeBehindMaster",
+      "type": "boolean",
+      "label": "Develop branch must not be behind master",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if the develop branch is behind the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "featureBranchesMustNotBeBehindMaster",
+      "type": "boolean",
+      "label": "Feature branches must not be behind Master",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if ANY feature branch is behind the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "CurrentFeatureMustNotBeBehindMaster",
+      "type": "boolean",
+      "label": "Current feature branch must not be behind master",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if the current feature branch being built is behind the master branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "featureBranchesMustNotBeBehindDevelop",
+      "type": "boolean",
+      "label": "Feature branches must not be behind develop",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if ANY feature branch is behind the develop branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "CurrentFeatureMustNotBeBehindDevelop",
+      "type": "boolean",
+      "label": "Current feature branch must not be behind develop",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if the current feature branch being built is behind the develop branch.",
+      "groupName": "rules"
+    },
+    {
+      "name": "branchNamesMustMatchConventions",
+      "type": "boolean",
+      "label": "Branch names must match naming conventions",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will fail the build if there are branches with names that do not match the predefinied naming conventions.",
+      "groupName": "rules"
+    },
+    {
+      "name": "BypassBranchesWithNameMatchingPattern",
+      "type": "string",
+      "label": "Bypass branches matching pattern",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Bypass all branch rules for any branch name matching this pattern e.g. prototype/\\*, external/\\*. Warning: setting the pattern to something like '*' could bypass rules for all branches.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "showIssuesOnBuildSummary",
+      "type": "boolean",
+      "label": "Show issues on build summary",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Turning this on will show the list of issues on the build summary.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "authenticationType",
+      "type": "pickList",
+      "label": "Authentication",
+      "required": "true",
+      "defaultValue": "OAuthToken",
+      "options": {
+        "OAuthToken": "OAuth Token",
+        "WindowsAuthentication": "Windows Authentication"
+      },
+      "helpMarkDown": "Specify the authentication type to use for communicating with the TFS API. Note: For OAuth Token, 'Allow scripts to access OAuth token' must be enabled in the build definition options. If 'Windows Authentication' is selected, this would be the account being used by the Build Agent.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "run.ps1"
+    }
+  }
+}
