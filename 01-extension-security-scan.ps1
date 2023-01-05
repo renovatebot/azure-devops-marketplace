@@ -36,6 +36,8 @@ function commit-changes
         [string]$message
     )
 
+    write-host "::group::Git commit: $message"
+
     & git config --local user.email "jesse.houwing@gmail.com"
     & git config --local user.name "Jesse Houwing"
     
@@ -46,6 +48,8 @@ function commit-changes
         & git commit -m $message
         & git push
     }
+
+    write-host "::endgroup::"
 }
 
 & npm install tfx-cli@^0 -g --no-fund
@@ -92,6 +96,7 @@ foreach ($extension in $extensions)
     $extensionId = $extension.extensionName
     $shouldCommit = $false
 
+    Write-host "::group::$publisherId/$extensionId"
     mkdir -path "$publisherId/$extensionId/" -Force | out-null
 
     $extensionDataFile = "$publisherId/$extensionId/extension.json"
@@ -135,6 +140,7 @@ foreach ($extension in $extensions)
     {
         commit-changes -message "Update $publisherId/$extensionId"
     }
-    write-host "##### COUNT: $count / $max "
+    write-host "::endgroup::"
+    write-host "##### $count / $max "
     $count += 1
 }
