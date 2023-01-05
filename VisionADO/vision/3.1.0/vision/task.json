@@ -1,0 +1,121 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "191824ed-bcbb-499f-8752-a7d192fba217",
+    "name": "Vision",
+    "friendlyName": "Vision",
+    "description": "No description",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "visionado@microsoft.com",
+    "version": {
+        "Major": 3,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Vision",
+    "inputs": [
+        {
+            "name": "debug",
+            "type": "boolean",
+            "label": "Debug",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Allows additional logging & diagnostics"
+        },
+        {
+            "name": "targetType",
+            "type": "pickList",
+            "label": "Target Type",
+            "options": {
+                "filePath": "filePath",
+                "inline": "inline"
+            },
+            "required": false,
+            "defaultValue": "filePath",
+            "helpMarkDown": "Optional. Options: filePath, inline"
+        },
+        {
+            "name": "filePath",
+            "type": "string",
+            "label": "File Path",
+            "required": false,
+            "helpMarkDown": "(Required, if Type is FilePath) Path of the script to execute. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "required": false,
+            "helpMarkDown": "(Optional) Arguments passed to the Bash script."
+        },
+        {
+            "name": "script",
+            "type": "string",
+            "label": "Script",
+            "required": true,
+            "helpMarkDown": "(Required, if Type is inline) Contents of the script. Default value: \"# Write your commands here\n\necho 'Hello world'\n\""
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working Directory",
+            "required": false,
+            "helpMarkDown": "(Optional) Specify the working directory in which you want to run the command. If you leave it empty, the working directory is $(Build.SourcesDirectory)"
+        },
+        {
+            "name": "failOnStderr",
+            "type": "boolean",
+            "label": "Fail on standard error",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "(Optional) If this is true, this task will fail if any errors are written to stderr. Default value: false"
+        },
+        {
+            "name": "maxBuffer",
+            "type": "int",
+            "label": "Maximum buffer size for stdout and stderr",
+            "required": false,
+            "defaultValue": "1024*1024",
+            "helpMarkDown": "(Optional) If given, this will be the maximum buffer size for stdout and stderr"
+        },
+        {
+            "name": "noProfile",
+            "type": "boolean",
+            "label": "Don't load the system-wide startup/initialization files",
+            "required": false,
+            "defaultValue": "true",
+            "helpMarkDown": "(Optional) Don't load the system-wide startup file /etc/profile or any of the personal initialization files"
+        },
+        {
+            "name": "noRc",
+            "type": "boolean",
+            "label": "Don't read the ~/.bashrc file",
+            "required": false,
+            "defaultValue": "true",
+            "helpMarkDown": "(Optional) If this is true, the task will not process .bashrc from the user's home directory. Default value: true"
+        },
+        {
+            "name": "env",
+            "type": "multiLine",
+            "label": "Environment variables",
+            "required": false,
+            "defaultValue": "{}",
+            "helpMarkDown": "(Optional) A list of additional items to map into the process's environment. For example, secret variables are not automatically mapped."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "main.js"
+        }
+    },
+    "messages": {
+        "GeneratingScript": "Generating script.",
+        "JS_ExitCode": "Bash exited with code '%s'.",
+        "JS_FormattedCommand": "Formatted command: %s",
+        "JS_InvalidFilePath": "Invalid file path '%s'.",
+        "JS_ScriptContents": "Script contents:",
+        "JS_Stderr": "Bash wrote one or more lines to the standard error stream.",
+        "JS_TranslatePathFailed": "Unable to translate the path '%s' to the Linux file system.",
+        "JS_BashEnvAlreadyDefined": "The BASH_ENV environment variable has already been set to a '%s', the task will override it with '%s'"
+    }
+}
