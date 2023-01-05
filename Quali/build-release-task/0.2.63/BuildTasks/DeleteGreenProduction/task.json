@@ -1,0 +1,72 @@
+{
+  "id": "585501bd-2923-4798-ab8a-09ec360f2b03",
+  "name": "DeleteGreenProduction",
+  "friendlyName": "Delete Green Production",
+  "description": "Delete Green Production with CloudShell Colony",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 63
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "Delete Green Production",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "colonyEndpoint",
+      "type": "connectedService:colonyServiceEndpoint",
+      "label": "Colony server URL",
+      "required": true,
+      "helpMarkDown": "Select the Colony end point to use. If needed, click on 'manage', and add a new service connection of type 'Colony Service connection'"
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your CloudShell Colony space."
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "5",
+      "helpMarkDown": "Set the timeout for this step (in minutes), if your Green will not be deleted when the timeout is reached, CloudShell Colony will fail the task.",
+      "required": true
+    },
+    {
+      "name": "productionId",
+      "type": "string",
+      "label": "Production Id",
+      "required": true,
+      "helpMarkDown": "Enter the ID of the Production you want to end. Use $(Colony.Production_Id) if you have the Deploy Production Green task in the pipeline."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "project",
+      "endpointId": "$(colonyEndpoint)",
+      "dataSourceName": "Colony Endpoint"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}

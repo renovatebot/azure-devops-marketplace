@@ -1,0 +1,64 @@
+{
+  "id": "154dadab-52ae-429e-8584-d6e2ecdbebff",
+  "name": "EndSandbox",
+  "friendlyName": "End Sandbox",
+  "description": "Ends a sandbox with CloudShell Colony",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 63
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "End Sandbox",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "colonyEndpoint",
+      "type": "connectedService:colonyServiceEndpoint",
+      "label": "Colony server URL",
+      "required": true,
+      "helpMarkDown": "Select the Colony end point to use. If needed, click on 'manage', and add a new service connection of type 'Colony Service connection'"
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your CloudShell Colony space."
+    },
+    {
+      "name": "sandboxId",
+      "type": "string",
+      "label": "Sandbox ID",
+      "required": true,
+      "helpMarkDown": "Enter the ID of the sandbox you want to end. Use $(Colony.Sandbox_Id) to dynamically get the sandbox Id from the CloudShell Colony object that was returned from a Start Sandbox task."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "project",
+      "endpointId": "$(colonyEndpoint)",
+      "dataSourceName": "Colony Endpoint"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}
