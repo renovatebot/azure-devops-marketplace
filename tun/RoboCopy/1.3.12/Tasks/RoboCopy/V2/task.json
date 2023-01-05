@@ -1,0 +1,160 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "0ddc42e1-3229-42ff-a166-c4360bb16337",
+    "name": "RoboCopy",
+    "friendlyName": "RoboCopy files",
+    "description": "Copy files via RoboCopy",
+    "helpMarkDown": "",
+    "category": "Utility",
+	"visibility": [
+		"Build"
+	],
+    "author": "Markus Szumovski",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 8
+    },
+    "instanceNameFormat": "RoboCopy to $(To)",
+	"demands": [],
+	"minimumAgentVersion": "2.115.0",
+	"groups": [
+		{
+			"name": "switches",
+			"displayName": "Switches",
+			"isExpanded": true
+		},
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		},
+		{
+			"name": "users",
+			"displayName": "User for target",
+			"isExpanded": false
+		}
+	],
+    "inputs": [
+		{
+			"name": "From",
+			"type": "filePath",
+			"label": "Source Folder",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Source location from where to copy files from. This will also include files in subdirectories. You can use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) , example: $(Agent.BuildDirectory)"
+		},
+		{
+			"name": "To",
+			"type": "string",
+			"label": "Target Folder",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Destination location where to copy files to. If the directory doesn't exist yet, it will be created (if possible). You can use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) , example: $(Agent.BuildDirectory)"
+		},
+		{
+			"name": "Filter",
+			"type": "string",
+			"label": "Filter",
+			"defaultValue": "*",
+			"required": false,
+			"helpMarkDown": "Filename filter with wildcards. Any files not matching this filter will be excluded from the copy process. Empty will copy all files."
+		},
+		{
+			"name": "Purge",
+			"type": "boolean",
+			"label": "Clean target",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Will delete files and directories from the destination that do not exist in the source (Note: Will however not delete files or directories that exist in source and destination and just wouldn't be copied due to the filter criteria, except if Flatten switch is set)",
+			"groupName": "switches"
+		},
+		{
+			"name": "Flatten",
+			"type": "boolean",
+			"label": "Flatten structure",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Will flatten directory structure (will not use robocopy, parameters Threads and IncludeEmpty will not have any effect)",
+			"groupName": "switches"
+		},
+		{
+			"name": "IncludeEmpty",
+			"type": "boolean",
+			"label": "Include empty folders",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Will also copy empty subdirectories (or subdirectories that would be empty because no file in the subdirectory of the source matches the filter) Will not have any effect if Flatten switch is present/set. (non-robocopy mode)",
+			"visibleRule": "Flatten = false",
+			"groupName": "switches"
+		},
+		{
+			"name": "Overwrite",
+			"type": "boolean",
+			"label": "Overwrite target files",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Will only have an effect if -Flatten switch is present/set or a user is provided (non-robocopy mode)",
+			"groupName": "switches"
+		},
+		{
+			"name": "Retries",
+			"type": "string",
+			"label": "Number of retries",
+			"defaultValue": "10",
+			"required": false,
+			"helpMarkDown": "How often should the copying of a file be retried if it failed? Use only numbers. Default is 10.",
+			"groupName": "advanced"
+		},
+		{
+			"name": "SecondsToRetry",
+			"type": "string",
+			"label": "Seconds to next retry",
+			"defaultValue": "30",
+			"required": false,
+			"helpMarkDown": "How long should the process wait before retrying to copy a file (in seconds)? Use only numbers. Default is 30.",
+			"groupName": "advanced"
+		},
+		{
+			"name": "Threads",
+			"type": "string",
+			"label": "Number of threads",
+			"defaultValue": "10",
+			"required": false,
+			"helpMarkDown": "How many threads should be used to copy the files? Use only numbers. Default is 10. Will not have any effect if Flatten switch is present/set. (non-robocopy mode)",
+			"groupName": "advanced"
+		},
+		{
+			"name": "PowershellCore",
+			"type": "boolean",
+			"label": "Use Powershell Core",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Should Powershell Core be used if it exists?",
+			"groupName": "advanced"
+		},
+		{
+			"name": "User",
+			"type": "string",
+			"label": "Username",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Username to use for destination credentials",
+			"groupName": "users"
+		},
+		{
+			"name": "Password",
+			"type": "string",
+			"label": "Password",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Password to use for destination credentials",
+			"groupName": "users"
+		}
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
