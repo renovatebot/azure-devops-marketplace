@@ -1,0 +1,94 @@
+﻿{
+  "id": "3a33c200-b187-11e5-9a35-5769bc563ed2",
+  "name": "AzureWebPowerShellSwap",
+  "friendlyName": "Azure WebApp Swap",
+  "description": "Swap Azure WebApp slots",
+  "category": "Deploy",
+  "icons": {
+        "default": "icon.jpg"
+    },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Alejandro Melis & Miguel Cruz",
+  "version": {
+    "Major": 1,
+    "Minor": 2,
+    "Patch": 0
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure:Certificate,UsernamePassword",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure subscription to target for deployment."
+    },
+    {
+      "name": "WebSiteLocation",
+      "type": "pickList",
+      "label": "Web App Location",
+      "defaultValue": "South Central US",
+      "required": true,
+      "helpMarkDown": "Select a region for deployment.Possible options are **East US**, **East US 2**, **Central US**, **South Central US**, **West US**, **North Europe**, **West Europe** and others.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "WebSiteName",
+      "type": "pickList",
+      "label": "Web App Name",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "Slot1",
+      "type": "string",
+      "label": "Slot Origin",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Slot Origin"
+    },
+    {
+      "name": "Slot2",
+      "type": "string",
+      "label": "Slot Destination",
+      "defaultValue": "",
+      "helpMarkDown": "Slot Destination",
+      "required": true
+    }
+  ],
+  "dataSourceBindings": [
+    {
+        "target": "WebSiteLocation",
+        "endpointId": "$(ConnectedServiceName)",
+        "dataSourceName": "AzureLocations"
+    },
+    {
+      "target": "WebSiteName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureWebSiteNames",
+	  "parameters": {
+		"WebSiteLocation": "$(WebSiteLocation)"
+        }
+    }
+  ],
+  "instanceNameFormat": "Azure Web App Swap: $(WebSiteName)",
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\Swap-AzureWebApp.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
