@@ -1,0 +1,295 @@
+{
+  "id": "3B1C7A45-C6E7-4C1E-93E8-BE8354DA868A",
+  "name": "cboroson-VSTS-LetsEncrypt",
+  "friendlyName": "LetsEncrypt certificate generator",
+  "description": "Generate LetsEncrypt signed certificates and upload to Key Vault",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/VSTS-LetsEncrypt)",
+  "category": "Utility",
+  "author": "Craig Boroson (Posh-ACME module from Ryan Bolger)",
+  "version": {
+    "Major": 1,
+    "Minor": 3,
+    "Patch": 4
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+    {
+      "name": "AzureSettings",
+      "displayName": "Azure configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "CertificateSettings",
+      "displayName": "Certificate configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "KeyVaultSecretSettings",
+      "displayName": "Key Vault secret configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "tagValues",
+      "displayName": "Azure tags for storing secrets",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureSettings",
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "pickList",
+      "label": "Resource Group",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "AzureSettings",
+      "helpMarkDown": "Enter or Select the Azure Resource Group that contains the Key Vault where the certificate should be uploaded."
+    },
+    {
+      "name": "KeyVaultName",
+      "type": "pickList",
+      "label": "Key Vault Name",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "AzureSettings",
+      "helpMarkDown": "Enter or Select the name of an existing Azure Key Vault."
+    },
+    {
+      "name": "domain",
+      "type": "string",
+      "label": "Domain or comma-separated SANs",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "One or more domain names to include in this order/certificate. The first one in the list will be considered the MainDomain and be set as the subject of the finalized certificate."
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "label": "AzureAD ApplicationID",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureSettings",
+      "helpMarkDown": "The ApplicationID of an AzureAD registered app that has permission to create and delete records in the required DNS zones."
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "AzureAD Password",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureSettings",
+      "helpMarkDown": "This is the password (aka 'key') for the associated ApplicationID."
+    },
+    {
+      "name": "pfxpassword",
+      "type": "string",
+      "label": "PFX Password",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "This is the password used to encode the PFX file that is uploaded to Key Vault.  If one is not provided, a random one will be generated."
+    },
+    {
+      "name": "DirectoryURL",
+      "type": "picklist",
+      "label": "LetsEncrypt Directory",
+      "defaultValue": "LE_PROD",
+      "required": false,
+      "options": {
+        "LE_PROD": "LetsEncrypt Production",
+        "LE_STAGE": "LetsEncrypt Staging"
+      },
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "ACME server's 'directory' endpoint. Currently supported short names include LE_PROD (LetsEncrypt Production v2) and LE_STAGE (LetsEncrypt Staging v2). Defaults to 'LE_PROD'."
+    },
+    {
+      "name": "Contact",
+      "type": "string",
+      "label": "Contact email address",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "One or more email addresses to associate with this certificate. These addresses will be used by the ACME server to send certificate expiration notifications or other important account notices."
+    },
+    {
+      "name": "SubscriptionId",
+      "type": "string",
+      "label": "Azure subscription ID",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureSettings",
+      "helpMarkDown": "This is the Azure subscription ID containing the DNS zone."
+    },
+    {
+      "name": "TenantId",
+      "type": "string",
+      "label": "Azure Tenant ID",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureSettings",
+      "helpMarkDown": "This is the Azure Tenant ID containing the DNS zone."
+    },
+    {
+      "name": "secretFormat",
+      "type": "picklist",
+      "label": "Key Vault secret format",
+      "defaultValue": "secret",
+      "required": false,
+      "options": {
+        "secret": "Secret",
+        "certificate": "Certificate",
+        "key": "Key"
+      },
+      "groupName": "KeyVaultSecretSettings",
+      "helpMarkDown": "Certificates can be stored in Key Vault as a certificate, key or a secret.  Storing as a certificate allows for easier integration with some ARM templates, but it allows the private key to be exported and saved without a password.  Storing as a key prevents the private key from being exported, but this limits use in some ARM templates.  Storing as a secret allows the certificates to be stored with a password while still being exportable."
+    },
+    {
+      "name": "certName",
+      "type": "string",
+      "label": "Key Vault secret name",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "KeyVaultSecretSettings",
+      "helpMarkDown": "Name of the Key Vault secret (limited to alphanumeric and hyphen, without spaces).  If not provided, one will be generated using the requested primary domain."
+    },
+    {
+      "name": "secretName",
+      "type": "string",
+      "label": "Output variable name",
+      "defaultValue": "KeyVaultSecret",
+      "required": false,
+      "groupName": "KeyVaultSecretSettings",
+      "helpMarkDown": "Name of the output variable that will be passed back to VSTS containing the name of the Key Vault secret.  If left blank, the secret name will be passed back as the variable 'KeyVaultSecret'"
+    },
+    {
+      "name": "PFXfile",
+      "type": "string",
+      "label": "Output variable to store the full path of the PFX file",
+      "defaultValue": "PFXFile",
+      "required": false,
+      "groupName": "KeyVaultSecretSettings",
+      "helpMarkDown": "Name of the output variable that will be passed back to VSTS containing the full path to the generated PFX file.  If left blank, the secret name will be passed back as the variable 'PFXFile'"
+    },
+    {
+      "name": "PFXPasswordVariable",
+      "type": "string",
+      "label": "Output variable to store the password of the PFX file",
+      "defaultValue": "PFXPassword",
+      "required": false,
+      "groupName": "KeyVaultSecretSettings",
+      "helpMarkDown": "Name of the output variable that will be passed back to VSTS containing the password of the generated PFX file.  If left blank, the secret name will be passed back as the variable 'PFXPassword'"
+    },
+    {
+      "name": "CertKeyLength",
+      "type": "integer",
+      "label": "Certificate key length",
+      "defaultValue": "2048",
+      "required": false,
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "Must be between 2048-4096 (divisible by 128) for RSA keys."
+    },
+    {
+      "name": "DNSSleep",
+      "type": "integer",
+      "label": "DNS sleep time (seconds)",
+      "defaultValue": "60",
+      "required": false,
+      "groupName": "CertificateSettings",
+      "helpMarkDown": "Number of seconds to wait for DNS changes to propagate before asking the ACME server to validate DNS challenges. Default is 60."
+    },
+    {
+      "name": "Purpose",
+      "type": "string",
+      "label": "Certificate Purpose",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "Purpose of the certificate to be recorded as a tag value on the Key Vault secret"
+    },
+    {
+      "name": "WhereInstalled",
+      "type": "string",
+      "label": "Where Installed",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "What services this certificate will be installed to be recorded as a tag value on the Key Vault secret"
+    },
+    {
+      "name": "Environment",
+      "type": "string",
+      "label": "Environment",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "Environment value to be recorded as a tag value on the Key Vault secret"
+    },
+    {
+      "name": "Tenant",
+      "type": "string",
+      "label": "Tenant",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "Tenant value (in multi-tenant environments) to be recorded as a tag value on the Key Vault secret"
+    },
+    {
+      "name": "Product",
+      "type": "string",
+      "label": "Product",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "Product designation to be recorded as a tag value on the Key Vault secret"
+    },
+    {
+      "name": "Applications",
+      "type": "string",
+      "label": "Applications",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "tagValues",
+      "helpMarkDown": "Any applications that reference this certificate to be recorded as a tag value on the Key Vault secret"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "KeyVaultName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureKeyVaults"
+    }
+  ],
+  "instanceNameFormat": "Request LetsEncrypt Certificate",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\VSTS-LetsEncrypt.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
