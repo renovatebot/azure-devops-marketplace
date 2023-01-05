@@ -1,0 +1,201 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "99e8d79d-febd-4f2e-b2df-da8f8257b59c",
+    "name": "VeracodePipelineScan",
+    "friendlyName": "VeracodePipelineScan",
+    "description": "An extension which lets you run Veracode's pipeline scan and publish resulsts as a seperate tab. ",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "JulianTotzek-Hallhuber",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 16
+    },
+    "showEnvironmentVariables": true,
+    "instanceNameFormat": "VeracodePipelineScan",
+    "groups": [
+        {
+            "name": "baselineFile",
+            "displayName": "Baseline File",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "VeracodeAPIID",
+            "type": "string",
+            "label": "Veracode API ID",
+            "defaultValue": "$(vid)",
+            "required": true,
+            "helpMarkDown": "The Veracode API ID can be generated on the Veracode platform."
+        }, {
+            "name": "VeracodeAPIsecret",
+            "type": "string",
+            "label": "Veracode API Secret",
+            "defaultValue": "$(vkey)",
+            "required": true,
+            "helpMarkDown": "The Veracode API Secret can be generated on the Veracode platfomr"
+        },
+        {
+            "name": "fileToScan",
+            "type": "string",
+            "label": "File to scan with the Pipeline Scan",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/verademo.war",
+            "required": true,
+            "helpMarkDown": "File to scan with the Veracode Pipeline Scan. For packaging instructions please reference https://help.veracode.com/r/compilation_packaging"
+        },
+        {
+            "name": "policyName",
+            "type": "string",
+            "label": "Veracode Policy Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Veracode pipeline scna allowes to rate the findings according a platform policy. Please name the Veracode policy to download before the scan and rate the results accordingly"
+        },
+        {
+            "name": "breakPipeline",
+            "type": "boolean",
+            "label": "Break the pipeline upon findings",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Break the pipeline if the pipeline scan found security coding defects."
+        },
+        {
+            "name": "baselineFile",
+            "type": "string",
+            "label": "Old baseline File to sort out findings",
+            "defaultValue": "",
+            "groupName": "baselineFile",
+            "required": false,
+            "helpMarkDown": "A pipeline scan baseline file to sort out previous findings. Veracode pipeline scan allows to sort out previous findings. This file is called a baseline file and need to be present on your repository."
+        },
+        {
+            "name": "baselineFileGeneration",
+            "type": "boolean",
+            "label": "Generate a new Baseline File from scan",
+            "defaultValue": "",
+            "groupName": "baselineFile",
+            "required": false,
+            "helpMarkDown": "Create a new baseline file from the actual scan that can be used later on to sort out previously flagged findings."
+        },
+        {
+            "name": "baselineFileStorageProject",
+            "type": "pickList",
+            "label": "Which project to store the newly generated baseline file",
+            "defaultValue": "",
+            "groupName": "baselineFile",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True",
+                "DisableManageLink": "True"
+            },
+            "helpMarkDown": "The project where to store the newly generated baseline file."
+        },
+        {
+            "name": "baselineFileStorageReponame",
+            "type": "pickList",
+            "label": "Which repository to store the newly generated baseline file",
+            "defaultValue": "",
+            "groupName": "baselineFile",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True",
+                "DisableManageLink": "True"
+            },
+            "helpMarkDown": "The repository within the project where to store the newly generated baseline file."
+        },
+        {
+            "name": "baselineFileStorageBranch",
+            "type": "pickList",
+            "label": "Which branch on the project to store the baseline file.",
+            "defaultValue": "",
+            "groupName": "baselineFile",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True",
+                "DisableManageLink": "True"
+            },
+            "helpMarkDown": "The branch of the project where to store the newly generated baseline file."
+        },
+        {
+            "name": "baselineFileOptions",
+            "type": "radio",
+            "label": "Which results to be used to generated baseline file",
+            "required": false,
+            "groupName": "baselineFile",
+            "options": {
+                "standard": "Use standard, full results (pipeline.json)",
+                "filtered": "Use filtered results (filtered_results.json)"
+            },
+            "helpMarkDown": "Which filenmane to be applied for the new baseline file"
+        },
+        {
+            "name": "baselineFileNewName",
+            "type": "string",
+            "label": "The baseline file name and path to store on your repository.",
+            "defaultValue": "/pipeline-baseline-file.json",
+            "groupName": "baselineFile",
+            "required": false,
+            "helpMarkDown": "Your own baseline file name."
+        },
+        {
+            "name": "additionalFlags",
+            "type": "string",
+            "label": "Additional Flags",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Additional flags to be applied to the pipeline scan, please review https://help.veracode.com/r/r_pipeline_scan_commands for options."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "baselineFileStorageProject",
+            "endpointUrl": "{{endpoint.url}}/_apis/projects?$skip={{skip}}&$top=1000",
+            "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+            "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+            "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+            "initialContextTemplate": "{\"skip\": \"0\"}"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "baselineFileStorageReponame",
+            "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/git/repositories",
+            "resultSelector": "jsonpath:$.value[?(@.project.state=='wellFormed')]",
+            "parameters": {
+                "project": "$(baselineFileStorageProject)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+            "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+            "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+            "initialContextTemplate": "{\"skip\": \"0\"}"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "baselineFileStorageBranch",
+            "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/git/repositories/{{repoID}}/refs",
+            "resultSelector": "jsonpath:$.value[*]",
+            "parameters": {
+                "project": "$(baselineFileStorageProject)",
+                "repoID": "$(baselineFileStorageReponame)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+            "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+            "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+            "initialContextTemplate": "{\"skip\": \"0\"}"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

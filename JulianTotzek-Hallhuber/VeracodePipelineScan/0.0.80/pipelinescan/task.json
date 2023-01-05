@@ -1,0 +1,78 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "99e8d79d-febd-4f2e-b2df-da8f8257b59c",
+    "name": "VeracodePipelineScan",
+    "friendlyName": "VeracodePipelineScan",
+    "description": "An extension which lets you run Veracode's pipeline scan and publish resulsts as a seperate tab. ",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "JulianTotzek-Hallhuber",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": "80",
+    },
+    "instanceNameFormat": "VeracodePipelineScan",
+    "inputs": [
+        {
+            "name": "VeracodeAPIID",
+            "type": "string",
+            "label": "Veracode API ID",
+            "defaultValue": "$(vid)",
+            "required": true,
+            "helpMarkDown": "The Veracode API ID can be generated on the Veracode platform."
+        }, {
+            "name": "VeracodeAPIsecret",
+            "type": "string",
+            "label": "Veracode API Secret",
+            "defaultValue": "$(vkey)",
+            "required": true,
+            "helpMarkDown": "The Veracode API Secret can be generated on the Veracode platfomr"
+        },
+        {
+            "name": "fileToScan",
+            "type": "string",
+            "label": "File to scan with the Pipeline Scan",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/verademo.war",
+            "required": true,
+            "helpMarkDown": "File to scan with the Veracode Pipeline Scan. For packaging instructions please reference https://help.veracode.com/r/compilation_packaging"
+        },
+        {
+            "name": "policyName",
+            "type": "string",
+            "label": "Veracode Policy Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Veracode pipeline scna allowes to rate the findings according a platform policy. Please name the Veracode policy to download before the scan and rate the results accordingly"
+        },
+        {
+            "name": "baselineFile",
+            "type": "string",
+            "label": "Baseline File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A pipeline scan baseline file to sort out previous findings. Veracode pipeline scan allows to sort out previous findings. This file is called a baseline file and need to be present on your repository."
+        },
+        {
+            "name": "additionalFlags",
+            "type": "string",
+            "label": "Additional Flags",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional flags to be applied to the pipeline scan, please review https://help.veracode.com/r/r_pipeline_scan_commands for options."
+        },
+        {
+            "name": "breakPipeline",
+            "type": "boolean",
+            "label": "Break the pipeline upon findings",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Break the pipeline if the pipeline scan found security coding defects."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
