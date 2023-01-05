@@ -1,0 +1,139 @@
+{
+  "id": "1cbf64a9-c6d0-431b-9d98-8f5d509b5e09",
+  "name": "BuildSSIS",
+  "friendlyName": "SSIS Build",
+  "description": "Build SQL Server Integration Services Project into .ispac file using legacy Package Deployment Model",
+  "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=TG.VSTS-SSIS)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "author": "ToxicGlobe",
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "1151"
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "project",
+      "displayName": "Project settings",
+      "isExpanded": true
+    },
+    {
+      "name": "commands",
+      "displayName": "Commands & Switches",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "solnPath",
+      "type": "filePath",
+      "label": "Path to Solution File",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to *.sln file",
+      "groupName": "project"
+    },
+    {
+      "name": "solnConfigName",
+      "type": "string",
+      "label": "Solution Configuration Name",
+      "required": true,
+      "groupName": "project",
+      "helpMarkDown": "The name of the solution configuration that will be used to build the solution named in Solution File. In other cases please see: https://msdn.microsoft.com/en-us/library/xee0c8y7.aspx"
+    },
+    {
+      "name": "projPath",
+      "type": "filePath",
+      "label": "Path to Project File",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to *.csproj file",
+      "groupName": "project"
+    },
+    {
+      "name": "projConfigName",
+      "type": "string",
+      "label": "Project Configuration Name",
+      "required": false,
+      "groupName": "project",
+      "helpMarkDown": "Optional. The name of a Project build configuration to be used that will be used to build the solution named in Project File. See: https://msdn.microsoft.com/en-us/library/abtk353z.aspx"
+    },
+    {
+      "name": "cmdSwitch",
+      "type": "pickList",
+      "label": "Command line switch",
+      "defaultValue": "Deploy",
+      "required": true,
+      "options": {
+        "rebuild": "Rebuild",
+        "build": "Build"
+      },
+      "helpMarkDown": "Use the following command line switches to perform specific task. See: https://msdn.microsoft.com/en-us/library/xee0c8y7.aspx",
+      "groupName": "commands"
+    },
+    {
+      "name": "devenvVersion",
+      "type": "pickList",
+      "label": "Devenv Version",
+      "defaultValue": "VS2015",
+      "required": true,
+      "options": {
+        "VS2013": "VS2013",
+        "VS2015": "VS2015",
+        "VS2017ent": "VS2017 Enterprise",
+        "VS2017prof": "VS2017 Professional",
+        "VS2017comm": "VS2017 Community",
+        "VS2017new": "VS2017 New Instance",
+        "hostedVS2017": "Hosted VS2017",
+        "custom": "Custom"
+      },
+      "helpMarkDown": "Select Devenv.com version. See: https://docs.microsoft.com/en-us/sql/ssdt/download-sql-server-data-tools-ssdt",
+      "groupName": "commands"
+    },
+    {
+      "name": "denevPath",
+      "type": "filePath",
+      "label": "Path to Devenv.com compiler",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to Devenv.com compiler",
+      "visibleRule": "devenvVersion = custom",
+      "groupName": "commands"
+    }
+  ],
+  "instanceNameFormat": "Build SSIS $(solutionPath)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\BuildSSISTask.ps1",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "startingTask": "Starting BuildSSISTask",
+    "progress": "{0}",
+    "devenvPathError0": "Devenv.com in {0} not found",
+    "devenvPath0": "Devenv.com path: {0}",
+    "workingDirectory0": "Working Directory: {0}",
+    "solutionPathError0": "Cannot access Solution file path: {0}",
+    "solutionPath0": "Solution file path: {0}",
+    "solnConfigError": "Solution config option is null",
+    "projectFileError0": "Cannot access Project file path: {0}",
+    "projectPath0": "Project file path: {0}",
+    "userOptionExist0": "User options file exist: {0}",
+    "userOptionCreated0": "New User options file created in: {0}",
+    "userOptionSetMode0": "Interactive Mode set to: {0}",
+    "commandExecute0": "Executing command: {0}",
+    "catchError1": "Internal Error: {0} {1}",
+    "endingTask": "Ending BuildSSISTask"
+  }
+}

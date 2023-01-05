@@ -1,0 +1,106 @@
+﻿{
+    "id": "1cbf64a9-c6d0-431b-9d98-8f5d509b5e09",
+    "name": "Build SSIS",
+    "friendlyName": "SSIS Build",
+    "description": "Build SQL Server Integration Services Project into .ispac file using legacy Package Deployment Model",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=TG.VSTS-SSIS)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "author": "ToxicGlobe",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "demands": [
+    ],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "solnPath",
+            "type": "filePath",
+            "label": "Path to Solution File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to *.sln file"
+        },
+        {
+            "name": "solnCmdSwitch",
+            "type": "pickList",
+            "label": "Command line switch",
+            "defaultValue": "Deploy",
+            "required": true,
+            "options": {
+                "rebuild": "Rebuild",
+                "build": "Build"
+            },
+            "helpMarkDown": "Use the following command line switches to perform specific task. See: https://msdn.microsoft.com/en-us/library/xee0c8y7.aspx"
+        },
+        {
+            "name": "solnConfigName",
+            "type": "string",
+            "label": "Solution Configuration Name",
+            "defaultValue": "$(BuildConfiguration)",
+            "required": true,
+            "helpMarkDown": "The name of the solution configuration that will be used to build the solution named in Solution File. Default value is $(BuildConfiguration). See: https://msdn.microsoft.com/en-us/library/xee0c8y7.aspx"
+        },
+        {
+            "name": "buildProject",
+            "type": "boolean",
+            "label": "Add Project File",
+            "defaultValue": "false",
+            "helpMarkDown": "Enable to identify a single .dproj project file within the specified solution configuration. See: https://msdn.microsoft.com/en-us/library/a4sf02ac.aspx"
+        },
+        {
+            "name": "projPath",
+            "type": "filePath",
+            "label": "Path to Project File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to *.csproj file",
+            "visibleRule": "buildProject = true"
+        },
+        {
+            "name": "projConfigName",
+            "type": "string",
+            "label": "Project Configuration Name",
+            "defaultValue": "$(BuildConfiguration)",
+            "required": false,
+            "helpMarkDown": "Optional. The name of a Project build configuration to be used that will be used to build the solution named in Project File. Default value is $(BuildConfiguration). See: https://msdn.microsoft.com/en-us/library/abtk353z.aspx",
+            "visibleRule": "buildProject = true"
+        },
+        {
+            "name": "devenvVersion",
+            "type": "pickList",
+            "label": "Devenv Version",
+            "defaultValue": "14",
+            "required": false,
+            "options": {
+                "12": "12",
+                "14": "14"
+            },
+            "helpMarkDown": "Select Denenv.com version. Appropiate version of SQL Data Tools must be installed on agent! See: https://docs.microsoft.com/en-us/sql/ssdt/download-sql-server-data-tools-ssdt",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Build SSIS $(solutionPath)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\BuildSSISTask.ps1",
+            "argumentFormat": ""
+        }
+    }
+}

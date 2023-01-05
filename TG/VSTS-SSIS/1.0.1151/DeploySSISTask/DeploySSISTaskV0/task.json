@@ -1,0 +1,101 @@
+{
+  "id": "582498ad-81d6-48b7-b9bc-fd0e5dec2e2b",
+  "name": "DeploySsis",
+  "friendlyName": "SSIS Deploy",
+  "description": "Deploy SQL Server Integration Services Project .ispac file using legacy Package Deployment Model",
+  "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=TG.VSTS-SSIS)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "author": "ToxicGlobe",
+  "version": {
+    "Major": "0",
+    "Minor": "0",
+    "Patch": "1151"
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.95.0",
+  "groups": [],
+  "inputs": [
+    {
+      "name": "ProjectFilePath",
+      "type": "filePath",
+      "label": "Path to .ispac file",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "ProjectName",
+      "type": "string",
+      "label": "Name of the SSIS project in the .ispac file",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "ServerName",
+      "type": "string",
+      "label": "Name of the SQL Server hosting the SSIS catalog database",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "CatalogName",
+      "type": "string",
+      "label": "Name of the SSIS catalog",
+      "defaultValue": "SSISDB",
+      "required": true
+    },
+    {
+      "name": "FolderName",
+      "type": "string",
+      "label": "Name of the SSIS catalog folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkdown": "The name of the SSIS catalogfolder into which the project should be deployed. The folder will be created if it doesn't exist."
+    },
+    {
+      "name": "FolderDescription",
+      "type": "string",
+      "label": "Description of the SSIS catalog folder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkdown": "The description of SSIS catalog folder. This is used only when the folder is created."
+    },
+    {
+      "name": "ProjectParameters",
+      "type": "multiLine",
+      "label": "Project Parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkdown": "A list of project parameter values in the form of <name>=<value>. Each parameter starts on a new line."
+    }
+  ],
+  "instanceNameFormat": "Deploy SSIS $(projectName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\DeploySSISTask.ps1"
+    }
+  },
+  "messages": {
+    "StartingTask": "Starting DeploySSISTask",
+    "ConnectionString0": "SQL Connection String: {0}",
+    "ProjectFile0AccessDenied": "Cannot access project file path: {0}",
+    "ProjectFile0": "Project file path: {0}",
+    "CreateFolder0": "Creating folder {0} in the SSIS Catalog",
+    "Folder0Created": "{0} folder has been created in the SSIS Catalog",
+    "Folder0Exists": "Folder {0} exists in the SSIS Catalog",
+    "DeployingProject0": "Deploying {0} project ...",
+    "Project0DeploySuccess": "{0} project has been deployed successfully",
+    "SetParameters": "Set the project parameters",
+    "SettingParameter0ValueTo1": "Setting parameter '{0}' value to '{1}'",
+    "Parameter0NotValid": "Parameter '{0}' is not a valid project parameter",
+    "InternalError0": "Task_InternalError {0}",
+    "EndingTask": "Ending DeploySSISTask"
+  }
+}
