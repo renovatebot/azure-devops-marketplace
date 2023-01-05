@@ -1,0 +1,56 @@
+﻿{
+  "id": "a14c4ccb-7bf2-47ad-a1e5-395a609d3d9a",
+  "name": "download-artifacts",
+  "friendlyName": "Download Artifacts",
+  "description": "Download Artifacts task, can be used in release definitions, to filter and download, for given build artifact(s), by build artifact name, when multiple artifacts available in build.",
+  "helpMarkDown": "[More Information](https://url.to/yourmarkdown)",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "author": "Chaminda Chandrasekara",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 13
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+
+  ],
+  "inputs": [
+    {
+      "name": "buildDefinitionName",
+      "type": "string",
+      "label": "Build Definition Name",
+      "defaultValue": "$(Build.DefinitionName)",
+      "required": true
+    },
+    {
+      "name": "artifactNames",
+      "type": "string",
+      "label": "Build Artifact Names",
+      "defaultValue": "*",
+      "required": false,
+      "helpMarkDown": "Artifact Names to Download separated by ;. Example 'Drop1;Drop2' (without quotes). * for all artifacts"
+    },
+    {
+      "name": "artifactDestinationFolder",
+      "type": "string",
+      "label": "Artifacts Destination",
+      "defaultValue": "$(System.DefaultWorkingDirectory)\\$(Build.DefinitionName)",
+      "required": true,
+      "helpMarkDown": "Absolute path of the destination folder on the local machine, or a UNC Share like c:\\fabrikamfiber or \\\\\\\\fabrikamshare\\fabrikamfiber."
+    }
+  ],
+  "instanceNameFormat": "Download Artifacts",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DownloadArtifacts.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
