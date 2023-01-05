@@ -1,0 +1,98 @@
+{
+  "id": "20fb9b23-7ab8-4cd7-bc90-3dbb53928242",
+  "name": "ManageCitrixApplications",
+  "friendlyName": "Enable/Disable Citrix applications.",
+  "instanceNameFormat": "$(Action) Citrix application: $(ApplicationName)",
+  "description": "Enable/Disable Citrix applications and terminate broker sessions which are using the applications.",
+  "helpMarkDown": "Enable/Disable Citrix applications and terminate broker sessions which are using the applications.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Peter Barendse",
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+    {
+      "name": "BrokerServer",
+      "type": "string",
+      "label": "Broker server(s)",
+      "required": true,
+      "helpMarkDown": "Provide a comma separated list of machine IP addresses or FQDNs.<br>Eg: dbserver.fabrikam.com,192.168.12.34<br>Or provide output variable of other tasks. Eg: $(variableName)"
+    },
+    {
+      "name": "Username",
+      "type": "string",
+      "label": "Citrix user",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Supply a username with enough permissions to Enable/Disable applications and terminate broker sessions."
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for Citrix user login for the target machines. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "CheckCA",
+      "type": "boolean",
+      "label": "Skip CA check",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol.",
+      "visibleRule": "UseSSL = true"
+    },
+    {
+      "name": "ApplicationName",
+      "type": "string",
+      "label": "Application name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide a comma seperated list of applications. We use the application browser name for detection, since they are unique.<br>Eg: Notepad,Paint<br>"
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action to perform",
+      "defaultValue": "Enable",
+      "options": {
+        "Enable": "Enable application",
+        "Disable": "Disable application",
+		"Terminate": "Terminate application sessions"
+      },
+      "required": true,
+      "helpMarkDown": "Stop, start, restart or remove the application pool. <b>Note:</b> Upon removing an application pool, all websites accociated with this pool will also be deleted."
+    },
+    {
+      "name": "Killswitch",
+      "type": "boolean",
+      "label": "Terminate active broker sessions",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Terminate all broker sessions that use the application to disable, before disabling the application.",
+      "visibleRule": "Action = Disable"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ManageCitrixApplications.ps1"
+    }
+  }
+}
