@@ -1,0 +1,112 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "36a38709-0aac-498b-b5ab-e54497a2a064",
+    "name": "SquishTask",
+    "friendlyName": "Squish Task",
+    "description": "Squish task to run Squish GUI Tests",
+    "helpMarkDown": "",
+    "category": "Test",
+    "author": "Froglogic GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Squish Test",
+    "inputs": [
+        {
+            "name": "squishFolder",
+            "type": "string",
+            "label": "Squish folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to Squish folder"
+        },
+        {
+            "name": "squishTestSuites",
+            "type": "multiLine",
+            "label": "Test suites",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to Squish Test Suites",
+            "properties": {
+                "rows": "3",
+                "resizable": true
+            }
+        },
+        {
+            "name": "squishTestCases",
+            "type": "string",
+            "label": "Test cases",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "List of test cases (; separated)."
+        },
+        {
+            "name": "squishReportGenStdout",
+            "type": "boolean",
+            "label": "Use stdout reportgen",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether Squish stdout reportgen should be used"
+        },
+        {
+            "name": "squishReportGenTestcenter",
+            "type": "boolean",
+            "label": "Use testcenter reportgen",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether Squish Test Center reportgen should be used"
+        },
+        {
+            "name": "squishTestcenterURL",
+            "type": "string",
+            "label": "Base URL of Squish Test Center instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Target Squish Test Center instance base URL",
+            "visibleRule": "squishReportGenTestcenter = true"
+        },
+        {
+            "name": "squishTestcenterProject",
+            "type": "string",
+            "label": "Project",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Target Squish Test Center project",
+            "visibleRule": "squishReportGenTestcenter = true"
+        },
+        {
+            "name": "squishTestcenterToken",
+            "type": "string",
+            "label": "Upload Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Upload token used during upload",
+            "visibleRule": "squishReportGenTestcenter = true"
+        },
+        {
+            "name": "squishTestcenterBatch",
+            "type": "string",
+            "label": "Batch name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the created batch.",
+            "visibleRule": "squishReportGenTestcenter = true"
+        },
+        {
+            "name": "squishTestcenterLabels",
+            "type": "string",
+            "label": "Labels",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "List of labels (; separated). A label is in the form 'OS=Windows'.",
+            "visibleRule": "squishReportGenTestcenter = true"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
