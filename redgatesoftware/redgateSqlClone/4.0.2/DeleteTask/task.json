@@ -1,0 +1,55 @@
+{
+    "id": "312f9a42-d1c9-4b76-a70b-304f6391b3f4",
+    "name": "RedgateSqlCloneDelete",
+    "friendlyName": "SQL Clone - Delete clone",
+    "description": "Delete clones created by SQL Clone",
+    "helpMarkDown": "[More Information](https://documentation.red-gate.com/clone4)",
+    "category": "Build",
+    "visibility": [
+        "Build", "Release"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "demands": [
+
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+        {
+            "name": "cloneServer",
+            "type": "connectedService:SQLCloneEndpoint",
+            "label": "SQL Clone Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the SQL Clone Server Endpoint."
+        },
+        {
+            "name": "cloneSqlServer",
+            "type": "string",
+            "label": "SQL Server instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The SQL Server instance the clone exists on. This SQL Server instance must have already been added to the SQL Clone Server specified above."
+        },
+        {
+            "name": "cloneName",
+            "type": "string",
+            "label": "Clone name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the clone to delete. Build and Release variables can be used here."
+        }   
+    ],
+    "instanceNameFormat": "Delete clone $(cloneName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\SQLCloneDeleteTask.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

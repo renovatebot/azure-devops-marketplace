@@ -1,0 +1,82 @@
+{
+    "id": "808a505f-580f-413b-a3df-43a6a4fc74ce",
+    "name": "RedgateSqlCloneClone",
+    "friendlyName": "SQL Clone - Create clone",
+    "description": "Create clones with SQL Clone",
+    "helpMarkDown": "[More Information](https://documentation.red-gate.com/clone3)",
+    "category": "Build",
+    "visibility": [
+        "Build", "Release"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "demands": [
+
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+        {
+            "name": "cloneServer",
+            "type": "connectedService:SQLCloneEndpoint",
+            "label": "SQL Clone Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the SQL Clone Server Endpoint."
+        },
+        {
+            "name": "imageNameForClone",
+            "type": "string",
+            "label": "Image name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The image the clone should be created from. Build and Release variables can be used here."
+        },
+        {
+            "name": "templateName",
+            "type": "string",
+            "label": "Template name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "You can select a template to modify this clone."
+        },
+        {
+            "name": "cloneSqlServer",
+            "type": "string",
+            "label": "SQL Server",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The target SQL Server to create the clone on. This SQL Server instance must have already been added to the SQL Clone Server specified above."
+        },
+        {
+            "name": "cloneName",
+            "type": "string",
+            "label": "Clone name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the clone, which will also be the database name. Build and Release variables can be used here."
+        },
+        {
+            "name": "deleteClone",
+            "type": "boolean",
+            "label": "Delete clone if exists",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Delete any existing clone with the same name prior to creating this clone."
+        }         
+    ],
+    "instanceNameFormat": "Create clone $(cloneName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\SQLCloneCloneTask.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

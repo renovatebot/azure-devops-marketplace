@@ -1,0 +1,118 @@
+﻿{
+    "id": "64fb7e5b-b8bf-49f0-bb5a-b327aa24adf5",
+    "name": "RedgateSqlCloneImage",
+    "friendlyName": "SQL Clone - Create image",
+    "description": "Create images with SQL Clone",
+    "helpMarkDown": "[More Information](https://documentation.red-gate.com/clone4)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+        {
+            "name": "cloneServer",
+            "type": "connectedService:SQLCloneEndpoint",
+            "label": "SQL Clone Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the SQL Clone Server Endpoint."
+        },
+        {
+            "name": "sourceInstance",
+            "type": "string",
+            "label": "Source instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SQL Server to create the image from. This SQL Server instance must have already been added to the SQL Clone Server specified above."
+        },
+        {
+            "name": "sourceType",
+            "type": "pickList",
+            "label": "Source for image",
+            "defaultValue": "database",
+            "required": true,
+            "options": {
+                "database": "SQL Server database",
+                "backup": "Backup file(s)"
+            },
+            "helpMarkDown": "Specify whether to create an image from a live SQL Server database or a SQL Server database backup."
+        },
+        {
+            "name": "sourceDatabase",
+            "type": "string",
+            "label": "Source database",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Database to create an image from.",
+            "visibleRule": "sourceType = database"
+        },
+        {
+            "name": "sourceFileNames",
+            "type": "string",
+            "label": "Full path to backup file(s)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "For striped and/or differential backup, seperate multiple file path with ;",
+            "visibleRule": "sourceType = backup"
+        },
+        {
+            "name": "sourceFilePassword",
+            "type": "string",
+            "inputMode": "passwordBox",
+            "label": "Source backup file password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Backup file password.",
+            "visibleRule": "sourceType = backup"
+        },
+        {
+            "name": "imageLocation",
+            "type": "string",
+            "label": "Image location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The SQL Clone image location to create the image on. This location must have already been added to the SQL Clone Server specified above."
+        },
+        {
+            "name": "modificationScriptFiles",
+            "type": "string",
+            "label": "Modification script(s)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "SQL scripts and Data Masker masking set file (Datamasker must be installed on the clone agent machine), seperate multiple file path with ;"
+        },
+        {
+            "name": "teams",
+            "type": "multiLine",
+            "label": "Team names",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify names of teams that can access this image. If you're not using teams, leave this empty."
+        },
+        {
+            "name": "imageName",
+            "type": "string",
+            "label": "Image name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A name for the image. Build and Release variables can be used here."
+        }
+    ],
+    "instanceNameFormat": "Create image $(imageName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\SQLCloneImageTask.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
