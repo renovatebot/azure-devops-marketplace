@@ -1,0 +1,176 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "artifactory-service",
+            "description": "Service Endpoint type for Artifactory connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "artifactoryService",
+                "displayName": "Artifactory",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the root URL of your Artifactory installation. For example, http://repo.jfrog.org/artifactory"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/plugins",
+                        "resourceUrl": "",
+                        "resultSelector": "jsonpath:$.values[*]",
+                        "headers": [],
+                        "authenticationScheme": null
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Artifactory username with deploy permissions.",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or API key of an Artifactory user with deploy permissions.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "artifactory-build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab in build result to enforce Artifactory integration",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Artifactory",
+                "uri": "artifactory-build-info.html"
+            }
+        },
+        {
+            "id": "artifactory-promote-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryBuildPromotion"
+            }
+        },
+        {
+            "id": "artifactory-generic-download",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryGenericDownload"
+            }
+        },
+        {
+            "id": "artifactory-generic-upload",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryGenericUpload"
+            }
+        },
+        {
+            "id": "artifactory-maven",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryMaven"
+            }
+        },
+        {
+            "id": "artifactory-npm",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryNpm"
+            }
+        },
+        {
+            "id": "artifactory-nuget",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryNuget"
+            }
+        },
+        {
+            "id": "artifactory-publish-build-info",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryPublishBuildInfo"
+            }
+        },
+        {
+            "id": "artifactory-docker",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryDocker"
+            }
+        },
+        {
+            "id": "artifactory-conan-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryConan"
+            }
+        },
+        {
+            "id": "artifactory-xray-scan-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArtifactoryXrayScan"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

@@ -1,0 +1,119 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.build_execute",
+        "vso.work_write",
+        "vso.release",
+        "vso.release_execute"
+    ],
+    "contributions": [
+        {
+            "id": "veracode-scanner-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "upload_and_scan"
+            }
+        },
+        {
+            "id": "veracode-flaw-importer-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "import_security_flaws"
+            }
+        },
+        {
+            "id": "veracode-build-status-section",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Veracode Scan Summary",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Veracode Scan Summary",
+                "uri": "reports/BuildSummary.html",
+                "supportsTasks": [
+                    "6292a058-d4f5-407b-b6c6-815df9ee59d6"
+                ]
+            }
+        },
+        {
+            "id": "veracode-release-status-tab",
+            "type": "ms.vss-releaseManagement-web.release-summary-tab",
+            "description": "Veracode Scan Summary Tab for Release Pipeline",
+            "targets": [
+                "ms.vss-releaseManagement-web.release-details-view"
+            ],
+            "properties": {
+                "name": "Veracode Scan Summary",
+                "uri": "reports/ReleaseSummary.html",
+                "supportsTasks": [
+                    "6292a058-d4f5-407b-b6c6-815df9ee59d6"
+                ],
+                "height": 720,
+                "width": 490
+            }
+        },
+        {
+            "id": "veracode-service-endpoint",
+            "description": "Veracode API Analysis Center Authentication Endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "VeracodeAnalysisCenterEndpoint",
+                "displayName": "Veracode Analysis Center",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://analysiscenter.veracode.com/"
+                },
+                "dataSources": [
+                    {
+                        "name": "Veracode Datasource",
+                        "endpointUrl": "{{endpoint.url}}",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "name": "VidAuth",
+                        "displayName": "Veracode Authentication",
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API ID",
+                                "description": "Enter your Veracode API ID.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "vkey",
+                                "name": "API Key",
+                                "description": "Enter your Veracode API key.",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://docs.veracode.com/r/c_VS_team_servs\" target=\"_blank\"><b>Help</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

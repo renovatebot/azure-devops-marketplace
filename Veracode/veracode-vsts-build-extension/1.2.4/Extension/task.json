@@ -1,0 +1,170 @@
+{
+    "id": "6292a058-d4f5-407b-b6c6-815df9ee59d6",
+    "name": "Veracode",
+    "friendlyName": "Veracode Upload and Scan",
+    "description": "Upload binaries to Veracode for static application security.",
+    "helpMarkDown": "[Veracode](http://www.veracode.com)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Veracode",
+    "demands": [
+        "java"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 4
+    },
+    "instanceNameFormat": "Upload and Scan: $(filepath)",
+    "groups": [
+        {
+            "name": "ConnectionDetailsGroup",
+            "displayName": "Connection Details",
+            "isExpanded": true
+        },
+        {
+            "name": "VeracodeScanSettingsGroup",
+            "displayName": "Veracode Scan Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "AdvancedGroup",
+            "displayName": "Advanced Scan Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "VeracodeScanResultsGroup",
+            "displayName": "Veracode Scan Results",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectionDetailsSelection",
+            "type": "radio",
+            "label": "Select Connection Source",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "defaultValue": "Endpoint",
+            "helpMarkDown": "Select whether you want to connect to Veracode using an endpoint or your Veracode credentials.",
+            "options": {
+                "Endpoint": "Endpoint",
+                "Credentials": "Credentials"
+            }
+        },
+        {
+            "name": "AnalysisService",
+            "type": "connectedService:VeracodeAnalysisCenterEndpoint",
+            "label": "Select Endpoint",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Select an existing Veracode endpoint or click Manage to create a new endpoint.",
+            "visibleRule": "ConnectionDetailsSelection = Endpoint"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode username.",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode password.",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "veracodeAppProfile",
+            "type": "string",
+            "required": true,
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Application Name",
+            "helpMarkDown": "Enter the name of the application."
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "required": true,
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Scan Name",
+            "defaultValue": "$(build.buildNumber)",
+            "helpMarkDown": "Enter the  name or version number of the new or updated build."
+        },
+        {
+            "name": "filepath",
+            "type": "string",
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Filepath",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": true,
+            "helpMarkDown": "Enter the filepath or folderpath of the file or directory to upload."
+        },
+        {
+            "name": "sandboxName",
+            "type": "string",
+            "label": "Sandbox Name",
+            "required": false,
+            "helpMarkDown": "If you are using a Veracode developer sandbox, enter its Name.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "optargs",
+            "type": "string",
+            "label": "Optional Arguments",
+            "required": false,
+            "helpMarkDown": "Enter any optional arguments to pass to the Veracode API wrapper.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "createProfile",
+            "type": "boolean",
+            "required": true,
+            "defaultValue": false,
+            "groupName": "AdvancedGroup",
+            "label": "Create Application Profile",
+            "helpMarkDown": "Select this option if you want to create a new Veracode application profile for this application."
+        },
+        {
+            "name": "scanStatusCheckInterval",
+            "type": "string",
+            "label": "Scan Status check Interval (In Seconds)",
+            "required": true,
+            "defaultValue": "60",
+            "helpMarkDown": "Enter the interval (in seconds) for when the scan status is verified.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "importResults",
+            "type": "boolean",
+            "required": true,
+            "defaultValue": false,
+            "groupName": "VeracodeScanResultsGroup",
+            "label": "Import Results on Scan Completion",
+            "helpMarkDown": "Create Work Items for Identified issues."
+        },
+        {
+            "name": "failBuildOnPolicyFail",
+            "type": "boolean",
+            "required": true,
+            "defaultValue": false,
+            "groupName": "VeracodeScanResultsGroup",
+            "label": "Fail the Build on Policy Scan Failed",
+            "helpMarkDown": "Select this option if you want the build to fail if the application fails its security policy."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "App.js",
+            "argumentFormat": ""
+        }
+    }
+}
