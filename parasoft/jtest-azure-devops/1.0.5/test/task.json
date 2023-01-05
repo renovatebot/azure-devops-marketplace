@@ -1,0 +1,107 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "27723edf-5220-4f9b-8d14-69077c2a0f1b",
+    "name": "RunJtest",
+    "friendlyName": "Run Parasoft Jtest",
+    "instanceNameFormat": "Run Parasoft Jtest",
+    "description": "This task enables you to run code analysis with Parasoft Jtest and review analysis results directly on Azure.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=parasoft.jtest-azure-devops)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=parasoft.jtest-azure-devops",
+    "category": "Test",
+    "author": "Parasoft",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "groups": [
+    ],
+    "inputs": [
+        {
+            "name": "workingDir",
+            "type": "string",
+            "label": "Jtest working directory:",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "A working directory for Jtest."
+        },
+        {
+            "name": "installDir",
+            "type": "string",
+            "label": "Jtest installation directory:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify location where Jtest has been installed on your agent. If not specified, Jtest will be searched on PATH."
+        },
+        {
+            "name": "dataJson",
+            "type": "string",
+            "label": "Path to jtest.data.json file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify path to jtest.data.json file with project configuration."
+        },
+        {
+            "name": "testConfig",
+            "type": "string",
+            "label": "Test configuration:",
+            "defaultValue": "builtin://Recommended Rules",
+            "required": false,
+            "helpMarkDown": "Specify URL or path to the test configuration used for analysis"
+        },
+        {
+            "name": "reportDir",
+            "type": "string",
+            "label": "Reports directory:",
+            "defaultValue": "reports",
+            "required": false,
+            "helpMarkDown": "Specify where Jtest should generate report files with analysis results."
+        },{
+            "name": "reportFormat",
+            "type": "string",
+            "label": "Report format:",
+            "defaultValue": "xml,html,sarif-azure",
+            "required": false,
+            "helpMarkDown": "Format of reports from code analysis."
+        },
+        {
+            "name": "publish",
+            "type": "boolean",
+            "label": "Publish to DTP",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Set to true to publish your report to the DTP server. Access to the DTP server should be configured via Jtest settings."
+        },
+        {
+            "name": "additionalParams",
+            "type": "multiLine",
+            "label": "Additional Parameters:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This parameter allows to Specify single configuration setting in the \"key=value\" format instead of using .properties files. Specify each in new line."
+        },
+        {
+            "name": "settings",
+            "type": "multiLine",
+            "label": "Settings files:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide paths to .properties files with Jtest settings. Specify each in new line."
+        },
+        {
+            "name": "fail",
+            "type": "boolean",
+            "label": "Exit with fail status",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Fails the command with exit code 2 or 4 if any findings are reported."
+        }
+    ],
+    "outputVariables": [
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
