@@ -1,0 +1,169 @@
+{
+    "id": "a6900347-c049-485c-b383-2902e10c28f2",
+    "name": "EventGridSubscriptionExtension",
+    "friendlyName": "Create Event Grid Subscriptions",
+    "description": "Create Azure Event Grid Subscriptions 0.0.3",
+    "helpMarkDown": "[More Information](http://bit.ly/2kRaypJ)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Rasmus Wätjen",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "demands": [ "azureps" ],
+    "instanceNameFormat": "Create event subscription in $(eventGridTopicName)",
+    "groups": [
+        {
+            "name": "Deadletters",
+            "displayName": "Dead-Lettering",
+            "isExpanded": false
+        },
+        {
+            "name": "Advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager connection to use when authenticating to Azure",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group where the Event Grid is located",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The resource group in which the Event Grid Topic account is."
+        },
+        {
+            "name": "eventGridTopicName",
+            "type": "pickList",
+            "label": "Event Grid Topic",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Event Grid Topic name to add the subscription to."
+        },
+        {
+            "name": "eventSubscriptionName",
+            "type": "string",
+            "label": "Subscription name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the event grid subscription."
+        },
+        {
+            "name": "endpointUrl",
+            "type": "string",
+            "label": "Webhook URL (event receiver)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "URL of event receiver"
+        },
+        {
+            "name": "deadLetterEvents",
+            "type": "boolean",
+            "label": "Event deadlettering enabled",
+            "defaultValue": true,
+            "required": false,
+            "groupName": "Deadletters",
+            "helpMarkDown": "If checked, event grid deadlettering will be enabled. You must also configure the storage account and container name."
+        },
+        {
+            "name": "deadLetterStorageAccountName",
+            "type": "pickList",
+            "label": "Storage account for deadletter events",
+            "required": "false",
+            "defaultValue": "",
+            "helpMarkDown": "If event deadlettering is enabled, use this storage account to store them.",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "groupName": "Deadletters",
+            "visibleRule": "deadLetterEvents = true"
+        },
+        {
+            "name": "deadLetterBlobContainerName",
+            "type": "string",
+            "label": "Blob container for deadletter events",
+            "required": "false",
+            "defaultValue": "",
+            "helpMarkDown": "If event deadlettering is enabled, use this blob container to store them.",
+            "groupName": "Deadletters",
+            "visibleRule": "deadLetterEvents = true"
+        },
+        {
+            "name": "eventTtl",
+            "type": "string",
+            "label": "Event time to live",
+            "required": "false",
+            "defaultValue": "240",
+            "helpMarkDown": "TTL in minutes for events. Must be between 1 and 1440.",
+            "groupName": "Advanced"
+        },
+        {
+            "name": "maxDeliveryAttempt",
+            "type": "string",
+            "label": "Maximum delivery attempts",
+            "required": "false",
+            "defaultValue": "10",
+            "helpMarkDown": "Maximum number of attempts to deliver an event. Must be between 1 and 30.",
+            "groupName": "Advanced"
+        },
+        {
+            "name": "includedEventType",
+            "type": "string",
+            "label": "Included event types",
+            "required": "false",
+            "defaultValue": "",
+            "helpMarkDown": "Specifies the event types to send events for. All event types will be sent if empty.",
+            "groupName": "Advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "eventGridTopicName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(ResourceGroupName)/providers/Microsoft.EventGrid/topics/?api-version=2018-05-01",
+            "resultSelector": "jsonpath:$.value[*].name"
+        },
+        {
+            "target": "deadLetterStorageAccountName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Storage/storageAccounts/?api-version=2018-05-01",
+            "resultSelector": "jsonpath:$.value[*].name"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "CreateEventGridSubscription.ps1"
+        }
+    }
+}
