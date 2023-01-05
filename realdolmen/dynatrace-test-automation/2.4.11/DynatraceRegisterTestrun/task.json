@@ -1,0 +1,114 @@
+﻿{
+  "id": "d6a769a8-dc2b-11e8-9f8b-f2801f1b9fd1",
+  "name": "RegisterDynatraceTestrun",
+  "friendlyName": "Dynatrace Register Testrun",
+  "description": "Register a new Testrun in Dynatrace.",
+  "author": "Realdolmen (Bert Van der Heyden)",
+  "helpMarkDown": "Register a new Testrun in Dynatrace via the REST interface. A DT_TESTRUN_ID environment variable is written which is used by the Dynatrace agent to link the executed tests with this testrun.",
+  "category": "Test",
+  "visibility": [
+    "Build", 
+    "Release"
+  ],
+  
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "demands": [
+  ],
+  "groups": [
+    {
+      "name": "server",
+      "displayName": "Dynatrace Endpoint",
+      "isExpanded": true
+    },
+    {
+      "name": "testrun",
+      "displayName": "Test Settings",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "dtserver",
+      "type": "connectedService:Dynatrace",
+      "label": "Dynatrace server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Connection to the Dynatrace server which is managed as a connectedService in TFS.",
+      "groupName": "server"
+    },
+    {
+      "name": "profile",
+      "type": "pickList",
+      "label": "System profile",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the Dynatrace systemprofile.",
+      "groupName": "server",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "category",
+      "type": "pickList",
+      "label": "Test category",
+      "defaultValue": "unit",
+      "options": {
+        "unit": "unit",
+        "performance": "performance",
+        "uidriven": "uidriven",
+        "webapi": "webapi",
+        "external": "external"
+      },
+      "required": true,
+      "helpMarkDown": "The category for the tests (unit/performance).",
+      "groupName": "testrun"
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "env:BUILD_BUILDID",
+      "required": true,
+      "helpMarkDown": "The version of the project major.minor.revision or a reference to an environment variable (prefixed with env:) which contains it.",
+      "groupName": "testrun"
+    },
+    {
+      "name": "marker",
+      "type": "string",
+      "label": "Marker",
+      "required": false,
+      "helpMarkDown": "Optional, marker is a label used in the Test Automation dashlet charts",
+      "groupName": "testrun"
+    },
+    {
+      "name": "activateDotNetAgent",
+      "type": "boolean",
+      "label": "Activate dotNet Agent",
+      "required": true,
+      "defaultValue": true,
+      "helpMarkDown": "Optional, sets the DT_AGENTACTIVE environment variable to true at process level which can overwrite the Machine wide setting",
+      "groupName": "testrun"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "profile",
+      "endpointId": "$(dtserver)",
+      "dataSourceName": "Dynatrace Profiles"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Register Dynatrace Testrun",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\RegisterTestrun.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

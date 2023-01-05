@@ -1,0 +1,128 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.release_execute"
+    ],
+    "content": {
+        "details": {
+            "path": "README.md"
+        }
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service Endpoint type for Dynatrace connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Dynatrace",
+                "displayName": "Dynatrace API connection",
+                "url": {
+                    "displayName": "Dynatrace API Url",
+                    "helpText": "Url pointing to the Dynatrace REST API. Should end with /api/v1 typically running on port 8021"
+                },
+                "dataSources": [
+                    {
+                        "name": "Dynatrace Profiles",
+                        "endpointUrl": "{{endpoint.url}}/profiles",
+                        "resultSelector": "jsonpath:$.systemprofiles.id"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://github.com/Dynatrace/Dynatrace-TFS-Integration-Plugin\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "dynatrace-testrun-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Adds the TestAutomation result details tab",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Dynatrace Test Automation",
+                "uri": "dynatrace-testautomation-results.html",
+                "height": "auto"
+            }
+        },
+        {
+            "id": "dynatrace-testrun-summary-section",
+            "type": "ms.vss-build-web.build-results-section",
+            "description": "A section containing the summary of the TestRun results within Dynatrace",
+            "targets": [
+                "ms.vss-build-web.build-results-summary-tab",
+                "ms.vss-releaseManagement-web.release-details-summary-tab"
+            ],
+            "properties": {
+                "name": "Dynatrace Summary",
+                "uri": "dynatrace-testautomation-summary.html",
+                "order": 20,
+                "height": "200px"
+            }
+        },
+        {
+            "id": "register-dynatrace-testrun",
+            "description": "Register a new Testrun in Dynatrace",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DynatraceRegisterTestrun"
+            }
+        },
+        {
+            "id": "collect-dynatrace-testrun-results",
+            "description": "Collects Dynatrace Testrun Results and stores them as a build attachment",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DynatraceCollectTestRunResults"
+            }
+        },
+        {
+            "id": "configure-dynatrace-server-dotnet",
+            "description": "Overwrites default Dynatrace agent configuration by setting specific environment variables",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DynatraceConfigureServerDotNet"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

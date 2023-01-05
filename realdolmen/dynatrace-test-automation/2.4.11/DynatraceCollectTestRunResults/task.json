@@ -1,0 +1,65 @@
+{
+  "id": "d6a76c50-dc2b-11e8-9f8b-f2801f1b9fd1",
+  "name": "CollectDynatraceTestrunResults",
+  "friendlyName": "Dynatrace Collect Testrun Results",
+  "description": "Collects Dynatrace Testrun Results and stores them as a build attachment",
+  "author": "Realdolmen (Koen Callens / Bert Van der Heyden)",
+  "helpMarkDown": "Collects DynaTrace TestRun Results and stores them as a build attachment. This task will also generate a build warning if the number of degraded tests is greater than 0.",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 2,
+    "Minor": 5,
+    "Patch": 4
+  },
+  "groups": [
+    {
+      "name": "testrun",
+      "displayName": "Test Settings",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "markBuildOnDegraded",
+      "type": "pickList",
+      "label": "Mark build as ... on degraded tests",
+      "defaultValue": "WARNING",
+      "options": {
+        "NOTHING": "as passed - do nothing",
+        "WARNING": "as passed with warnings",
+        "FAILED": "as failed"
+      },
+      "required": true,
+      "helpMarkDown": "What should happen when degraded tests are detected by Dynatrace?",
+      "groupName": "testrun"
+    },
+    {
+      "name": "markBuildOnVolatile",
+      "type": "pickList",
+      "label": "Mark build as ... on volatile tests",
+      "defaultValue": "NOTHING",
+      "options": {
+        "NOTHING": "as passed - do nothing",
+        "WARNING": "as passed with warnings",
+        "FAILED": "as failed"
+      },
+      "required": true,
+      "helpMarkDown": "What should happen when volatile tests are detected by Dynatrace?",
+      "groupName": "testrun"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Collect Dynatrace Testrun Results",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\CollectTestrunResults.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
