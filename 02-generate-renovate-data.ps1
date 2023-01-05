@@ -1,0 +1,76 @@
+$extensions = Get-Content -raw -Path extensions.json | ConvertFrom-Json
+$max = $extensions.Count
+$count = 0
+
+$renovateData = @{}
+
+foreach ($extension in $extensions) {
+    $publisherId = $extension.publisher.publisherName
+    $extensionId = $extension.extensionName
+
+    $extensionData = gc -raw "$publisherId/$extensionId/extension.json" | ConvertFrom-Json
+
+    foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 })
+    {
+        $extensionVersion = $version.version
+
+        $extensionManifest = gc -raw "$publisherId/$extensionId/$extensionVersion/extension.vsomanifest" | ConvertFrom-Json
+
+        $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
+        foreach ($taskContribution in $taskContributions)
+        {
+            $localpath = "$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
+            
+            $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json
+
+            foreach ($taskManifestFile in $taskManifestFiles)
+            {
+                $taskManifestString = gc -raw $taskManifestFile.FullName
+                $taskManifest = $taskManifestString | ConvertFrom-Json -AsHashtable
+
+                try {
+                    $majorVersion = $taskManifest.version.Major
+                }
+                catch{
+                    try {
+                        $majorVersion = $taskManifest.version.major
+                    }
+                    catch {
+                        $majorVersion = 0
+                    }
+                }
+                try {
+                    $minorVersion = $taskManifest.version.Minor
+                }
+                catch{
+                    try {
+                        $minorVersion = $taskManifest.version.minor
+                    }
+                    catch {
+                        $minorVersion = 0
+                    }
+                }
+                try {
+                    $patchVersion = $taskManifest.version.Patch
+                }
+                catch{
+                    try {
+                        $patchVersion = $taskManifest.version.patch
+                    }
+                    catch {
+                        $patchVersion = 0
+                    }
+                }
+
+                $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
+
+                $renovateData."$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" += @($versionString)
+                $renovateData."$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" += @($versionString)
+                $renovateData."$($taskManifest.name)" += @($versionString)
+                $renovateData."$($taskManifest.id)" += @($versionString)
+            }
+        } 
+    }    
+}
+
+$renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "renovate-data.json"
