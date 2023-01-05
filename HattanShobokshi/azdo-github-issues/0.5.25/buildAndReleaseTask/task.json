@@ -1,0 +1,52 @@
+{
+  "id": "ffa7391c-7707-4739-b6fa-ac17dee42b25",
+  "name": "GitHubIssue",
+  "friendlyName": "GitHub Issues Notifier",
+  "description": "Create or Update a Github Issue based on Build Status",
+  "helpMarkDown": "",
+  "category": "Azure Pipeline",
+  "author": "Hattan Shobokshi",
+  "version": {
+      "Major": 0,
+      "Minor": 4,
+      "Patch": 19
+  },
+  "instanceNameFormat": "GitHub Issues Notifier",
+  "inputs": [
+    {
+        "name": "githubEndpoint",
+        "type": "connectedService:github",
+        "label": "GitHub Connection",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown":
+          "Select the service endpoint for your GitHub connection. <br>To create one, click the Manage link and create a new service endpoint."
+      },
+      {
+        "name": "githubRepository",
+        "type": "pickList",
+        "label": "Repository",
+        "defaultValue": "",
+        "helpMarkDown":
+          "Name of the GitHub repository. <br>If empty, it will be extracted from <strong>package.json</strong> (the repository.url field).",
+        "properties": {
+          "DisableManageLink": "True"
+        }
+    }
+  ],
+  "sourceDefinitions": [
+    {
+      "target": "githubRepository",
+      "endpoint":
+        "/$(system.teamProject)/_apis/sourceProviders/GitHub/repositories?serviceEndpointId=$(githubEndpoint)",
+      "selector": "jsonpath:$.repositories[*].id",
+      "keySelector": "jsonpath:$.repositories[*].id",
+      "authKey": "tfs:teamfoundation"
+    }
+  ],
+  "execution": {
+      "Node": {
+          "target": "index.js"
+      }
+  }
+}
