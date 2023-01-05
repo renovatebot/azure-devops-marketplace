@@ -1,0 +1,231 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a1535baf-9f0f-456d-b4a4-5c96da2b1891",
+    "name": "downloadertask",
+    "friendlyName": "BMC ISPW Source Code Downloader",
+    "description": "Task 1.0.1 used for downloading source from ISPW Repository or containers like Assignment, Set or Release.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "BMC Software",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Echo instanceName",
+    "inputs": [
+        {
+            "name": "connectionId",
+            "type": "pickList",
+            "label": "Host Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This field specifies the host connection to use for downloading source. Host connections can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "runtimeConfig",
+            "type": "string",
+            "label": "Runtime Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The host runtime configuration. See ISPW administrator for valid value. If the value is empty, leave it blank. Example: FOOBAR." 
+        },
+		{
+            "name": "ispwUserId",
+            "type": "string",
+            "label": "ISPW User Id",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "ISPW User Id."
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "ISPW Password. In this feild, please pass pipeline variable name which is stored as secret in Azure pipeline. Example $(variablename)" 
+        },
+        {
+            "name": "windowsTopazWorkbenchCliHome",
+            "type": "pickList",
+            "label": "Windows Topaz Workbench CLI Home",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "windowsSourceDownloadLocation",
+            "type": "string",
+            "label": "Windows Source Download Location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Absolute path to a windows directory where source will be downloaded to . Example: C:\\TopazISPW\\DownloadedSource."
+        },
+        {
+            "name": "downloadSourceType",
+            "type": "radio",
+            "label": "Download Source from: ",
+            "required": true,
+            "defaultValue": "Container",
+            "helpMarkDown": "Download source from ISPW repository or different containers types (Assignment/Set/Release).",
+            "options": {
+              "Repository": "ISPW Repository",
+              "Container": "ISPW Container"
+            }
+        },
+        {
+            "name": "containerType",
+            "type": "pickList",
+            "label": "Container Type",
+            "required": true,
+            "defaultValue": "Assignment",
+            "helpMarkDown": "The container type for which you intend to download elements: Assignment, Set or Release. Example: Assignment.",
+            "visibleRule": "downloadSourceType=Container",
+            "options": {
+                "Assignment": "Assignment",
+                "Release": "Release",
+                "Set": "Set"
+            }
+        },
+        {
+            "name": "containerId",
+            "type": "string",
+            "label": "Container Id",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The id of container for which you intend to download elements. Example: Kate123456.",
+            "visibleRule": "downloadSourceType=Container",
+            "properties":{
+                "maxLength": "10"
+            } 
+        },
+        {
+            "name": "componentType",
+            "type": "string",
+            "label": "Component Type",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Component type which needs to be downloaded. Example: COB.",
+            "visibleRule": "downloadSourceType=Container",
+            "properties":{
+                "maxLength": "8"
+            } 
+        },
+        {
+            "name": "stream",
+            "type": "string",
+            "label": "Stream",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The two to eight character code that defines the application structure with which the application is associated.",
+            "visibleRule": "downloadSourceType=Repository",
+            "properties": {
+                "maxLength": "64"
+            }
+        },
+        {
+            "name": "application",
+            "type": "string",
+            "label": "Application",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The container's primary application code. Containers may include components from multiple applications.",
+            "visibleRule": "downloadSourceType=Repository"
+        },
+        {
+            "name": "taskLevel",
+            "type": "string",
+            "label": "Level",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The life cycle level. Example: DEV1.",
+            "visibleRule": "downloadSourceType=Container"
+        },
+        {
+            "name": "repositoryLevel",
+            "type": "string",
+            "label": "Level",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The life cycle level. Example: DEV1.",
+            "visibleRule": "downloadSourceType=Repository"
+        },
+        {
+            "name": "levelOption",
+            "type": "pickList",
+            "label": "Level Option",
+            "required": true,
+            "defaultValue": "SelectedLevelOnly",
+            "helpMarkDown": "Select one of the following: Selected level only to display only components at the selected life cycle level in the view. First found in level and above to display the first version found of each component at the selected level and above.",
+            "visibleRule": "downloadSourceType=Repository",
+            "options": {
+                "SelectedLevelOnly": "Selected level Only",
+                "FirstFoundLevelAndAbove": "First found in level and above"
+            }
+        },
+        {
+            "name": "componentTypes",
+            "type": "string",
+            "label": "Component types",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "A comma-separated list of the component types on which to filter, for example, 'COB, COPY, JOB, JAVA'. Space is required after comma. If the Application Root Folders filter is enabled, filtering will be constrained to components outside of a folder structure.",
+            "visibleRule": "downloadSourceType=Repository"
+        },
+        {
+            "name": "applicationRootFolderNames",
+            "type": "string",
+            "label": "Application root folder names",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "A comma-separated list of the application root folders' names on which to filter, for example, 'folder1, folder2, folder3'. Application root folders are the top-level folders under the application. All contents of the folders will be returned regardless of the Components filter value.",
+            "visibleRule": "downloadSourceType=Repository"
+        },
+        {
+            "name": "downloadUnchangedSource",
+            "type": "boolean",
+            "label": "Force download of unchanged source",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Check this option if you want to download unchanged source."
+        },
+        {
+            "name": "downloadIncludes",
+            "type": "boolean",
+            "label": "Download related includes",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Check this option if you want to download related includes eg.Copybooks, Header Files etc."
+        },
+        {
+            "name": "downloadCompileOnly",
+            "type": "boolean",
+            "label": "Download with compile only",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "When this box is checked, all files matching the filter will be downloaded, including Compile Only tasks.",
+            "visibleRule": "downloadSourceType=Repository"
+        }
+    ],
+	"dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "connectionId",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/hostconnection",
+            "resultSelector": "jsonpath:$.value[*]",
+			"resultTemplate": "{\"Value\":\"{{{host}}}#{{{code_page}}}\",\"DisplayValue\":\"{{{host}}}\"}"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "windowsTopazWorkbenchCliHome",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/windows_CLI",
+            "resultSelector": "jsonpath:$.value"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
