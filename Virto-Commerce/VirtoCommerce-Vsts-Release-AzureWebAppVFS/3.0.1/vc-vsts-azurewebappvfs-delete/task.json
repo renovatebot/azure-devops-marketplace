@@ -1,0 +1,155 @@
+{
+    "id": "54b8705d-5469-4bd9-8c5b-48d6fa739068",
+    "name": "WebAppVFSDelete",
+    "friendlyName": "Delete Item from Azure App Service",
+    "description": "Delete Item from Azure App Service through Kudu VFS Rest API",
+    "helpMarkDown": "Version: 3.0",
+    "category": "Utility",
+    "author": "VirtoCommerce",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [ "azureps" ],
+    "minimumAgentVersion": "1.102.0",
+    "groups": [
+        {
+            "name": "Advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+  {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
+        },
+        {
+            "name": "WebAppName",
+            "type": "pickList",
+            "label": "App Service name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select the name of an existing Azure App Service."
+        },
+        {
+            "name": "DeployToSlotFlag",
+            "type": "boolean",
+            "label": "Deploy to slot",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Select the option to deploy to an existing slot other than the Production slot. If this option is not selected, then the Azure App Service will be deployed to the Production slot."
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select the Azure Resource group that contains the Azure App Service specified above.",
+            "visibleRule": "DeployToSlotFlag = true"
+        },
+        {
+            "name": "SlotName",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select an existing Slot other than the Production slot.",
+            "visibleRule": "DeployToSlotFlag = true"
+        },
+        {
+            "name": "filePath",
+            "type": "string",
+            "label": "File URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "the file or directory path after the wwwroot/ of your Azure Web app. paths ending with / are marked as directories"
+        },
+        {
+            "name": "deleteRecursive",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Recursive Delete",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "delete all subfolders and files in selected directory"
+        },
+        {
+            "name": "continueIfFileNotExist",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Skip non existing path",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If file that is being deleted does not exist on path continue on 404 error?"
+        },
+        {
+            "name": "allowUnsafe",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Allow Self Signed Certificates",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "enable this to ignore self signed certification errors"
+        },
+        {
+            "name": "alternativeKuduUrl",
+            "type": "string",
+            "label": "Alternative Kudu URL",
+            "groupName" : "Advanced",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "value of SCM endpoint if it is not website.scm.azurewebsites.net (fill in only last part starting with scm.)"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        },
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppResourceGroup",
+            "parameters": {
+                "WebAppName": "$(WebAppName)"
+            }
+        },
+        {
+            "target": "SlotName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppSlotsId",
+            "parameters": {
+                "WebAppName": "$(WebAppName)",
+                "ResourceGroupName": "$(ResourceGroupName)"
+            },
+            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+        }
+    ],
+    "instanceNameFormat": "Delete file from Azure Web App",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\deleteFile.ps1"
+        }
+    }
+}
