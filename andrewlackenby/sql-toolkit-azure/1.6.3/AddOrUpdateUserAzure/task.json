@@ -1,0 +1,113 @@
+{
+    "id": "3a532ce9-ea3b-4a7b-b53d-23a75080ef43",
+    "name": "AddOrUpdateUserAzure",
+    "friendlyName": "Add (or update) user with password in SQL Database",
+    "description": "Create an user with the provided password in the database. Update the password if the user exists",
+    "author": "Henry Been",
+    "category": "Utility",
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "2"
+    },
+    "demands": ["azureps"],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name":"ConnectedServiceNameSelector",
+            "type":"pickList",
+            "label":"Azure Connection Type",
+            "required":false,
+            "helpMarkDown":"",
+            "defaultValue":"ConnectedServiceName",
+            "options":{
+                "ConnectedServiceName":"Azure Classic",
+                "ConnectedServiceNameARM":"Azure Resource Manager"
+            }
+        },
+        {
+            "name":"ConnectedServiceName",
+            "type":"connectedService:Azure",
+            "label":"Azure Classic Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Classic subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name":"ConnectedServiceNameARM",
+            "type":"connectedService:AzureRM",
+            "label":"Azure RM Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true,
+            "helpMarkDown": "Only enter server name as .database.windows.net will automatically appended"
+        },
+        {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true
+        },
+        {
+            "name": "userName",
+            "type": "string",
+            "label": "SQL Server Login ID",
+            "required": true,
+            "helpMarkDown": "Azure Database Login"
+        },
+                {
+            "name": "userPassword",
+            "type": "string",
+            "label": "SQL Server Authentication password",
+            "required": true,
+            "helpMarkDown": "Password for Azure database. You should use a secret variable here."
+        },
+        {
+            "name": "targetUserName",
+            "type": "string",
+            "label": "Username for the user to create",
+            "required": true,
+            "helpMarkDown": "User to create"
+        },
+                {
+            "name": "targetUserPassword",
+            "type": "string",
+            "label": "Password for the user to create",
+            "required": true,
+            "helpMarkDown": "Password for the user to create"
+        },
+        {
+            "name": "queryTimeout",
+            "type": "string",
+            "label": "Query Timeout",
+            "required": true,
+            "defaultValue": "30",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Azure Create or Update user $($targetUserName) on $(databaseName)",
+    "execution": 
+    {
+        "AzurePowerShell": 
+        {
+            "target": "$(currentDirectory)\\AddOrUpdateUserAzure.ps1",
+            "argumentFormat":"",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

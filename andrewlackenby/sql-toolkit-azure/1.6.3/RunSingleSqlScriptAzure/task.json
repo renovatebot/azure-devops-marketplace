@@ -1,0 +1,113 @@
+{
+    "id": "87579a81-e5e6-4993-b2cc-406445da7f28",
+    "name": "RunSqlScriptAzure",
+    "friendlyName": "Run Sql Script on Azure",
+    "description": "Allows you to run SQL Script in an Azure environment",
+    "author": "Andrew Lackenby",
+    "category": "Utility",
+    "version": {
+        "Major": "1",
+        "Minor": "4",
+        "Patch": "0"
+    },
+    "demands": ["azureps"],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name":"ConnectedServiceNameSelector",
+            "type":"pickList",
+            "label":"Azure Connection Type",
+            "required":false,
+            "helpMarkDown":"",
+            "defaultValue":"ConnectedServiceName",
+            "options":{
+                "ConnectedServiceName":"Azure Classic",
+                "ConnectedServiceNameARM":"Azure Resource Manager"
+            }
+        },
+        {
+            "name":"ConnectedServiceName",
+            "type":"connectedService:Azure",
+            "label":"Azure Classic Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Classic subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name":"ConnectedServiceNameARM",
+            "type":"connectedService:AzureRM",
+            "label":"Azure RM Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+       {
+            "name": "sqlScript",
+            "type": "filePath",
+            "label": "Specify SQL Script to run",
+            "required": true
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true,
+            "helpMarkDown": "Only enter server name as .database.windows.net will automatically appended"
+        },
+        {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true
+        },
+        {
+            "name": "userName",
+            "type": "string",
+            "label": "SQL Server Login ID",
+            "required": true,
+            "helpMarkDown": "Azure Database Login"
+        },
+                {
+            "name": "userPassword",
+            "type": "string",
+            "label": "SQL Server Authentication password",
+            "required": true,
+            "helpMarkDown": "Password for Azure database. You should use a secret variable here."
+        },
+        {
+            "name": "removeComments",
+            "type": "boolean",
+            "label": "Remove comments",
+            "defaultValue": true,
+            "groupName": "advanced",
+            "helpMarkDown": "If comments are not removed the keyword Go cannot appear in them otherwise the task will fail."
+        },
+        {
+            "name": "queryTimeout",
+            "type": "string",
+            "label": "Query Timeout",
+            "required": true,
+            "defaultValue": "30",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Run Sql Scripts on $(databaseName)",
+    "execution": 
+    {
+        "AzurePowerShell": 
+        {
+            "target": "$(currentDirectory)\\RunSingleSqlScriptAzure.ps1",
+            "argumentFormat":"",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
