@@ -1,0 +1,113 @@
+{
+	"id": "082952b0-97ff-11e7-9cef-13b44164f015",
+	"name": "exportipa",
+	"friendlyName": "Export to IPA",
+	"description": "Export an xcarchive to an IPA file",
+	"author": "nventive",
+	"category": "Utility",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"demands": [
+		"xcode"
+	],
+	"version": {
+		"Major": 2,
+		"Minor": 5,
+		"Patch": 192
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "Export to IPA",
+	"groups": [
+		{
+			"name": "sign",
+			"displayName": "Signing & Provisioning",
+			"isExpanded": true
+		},
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "archivePath",
+			"type": "filePath",
+			"label": "Archive Path",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The path to the archive to export."
+		},
+		{
+			"name": "exportMethod",
+			"type": "pickList",
+			"label": "Export Method",
+			"defaultValue": "app-store",
+			"required": true,
+			"helpMarkDown": "The method to use in the export options",
+			"options": {
+				"app-store": "App Store",
+				"enterprise": "Enterprise",
+				"ad-hoc": "Ad-Hoc",
+				"development": "Development"
+			}
+		},
+		{
+			"name": "exportTeamId",
+			"type": "string",
+			"label": "Team ID",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "The 10 digit Team ID from the Apple Developer Portal to use for this export.",
+			"groupName": "sign"
+		},
+		{
+			"name": "exportBundleId",
+			"type": "string",
+			"label": "Bundle ID",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Optionally change the bundle ID of the application.",
+			"groupName": "sign"
+		},
+		{
+			"name": "iosSigningIdentity",
+			"type": "string",
+			"label": "Signing Identity",
+			"required": true,
+			"helpMarkDown": "Optional signing identity override that should be used to sign the build. Defaults to Xcode Project setting. You may need to select Unlock Default Keychain if you use this option.",
+			"groupName": "sign"
+		},
+		{
+			"name": "provProfileUuid",
+			"type": "string",
+			"label": "Provisioning Profile UUID",
+			"required": true,
+			"helpMarkDown": "UUID of the provisioning profile to be used for this build. Use separate build tasks with different Schemes or Targets to specify separate provisioning profiles by target in a single workspace (iOS, WatchKit, tvOS).",
+			"groupName": "sign"
+		},
+		{
+			"name": "outputPattern",
+			"type": "string",
+			"label": "Output Directory",
+			"defaultValue": "output",
+			"required": true,
+			"helpMarkDown": "Relative path where build output (binaries) will be placed.",
+			"groupName": "advanced"
+		}
+	],
+	"dependencies": {
+		"vsts-task-lib": "^2.0.5"
+	},
+	"execution": {
+		"Node": {
+			"target": "task.js",
+			"argumentFormat": ""
+		},
+		"PowerShell3": {
+			"target": "task.ps1"
+		}
+	}
+}
