@@ -1,0 +1,117 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "74b00cae-14b5-414f-b9f1-1aa71b192da2",
+  "name": "AngularCLI",
+  "friendlyName": "Angular CLI",
+  "description": "Build, tests, lint, e2e an Angular project, or run a custom Angular CLI command.",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "Raul A. Ruiz",
+  "helpUrl": "https://github.com/alexruizprado/azure-pipelines-angular-cli-task",
+  "visibility": [
+    "Build"
+  ],
+  "preview": false,
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "ng $(command)",
+  "groups": [
+    {
+      "name": "loggingGroup",
+      "displayName": "Logging",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "build",
+      "required": true,
+      "helpMarkDown": "The Angular CLI command to run. Select 'Custom' to add arguments or use a command not listed here.",
+      "options": {
+        "build": "build",
+        "lint": "lint",
+        "test": "test",
+        "e2e": "e2e",
+        "custom": "custom"
+      },
+      "properties": {
+        "EditableOptions": "False"
+      }
+    },
+    {
+      "name": "project",
+      "type": "filePath",
+      "label": "Path to the Angular project root",
+      "defaultValue": "",
+      "visibleRule": "command = build || command = lint || command = test || command = e2e || command = custom",
+      "required": false,
+      "helpMarkDown": "The path to the Angular project root, where the package.json and angular.json files are located."
+    },
+    {
+      "name": "custom",
+      "type": "string",
+      "label": "Custom command",
+      "defaultValue": "",
+      "helpMarkDown": "The command to pass to ng for execution.",
+      "required": true,
+      "visibleRule": "command = custom"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "Arguments",
+      "defaultValue": "",
+      "visibleRule": "command = build || command = lint || command = test || command = e2e || command = custom",
+      "required": false,
+      "helpMarkDown": "Arguments to the selected command if needed. The arguments depend on the command selected."
+    },
+    {
+      "name": "prod",
+      "type": "boolean",
+      "label": "Prod build",
+      "defaultValue": true,
+      "required": false,
+      "visibleRule": "command = build",
+      "helpMarkDown": "Equivalent to argument --prod"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Check this if you want execute commands on verbose mode. Equivalent to --verbose on the arguments."
+    },
+    {
+      "name": "debug",
+      "type": "boolean",
+      "label": "Debug",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Check this if you want print extra information for debugging this extension."
+    },
+    {
+      "name": "DisableAnalytics",
+      "type": "boolean",
+      "label": "Disable Analytics",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Analytics service for monitoring this extension. For more information check extension page.",
+      "groupName": "loggingGroup"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
