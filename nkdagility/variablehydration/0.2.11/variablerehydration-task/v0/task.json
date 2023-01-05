@@ -1,0 +1,44 @@
+{
+  "id": "7e7e1b5c-d87d-4a4c-a51a-95de28ce0fb9",
+  "name": "variablerehydration",
+  "friendlyName": "Variable Load Task",
+  "description": "Loads the saved variables file and rehydrates the variables.",
+  "helpMarkDown": "v0.2.11 [More Information](https://dev.azure.com/nkdagility/_git/Azure-DevOps-Variable-Tools?path=%2FREADME.md)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Deploy"
+  ],
+  "author": "naked Agility - Martin Hinshelwood",
+  "version": {
+    "Major": "0",
+    "Minor": "2",
+    "Patch": "11"
+  },
+  "minimumAgentVersion": "2.103.0",
+  "groups": [
+    {
+      "name": "missing",
+      "displayName": "Missing variables",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "jsonfiles",
+      "type": "filePath",
+      "label": "JSON Path",
+      "defaultValue": "**\\meta-*.json",
+      "required": true,
+      "helpMarkDown": "Select the json file, or files to rehydrate."
+    }
+  ],
+  "instanceNameFormat": "Load Build Variables $(jsonfiles)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\rehydrate-variables.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(System.DefaultWorkingDirectory)"
+    }
+  }
+}

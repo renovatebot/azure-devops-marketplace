@@ -1,0 +1,51 @@
+{
+    "id": "94fd260a-77ed-4c97-a4aa-2a27039e29b8",
+    "name": "variabledehydration",
+    "friendlyName": "Variable (de)Hydration Task",
+    "description": "Saves the build variables as a .json file so that you can use it later.",
+    "helpMarkDown": "v0.1.0 [More Information](https://github.com/nkdAgility/vsts-variable-hydration-tasks#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Martin Hinshelwood",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.92.0",
+    "groups": [
+        {
+            "name": "missing",
+            "displayName": "Missing variables",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "prefixes",
+            "type": "string",
+            "label": "Prefixes",
+            "defaultValue": "GITVERSION,BUILD",
+            "required": true,
+            "helpMarkDown": "Comma delimited list of build prefixes to save. Since we have to save environmental variables we need to filter."
+        },
+        {
+            "name": "outpath",
+            "type": "filePath",
+            "label": "Output Path",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "Select a folder to store the dehydrated data."
+        }
+    ],
+    "instanceNameFormat": "Dehydrate $(prefixes) to outpath",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\dehydrate-veriables.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}
