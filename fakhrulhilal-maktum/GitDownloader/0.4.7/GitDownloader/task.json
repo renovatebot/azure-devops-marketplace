@@ -1,0 +1,67 @@
+{
+    "id": "56033F91-AEB8-4316-B19A-BCB721F4705B",
+    "name": "GitDownloader",
+    "friendlyName": "Git Repository Downloader",
+    "description": "Download additional git repository from public repository or this TFS",
+    "helpMarkDown": "[More information](https://github.com/fakhrulhilal/TFSGitDownloader/blob/master/README.md)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": ["Agent"],
+    "author": "Fakhrulhilal Maktum",
+    "version": {
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 7
+    },
+	"instanceNameFormat": "Fetch git: $(RepositoryUrl)",
+	"minimumAgentVersion": "1.95.1",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "RepositoryUrl",
+            "type": "string",
+            "label": "Repository URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Repository URL to download. Use $(Build.Repository.GitUri) to refer relative URI for git URL, ex: https://your-onpremise-tfs.com/tfs/DefaultCollection/TeamProject/_git/GitRepo or just $(Build.Repository.GitUri)/GitRepo. This repository should be able to be cloned without authentication."
+        },
+        {
+            "name": "RepositoryPath",
+            "type": "string",
+            "label": "Repository Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Full path to store the git repository. If not specified, then it will be located in $(Build.GitDirectory)\\[repo name]."
+        },
+        {
+            "name": "BranchTag",
+            "type": "string",
+            "label": "Branch/Tag",
+            "defaultValue": "master",
+            "required": true,
+            "helpMarkDown": "Branch/tag to checkout. By default, it will download single branch/tag and will checkout to that branch/tag automatically."
+        },
+        {
+            "name": "Clean",
+            "type": "boolean",
+            "label": "Clean",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, will remove previously downloaded repository and use clone command to download. Otherwise, it will stash everything and pull the remote branch/tag."
+        }
+    ],
+    "execution": {
+        "Powershell3": {
+            "target": "Save-GitRepository.ps1"
+        }
+    }
+}
