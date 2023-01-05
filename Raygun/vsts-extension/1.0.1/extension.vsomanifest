@@ -1,0 +1,90 @@
+{
+    "manifestVersion": 1,
+    "visibility": [
+        "Build and release"
+    ],
+    "content": {
+        "details": {
+            "path": "docs/vsts-README.md"
+        }
+    },
+    "scope": [
+        "vso.build",
+        "vso.serviceendpoint"
+    ],
+    "contributions": [
+        {
+            "id": "upload-symbols",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "_build/Tasks/UploadSymbols"
+            }
+        },
+        {
+            "id": "raygun-service-endpoint",
+            "description": "RaygunAuthenticationEndpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "raygun",
+                "displayName": "Raygun",
+                "url": "https://raygun.com/",
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "External Access Token",
+                        "headers": [],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "External Access Token",
+                                "description": "You can create this token within your <a href=\"https://app.raygun.io/user\" target=\"_blank\">user settings</a> in Raygun in the External Access Token section.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Raygun E-mail",
+                                "description": "The e-mail address of the service account used to authenticate with Raygun.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for the account that is connecting to Raygun.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
