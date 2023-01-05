@@ -1,0 +1,59 @@
+{
+  "id": "63823D31-810C-4957-9BC1-859757ACE94D",
+  "name": "processtemplate",
+  "friendlyName": "Azure DevOps Services Process (XML)",
+  "description": "Deploys an XML Process to VSTS",
+  "helpMarkDown": "v1.11.15.12 [More Information](https://github.com/nkdAgility/vsts-process-template-task#readme)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Martin Hinshelwood",
+  "version": {
+    "Major": "1",
+    "Minor": "11",
+    "Patch": "15"
+  },
+  "minimumAgentVersion": "1.92.0",
+  "groups": [
+    {
+      "name": "missing",
+      "displayName": "Missing variables",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "account",
+      "type": "string",
+      "label": "Azure DevOps Service Organisation URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The URL of the VSTS instance to deploy the Template too. e.g. https://myaccount.visualstudio.com"
+    },
+    {
+      "name": "accesstoken",
+      "type": "string",
+      "label": "Access Token",
+      "required": true,
+      "helpMarkDown": "Personal access token for that instance of VSTS"
+    },
+    {
+      "name": "matchProcessTemplates",
+      "type": "filePath",
+      "label": "Process Template",
+      "defaultValue": "$(System.DefaultWorkingDirectory)\\*.zip",
+      "required": true,
+      "helpMarkDown": "Search for one or more process templates to upload. Support wildcards."
+    }
+  ],
+  "instanceNameFormat": "Uploads template to $(account)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\upload-process-template.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(System.DefaultWorkingDirectory)"
+    }
+  }
+}

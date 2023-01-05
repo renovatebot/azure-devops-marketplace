@@ -1,0 +1,89 @@
+{
+  "id": "63823D31-810C-4957-9BC1-859757ACE94D",
+  "name": "processtemplatetask",
+  "friendlyName": "Azure DevOps Services Process (XML)",
+  "description": "Imports an XML Process to Azure DevOps Services.",
+  "helpMarkDown": "v4.11.15.1 [More Information](https://github.com/nkdAgility/vsts-process-template-task#readme)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "author": "naked Agility Limited - Martin Hinshelwood",
+  "version": {
+    "Major": "4",
+    "Minor": "11",
+    "Patch": "15"
+  },
+  "minimumAgentVersion": "1.92.0",
+  "groups": [
+    {
+      "name": "Overrides",
+      "displayName": "Override defaults set in your Process Template .zip",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "VstsXmlProcessService",
+      "type": "connectedService:VstsXmlProcessEndpoint",
+      "label": "Azure DevOps XML Process Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The endpoint should contain both the Token for access as well a the URL of the Azure DevOps Service Organisation that you want to connect to. You will need an endpoint per Organisation."
+    },
+    {
+      "name": "processFile",
+      "type": "filePath",
+      "label": "Process Template",
+      "defaultValue": "$(System.DefaultWorkingDirectory)\\*.zip",
+      "required": true,
+      "helpMarkDown": "Search for one or more process templates to upload. Support wildcards."
+    },
+    {
+      "name": "waitForUpdate",
+      "type": "boolean",
+      "label": "Wait on Status",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "If checked the task will poll "
+    },
+    {
+      "name": "waitForInterval",
+      "type": "string",
+      "label": "Check interval",
+      "defaultValue": "30",
+      "required": true,
+      "helpMarkDown": "If checked the task will poll the update service on the interval provided. Recommneded is 30 seconds."
+    },
+    {
+      "name": "overrideProcessGuid",
+      "type": "string",
+      "label": "Override Process GUID",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "Overrides",
+      "helpMarkDown": "The GUID of the process you would like to overwrite. Note that if there is significant diference between the in place template and the new one you will need to do a manual upload."
+    },
+    {
+      "name": "overrideProcessName",
+      "type": "string",
+      "label": "Override Process Name",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "Overrides",
+      "helpMarkDown": "Override the name of the Process so that you can tell the Imported ones apart since there is likley to be one per team project."
+    }
+  ],
+  "instanceNameFormat": "Import $(overrideProcessName) for $(account)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\importProcess.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(System.DefaultWorkingDirectory)"
+    }
+  }
+}
