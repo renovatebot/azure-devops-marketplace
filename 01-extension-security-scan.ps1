@@ -97,7 +97,7 @@ foreach ($extension in $extensions)
     & git config --local user.email "jesse.houwing@gmail.com"
     & git config --local user.name "Jesse Houwing"
     
-    & git diff --exit-code
+    & git status --exit-code
     if ($LASTEXITCODE -ne 0)
     {
         & git add .
