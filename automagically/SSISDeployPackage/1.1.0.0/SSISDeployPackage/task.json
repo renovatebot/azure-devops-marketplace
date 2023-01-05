@@ -1,0 +1,127 @@
+{
+  "id": "D3BF516F-BB68-49BD-8BF1-479FFB07E8E4",
+  "name": "SSISDeployPackage",
+  "friendlyName": "SSIS Deploy Package",
+  "description": "Deploy an .ispac file to SSIS",
+  "author": "automagically",
+  "helpMarkDown": "Deploy an .ispac",
+  "category": "Deploy",
+  "visibility": [ "Build", "Release" ],
+  "version": {
+    "Major": "1",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "groups": [
+    {
+      "name": "Credentials",
+      "displayName": "Credentials",
+      "isExpanded": true
+    }
+    ],
+  "inputs": [
+    {
+      "name": "SqlServerInstance",
+      "type": "string",
+      "label": "SQL Server Instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "SQL Server where SSIS Package is to be deployed"
+    },
+    {
+      "name": "FolderName",
+      "type": "string",
+      "label": "SSIS Folder Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Folder Name where SSIS Project is to be deployed"
+    },
+    {
+      "name": "ispac",
+      "type": "filePath",
+      "label": "isPac file to be Deployed",
+      "defaultValue": "*.ispac",
+      "required": true,
+      "helpMarkDown": "The Name of the SSIS package to be deployed"
+    },
+    {
+      "name": "ProjectName",
+      "type": "string",
+      "label": "Project name to be deployed",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Name of the SSIS package project to be deployed"
+    },
+    {
+      "name": "EnvironmentName",
+      "type": "string",
+      "label": "Environment Name",
+      "defaultValue": "ENV",
+      "required": true,
+      "helpMarkDown": "The name of an SSIS Environment to hold environment variables"
+    },
+    {
+      "name": "ParametersToIgnore",
+      "type": "string",
+      "label": "Parameters to Ignore",
+      "defaultValue": "IgnoreAll",
+      "required": true,
+      "helpMarkDown": "Project and package parameters to ignore. Use semicolon separated list if you need to ignore multiple parameters when setting the parameters"
+    },
+    {
+      "name": "runOnRemoteServer",
+      "type": "boolean",
+      "label": "Authentication required",
+      "defaultValue": "false",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Is the download URL require authentication?"
+    },
+    {
+      "name": "RemoteServer",
+      "type": "string",
+      "label": "Remote Server",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Remote server name",
+      "visibleRule": "runOnRemoteServer = true"
+    },
+    {
+      "name": "RemoteUsername",
+      "type": "string",
+      "label": "Remote user account",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Username to connect to remote server",
+      "visibleRule": "runOnRemoteServer = true"
+    },
+    {
+      "name": "RemoteUserPassword",
+      "type": "string",
+      "label": "Remote user password",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "User password to connect remote server",
+      "visibleRule": "runOnRemoteServer = true"
+    },
+    {
+      "name": "useSSL",
+      "type": "boolean",
+      "label": "Use SSL to connect",
+      "defaultValue": "false",
+      "required": false,
+      "groupname": "Credentials",
+      "helpMarkDown": "Use SSL to connect to remote machine",
+      "visibleRule": "runOnRemoteServer = true"
+    }
+  ],
+  "instanceNameFormat": "SSIS Deploy Package",
+  "execution": {
+    "PowerShell3": {
+      "target": "SSISDeployPackage.ps1"
+    }
+  }
+}
