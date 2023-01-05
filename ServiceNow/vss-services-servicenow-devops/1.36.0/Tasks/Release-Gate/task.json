@@ -1,0 +1,72 @@
+{
+    "id": "8bf41776-72f2-4374-895d-97fbacd5f8fc",
+    "name": "ServiceNow-DevOps-Release-Gate",
+    "friendlyName": "ServiceNow DevOps Release Gate",
+    "description": "Add in pre-deployment gates to create a change request as part of the Azure release pipeline.",
+    "author": "ServiceNow",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "runsOn": [
+        "ServerGate"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Release Gate",
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "Service Now endpoint",
+            "required": true,
+            "helpMarkDown": "Service Now endpoint connection."
+        },
+        {
+            "name": "headers",
+            "type": "multiLine",
+            "label": "Headers",
+            "required": "false",
+            "defaultValue": "{\n\"Content-Type\":\"application/json\", \n\"PlanUrl\": \"$(system.CollectionUri)\", \n\"ProjectId\": \"$(system.TeamProjectId)\", \n\"HubName\": \"$(system.HostType)\", \n\"PlanId\": \"$(system.PlanId)\", \n\"JobId\": \"$(system.JobId)\", \n\"TimelineId\": \"$(system.TimelineId)\", \n\"TaskInstanceId\": \"$(system.TaskInstanceId)\", \n\"AuthToken\": \"$(system.AccessToken)\"\n}",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "2000"
+            },
+            "helpMarkDown": "Define header in JSON format. The header shall be attached with request to be sent."
+        },
+        {
+            "name": "changeRequestDetails",
+            "type": "multiLine",
+            "label": "Change request details",
+            "required": false,
+            "defaultValue": "",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },
+            "helpMarkDown": "##JSON containing Change request details\n\n**Sample input 1:**\n\n```\n{\r\n    \"setCloseCode\" : true,\r\n    \"attributes\": {\r\n      \"requested_by\": {\r\n        \"name\": \"test user\"\r\n      },\r\n      \"start_date\": \"2021-01-05 08:00:00\",\r\n      \"end_date\": \"2021-01-08 08:00:00\"\r\n    }\r\n  }"
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+            "Execute": {
+                "EndpointId": "$(connectedServiceName)",
+                "EndpointUrl": "$(endpoint.url)/api/sn_devops/v1/devops/orchestration/changeControl?toolId=$(endpoint.toolId)&toolType=adop",
+                "Method": "POST",
+                "Body": {
+                    "releaseNumber": "$(Release.ReleaseId)",
+                    "projectName": "$(System.TeamProject)",
+                    "attemptNumber": "$(Release.AttemptNumber)",
+                    "changeRequestDetails": "$(changeRequestDetails)"
+               },
+                "Headers": "$(headers)",
+                "WaitForCompletion": true
+            }
+        }
+    }
+}

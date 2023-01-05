@@ -1,0 +1,49 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "d610a5f3-d9ab-417c-a225-acce53c7aa5a",
+    "name": "ServiceNow-DevOps-Agent-Package-Registration",
+    "friendlyName": "ServiceNow DevOps Agent Package Registration",
+    "description": "This extension needs to be added at job level to register package in ServiceNow instance",
+    "helpMarkDown": "",
+    "category": "Package",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Agent Package Registration",
+    "showEnvironmentVariables": false,
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "ServiceNow endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name": "packageName",
+            "type": "string",
+            "label": "Package name",
+            "required": true,
+            "helpMarkDown": "Name of the package that contains artifacts"
+        },
+        {
+            "name": "artifactsPayload",
+            "type": "multiLine",
+            "label": "Artifacts payload",
+            "required": true,
+            "helpMarkDown": "##JSON containing build details & list of artifacts\n\n**Sample input 1:**\n\n```\n{\n    \"artifacts\": [\n    {\n        \"name\": \"<artifact name>\",\n        \"repositoryName\": \"<artifact repository name>\",\n        \"version\": \"1.$(build.buildId)\",\n        \"pipelineName\":\"$(system.teamProject)/$(build.definitionName)\",\n        \"taskExecutionNumber\":\"$(build.buildId)\",\n        \"stageName\":\"$(system.jobDisplayName)\",\n        \"branchName\":\"$(build.sourceBranchName)\"\n    }],\n    \"pipelineName\":\"$(system.teamProject)/$(build.definitionName)\",\n    \"taskExecutionNumber\":\"$(build.buildId)\",\n    \"stageName\":\"$(system.jobDisplayName)\",\n    \"branchName\":\"$(build.sourceBranchName)\"\n}\n\n```\n\n**Sample input 2:**\n\n```\n{\n    \"artifacts\": [\n    {\n        \"name\": \"<artifact name>\",\n        \"repositoryName\": \"<artifact repository name>\",\n        \"version\": \"1.$(build.buildId)\",\n        \"currentBuildInfo\": \"true\"\n    }]\n}\n```"
+        }
+    ],
+    "runsOn": [
+       "Agent",
+       "MachineGroup"
+      ],
+     "execution": {
+        "Node10": {
+            "target": "dist/index.js"
+        }
+    }
+}

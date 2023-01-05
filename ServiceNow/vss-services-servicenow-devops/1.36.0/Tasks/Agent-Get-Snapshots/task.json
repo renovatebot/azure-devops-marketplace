@@ -1,0 +1,65 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "96a3faa7-5340-4256-8917-970ca39bab38",
+    "name": "ServiceNow-DevOps-Config-Agent-Get-Snapshot",
+    "friendlyName": "ServiceNow DevOps Config Agent Get Snapshot",
+    "description": "ServiceNow DevOps Config Agent Get Snapshot",
+    "helpMarkDown": "This extension needs to be added at job level to get snapshots from ServiceNow instance",
+    "category": "Utility",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Config Agent Get Snapshot",
+    "showEnvironmentVariables": false,
+    "inputs": [{
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "ServiceNow Endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name": "applicationName",
+            "type": "string",
+            "label": "Application Name",
+            "required": true,
+            "helpMarkDown": "Name of the application"
+        },
+        {
+            "name": "deployableName",
+            "type": "string",
+            "label": "Deployable Name",
+            "helpMarkDown": "Name of the deployable"
+        },
+        {
+            "name": "changeSetNumber",
+            "type": "string",
+            "label": "Changeset Number",
+            "helpMarkDown": "Changeset number"
+        },
+        {
+            "name": "isValidated",
+            "type" : "boolean",
+            "label" : "Is Validated",
+            "defaultValue" : false,
+            "required" : false,
+            "helpMarkDown" : "When checked it filters in snapshots whose validation states are passed or passed with exception"
+        }  
+    ],
+    "outputVariables" : [{
+       "name" : "snapshotObjects",
+       "description" : "List of Snapshot Objects. Output structure: /n {\r\n\"result\":[\r\n  {\r\n    \"sys_id\":\"snapshotSysId\",\r\n  \"deployable_id.name\":\"deployableName\",\r\n \"published\":\"isPublished\",\r\n \"description\":\"description\",\r\n \"sys_created_on\":\"createdOn\",\r\n  \"name\":\"SnapshotName\",\r\n    \"validation\":\"passed\"\r\n  }\r\n]\r\n}" 
+    }],
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "execution": {
+        "Node10": {
+            "target": "dist/index.js"
+        }
+    }
+}

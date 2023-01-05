@@ -1,0 +1,129 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "696ef4a7-a01e-46c1-a5f6-95f1cc959a16",
+    "name": "ServiceNow-DevOps-Config-Agent-Upload-Config",
+    "friendlyName": "ServiceNow DevOps Config Agent Upload Config",
+    "description": "ServiceNow DevOps Config Agent Upload Config",
+    "helpMarkDown": "This task can upload configuration data to ServiceNow DevOps Config data model.",
+    "category": "Utility",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "instanceNameFormat": "ServiceNow DevOps Config Agent Upload Config",
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "ServiceNow Endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name":"applicationName",
+            "type":"string",
+            "label": "Application Name",
+            "required": true,
+            "helpMarkDown": "Application name in ServiceNow DevOps Config model to which upload is targeted."
+        },
+        {
+            "name" : "uploadTarget",
+            "type": "pickList",
+            "label": "Upload Target",
+            "options": {
+                "component": "Component",
+                "deployable": "Deployable"
+            },
+            "defaultValue": "component",
+            "required": true,
+            "helpMarkDown": ""
+        },
+        {
+            "name":"deployableName",
+            "type":"string",
+            "label": "Deployable Name",
+            "required": false,
+            "visibleRule": "uploadTarget = deployable",
+            "helpMarkDown": "Deployable name to which upload is targeted"
+        },
+        {
+            "name" : "configFile",
+            "type" : "string",
+            "label" : "Config File",
+            "required" : true,
+            "helpMarkDown": "Regex to fetch files whose content has to be uploaded."
+        },
+        {
+            "name" : "namePath",
+            "type": "string",
+            "label": "Target Name Path",
+            "required": true,
+            "helpMarkDown": ""
+        },
+        {
+            "name" : "dataFormat",
+            "type" : "string",
+            "label" : "Data Format",
+            "required": true,
+            "defaultValue": "json",
+            "helpMarkDown": "Data format of the file to be uploaded. Accepted file formats are json, yaml, xml and ini"
+        },
+        {
+            "name":"autoValidate",
+            "type":"boolean",
+            "label":"Auto Validate",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Check to auto validate the snapshots (created when deployables are impacted)"
+        },
+        {
+            "name":"autoCommit",
+            "type":"boolean",
+            "label":"Commit Changeset",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Check to commit the changeset."
+        },
+        {
+            "name":"convertPath",
+            "type":"boolean",
+            "label":"Convert Path",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check to determine the where the config content has to be uploaded."
+        },
+        {
+            "name": "changesetNumber",
+            "type": "string",
+            "label": "Changeset Number",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional parameter - give an already open changeset for the upload. Can be used when using mutiple Upload task in series, mapping return value from preceding Upload task to upload to the same changeset "
+        }
+    ],
+    "outputVariables": [{
+        "name" : "changesetNumber",
+        "description" : "Changeset number for the upload to CDM."
+    }],
+    "execution": {
+        "Node10": {
+            "target": "dist/index.js"
+        }
+    },
+    "messages": {
+        "UPLOAD_TARGET_COMPONENT" : "component",
+        "UPLOAD_TARGET_DEPLOYABLE" : "deployable",
+        "COMMON_FAILURE" : "failure",
+        "UPLOAD_STATUS_RESPONSE_COMPLETED" : "completed",
+        "UPLOAD_STATUS_RESPONSE_IN_PROGRESS" : "in_progress",
+        "UPLOAD_STATUS_RESPONSE_NEW" : "new",
+        "UPLOAD_STATUS_RESPONSE_READY" : "ready",
+        "UPLOAD_STATUS_RESPONSE_INITIALIZING" : "initializing"
+    }
+}

@@ -1,0 +1,50 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "6e307f2f-97c2-4174-85b7-9f6dc7ea8dea",
+    "name": "ServiceNow-DevOps-Config-Agent-Get-Snapshot-Name",
+    "friendlyName": "ServiceNow DevOps Config Agent Get Snapshot Name",
+    "description": "ServiceNow DevOps Config Agent Get Snapshot Name",
+    "helpMarkDown": "Task to extract snapshot name from ServiceNow-DevOps-Agent-Get-Snapshot task's output and to be provide it to ServiceNow-DevOps-Agent-Publish-Snapshot step.",
+    "category": "Utility",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "instanceNameFormat": "ServiceNow DevOps Config Agent Get Snapshot Name",
+    "inputs": [
+        {
+            "name": "deployableName",
+            "type": "string",
+            "label": "Deployable Name",
+            "required": true,
+            "helpMarkDown": "Deployable Name for which Snapshot Name is to be retrieved from list of snapshot object output received from SN Get-Snapshot task"
+        },
+        {
+            "name": "script",
+            "type": "multiLine",
+            "label": "Script",
+            "required": true,
+            "properties": {
+              "resizable": true,
+              "rows": "12"
+            },
+            "helpMarkDown":"Replace sample script to extract Snapshot Name from JSON",
+            "defaultValue": "function run(){\n let name;\n let deployableName = process.argv[2]; \n let jsonObj = $(getSnapshot.snapshotObjects);\n let size = jsonObj.result.length;\n for( let i =0; i<size ;i++ ){\n obj = jsonObj.result[i];\n if(obj[\"deployable_id.name\"].toLowerCase() == deployableName){\n name = obj.name;\n console.log(name);   \/\/ This standard output of inline script is given as the task output\n}\n }\n }\n run();"
+        }
+    ],
+    "outputVariables": [{
+        "name" : "snapshotName",
+        "description" : "Snapshot Name output from script execution."
+    }],
+    "execution": {
+        "Node10": {
+            "target": "dist/index.js"
+        }
+    }
+}

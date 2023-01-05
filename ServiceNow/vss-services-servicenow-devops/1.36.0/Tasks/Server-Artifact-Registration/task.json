@@ -1,0 +1,81 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "aee0bd5d-5c2b-4866-88ed-cfe9a12de17c",
+    "name": "ServiceNow-DevOps-Server-Artifact-Registration",
+    "friendlyName": "ServiceNow DevOps Server Artifact Registration",
+    "description": "This extension needs to be added at job level to register artifact in ServiceNow instance",
+    "helpMarkDown": "",
+    "category": "Package",
+    "author": "ServiceNow",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Server Artifact Registration",
+    "showEnvironmentVariables": false,
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "ServiceNow endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name": "artifactRegistrationPayload",
+            "type": "multiLine",
+            "label": "Artifact registration payload",
+            "required": true,
+            "helpMarkDown": "##JSON containing build details and artifact list\n\n**Sample input 1:**\n\n```\n{\r\n   \"artifacts\": [\r\n      {\r\n         \"name\": \"<artifact name>\",\r\n         \"version\": \"1.$(build.buildId)\",\r\n         \"semanticVersion\": \"1.$(build.buildId).0\",\r\n         \"repositoryName\": \"<artifact repository name>\"\r\n      },\r\n      {\r\n         \"name\": \"<artifact name>\",\r\n         \"version\": \"1.$(build.buildId)\",\r\n         \"semanticVersion\": \"1.$(build.buildId).0\",\r\n         \"repositoryName\": \"<artifact repository name>\"\r\n      }\r\n   ],\r\n   \"pipelineName\": \"$(system.teamProject)\/$(build.definitionName)\",\r\n   \"taskExecutionNumber\": \"$(build.buildId)\",\r\n   \"stageName\": \"$(system.jobDisplayName)\",\r\n \"attemptNumber\": \"$(system.jobAttempt)\",\r\n   \"branchName\": \"$(build.sourceBranchName)\"\r\n}"
+        },
+        {
+            "name": "artifactToolIdExists",
+            "type": "boolean",
+            "label": "Artifact tool exists",
+            "required": true,
+            "helpMarkDown": " True if artifact tool exists in ServiceNow instance and artifact tool id available in ServiceNow endpoint",
+        }
+    ],
+    "execution": {
+        "HttpRequestChain": {
+            "Execute": [
+                {
+                    "RequestInputs": {
+                        "EndpointId": "$(connectedServiceName)",
+                        "EndpointUrl": "$(endpoint.url)/api/sn_devops/v1/devops/artifact/registration?orchestrationToolId=$(endpoint.toolId)",
+                        "Method": "POST",
+                        "Body": "$(artifactRegistrationPayload)",
+                        "Headers": "{\"Content-Type\":\"application/json\"}",
+                        "WaitForCompletion": "false",
+                        "Expression": "eq(response['content']['result']['status'], 'Success')"
+                    },
+                    "ExecutionOptions": {
+                        "SkipSectionExpression": "eq($(artifactToolIdExists), true)"
+                    }
+                },
+                {
+                    "RequestInputs": {
+                        "EndpointId": "$(connectedServiceName)",
+                        "EndpointUrl": "$(endpoint.url)/api/sn_devops/v1/devops/artifact/registration?orchestrationToolId=$(endpoint.toolId)&toolId=$(endpoint.artifactToolId)",
+                        "Method": "POST",
+                        "Body": "$(artifactRegistrationPayload)",
+                        "Headers": "{\"Content-Type\":\"application/json\"}",
+                        "WaitForCompletion": "false",
+                        "Expression": "eq(response['content']['result']['status'], 'Success')"
+                    },
+                    "ExecutionOptions": {
+                        "SkipSectionExpression": "eq($(artifactToolIdExists), false)"
+                    }
+                }
+            ]
+        }
+    }
+}
