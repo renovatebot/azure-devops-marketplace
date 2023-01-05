@@ -1,0 +1,91 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "d95c03b3-f080-4ad7-87e7-5f1820c72155",
+  "name": "PullRequestDescription",
+  "friendlyName": "Pull Request Description",
+  "description": "Update pull request descriptions during pipeline runs",
+  "helpMarkDown": "[Learn more about this task](https://marketplace.visualstudio.com/items?itemName=joachimdalen.pull-request-utils)",
+  "helpUrl": "https://marketplace.visualstudio.com/items?itemName=joachimdalen.pull-request-utils",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 4
+  },
+  "instanceNameFormat": "$(Action)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "append",
+      "required": true,
+      "options": {
+        "append": "Append",
+        "replace": "Replace",
+        "view": "View"
+      }
+    },
+    {
+      "name": "content",
+      "required": true,
+      "type": "multiLine",
+      "label": "Content",
+      "helpMarkDown": "The content to append or replace original description with. For Markdown syntax, see [Syntax guidance for basic Markdown usage](http://go.microsoft.com/fwlink/?LinkId=823918)",
+      "visibleRule": "action != view"
+    },
+    {
+      "name": "useDefined",
+      "label": "Use defined id",
+      "helpMarkDown": "If set, overrides the value from `System.PullRequest.PullRequestId`",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "advanced"
+    },
+    {
+      "name": "pullRequestId",
+      "label": "Pull Request Id",
+      "type": "string",
+      "defaultValue": "$(System.PullRequest.PullRequestId)",
+      "helpMarkDown": "If no id is given, the value from `System.PullRequest.PullRequestId` is taken. If a value is given, this overrides the value from `System.PullRequest.PullRequestId`",
+      "groupName": "advanced",
+      "visibleRule": "useDefined = true"
+    },
+    {
+      "name": "outputVariable",
+      "type": "string",
+      "label": "Output Variable",
+      "helpMarkDown": "The name of the output variable containing the description",
+      "defaultValue": "PullRequest.DescriptionContent",
+      "visibleRule": "action = view"
+    },
+    {
+      "name": "isOutput",
+      "type": "boolean",
+      "label": "Is output",
+      "helpMarkDown": "If set, `outputVariable` is set as output and accessible from other jobs",
+      "visibleRule": "action = view"
+    },
+    {
+      "name": "stripIdentifiers",
+      "type": "boolean",
+      "label": "Strip Identifiers",
+      "helpMarkDown": "Will strip internal identifers used by the task",
+      "visibleRule": "action = view",
+      "defaultValue": false
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

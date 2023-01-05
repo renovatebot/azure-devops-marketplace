@@ -1,0 +1,100 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "5c6ec8a1-d04c-44c0-99b8-42dd865b42e8",
+  "name": "PullRequestComments",
+  "friendlyName": "Pull Request Comments",
+  "description": "Add comments to a pull request",
+  "helpMarkDown": "[Learn more about this task](https://devops-extensions.dev/docs/extensions/pull-request-utils/tasks/pull-request-comments)",
+  "helpUrl": "https://devops-extensions.dev/docs/extensions/pull-request-utils/tasks/pull-request-comments",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 4,
+    "Patch": 1
+  },
+  "instanceNameFormat": "$(Action)",
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "helpMarkDown": "Action to perform",
+      "defaultValue": "create",
+      "options": {
+        "create": "Create",
+        "createOrUpdate": "Create or update",
+        "update": "Update"
+      }
+    },
+    {
+      "name": "skipIfCommentExists",
+      "type": "boolean",
+      "label": "Do not post comment if it exists",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "If the comment exists on the pull request, do not post it again",
+      "visibleRule": "action = create"
+    },
+    {
+      "name": "commentId",
+      "type": "string",
+      "label": "Comment Id",
+      "helpMarkDown": "Is used to uniqely identify the comment when using the same task multiple times in the same pipeline",
+      "required": false
+    },
+    {
+      "name": "status",
+      "type": "pickList",
+      "label": "Comment Status",
+      "helpMarkDown": "Post the comment with a given status",
+      "defaultValue": "Active",
+      "required": false,
+      "options": {
+        "Active": "Active",
+        "Fixed": "Fixed",
+        "WontFix": "Wont Fix",
+        "Closed": "Closed",
+        "Pending": "Pending"
+      }
+    },
+    {
+      "name": "content",
+      "type": "multiLine",
+      "label": "Comment Content",
+      "helpMarkDown": "The content of the comment. For Markdown syntax, see [Syntax guidance for basic Markdown usage](http://go.microsoft.com/fwlink/?LinkId=823918)",
+      "required": true
+    },
+    {
+      "name": "useDefined",
+      "label": "Use defined id",
+      "helpMarkDown": "If set, overrides the value from `System.PullRequest.PullRequestId`",
+      "defaultValue": false,
+      "type": "boolean"
+    },
+    {
+      "name": "pullRequestId",
+      "label": "Pull Request Id",
+      "type": "string",
+      "defaultValue": "$(System.PullRequest.PullRequestId)",
+      "helpMarkDown": "If no id is given, the value from `System.PullRequest.PullRequestId` is taken. If a value is given, this overrides the value from `System.PullRequest.PullRequestId`",
+      "visibleRule": "useDefined = true"
+    },
+    {
+      "name": "type",
+      "label": "Comment Type (Deprecated)",
+      "type": "pickList",
+      "helpMarkDown": "The type of comment. `Text` represents a regular user comment while `System` indicates a system message",
+      "defaultValue": "Text",
+      "options": {
+        "Text": "Text",
+        "System": "System"
+      }
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "b5a17f8e-3729-4f73-9cae-e8c9ee69137d",
+  "name": "PullRequestTags",
+  "friendlyName": "Pull Request Tags",
+  "description": "Manage labels for a pull request. Gives the ability to manage pull request tags, or check if a tag is assigned.",
+  "helpMarkDown": "[Learn more about this task](https://devops-extensions.dev/docs/extensions/pull-request-utils/tasks/pull-request-tags)",
+  "helpUrl": "https://devops-extensions.dev/docs/extensions/pull-request-utils/tasks/pull-request-tags",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 4,
+    "Patch": 1
+  },
+  "instanceNameFormat": "$(Action)",
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "assign",
+      "required": false,
+      "options": {
+        "assign": "Assign tag",
+        "check": "Check if tag is assigned",
+        "delete": "Remove tag"
+      }
+    },
+    {
+      "name": "tag",
+      "type": "string",
+      "label": "Tag",
+      "helpMarkDown": "Tag to perform action on.",
+      "required": true
+    },
+    {
+      "name": "outputVariable",
+      "type": "string",
+      "label": "Output Variable",
+      "helpMarkDown": "The name of the output variable containing the check result",
+      "required": true,
+      "defaultValue": "PullRequest.TagCheckResult",
+      "visibleRule": "action = check"
+    },
+    {
+      "name": "isOutput",
+      "type": "boolean",
+      "label": "Is output",
+      "helpMarkDown": "If set, `outputVariable` is set as output and accessible from other jobs",
+      "defaultValue": false,
+      "visibleRule": "action = check"
+    },
+    {
+      "name": "useDefined",
+      "label": "Use defined id",
+      "helpMarkDown": "If set, overrides the value from `System.PullRequest.PullRequestId`",
+      "defaultValue": false,
+      "type": "boolean"
+    },
+    {
+      "name": "pullRequestId",
+      "label": "Pull Request Id",
+      "type": "string",
+      "defaultValue": "$(System.PullRequest.PullRequestId)",
+      "helpMarkDown": "If no id is given, the value from `System.PullRequest.PullRequestId` is taken. If a value is given, this overrides the value from `System.PullRequest.PullRequestId`",
+      "visibleRule": "useDefined = true"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

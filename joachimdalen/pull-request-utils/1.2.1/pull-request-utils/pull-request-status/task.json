@@ -1,0 +1,101 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "2404c7fc-4ed6-4f21-a993-8858bb82622f",
+  "name": "PullRequestStatus",
+  "friendlyName": "Pull Request Status",
+  "description": "Define custom pull request statuses",
+  "helpMarkDown": "PullRequestStatus allows you to create custom statuses for your pull request. See the [status policy](https://docs.microsoft.com/en-us/azure/devops/repos/git/pull-request-status?view=azure-devops#status-policy) docs for more infomation.",
+  "helpUrl": "https://devops-extensions.dev/docs/extensions/pull-request-utils/tasks/pull-request-status",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 5,
+    "Patch": 2
+  },
+  "instanceNameFormat": "$(Action)",
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "Create",
+      "required": true,
+      "options": {
+        "Create": "Create",
+        "Update": "Update",
+        "Delete": "Delete"
+      }
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "my-custom-gate",
+      "helpMarkDown": "Name of the status. Full status will be `pull-request-utils/<name>`",
+      "required": true
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "label": "Description",
+      "helpMarkDown": "Status description. Normally describes the current state of the status.",
+      "required": false
+    },
+    {
+      "name": "state",
+      "type": "pickList",
+      "label": "State",
+      "defaultValue": "notSet",
+      "required": true,
+      "options": {
+        "notSet": "Not Set",
+        "error": "Error",
+        "failed": "Failed",
+        "notApplicable": "Not Applicable",
+        "pending": "Pending",
+        "succeeded": "Succeeded"
+      },
+      "visibleRule": "action != Delete"
+    },
+    {
+      "name": "useDefined",
+      "label": "Use defined id",
+      "helpMarkDown": "If set, overrides the value from `System.PullRequest.PullRequestId`",
+      "defaultValue": false,
+      "type": "boolean"
+    },
+    {
+      "name": "pullRequestId",
+      "label": "Pull Request Id",
+      "type": "string",
+      "defaultValue": "$(System.PullRequest.PullRequestId)",
+      "helpMarkDown": "If no id is given, the value from `System.PullRequest.PullRequestId` is taken. If a value is given, this overrides the value from `System.PullRequest.PullRequestId`",
+      "visibleRule": "useDefined = true"
+    },
+    {
+      "name": "whenState",
+      "type": "pickList",
+      "label": "When current status is in state",
+      "helpMarkDown": "Only update the state of the status when the existing state is one of these",
+      "required": false,
+      "options": {
+        "notSet": "Not Set",
+        "error": "Error",
+        "failed": "Failed",
+        "notApplicable": "Not Applicable",
+        "pending": "Pending",
+        "succeeded": "Succeeded"
+      },
+      "visibleRule": "action = Update",
+      "properties": {
+        "MultiSelectFlatList": "True"
+      }
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
