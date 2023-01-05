@@ -1,0 +1,70 @@
+{
+    "id": "452d20bc-cc20-4e93-8652-333696af24bf",
+    "name": "WinVICEc154DiskImage",
+    "friendlyName": "Create Commodore Disk Image",
+    "description": "Create a disk image for your Commodore projects",
+    "helpMarkDown": "",
+    "category": "Package",
+    "visibility": [
+        "Build",
+        "Package"
+    ],
+    "author": "Tony Landi",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Create disk image $(diskname)",
+    "inputs": [
+        {
+            "name": "diskname",
+            "type": "string",
+            "label": "Disk name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide a unique name for your media. The disk name allows for a maximum of 16 alpha-numeric characters and spaces are not permitted.",
+            "pattern": "^[A-Za-z0-9\\-]{1,16}+$"
+        },
+        {
+            "name": "diskimagetype",
+            "type": "pickList",
+            "label": "Disk image type",
+            "defaultValue": "d64",
+            "required": true,
+            "options": {
+                "d64": "Commodore 1541",
+                "g64": "Commodore 1541 GCR coding",
+                "d71": "Commodore 1571",
+                "g71": "Commodore 1571 GCR coding",
+                "d81": "Commodore 1581"
+            },            
+            "helpMarkDown": "The type of disk image to create. Default is d64 for the 1541 disk drive."
+        },        
+        {
+            "name": "sourcefilelocation",
+            "type": "filePath",
+            "label": "Path to source file",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": true,
+            "helpMarkDown": "Location of the program file to add to your disk."
+        },
+        {
+            "name": "sourcefilename",
+            "type": "string",
+            "label": "Source File",
+            "defaultValue": "*.prg",
+            "required": true,
+            "helpMarkDown": "Filename to add to your disk image."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "task.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
