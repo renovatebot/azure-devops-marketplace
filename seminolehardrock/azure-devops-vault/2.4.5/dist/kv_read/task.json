@@ -1,0 +1,281 @@
+{
+    "id":  "5174a259-252b-4994-907a-7e777dfeb50a",
+    "name":  "Vault",
+    "friendlyName":  "Vault",
+    "description":  "This extension provide the ability to interact with HashiCorp Vault. Extended from Fizcko Vault extension. All credits goes to original author.",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "seminolehardrock",
+    "version":  {
+                    "Major":  2,
+                    "Minor":  4,
+                    "Patch":  5
+                },
+    "instanceNameFormat":  "Vault",
+    "groups":  [
+                   {
+                       "name":  "grpServer",
+                       "displayName":  "Vault Server",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "grpAuth",
+                       "displayName":  "Authentication method",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "grpKVSettings",
+                       "displayName":  "KV Settings",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "strUrl",
+                       "type":  "string",
+                       "label":  "Vault URL",
+                       "defaultValue":  "https://myurl",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the url of the Vault server (http or https).",
+                       "groupName":  "grpServer"
+                   },
+                   {
+                       "name":  "ignoreCertificateChecks",
+                       "type":  "boolean",
+                       "label":  "Ignore certificate checks",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "helpMarkDown":  "Ignore errors from certificate checks.",
+                       "groupName":  "grpServer"
+                   },
+                   {
+                       "name":  "strNamespaces",
+                       "type":  "string",
+                       "label":  "Namespaces",
+                       "required":  false,
+                       "helpMarkDown":  "The name of the namespaces to request.",
+                       "groupName":  "grpServer"
+                   },
+                   {
+                       "name":  "strRequestTimeout",
+                       "type":  "string",
+                       "label":  "Request timeout",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A number specifying the socket timeout in milliseconds. This will set the timeout before the socket is connected.",
+                       "groupName":  "grpServer"
+                   },
+                   {
+                       "name":  "strAuthType",
+                       "type":  "pickList",
+                       "label":  "Authentication Method",
+                       "defaultValue":  "clientToken",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the authentication method.",
+                       "options":  {
+                                       "approle":  "AppRole",
+                                       "azure":  "Azure",
+                                       "clientToken":  "Client Token",
+                                       "ldap":  "LDAP",
+                                       "radius":  "Radius",
+                                       "userpass":  "Username \u0026 Password"
+                                   },
+                       "groupName":  "grpAuth"
+                   },
+                   {
+                       "name":  "strAuthPath",
+                       "type":  "string",
+                       "label":  "Path",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Change default path of the chosen Authentication Method.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = approle || strAuthType = azure || strAuthType = ldap || strAuthType = radius"
+                   },
+                   {
+                       "name":  "strToken",
+                       "type":  "string",
+                       "label":  "Client Token",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Client Token for authentication.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = clientToken"
+                   },
+                   {
+                       "name":  "strUsername",
+                       "type":  "string",
+                       "label":  "Username",
+                       "required":  true,
+                       "helpMarkDown":  "Username for authentication.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = ldap || strAuthType = radius || strAuthType = userpass"
+                   },
+                   {
+                       "name":  "strPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "required":  true,
+                       "helpMarkDown":  "Password for authentication.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = ldap || strAuthType = radius || strAuthType = userpass"
+                   },
+                   {
+                       "name":  "strRoleID",
+                       "type":  "string",
+                       "label":  "Role ID",
+                       "required":  true,
+                       "helpMarkDown":  "Role ID for AppRole authentication.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = approle"
+                   },
+                   {
+                       "name":  "strSecretID",
+                       "type":  "string",
+                       "label":  "Secret ID",
+                       "required":  true,
+                       "helpMarkDown":  "Secret ID for AppRole authentication.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = approle"
+                   },
+                   {
+                       "name":  "strRole",
+                       "type":  "string",
+                       "label":  "Role",
+                       "required":  true,
+                       "helpMarkDown":  "Name of the role against which the login is being attempted.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strJWT",
+                       "type":  "string",
+                       "label":  "JWT",
+                       "required":  true,
+                       "helpMarkDown":  "Signed JSON Web Token (JWT) from Azure MSI.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strSubscriptionID",
+                       "type":  "string",
+                       "label":  "Subscription ID",
+                       "required":  false,
+                       "helpMarkDown":  "The subscription ID for the machine that generated the MSI token. This information can be obtained through instance metadata.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strResourceGroupName",
+                       "type":  "string",
+                       "label":  "Resource group name",
+                       "required":  false,
+                       "helpMarkDown":  "The resource group for the machine that generated the MSI token. This information can be obtained through instance metadata.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strVmName",
+                       "type":  "string",
+                       "label":  "VM name",
+                       "required":  false,
+                       "helpMarkDown":  "The virtual machine name for the machine that generated the MSI token. This information can be obtained through instance metadata. If \u0027VMSS name\u0027 is provided, this value is ignored.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strVmssName",
+                       "type":  "string",
+                       "label":  "VMSS name",
+                       "required":  false,
+                       "helpMarkDown":  "The virtual machine scale set name for the machine that generated the MSI token. This information can be obtained through instance metadata.",
+                       "groupName":  "grpAuth",
+                       "visibleRule":  "strAuthType = azure"
+                   },
+                   {
+                       "name":  "strKVEnginePath",
+                       "type":  "string",
+                       "label":  "KV engine path",
+                       "defaultValue":  "secret",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the path of the KV engine.",
+                       "groupName":  "grpKVSettings"
+                   },
+                   {
+                       "name":  "kvVersion",
+                       "type":  "radio",
+                       "label":  "KV version",
+                       "defaultValue":  "v2",
+                       "required":  true,
+                       "options":  {
+                                       "v1":  "v1",
+                                       "v2":  "v2"
+                                   },
+                       "helpMarkDown":  "Specifies the version of the KV secrets engine.",
+                       "groupName":  "grpKVSettings"
+                   },
+                   {
+                       "name":  "strSecretPath",
+                       "type":  "string",
+                       "label":  "Secret path",
+                       "defaultValue":  "/",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies the path of the secrets to read. For a folder exploration add a \u0027/\u0027 at the end of the path.",
+                       "groupName":  "grpKVSettings"
+                   },
+                   {
+                       "name":  "strPrefixType",
+                       "type":  "pickList",
+                       "label":  "Prefix type",
+                       "defaultValue":  "custom",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies prefix type of the variables. Variables will be named PREFIX_VariableName.",
+                       "options":  {
+                                       "none":  "None",
+                                       "custom":  "Custom",
+                                       "folder":  "Folder path"
+                                   },
+                       "groupName":  "grpKVSettings"
+                   },
+                   {
+                       "name":  "strVariablePrefix",
+                       "type":  "string",
+                       "label":  "Variable prefix",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies prefix of the variables. Variables will be named PREFIX_VariableName.",
+                       "groupName":  "grpKVSettings",
+                       "visibleRule":  "strPrefixType = custom"
+                   },
+                   {
+                       "name":  "replaceCR",
+                       "type":  "boolean",
+                       "label":  "Replace carriage return by a token",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "helpMarkDown":  "For secrets with multilines you have to replace the carriage return by a token because Azure Devops do not manage multiline secrets",
+                       "groupName":  "grpKVSettings"
+                   },
+                   {
+                       "name":  "strCRPrefix",
+                       "type":  "string",
+                       "label":  "Carriage return token",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "For secrets with multilines you have to replace the carriage return by a token because Azure Devops do not manage multiline secrets",
+                       "groupName":  "grpKVSettings",
+                       "visibleRule":  "replaceCR = true"
+                   }
+               ],
+    "execution":  {
+                      "Node":  {
+                                   "target":  "kv_read.js",
+                                   "argumentFormat":  "",
+                                   "workingDirectory":  ""
+                               }
+                  }
+}
