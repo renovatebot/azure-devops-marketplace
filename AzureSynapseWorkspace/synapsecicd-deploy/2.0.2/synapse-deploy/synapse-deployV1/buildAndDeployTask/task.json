@@ -1,0 +1,124 @@
+{
+  "id": "51060321-a461-4140-9787-1b28345a576d",
+  "name": "Synapse workspace deployment",
+  "friendlyName": "Synapse workspace deployment",
+  "description": "Deployment task for synapse workspace v1",
+  "helpMarkDown": "Displays the name of your extension.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 1,
+    "Minor": 9,
+    "Patch": 5
+  },
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "2.0.0",
+  "inputs": [
+    {
+      "name": "TemplateFile",
+      "type": "filePath",
+      "label": "Template",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the path or a pattern pointing to the Azure Resource Manager template. For more information about the templates see https://aka.ms/azuretemplates. To get started immediately use template https://aka.ms/sampletemplate."
+    },
+    {
+      "name": "ParametersFile",
+      "type": "filePath",
+      "label": "Template parameters",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the path or a pattern pointing for the parameters file for the Azure Resource Manager template."
+    },
+    {
+      "name": "AzureResourceManagerConnection",
+      "aliases": [
+        "azureSubscription"
+      ],
+      "type": "connectedService:AzureRM",
+      "label": "Synapse workspace connection type",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the managed service connection type that you created to connect to the Synapse workspace."
+    },
+    {
+      "name": "ResourceGroupName",
+      "type": "pickList",
+      "label": "Synapse workspace resource group",
+      "required": true,
+      "properties": {
+        "EditableOptions": true
+      },
+      "helpMarkDown": "Select the resource group of the target Synapse workspace."
+    },
+    {
+      "name": "TargetWorkspaceName",
+      "type": "string",
+      "label": "Synapse workspace name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Enter the Synapse workspace name located in the resource group that you specified."
+    },
+    {
+      "name": "DeleteArtifactsNotInTemplate",
+      "type": "boolean",
+      "label": "Delete Artifacts Not In Template",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "If checked, all artifacts in the workspace, not present in the template will be deleted. sqlpools, sparkpools, integration runtimes will not be deleted."
+    },
+    {
+      "name": "OverrideArmParameters",
+      "type": "multiLine",
+      "label": "OverrideParameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter any ARM parameters that you want to override, separated by a space, for example, -key1 value1 -key2 value2 -key3 value3. You may use a Key Vault task to output.",
+      "properties": {
+        "editorExtension": "ms.vss-services-azure.parameters-grid"
+      }
+    },
+    {
+      "name": "Environment",
+      "type": "pickList",
+      "label": "Cloud environment",
+      "defaultValue": "prod",
+      "required": true,
+      "helpMarkDown": "Select the type of cloud environment in which the Synapse workspace is located.",
+      "options": {
+        "prod": "Azure Public",
+        "ppe": "Azure Public PPE",
+        "mooncake": "Azure China",
+        "fairfax": "Azure US Government",
+        "blackforest": "Azure Germany"
+      },
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(AzureResourceManagerConnection)",
+      "dataSourceName": "AzureResourceGroups"
+    }
+  ],
+  "instanceNameFormat": "Synapse deployment task for workspace: $(TargetWorkspaceName)",
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
