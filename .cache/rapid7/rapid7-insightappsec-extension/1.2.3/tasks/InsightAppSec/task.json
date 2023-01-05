@@ -1,0 +1,155 @@
+{
+    "id": "69474fb7-a7c2-49ef-a426-f2e0620284c4",
+    "name": "rapid7-insightappsec",
+    "friendlyName": "Rapid7 InsightAppSec",
+    "description": "Integrate Azure DevOps with Rapid7 InsightAppSec in order to perform application scans as part of build and release tasks.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "rapid7",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 3
+    },
+    "instanceNameFormat": "Rapid7 InsightAppSec",
+    "inputs": [
+        {
+            "name": "apiConnection",
+            "type": "connectedService:ias",
+            "label": "InsightAppSec Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Connection to the InsightAppSec instance to perform API calls."
+        },
+        {
+            "name": "application",
+            "type": "pickList",
+            "label": "Application",
+            "required": true,
+            "helpMarkDown": "A list of applications for scanning."
+        },
+        {
+            "name": "scanConfig",
+            "type": "string",
+            "label": "Scan Configuration",
+            "required": true,
+            "helpMarkDown": "The configuration you want to apply during the scan.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "waitForCompletion",
+            "type": "boolean",
+            "label": "Wait for scan completion?",
+            "required": false,
+            "helpMarkDown": "Option to wait for the scan to complete before continuing to the next task.",
+            "defaultValue": "true"
+        },
+        {
+            "name": "scanCheckInterval",
+            "type": "string",
+            "label": "Scan Status Interval",
+            "required": false,
+            "helpMarkDown": "The frequency for checking the current scan status (in minutes).",
+            "visibleRule": "waitForCompletion = true",
+            "defaultValue": "5",
+            "validation": {
+                "expression": "isMatch(value, '^[0-9]*$', 'IgnoreCase')",
+                "message": "Please enter a number."
+            }
+        },
+        {
+            "name": "generateFindingsReport",
+            "type": "boolean",
+            "label": "Generate findings report?",
+            "required": false,
+            "helpMarkDown": "Option for generating a raw JSON report containing all findings from a completed scan.",
+            "defaultValue": "false"
+        },
+        {
+            "name": "hasTimeout",
+            "type": "boolean",
+            "label": "Fail scan on timeout?",
+            "required": false,
+            "helpMarkDown": "Option for setting a timeout for the scan that is launched.",
+            "visibleRule": "waitForCompletion = true"
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Timeout",
+            "required": false,
+            "helpMarkDown": "The maximum amount of time (in minutes) the scan is allowed to run before cancelling.",
+            "visibleRule": "hasTimeout = true",
+            "validation": {
+                "expression": "isMatch(value, '^[0-9]*$', 'IgnoreCase')",
+                "message": "Please enter a number."
+            }
+        },
+        {
+            "name": "hasScanGating",
+            "type": "boolean",
+            "label": "Scan Gating",
+            "required": false,
+            "helpMarkDown": "Option for implementing a vulnerability query to enforce scan gating.",
+            "defaultValue": "false"
+        },
+        {
+            "name": "vulnQuery",
+            "type": "string",
+            "label": "Vulnerability Query",
+            "required": false,
+            "helpMarkDown": "If the scan results contain vulnerabilities that match this query, then the task will fail.",
+            "visibleRule": "hasScanGating = true",
+            "validation": {
+                "expression": "isMatch(value, '^(?!.*\").*$', 'IgnoreCase')",
+                "message": "Double quote (\") is an invalid character, use single quote (')."
+            }
+        },
+        {
+            "name": "publishPipelineArtifacts",
+            "type": "boolean",
+            "label": "Upload report output?",
+            "required": false,
+            "helpMarkDown": "For build pipelines: attach metrics and findings reports as pipeline artifacts. For release pipelines: attach metrics and findings reports as a zipfile, accessible in the logs.",
+            "defaultValue": "false"
+        },
+        {
+            "name": "artifactPerReport",
+            "type": "boolean",
+            "label": "Upload artifact per report?",
+            "visibleRule": "publishPipelineArtifacts = true && generateFindingsReport = true",
+            "required": false,
+            "helpMarkDown": "For build pipelines only. Findings report will be created as its own separate artifact, rather than grouped with the metrics report.",
+            "defaultValue": "false"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "application",
+            "endpointId": "$(apiConnection)",
+            "dataSourceName": "Application",
+            "resultTemplate": "{\"Value\": \"{{{id}}}\", \"DisplayValue\": \"{{{name}}}\"}"
+        },
+        {
+            "target": "scanConfig",
+            "endpointId": "$(apiConnection)",
+            "dataSourceName": "ScanConfig",
+            "parameters": {
+                "appID": "$(application)"
+            },
+            "resultTemplate": "{\"Value\": \"{{{id}}}\", \"DisplayValue\": \"{{{name}}}\"}"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "task.js",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

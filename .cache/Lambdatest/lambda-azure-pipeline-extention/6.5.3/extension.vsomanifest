@@ -1,0 +1,102 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "contribution/ms.vss-releaseartifact.artifact-types"
+    ],
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "configuration-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "configuration"
+            }
+        },
+        {
+            "id": "lambdatest-endpoint-type",
+            "description": "Service connection type for all LambdaTest connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "lambdatest",
+                "icon": "images/extension-icon.png",
+                "displayName": "LambdaTest",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://accounts.lambdatest.com/",
+                    "helpText": "",
+                    "isVisible": true
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}api/user/token/auth",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "showResults-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "showResults"
+            }
+        },
+        {
+            "id": "stopLambdaTunnel-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "stopLambdaTunnel"
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "LambdaTest",
+                "uri": "lambdaTestReport.html",
+                "height": "100%"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

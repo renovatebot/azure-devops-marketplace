@@ -1,0 +1,60 @@
+{
+    "id": "9917dac2-0ff3-4b6a-b236-9baff3bbb99d",
+    "name": "prisma-cloud-compute-scan",
+	"friendlyName": "Prisma Cloud Compute Scan",
+    "description": "Task to scan container images using twistcli within Azure DevOps Build & Release pipelines",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Prisma Cloud (created by Mario Weigel)",
+    "version": {
+        "Major": 3,
+        "Minor": 1,
+        "Patch": 1 
+    },
+    "instanceNameFormat": "Prisma Cloud Compute Scan",
+    "inputs": [
+        {
+            "name": "scanType",
+            "type": "picklist",
+            "label": "Scan type",
+            "defaultValue": "images",
+            "required": true,
+            "options": {
+                "images": "images",
+                "serverless": "serverless"
+            },
+            "helpMarkDown": "Select the type of Prisma Cloud Compute Scan: container images or serverless functions"
+        },
+        {
+            "name": "twistlockService",
+            "type": "connectedService:prismaCloudComputeConsole",
+            "label": "Prisma Cloud Compute console",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Prisma Cloud Compute Console service connection. If drop-down is empty, please first create a service connection."
+        },
+        {
+            "name": "artifact",
+            "type": "string",
+            "label": "Image or Function zip",
+            "required": true,
+            "helpMarkDown": "The ID or name of the container image or serverless functions zip file name"
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Prisma Cloud Compute Project",
+            "required": false,
+            "helpMarkDown": "The name of the project"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}

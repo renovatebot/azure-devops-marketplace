@@ -1,0 +1,142 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "description": "Service endpoint type for aDolus FACT connections",
+            "id": "service-endpoint",
+            "includes": null,
+            "properties": {
+                "::Attributes": 0,
+                "::Version": "1.0.2",
+                "authenticationSchemes": [
+                    {
+                        "authorizationUrl": "{{{configuration.Url}}}/oauth2/authorize?response_type=code&client_id={{{configuration.ClientId}}}&redirect_uri={{{RedirectUrl}}}",
+                        "dataSourceBindings": [
+                            {
+                                "dataSourceName": "AccessToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{id_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\",\"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"IdToken\" : \"{{{id_token}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}",
+                                "target": "AccessToken"
+                            },
+                            {
+                                "dataSourceName": "RefreshToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{id_token}}}\", \"RefreshToken\" : \"{{{access_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"IdToken\" : \"{{{id_token}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}",
+                                "target": "RefreshToken"
+                            }
+                        ],
+                        "displayName": "fact-oauth",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "description": "Configuration for connecting to the endpoint",
+                                "groupName": "AuthenticationParameter",
+                                "hasDynamicValueInformation": true,
+                                "id": "ConfigurationId",
+                                "inputMode": 30,
+                                "isConfidential": false,
+                                "name": "OAuth Configuration",
+                                "properties": null,
+                                "type": null,
+                                "useInDefaultDescription": false,
+                                "validation": {
+                                    "dataType": 40,
+                                    "isRequired": true
+                                },
+                                "valueHint": null
+                            }
+                        ],
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-oauth2"
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "endpointUrl": "{{{configuration.Url}}}/oauth2/token",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "name": "AccessToken",
+                        "requestContent": "client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}&redirect_uri={{{#uriDataEncode 1 RedirectUrl}}}{{{/uridataencode}}}&grant_type=authorization_code&code={{{#uriDataEncode 1 AuthorizationCode}}}{{{/uridataencode}}}",
+                        "requestVerb": "Post",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "endpointUrl": "{{{configuration.Url}}}/oauth2/token",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "name": "RefreshToken",
+                        "requestContent": "client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&redirect_uri={{{RedirectUrl}}}&grant_type=refresh_token&refresh_token={{{#uriDataEncode 1 RefreshToken}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}&code={{{#uriDataEncode 1 AuthorizationCode}}}{{{/uridataencode}}}",
+                        "requestVerb": "Post",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ],
+                "description": "Service connection type for aDolus FACT connections",
+                "displayName": "aDolus FACT",
+                "helpMarkDown": "<a href=\"https://go.microsoft.com/fwlink/?linkid=875419\" target=_blank><b>Learn More</b></a>",
+                "name": "factCognito"
+            },
+            "restrictedTo": [
+                "member"
+            ],
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "visibleTo": null
+        },
+        {
+            "id": "fact-analysis",
+            "description": "Analyzes your build artifacts and creates a zipped manifest (analysis results)",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks",
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask"
+            }
+        },
+        {
+            "id": "fact-submission",
+            "description": "Submits the analysis results to the FACT platform",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "submissionTask"
+            }
+        },
+        {
+            "id": "fact-upload",
+            "description": "Uploads files to the FACT platform",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "uploadTask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

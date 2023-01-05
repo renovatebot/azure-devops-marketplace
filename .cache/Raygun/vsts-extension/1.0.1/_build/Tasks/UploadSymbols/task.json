@@ -1,0 +1,101 @@
+{
+    "id": "E7853470-0A07-452A-8F96-3B706E10CA37",
+    "name": "UploadSymbols",
+    "friendlyName": "Upload Symbols to Raygun",
+    "description": "Add dSYM files to an existing Raygun application to symbolicate crash reports",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=raygun.vsts-extension)",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Ivan Lazarov",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Upload Symbols to Raygun",
+    "inputs": [
+        {
+            "name": "authType",
+            "type": "pickList",
+            "label": "Authentication Method",
+            "defaultValue": "ServiceEndpoint",
+            "helpMarkDown": "",
+            "options": {
+                "ServiceEndpoint": "Service Endpoint",
+                "ExternalAccessToken": "External Access Token",
+                "UserAndPass": "Username and Password"
+            }
+        },
+        {
+            "name": "serviceEndpoint",
+            "type": "connectedService:raygun",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The TFS/Team Services service endpoint that specifies the identity used to upload the symbols.",
+            "visibleRule": "authType = ServiceEndpoint"
+        },
+        {
+            "name": "externalAccessToken",
+            "type": "string",
+            "label": "External Access Token",
+            "defaultValue": "",
+            "isConfidential": true,
+            "required": true,
+            "helpMarkDown": "You can create this token within your user settings in Raygun, just navigate to (https://app.raygun.io/user) and check the External Access Token section.",
+            "visibleRule": "authType = ExternalAccessToken"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Email",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The email of the account used to upload symbols to Raygun.",
+            "visibleRule": "authType = UserAndPass"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "isConfidential": true,
+            "required": true,
+            "helpMarkDown": "The password of the account used to upload symbols to Raygun.",
+            "visibleRule": "authType = UserAndPass"
+        },
+        {
+            "name": "appId",
+            "type": "string",
+            "label": "App ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The App ID of the Raygun application. To get this ID, either browse to Application settings > dSYM center and copy the last part of the URL path just before /symbols."
+        },
+        {
+            "name": "symbolsPath",
+            "type": "string",
+            "label": "Symbols File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the path to one or more dSYM files. A dSYM file is generated when the \"Strip Debug Symbols\" setting is enabled in the build settings of your project. Minmatch patterns are supported."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "upload-symbols.js"
+        }
+    },
+    "messages": {
+        "SuccessfullyUploaded": "Successfully uploaded symbols to Raygun",
+        "NoSymbolFilesFound": "No symbol files found at: %s",
+        "Filename": "symbols=%s",
+        "CompressingSymbols": "Compressing symbols",
+        "UploadingSymbols": "Uploading symbols",
+        "ServerErrorGeneric": "Uploading of symbols failed.",
+        "ServerErrorUnauthorized": "Uploading of symbols failed with error 'Unauthorized'. Please check the credentials used.",
+        "ServerErrorNotFound": "Uploading of symbols failed with error 'Not Found'. Please make sure the Raygun application '%s' exists."
+    }
+}

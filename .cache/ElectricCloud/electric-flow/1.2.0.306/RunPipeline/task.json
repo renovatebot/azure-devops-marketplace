@@ -1,0 +1,83 @@
+{
+   "instanceNameFormat" : "Run Pipeline $(pipelineName) from project $(projectName)",
+   "friendlyName" : "ElectricFlow - Run Pipeline",
+   "dataSourceBindings" : [
+      {
+         "target" : "projectName",
+         "dataSourceName" : "ElectricFlowProjects",
+         "endpointId" : "$(electricFlowService)",
+         "resultTemplate" : "{\"Value\": \"{{#unless this.pluginKey}}{{{this.projectName}}}{{else}}Default{{/unless}}\", \"DisplayValue\": \"{{#unless this.pluginKey}}{{{this.projectName}}}{{else}}Default{{/unless}}\"}"
+      },
+      {
+         "parameters" : {
+            "projectName" : "$(projectName)"
+         },
+         "target" : "pipelineName",
+         "dataSourceName" : "ElectricFlowPipelines",
+         "endpointId" : "$(electricFlowService)"
+      }
+   ],
+   "execution" : {
+      "Node" : {
+         "target" : "index.js"
+      }
+   },
+   "version" : {
+      "Minor" : "2",
+      "Major" : "1",
+      "Patch" : "0"
+   },
+   "name" : "run-pipeline",
+   "author" : "Electric Cloud",
+   "description" : "This integration allows you to run a pipeline in ElectricFlow.",
+   "inputs" : [
+      {
+         "helpMarkDown" : "Select the ElectricFlow endpoint to use.",
+         "required" : true,
+         "name" : "electricFlowService",
+         "label" : "ElectricFlow Service Endpoint",
+         "type" : "connectedService:electricFlow",
+         "defaultValue" : ""
+      },
+      {
+         "helpMarkDown" : "Specify the ElectricFlow project name.",
+         "required" : true,
+         "name" : "projectName",
+         "type" : "pickList",
+         "label" : "Project Name",
+         "defaultValue" : "",
+         "properties" : {
+            "EditableOptions" : true
+         }
+      },
+      {
+         "helpMarkDown" : "Specify the ElectricFlow pipeline name.",
+         "required" : true,
+         "name" : "pipelineName",
+         "label" : "Pipeline Name",
+         "type" : "pickList",
+         "defaultValue" : "",
+         "properties" : {
+            "EditableOptions" : true
+         }
+      },
+      {
+         "helpMarkDown" : "If checked, parameters will be passed to the pipeline",
+         "required" : false,
+         "name" : "requiresAdditionalParameters",
+         "label" : "Requires pipeline parameters",
+         "type" : "boolean"
+      },
+      {
+         "helpMarkDown" : "Parameters for the pipeline call, in key=value pairs or in JSON format. E.g. myParam = value",
+         "required" : false,
+         "name" : "additionalParameters",
+         "visibleRule" : "requiresAdditionalParameters=true",
+         "type" : "multiLine",
+         "label" : "Pipeline parameters"
+      }
+   ],
+   "helpMarkDown" : "",
+   "category" : "Build",
+   "id" : "0442a599-dd0c-4d8d-b991-ace99fa47424"
+}

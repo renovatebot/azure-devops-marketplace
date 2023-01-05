@@ -1,0 +1,114 @@
+{
+    "id": "9e3a653c-796e-11e7-8503-af4b0ce651e5",
+    "name": "Helm",
+    "friendlyName": "Work with Helm packages",
+    "description": "Build, install, and update helm packages.",
+    "helpMarkDown": "[More Information](https://github.com/debben/vsts-helm-extension)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Don Ebben",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "demands": [],
+    "preview": "true",
+    "groups": [
+        {
+            "name": "commands",
+            "displayName": "Commands",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "kubernetesServiceEndpoint",
+            "type": "connectedService:kubernetes",
+            "label": "Kubernetes Service Connection",
+            "helpMarkDown": "Select a Kubernetes service connection."
+        },
+        {
+            "name": "helmVersion",
+            "type": "string",
+            "label": "Helm Version",
+            "defaultValue": "2.5.0",
+            "required": true,
+            "helpMarkDown": "The specific version or semver version range of helm you'd like to use",
+            "groupName": "commands"
+        },
+        {
+            "name": "command",
+            "type": "pickList",
+            "label": "Command",
+            "defaultValue": "apply",
+            "required": true,
+            "options": {
+                "completion": "completion",
+                "create": "create",
+                "delete": "delete",
+                "dependency": "dependency",
+                "fetch": "fetch",
+                "get": "get",
+                "history": "history",
+                "home": "home",
+                "init": "init",
+                "inspect": "inspect",
+                "install": "install",
+                "lint": "lint",
+                "list": "list",
+                "package": "package",
+                "plugin": "plugin",
+                "repo": "repo",
+                "reset": "reset",
+                "rollback": "rollback",
+                "search": "search",
+                "serve": "serve",
+                "status": "status",
+                "test": "test",
+                "upgrade": "upgrade",
+                "verify": "verify",
+                "version": "version"
+            },
+            "helpMarkDown": "Select a Helm command.",
+            "groupName": "commands",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "arguments",
+            "type": "multiLine",
+            "properties": {
+                "resizable": "true",
+                "rows": "2"
+            },
+            "label": "Arguments",
+            "helpMarkDown": "Command arguments.",
+            "groupName": "commands"
+        },
+        {
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working directory",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "helpMarkDown": "Working directory for the Helm command.",
+            "groupName": "commands"
+        }
+    ],
+    "dataSourceBindings": [
+
+    ],
+    "instanceNameFormat": "helm $(command)",
+    "execution": {
+        "Node": {
+            "target": "src//helm.js"
+        }
+    },
+    "messages": {
+        "DownloadingClient":"Downloading Helm client."
+    }
+}

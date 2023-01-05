@@ -1,0 +1,152 @@
+{
+  "id": "C6E8CD46-7141-41D1-B21E-9932E08FA67F",
+  "name": "ineritedprocessmigration",
+  "friendlyName": "Azure DevOps Services Process (Inherited)",
+  "description": "Supports migration/import/export of inherited processes from Azure DevOps Service Organisations",
+  "helpMarkDown": "v1.11.15.1 [More Information](https://github.com/nkdAgility/vsts-process-template-task#readme)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "preview": "true",
+  "runsOn": [
+    "Agent"
+  ],
+  "author": "naked Agility Limited - Martin Hinshelwood",
+  "version": {
+    "Major": "1",
+    "Minor": "11",
+    "Patch": "151"
+  },
+  "minimumAgentVersion": "1.92.0",
+  "groups": [
+    {
+      "name": "options",
+      "displayName": "Options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "command",
+      "type": "picklist",
+      "label": "Command",
+      "required": true,
+      "defaultValue": "migrate",
+      "helpMarkDown": "Migration execution type: migrate / import / export",
+      "options": {
+        "migrate": "migrate",
+        "export": "export",
+        "import": "import"
+      }
+    },
+    {
+      "name": "sourceAccount",
+      "type": "connectedService:VstsXmlProcessEndpoint",
+      "label": "Source Account",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Source account endpoint. Required in export/migrate mode, ignored in import mode.",
+      "visibleRule": "command = migrate || command = export"
+    },
+    {
+      "name": "sourceProcessName",
+      "type": "string",
+      "label": "Source Process Name",
+      "helpMarkDown": "Source process name to export. Required in export/migrate mode, ignored in import mode.",
+      "required": "false",
+      "visibleRule": "command = migrate || command = export"
+    },
+    {
+      "name": "targetAccount",
+      "type": "connectedService:VstsXmlProcessEndpoint",
+      "label": "Target Account",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Target account endpoint. Required in import/migrate mode, ignored in export mode. ",
+      "visibleRule": "command = migrate || command = import"
+    },
+    {
+      "name": "targetProcessName",
+      "type": "string",
+      "label": "Target Process Name",
+      "helpMarkDown": "Target process name to export. Required in import/migrate mode, ignored in import mode.",
+      "required": true,
+      "visibleRule": "command = migrate || command = import"
+    },
+    {
+      "name": "processFilename",
+      "type": "filePath",
+      "label": "Process Filename",
+      "defaultValue": "",
+      "helpMarkDown": "File with process payload. Required in import mode, optional for export/migrate mode.",
+      "required": true,
+      "visibleRule": "command = import || command = export"
+    },
+    {
+      "name": "logLevel",
+      "type": "pickList",
+      "label": "Log Level",
+      "defaultValue": "verbose",
+      "helpMarkDown": "Optional, log level for console. Possibe values are 'Verbose'/'Information'/'Warning'/'Error'.",
+      "required": "false",
+      "groupName": "options",
+      "options": {
+        "verbose": "verbose",
+        "information": "information",
+        "warning": "warning",
+        "error": "error"
+      }
+    },
+    {
+      "name": "logFilename",
+      "type": "filePath",
+      "label": "Log Filename",
+      "defaultValue": "output/processMigrator.log",
+      "helpMarkDown": "Optional, file name for log. defaulted to 'output/processMigrator.log'",
+      "required": false,
+      "groupName": "options"
+    },
+    {
+      "name": "overwritePicklist",
+      "type": "boolean",
+      "label": "Overwrite Picklist(s)",
+      "defaultValue": false,
+      "helpMarkDown": "Optional, default to 'false'. Set as true to overwrite picklist if exists on target or import will fail when picklist entries varies across source and target.",
+      "groupName": "options"
+    },
+    {
+      "name": "continueOnRuleImportFailure",
+      "type": "boolean",
+      "label": "Continue On Rule Import Failure",
+      "defaultValue": false,
+      "helpMarkDown": "Optional, default to 'false', set true to continue import on failure importing rules, warning will be provided. If identities used in field default value or rules are not available in target account, import WILL fail. For rules you may use 'continueOnRuleImportFailure' option to proceed with rest of import when such error is occurred. ",
+      "groupName": "options"
+    },
+    {
+      "name": "continueOnFieldDefaultValueFailure",
+      "type": "boolean",
+      "label": "Continue On Field Default Value Failure",
+      "defaultValue": false,
+      "helpMarkDown": "Optional, default to 'false', set true to continue import on failure importing defaults, warning will be provided. If identities used in field default value or rules are not available in target account, import WILL fail. For identity field default value, you may use 'continueOnFieldDefaultValueFailure' option to proceed with rest of import when such error is occurred. ",
+      "groupName": "options"
+    },
+    {
+      "name": "skipImportFormContributions",
+      "type": "boolean",
+      "label": "Skip Import Form Contributions",
+      "defaultValue": false,
+      "helpMarkDown": "Optional, default to 'false', set true to skip import control contributions on work item form. If extensions used by source account are not available in target account, import MAY fail. Control/Group/Page contributions on work item form are by default imported, so it will fail if the extension is not available on target account. Use 'skipImportFormContributions' option to skip importing custom controls.",
+      "groupName": "options"
+    }
+  ],
+  "instanceNameFormat": "Azure DevOps Services Process $(command)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\processmigratestart.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(System.DefaultWorkingDirectory)"
+    }
+  }
+}

@@ -1,0 +1,199 @@
+{
+    "id": "bf3b9233-0a55-4611-95ce-771ccc2c2cf0",
+    "name": "deploy-synapse-json",
+    "friendlyName": "Azure Synapse Deployment",
+    "description": "Deploy Azure Synapse Artifacts using JSON files",
+    "author": "Andrew Richardson",
+    "helpMarkDown": "",
+    "category": "Deploy",
+    "preview": true,
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "3",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "1.100.0",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "synapse",
+            "displayName": "Synapse Details",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ServiceConnectionName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is needed to connect to your Azure account.<br>To configure new service connection, select the Azure subscription from the list and click 'Authorize'.<br>If your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using 'Add' or 'Manage' button."
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "required": true,
+            "helpMarkDown": "Provide the name of the resource group that contains the Synapse Workspace.",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "groupname": "azure"
+        },
+        {
+            "name": "WorkspaceName",
+            "type": "string",
+            "label": "Synapse Workspace",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Name of the Synapse Workspace.",
+            "groupname": "azure"
+        },
+        {
+            "name": "LinkedServicePath",
+            "type": "filePath",
+            "label": "Path to Linked Service definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "DataflowPath",
+            "type": "filePath",
+            "label": "Path to Data flow definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "DatasetPath",
+            "type": "filePath",
+            "label": "Path to Dataset definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "PipelinePath",
+            "type": "filePath",
+            "label": "Path to Pipeline definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "TriggerPath",
+            "type": "filePath",
+            "label": "Path to Trigger definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "SQLScriptPath",
+            "type": "filePath",
+            "label": "Path to SQL script definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "NotebookPath",
+            "type": "filePath",
+            "label": "Path to Notebook definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "SparkJobDefinitionReferencePath",
+            "type": "filePath",
+            "label": "Path to Spark Job definitions.",
+            "helpMarkDown": "",
+            "groupname": "synapse"
+        },
+        {
+            "name": "Debug",
+            "type": "boolean",
+            "label": "Debug.",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Additional logging for troubleshooting issues.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Continue",
+            "type": "boolean",
+            "label": "Continue on error.",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Continue on deployment failures.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ThrowErrorOnReadOnlyArtifacts",
+            "type": "boolean",
+            "label": "Throw error when trying to update Workspace Managed Artifacts.",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Throw error and stop deployment when trying to update Workspace Managed Artifacts. Workspace Managed Artifacts are not updatable.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Throttle",
+            "type": "string",
+            "label": "Number of artifacts deployed in parallel.",
+            "defaultValue": "5",
+            "required": false,
+            "helpMarkDown": "Number of artifacts deployed in parallel, default is 5.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ArtifactDeploymentTimeout",
+            "type": "string",
+            "label": "Artifact deployment timeout.",
+            "defaultValue": "5",
+            "required": false,
+            "helpMarkDown": "Specifies the total number minutes to continue to verify an artifact has been deployed before raising error.",
+            "groupName": "advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ServiceConnectionName)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "instanceNameFormat": "Deploy Azure Synapse Artifacts",
+    "execution": {
+        "Node": {
+            "target": "./dist/index.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "Synapse_Resource_Api": "https://%s.dev.azuresynapse.net/%s/%s?api-version=2019-11-01-preview",
+        "Management_Resource_Api": "https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Synapse/workspaces/%s/operationStatuses/%s?api-version=2019-06-01-preview",
+        "Artifact_Deploying": "Deploying %s '%s'",
+        "Artifact_Verify": "Verifying deploymnet of %s '%s'",
+        "Artifact_Deployed": "Successfully deployed %s '%s'",
+        "Artifact_Verify_Skipped": "Unable to verify deployment of %s '%s'. Reason: %s",
+        "Artifact_Skipped": "Skipped deployment for %s '%s'. Reason: %s",
+        "Artifact_Failed": "Failed to deployed %s '%s'. Reason: %s"
+    }
+}

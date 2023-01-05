@@ -1,0 +1,255 @@
+﻿{
+    "id": "4a33ecd5-db54-4a33-afd9-0872212f6543",
+    "name": "Werf",
+    "friendlyName": "Werf commands",
+    "description": "!",
+    "helpMarkDown": "!",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Igor Moiseev",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "demands": [],
+    "preview": "false",
+    "groups": [
+        {
+            "name": "commands",
+            "displayName": "Commands",
+            "isExpanded": true
+        },
+        {
+            "name": "registry",
+            "displayName": "Container Registry Details",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        },
+        {
+            "name": "output",
+            "displayName": "Output",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "kubernetesServiceEndpoint",
+            "aliases": [
+                "kubernetesServiceConnection"
+            ],
+            "type": "connectedService:kubernetes",
+            "label": "Kubernetes Service Connection",
+            "helpMarkDown": "Select a Kubernetes service connection."
+        },
+        {
+            "name": "command",
+            "type": "pickList",
+            "label": "Command",
+            "defaultValue": "converge",
+            "required": true,
+            "options": {
+                "converge": "converge",
+                "dismiss": "dismiss",
+                "helm":"helm"
+            },
+            "helpMarkDown": "Select a werf command.",
+            "groupName": "commands",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "sendDockerConfigToChart",
+            "type": "boolean",
+            "label": "Send docker config to chart",
+            "defaultValue": "false",
+            "helpMarkDown": "Set .Valus.dockerconfigjson.",
+            "groupName": "commands"
+        },
+        {
+            "name": "useConfigurationFile",
+            "type": "boolean",
+            "label": "Use Configuration files",
+            "defaultValue": "false",
+            "helpMarkDown": "Use Kubernetes configuration file or folder with the command.",
+            "groupName": "commands"
+        },
+        {
+            "name": "configuration",
+            "type": "filePath",
+            "label": "Configuration File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Filename, directory, or URL to kubernetes configuration files that will be used with the commands.",
+            "visibleRule": "useConfigurationFile = true",
+            "groupName": "commands"
+        },
+        {
+            "name": "arguments",
+            "type": "multiLine",
+            "properties": {
+                "resizable": "true",
+                "rows": "2",
+                "editorExtension": "ms.vss-services-azure.parameters-grid"
+            },
+            "label": "Arguments",
+            "helpMarkDown": "Command arguments.",
+            "groupName": "commands"
+        },
+        {
+            "name": "layerRepo",
+            "type": "string",
+            "label": "Repository for layers",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Repository name for layers in given docker configuration",
+            "groupName": "commands"            
+        },
+        {
+            "name": "containerRegistryType",
+            "type": "pickList",
+            "label": "Container Registry type",
+            "defaultValue": "Azure Container Registry",
+            "required": true,
+            "options": {
+                "Azure Container Registry": "Azure Container Registry",
+                "Container Registry": "Container Registry"
+            },
+            "helpMarkDown": "Select a Container registry type.",
+            "groupName": "registry"
+        },
+        {
+            "name": "dockerRegistryEndpoint",
+            "aliases": [
+                "dockerRegistryConnection"
+            ],
+            "type": "connectedService:dockerregistry",
+            "label": "Docker Registry Connection",
+            "helpMarkDown": "Select a Docker registry connection. Required for commands that need to authenticate with a registry.",
+            "visibleRule": "containerRegistryType = Container Registry",
+            "groupName": "registry"
+        },
+        {
+            "name": "azureSubscriptionEndpoint",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "helpMarkDown": "Select an Azure subscription, which has your Azure Container Registry.",
+            "visibleRule": "containerRegistryType = Azure Container Registry",
+            "defaultValue": "",
+            "groupName": "registry"
+        },
+        {
+            "name": "azureContainerRegistry",
+            "label": "Azure Container Registry",
+            "type": "pickList",
+            "helpMarkDown": "Select an Azure Container Registry. Required for commands that need to authenticate with a registry.",
+            "visibleRule": "containerRegistryType = Azure Container Registry",
+            "defaultValue": "",
+            "groupName": "registry"
+        },  
+        {
+            "name": "versionOrLocation",
+            "type": "radio",
+            "label": "Choose werf version or exact location",
+            "defaultValue": "version",
+            "required": false,
+            "options": {
+                "version": "Version",
+                "location": "Specify Location"
+            },
+            "groupName": "advanced"
+        },
+        {
+            "name": "versionSpec",
+            "type": "string",
+            "label": "Version Spec",
+            "defaultValue": "1.7.0",
+            "helpMarkDown": "Version Spec of version to get.  Examples: 1.7.0, 1.x.0, 4.x.0, 6.10.0, >=6.10.0",
+            "groupName": "advanced",
+            "visibleRule": "versionOrLocation = version"
+        },
+        {
+            "name": "versionChannel",
+            "type": "pickList",
+            "label": "Werf channel to download",
+            "defaultValue": "false",
+            "helpMarkDown": "Always checks online for the latest available version (stable.txt) that satisfies the version spec. This is typically false unless you have a specific scenario to always get latest. This will cause it to incur download costs when potentially not necessary, especially with the hosted build pool.",
+            "required": false,
+            "options":{
+                "alpha":"alpha",
+                "beta":"beta",
+                "ea":"ea",
+                "stable":"stable",
+                "rock-solid":"rock-solid"
+            },
+            "groupName": "advanced",
+            "visibleRule": "versionOrLocation = version"
+        },
+        {
+            "name": "checkLatest",
+            "type": "boolean",
+            "label": "Check for Latest Version",
+            "defaultValue": "false",
+            "helpMarkDown": "Always checks online for the latest available version (stable.txt) that satisfies the version spec. This is typically false unless you have a specific scenario to always get latest. This will cause it to incur download costs when potentially not necessary, especially with the hosted build pool.",
+            "required": false,
+            "groupName": "advanced",
+            "visibleRule": "versionOrLocation = version"
+        },
+        {
+            "name": "specifyLocation",
+            "type": "filePath",
+            "label": "Path to werf binary",
+            "defaultValue": "/usr/local/bin/werf",
+            "helpMarkDown": "Full path to the werf",
+            "required": false,
+            "groupName": "advanced",
+            "visibleRule": "versionOrLocation = location"
+        },
+        {
+            "name": "namespace",
+            "type": "string",
+            "label": "Namespace",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Name of the namespace to run the command in.",
+            "groupName": "commands"
+        }        
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "azureContainerRegistry",
+            "endpointId": "$(azureSubscriptionEndpoint)",
+            "dataSourceName": "AzureRMContainerRegistries",
+            "resultTemplate": "{\"Value\":\"{\\\"loginServer\\\":\\\"{{{properties.loginServer}}}\\\", \\\"id\\\" : \\\"{{{id}}}\\\"}\",\"DisplayValue\":\"{{{name}}}\"}"
+        }
+    ],
+    "instanceNameFormat": "werf $(command)",
+    "execution": {
+        "Node": {
+            "target": "src//werf.js"
+        }
+    },
+    "messages": {
+        "DownloadingClient": "Downloading werf client.",
+        "CreatingSecret": "Executing create docker-registry %s secret.",
+        "DeleteSecret": "Executing delete docker-registry %s secret",
+        "DockerRegistryConnectionNotSpecified": "Docker Registry connection details not specified",
+        "FileNotFoundException": "Can not find file at location: %s",
+        "DownloadingWerfFromUrl": "Downloading werf from Url: %s",
+        "DownloadPathForStableTxt": "Download path for stable.txt: %s",
+        "DownloadWerfFailed": "Can not download the kubectl client of version %s. ",
+        "DownloadStableVersionFailed": "Can not download kubernetes stable version file from %s. Falling back to %s",
+        "UsingLatestStableVersion": "Invalid version 1.7 specified in Version Spec input. Using latest stable version instead. "
+    }
+}

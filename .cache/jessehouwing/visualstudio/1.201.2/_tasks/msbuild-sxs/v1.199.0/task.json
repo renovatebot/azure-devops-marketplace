@@ -1,0 +1,191 @@
+{
+  "friendlyName": "MSBuild (Side-by-side)",
+  "demands": [
+    "msbuild"
+  ],
+  "visibility": [
+    "Build"
+  ],
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/build/msbuild",
+  "inputs": [
+    {
+      "name": "solution",
+      "defaultValue": "**/*.sln",
+      "helpMarkDown": "Relative path from repo root of the project(s) or solution(s) to run.  Wildcards can be used.  For example, `**/*.csproj` for all csproj files in all sub folders.",
+      "required": true,
+      "type": "filePath",
+      "label": "Project"
+    },
+    {
+      "options": {
+        "version": "Version",
+        "location": "Specify Location"
+      },
+      "name": "msbuildLocationMethod",
+      "defaultValue": "version",
+      "required": false,
+      "type": "radio",
+      "label": "MSBuild"
+    },
+    {
+      "visibleRule": "msbuildLocationMethod = version",
+      "helpMarkDown": "If the preferred version cannot be found, the latest version found will be used instead. On an macOS agent, xbuild (Mono) will be used if version is lower than 15.0.",
+      "options": {
+        "16.0": "MSBuild 16.0",
+        "12.0": "MSBuild 12.0",
+        "15.0": "MSBuild 15.0",
+        "17.0": "MSBuild 17.0",
+        "4.0": "MSBuild 4.0",
+        "14.0": "MSBuild 14.0",
+        "latest": "Latest"
+      },
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "latest",
+      "label": "MSBuild Version",
+      "name": "msbuildVersion"
+    },
+    {
+      "visibleRule": "msbuildLocationMethod = version",
+      "helpMarkDown": "Optionally supply the architecture (x86, x64) of MSBuild to run.",
+      "options": {
+        "x86": "MSBuild x86",
+        "x64": "MSBuild x64"
+      },
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "x86",
+      "label": "MSBuild Architecture",
+      "name": "msbuildArchitecture"
+    },
+    {
+      "name": "msbuildLocation",
+      "visibleRule": "msbuildLocationMethod = location",
+      "defaultValue": "",
+      "helpMarkDown": "Optionally supply the path to MSBuild.",
+      "required": false,
+      "type": "string",
+      "label": "Path to MSBuild"
+    },
+    {
+      "type": "string",
+      "defaultValue": "",
+      "label": "Platform",
+      "name": "platform",
+      "required": false
+    },
+    {
+      "type": "string",
+      "defaultValue": "",
+      "label": "Configuration",
+      "name": "configuration",
+      "required": false
+    },
+    {
+      "name": "msbuildArguments",
+      "defaultValue": "",
+      "helpMarkDown": "Additional arguments passed to MSBuild (on Windows) and xbuild (on macOS).",
+      "required": false,
+      "type": "string",
+      "label": "MSBuild Arguments"
+    },
+    {
+      "name": "clean",
+      "defaultValue": "false",
+      "helpMarkDown": "Run a clean build (/t:clean) prior to the build.",
+      "required": false,
+      "type": "boolean",
+      "label": "Clean"
+    },
+    {
+      "name": "maximumCpuCount",
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "If your MSBuild target configuration is compatible with building in parallel, you can optionally check this input to pass the /m switch to MSBuild (Windows only). If your target configuration is not compatible with building in parallel, checking this option may cause your build to result in file-in-use errors, or intermittent or inconsistent build failures.",
+      "required": false,
+      "type": "boolean",
+      "label": "Build in Parallel"
+    },
+    {
+      "name": "restoreNugetPackages",
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "This option is deprecated. To restore NuGet packages, add a [NuGet](https://docs.microsoft.com/azure/devops/pipelines/tasks/package/nuget) task before the build.",
+      "required": false,
+      "type": "boolean",
+      "label": "Restore NuGet Packages"
+    },
+    {
+      "name": "logProjectEvents",
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "Optionally record timeline details for each project (Windows only).",
+      "required": false,
+      "type": "boolean",
+      "label": "Record Project Details"
+    },
+    {
+      "name": "createLogFile",
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "Optionally create a log file (Windows only).",
+      "required": false,
+      "type": "boolean",
+      "label": "Create Log File"
+    },
+    {
+      "visibleRule": "createLogFile = true",
+      "groupName": "advanced",
+      "defaultValue": "normal",
+      "label": "Log File Verbosity",
+      "required": false,
+      "helpMarkDown": "Optional log file verbosity.",
+      "type": "pickList",
+      "name": "logFileVerbosity",
+      "options": {
+        "quiet": "Quiet",
+        "normal": "Normal",
+        "diagnostic": "Diagnostic",
+        "detailed": "Detailed",
+        "minimal": "Minimal"
+      }
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "argumentFormat": "",
+      "target": "msbuild.js"
+    },
+    "PowerShell3": {
+      "platforms": [
+        "windows"
+      ],
+      "target": "MSBuild.ps1"
+    }
+  },
+  "instanceNameFormat": "Build solution $(solution)",
+  "id": "480cef4d-958a-5b86-85c5-2f5f366f4b49",
+  "groups": [
+    {
+      "displayName": "Advanced",
+      "name": "advanced",
+      "isExpanded": false
+    }
+  ],
+  "version": {
+    "Patch": 0,
+    "Minor": 199,
+    "Major": 1
+  },
+  "author": "Microsoft Corporation",
+  "description": "Build with MSBuild",
+  "messages": {
+    "CreateLogFileOnlySupportedOnWindows": "`Create Log File` is only supported on Windows.",
+    "RecordProjectDetailsOnlySupportedOnWindows": "`Record Project Details` is only supported on Windows.",
+    "MSB_BuildToolNotFound": "MSBuild or xbuild (Mono) were not found on the macOS or Linux agent."
+  },
+  "category": "Build",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?LinkID=613724)",
+  "name": "MSBuild-sxs",
+  "minimumAgentVersion": "1.95.0"
+}

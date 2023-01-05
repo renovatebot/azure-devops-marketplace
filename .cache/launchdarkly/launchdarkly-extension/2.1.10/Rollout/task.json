@@ -1,0 +1,58 @@
+{
+  "id": "cc77dce8-9bc2-4bd0-b8bb-2e252dbdd7d0",
+  "name": "Rollout",
+  "friendlyName": "LaunchDarkly Rollout",
+  "description": "Automatically update rollout of your feature flags during release",
+  "helpMarkdown": "[More information](https://docs.launchdarkly.com/docs/targeting-users)",
+  "category": "Deploy",
+  "visibility": [
+    "Deploy"
+  ],
+  "author": "LaunchDarkly",
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 4
+  },
+  "demands": [
+    "curl"
+  ],
+  "minimumAgentVersion": "1.91.0",
+  "groups": [],
+  "inputs": [{
+      "name": "serviceEndpoint",
+      "type": "connectedService:launchdarkly",
+      "label": "Account",
+      "required": true,
+      "helpMarkDown": "The LaunchDarkly environment to use during release. See [our documentation](http://docs.launchdarkly.com/docs/environments) for details."
+    },
+    {
+      "name": "rollout",
+      "type": "string",
+      "label": "Rollout",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "See [our documentation](https://docs.launchdarkly.com/docs/targeting-users) for details."
+    },
+    {
+      "name": "turnOn",
+      "type": "pickList",
+      "label": "Flag state",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "See [our documentation](http://docs.launchdarkly.com/docs/the-kill-switch) for details",
+      "options": {
+        "true": "On",
+        "false": "Off"
+      }
+    }
+  ],
+  "instanceNameFormat": "Controlled Rollout: $(rollout)%",
+  "execution": {
+    "Node": {
+      "target": "index.js",
+      "argumentFormat": "$(rollout)"
+    }
+  },
+  "messages": {}
+}

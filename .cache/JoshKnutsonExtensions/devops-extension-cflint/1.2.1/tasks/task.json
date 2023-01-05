@@ -1,0 +1,65 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b4d2dbe4-ed52-47a2-824d-50bedb38fbf1",
+    "name": "cflint",
+    "friendlyName": "Static code analysis for CFML (a linter) for builds",
+    "description": "This extension uses the CFLint tool to scan CFML files and provide feedback on potential issues. The linter optionally takes rule configuration via a `.cflintrc` file.",
+    "author": "Josh Knutson",
+    "helpMarkDown": "[More information](https://marketplace.visualstudio.com/items?itemName=joshknutsonextensions.devops-extension-cflint) [**CFLint** configuration](https://github.com/cflint/CFLint#folder-based-configuration)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "node.js",
+        "java"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "cflint $(arguments)",
+    "inputs": [
+        {
+            "name": "workingFolder",
+            "type": "filePath",
+            "label": "working folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Working folder where cflint jar is run. If you leave it blank it is the root of the repository.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "cflintJarDownloadUrl",
+            "type": "string",
+            "label": "Download url of cflint-jar",
+            "defaultValue": "https://github.com/cflint/CFLint/releases/download/CFLint-1.5.0/CFLint-1.5.0-all.jar",
+            "required": true,
+            "helpMarkDown": "Download URL of cflint-jar. Can be network share as well. Default value: https://github.com/cflint/CFLint/releases/download/CFLint-1.5.0/CFLint-1.5.0-all.jar",
+            "groupName": "advanced"
+        },
+        {
+            "name": "cflintArguments",
+            "type": "string",
+            "label": "arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Arguments for the cflint jar."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

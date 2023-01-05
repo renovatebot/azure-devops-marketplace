@@ -1,0 +1,459 @@
+{
+  "id": "5262FEE4-B921-4E23-9D22-3BCCAA562688",
+  "name": "Application security testing",
+  "friendlyName": "Checkmarx Scans",
+  "description": "static application security testing",
+  "helpMarkDown": "[Information] https://checkmarx.atlassian.net/wiki/display/KC/CxSAST+MS-VSTS+Plugin",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Checkmarx",
+  "version": {
+    "Major": 2021,
+    "Minor": 3,
+    "Patch": 15
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.0.0",
+  "groups": [
+    {
+      "name": "projectName",
+      "displayName": "Project Name",
+      "isExpanded": true
+    },
+    {
+      "name": "scanSettings",
+      "displayName": "Checkmarx SAST Scan",
+      "isExpanded": "true"
+    },
+    {
+      "name": "dependencyScan",
+      "displayName": "Checkmarx SCA Scan",
+      "isExpanded": "false"
+    }
+  ],
+  "instanceNameFormat": "Application security testing",
+  "inputs": [
+    {
+      "name": "projectName",
+       "type": "string",
+      "label": "Project Name",
+      "required": true,
+      "helpMarkDown": "Either select an existing project name or type a name to create a new scan project"
+    },
+    {
+      "name": "syncMode",
+      "type": "boolean",
+      "label": "Synchronous Mode",
+      "required": false,
+      "defaultValue": true,
+      "helpMarkDown": "Enabling this option causes the build step to wait for scan results. You can follow the scan results in the Checkmarx plug-in results window. If disabled, the results are displayed inside the Checkmarx web application and available as a link in the logs once the scan is complete. The Sync/Async mode is configured globally for both SAST and SCA scans."
+    },
+    {
+      "name": "enableProxy",
+      "type": "boolean",
+      "label": "Enable proxy",
+      "required": true,
+      "helpMarkDown": "Check box for adding the ability to enable/disable proxy use. (Proxy Settings are configured on the agent level).",
+      "defaultValue": false
+    },
+    {
+      "name": "proxyUrl",
+      "type": "string",
+      "label": "Proxy URL",
+      "required": false,
+      "helpMarkDown": "Provide URL of the proxy server. For example,for PAC proxy (Proxy Auto Config) enter URL in format http://prac-proxy-hosting-server:port/<name of proxy pac file> or for standard http proxy enter URL in format http(s)://proxyhost:proxyport.For http proxy that requires authenctication define variables 'proxy-username' and 'proxy-password' in the pipeline.Ignore this field if you have configured proxy details at the Self-Hosted Agent.",
+      "visibleRule": "enableProxy = true"
+    },
+    {
+      "name": "enableSastScan",
+      "type": "boolean",
+      "label": "Enable SAST scan",
+      "required": true,
+      "helpMarkDown": "Select in order to enable the CxSast scan",
+      "groupName": "scanSettings",
+      "defaultValue": true
+    },
+    {
+      "name": "CheckmarxService",
+      "type": "connectedService:Checkmarx-Endpoint",
+      "label": "Checkmarx SAST Endpoint",
+      "required": false,
+      "helpMarkDown": "The CX server endpoint.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "preset",
+      "type": "pickList",
+      "label": "Preset",
+      "required": false,
+      "groupName": "scanSettings",
+      "defaultValue": "Checkmarx Default",
+      "helpMarkDown": "predefined sets of queries that you can select when Creating, Configuring and Branching Projects. Predefined presets are provided by Checkmarx and you can configure your own. You can also import and export presets (on the server).",
+      "options": {
+        "Checkmarx Default": "Checkmarx Default",
+        "All": "All",
+        "Android": "Android",
+        "Apple Secure Coding Guide": "Apple Secure Coding Guide",
+        "Default": "Default",
+        "Default 2014": "Default 2014",
+        "Empty preset": "Empty preset",
+        "Error handling": "Error handling",
+        "FISMA": "FISMA",
+        "High and Medium": "High and Medium",
+        "High and Medium and Low": "High and Medium and Low",
+        "HIPAA": "HIPAA",
+        "JSSEC": "JSSEC",
+        "MISRA_C": "MISRA_C",
+        "MISRA_CPP": "MISRA_CPP",
+        "Mobile": "Mobile",
+        "NIST": "NIST",
+        "OWASP Mobile TOP 10 - 2016": "OWASP Mobile TOP 10 - 2016",
+        "OWASP TOP 10 - 2010": "OWASP TOP 10 - 2010",
+        "OWASP TOP 10 - 2013": "OWASP TOP 10 - 2013",
+        "OWASP TOP 10 - 2017": "OWASP TOP 10 - 2017",
+        "PCI": "PCI",
+        "SANS top 25": "SANS top 25",
+        "STIG": "STIG",
+        "WordPress": "WordPress",
+        "XS": "XS",
+        "XSS and SQLi only": "XSS and SQLi only"
+      },
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "customPreset",
+      "type": "string",
+      "label": "Custom Preset",
+      "required": false,
+      "helpMarkDown": "Custom presets are provided in cases where the desired preset is missing from the Checkmarx presets above. Leave empty in order to use a Checkmarx defined preset. In case a custom preset is selected, it will override the Checkmarx preset.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "fullTeamName",
+      "type": "string",
+      "label": "Team",
+      "required": false,
+      "helpMarkDown": "The full team name (for example, CxServer\\SP\\Company\\Users).",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "incScan",
+      "type": "boolean",
+      "label": "Incremental Scan",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "Set true for incremental scan. If no scan was done yet, the scan will be a full scan and the following ones will be incremental.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "forceScan",
+      "type": "boolean",
+      "label": "Force Scan",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Enabling 'force scan' will force the engine to trigger new full scan.",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true && incScan != true"
+    },
+    {
+      "name": "folderExclusion",
+      "type": "string",
+      "label": "Folder Exclusion",
+      "required": false,
+      "defaultValue": "cvs, .svn, .hg , .git, .bzr, bin , obj,  backup, .idea, node_modules",
+      "helpMarkDown": "Comma separated list of folders to exclude from scan. Entries in this list are automatically converted to exclude wildcard patterns and appended to the full pattern list provided in the 'Include/Exclude Wildcard Patterns' setting.\n\nConversion is done as follows: `folder1, folder2, folder3` is converted to: `!**/folder1/**, !**/folder2/**, !**/folder3/**`",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "fileExtension",
+      "type": "string",
+      "label": "Include/Exclude Wildcard Patterns",
+      "required": false,
+      "defaultValue": "!**/*.DS_Store, !**/*.ipr, !**/*.iws, !**/*.bak, !**/*.tmp, !**/*.aac, !**/*.aif, !**/*.iff, !**/*.m3u, !**/*.mid, !**/*.mp3,\n!**/*.mpa, !**/*.ra, !**/*.wav, !**/*.wma, !**/*.3g2, !**/*.3gp, !**/*.asf, !**/*.asx, !**/*.avi,!**/*.flv, !**/*.mov, !**/*.mp4, !**/*.mpg,  !**/*.rm, !**/*.swf, !**/*.vob, !**/*.wmv, !**/*.bmp, !**/*.gif, !**/*.jpg, !**/*.png, !**/*.psd, !**/*.tif, !**/*.swf, !**/*.jar, !**/*.zip, !**/*.rar, !**/*.exe, !**/*.dll, !**/*.pdb, !**/*.7z, !**/*.gz, !**/*.tar.gz, !**/*.tar, !**/*.gz, !**/*.ahtm, !**/*.ahtml, !**/*.fhtml, !**/*.hdm, !**/*.hdml,   !**/*.hsql, !**/*.ht, !**/*.hta, !**/*.htc, !**/*.htd, !**/*.war, !**/*.ear, !**/*.htmls, !**/*.ihtml, !**/*.mht, !**/*.mhtm, !**/*.mhtml, !**/*.ssi, !**/*.stm, !**/*.stml, !**/*.ttml, !**/*.txn, !**/*.xhtm, !**/*.xhtml, !**/*.class, !**/*.iml",
+      "helpMarkDown": "Comma separated list of include or exclude wildcard patterns. Exclude patterns start with exclamation mark `!`.\nExample: `**/*.java, **/*.html, !**\\test\\**\\XYZ*`\n\n#### Pattern Syntax\nA given directory is recursively scanned for all files and directories. Each file/directory is matched against a set of selectors, including special support for matching against filenames with include and exclude patterns. Only files/directories which match at least one pattern of the include pattern list, and don't match any pattern of the exclude pattern list will be placed in the list of files/directories found.\n\nWhen no list of include patterns is supplied, `**` will be used, which means that everything will be matched. When no list of exclude patterns is supplied, an empty list is used, such that nothing will be excluded.\n\nThe filename pattern matching is done as follows:\nThe name to be matched is split up in path segments. A path segment is the name of a directory or file, which is bounded by a path separator (forward or back slashes can be used).\nFor example, `abc/def/ghi/xyz.java` is split up in the segments `abc`, `def`, `ghi` and `xyz.java`. The same is done for the pattern against which it should be matched.\n\nThe segments of the name and the pattern are then matched against each other. When `**` is used for a path segment in the pattern, it matches zero or more path segments of the name.\n\nWhen a name path segment is matched against a pattern path segment, the following special characters can be used:\n- `*` matches zero or more characters\n- `?` matches one character.\t\n####Examples\n- `**\\*.class` matches all `.class` files/dirs in a directory tree.\n- `test\\a??.java` matches all files/dirs which start with an `a`, then two more characters and then `.java`, in a directory called `test`.\n- `**` matches everything in a directory tree.\n- `**\\test\\**\\XYZ*` matches all files/dirs which start with `XYZ` and where there is a parent directory called `test` (e.g. `abc\\test\\def\\ghi\\XYZ123`).",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    
+    {
+      "name": "scanTimeout",
+      "type": "string",
+      "label": "Scan Timeout In Minutes",
+      "required": false,
+      "helpMarkDown": "Abort the scan if exceeds specified timeout in minutes ",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "denyProject",
+      "type": "boolean",
+      "label": "Deny new Checkmarx projects creation",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Enabling this option will prohibit creation of new projects in Checkmarx, or assigning an existing project to a different team. Disabling this option will allow this action. ",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "comment",
+      "type": "string",
+      "label": "Comment",
+      "required": false,
+      "helpMarkDown": "Free text comment that will appear within CxSAST scan information",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "vulnerabilityThreshold",
+      "type": "boolean",
+      "label": "Enable CxSAST Vulnerability Thresholds",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Set the maximum number of CxSAST vulnerabilities of given severity before the scan fails (Only available if synchronous mode is enabled)",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "high",
+      "type": "string",
+      "label": "CxSAST High",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the high severity vulnerabilities. The build will be marked as failed  if the number of the high severity vulnerabilities is larger than the threshold. ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true && enableSastScan = true"
+    },
+    {
+      "name": "medium",
+      "type": "string",
+      "label": "CxSAST Medium",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the medium severity vulnerabilities. The build will be marked as failed  if the number of the medium severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true && enableSastScan = true"
+    },
+    {
+      "name": "low",
+      "type": "string",
+      "label": "CxSAST Low",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the low severity vulnerabilities. The build will be marked as failed  if the number of the low severity vulnerabilities is larger than the threshold.  Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true && enableSastScan = true"
+    },
+    {
+      "name": "enablePolicyViolations",
+      "type": "boolean",
+      "label": "Enable Project's Policy Enforcement",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Mark the build as failed if the project's policy is violated. Note: Assigning a policy to a project is done from within CxSAST. (Only available if synchronous mode is enabled).",
+      "groupName": "scanSettings",
+      "visibleRule": "enableSastScan = true"
+    },
+    {
+      "name": "enableDependencyScan",
+      "type": "boolean",
+      "label": "Enable Dependency Scan",
+      "required": true,
+      "defaultValue": "false",
+      "helpMarkDown": "Use CxSCA to scan for risks in external dependencies",
+      "groupName": "dependencyScan"
+    },
+    {
+      "name": "dependencyServerURL",
+      "type": "connectedService:SCA-Endpoint",
+      "label": "CxSCA Server URL",
+      "required": false,
+      "helpMarkDown": "CxSCA API endpoint. The node running the plugin is required to have connectivity to this address. The scanned code will be delivered to this address for analysis as part of the scan flow",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "dependencyAccessControlURL",
+      "type": "string",
+      "label": "CxSCA Access Control URL",
+      "required": false,
+      "defaultValue":"https://platform.checkmarx.net",
+      "helpMarkDown": "CxSCA Access Control URL, The node running the plugin is required to have connectivity to this address",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "dependencyWebAppURL",
+      "type": "string",
+      "label": "CxSCA Web App URL",
+      "required": false,
+      "defaultValue":"https://sca.checkmarx.net",
+      "helpMarkDown": "CxSCA Web App URL. The node running the plugin is not required to connect to this address. It is used for report links",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "dependencyTenant",
+      "type": "string",
+      "label": "CxSCA Account",
+      "required": false,
+      "helpMarkDown": "Account name of your CxSCA credentials",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "dependencyFileExtension",
+      "type": "string",
+      "label": "Include/Exclude Wildcard Patterns",
+      "required": false,
+      "defaultValue": "!**/*.DS_Store, !**/*.ipr, !**/*.iws, !**/*.bak, !**/*.tmp, !**/*.aac, !**/*.aif, !**/*.iff, !**/*.m3u, !**/*.mid, !**/*.mp3,\n!**/*.mpa, !**/*.ra, !**/*.wav, !**/*.wma, !**/*.3g2, !**/*.3gp, !**/*.asf, !**/*.asx, !**/*.avi,!**/*.flv, !**/*.mov, !**/*.mp4, !**/*.mpg,  !**/*.rm, !**/*.swf, !**/*.vob, !**/*.wmv, !**/*.bmp, !**/*.gif, !**/*.jpg, !**/*.png, !**/*.psd, !**/*.tif, !**/*.swf, !**/*.zip, !**/*.rar, !**/*.exe, !**/*.dll, !**/*.pdb, !**/*.7z, !**/*.gz, !**/*.tar.gz, !**/*.tar, !**/*.gz, !**/*.ahtm, !**/*.ahtml, !**/*.fhtml, !**/*.hdm, !**/*.hdml,   !**/*.hsql, !**/*.ht, !**/*.hta, !**/*.htc, !**/*.htd, !**/*.war, !**/*.ear, !**/*.htmls, !**/*.ihtml, !**/*.mht, !**/*.mhtm, !**/*.mhtml, !**/*.ssi, !**/*.stm, !**/*.stml, !**/*.ttml, !**/*.txn, !**/*.xhtm, !**/*.xhtml, !**/*.class, !**/*.iml",
+      "helpMarkDown": "Comma separated list of include or exclude wildcard patterns. Exclude patterns start with exclamation mark `!`.\nExample: `**/*.java, **/*.html, !**\\test\\**\\XYZ*`\n\n#### Pattern Syntax\nA given directory is recursively scanned for all files and directories. Each file/directory is matched against a set of selectors, including special support for matching against filenames with include and exclude patterns. Only files/directories which match at least one pattern of the include pattern list, and don't match any pattern of the exclude pattern list will be placed in the list of files/directories found.\n\nWhen no list of include patterns is supplied, `**` will be used, which means that everything will be matched. When no list of exclude patterns is supplied, an empty list is used, such that nothing will be excluded.\n\nThe filename pattern matching is done as follows:\nThe name to be matched is split up in path segments. A path segment is the name of a directory or file, which is bounded by a path separator (forward or back slashes can be used).\nFor example, `abc/def/ghi/xyz.java` is split up in the segments `abc`, `def`, `ghi` and `xyz.java`. The same is done for the pattern against which it should be matched.\n\nThe segments of the name and the pattern are then matched against each other. When `**` is used for a path segment in the pattern, it matches zero or more path segments of the name.\n\nWhen a name path segment is matched against a pattern path segment, the following special characters can be used:\n- `*` matches zero or more characters\n- `?` matches one character.\t\n####Examples\n- `**\\*.class` matches all `.class` files/dirs in a directory tree.\n- `test\\a??.java` matches all files/dirs which start with an `a`, then two more characters and then `.java`, in a directory called `test`.\n- `**` matches everything in a directory tree.\n- `**\\test\\**\\XYZ*` matches all files/dirs which start with `XYZ` and where there is a parent directory called `test` (e.g. `abc\\test\\def\\ghi\\XYZ123`).",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    
+    {
+      "name": "dependencyFolderExclusion",
+      "type": "string",
+      "label": "Folder Exclusion",
+      "required": false,
+      "defaultValue": "cvs, .svn, .hg , .git, .bzr, bin , obj,  backup, .idea, node_modules",
+      "helpMarkDown": "Comma separated list of folders to exclude from scan. Entries in this list are automatically converted to exclude wildcard patterns and appended to the full pattern list provided in the 'Include/Exclude Wildcard Patterns' setting.\n\nConversion is done as follows: `folder1, folder2, folder3` is converted to: `!**/folder1/**, !**/folder2/**, !**/folder3/**`",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "scaTeam",
+      "type": "string",
+      "label": "Team",
+      "required": false,
+      "helpMarkDown": "CxSCA Team name",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "scaConfigFilePaths",
+      "type": "string",
+      "label": "Package Manager's Config File(s) Path",
+      "required": false,
+      "helpMarkDown": "This parameter is to provide configuration files of the package managers used in the project.For ex. Settings.xml for maven,Nuget.config for Nuget,.npmrc for npm etc.This option is relevant for projects that use private artifactory.Use CxSCA agent to perform the scan. CxSCA agent will try to perform dependency resolution using the package manager's configuration files provided. Multiple comma character separated file path can be provided. 'Example:c:/user/.m2/settings.xml,c:/user/npm/.npmrc'",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "scaEnvVariables",
+      "type": "string",
+      "label": "Private Registry Environment Variable",
+      "required": false,
+      "helpMarkDown": "This option is relevant only if Package Manager's config files are provided. In many cases, package manager's configuration files reference environment variables, often to provide credentials without storing them in a file. Pass all such variables using this option.Example: param1:value1,param2:value2",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    
+    {
+      "name": "includeSource",
+      "type": "boolean",
+      "label": "Include Sources",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "When this flag is enabled, it will include entire source code in the zip file to be scanned.",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    
+    {
+      "name": "scaExploitablePath",
+      "type": "boolean",
+      "label": "Enable Exploitable Path",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Exploitable Path feature will attempt to co-relate CxSCA scan with the available CxSAST scan results. In this section, provide details like CxSAST server url, credentials. At the job level, two more parameters need to be configured. These project full path name and/or project id from CxSAST.Example of Project Full Path: CxServer/team1/projectname",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "CheckmarxServiceForSca",
+      "type": "connectedService:Checkmarx-Endpoint",
+      "label": "Checkmarx SAST Endpoint",
+      "required": false,
+      "helpMarkDown": "The CX server endpoint.",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true && scaExploitablePath = true"
+    },
+    {
+      "name": "scaProjectFullPath",
+      "type": "string",
+      "label": "Project Full Path",
+      "required": false,
+      "helpMarkDown": "Project Full Path with team value",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true && scaExploitablePath = true"
+    },
+    {
+      "name": "scaProjectId",
+      "type": "string",
+      "label": "Project ID",
+      "required": false,
+      "helpMarkDown": "Project ID",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true && scaExploitablePath = true"
+    },
+    {
+      "name": "scaEnablePolicyViolations",
+      "type": "boolean",
+      "label": "Enable CxSCA Project's Policy Enforcement",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Mark the build as failed or unstable if the project's policy is violated.Note: Assigning a policy to a project is done from within CxSAST",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "scaVulnerabilityThreshold",
+      "type": "boolean",
+      "label": "Enable CxSCA Vulnerability Thresholds",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Set the maximum number of CxSCA vulnerabilities of given severity before the scan fails (Only available if synchronous mode is enabled)",
+      "groupName": "dependencyScan",
+      "visibleRule": "enableDependencyScan = true"
+    },
+    {
+      "name": "scaHigh",
+      "type": "string",
+      "label": "CxSCA High",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the high severity vulnerabilities. The build will be marked as failed  if the number of the high severity vulnerabilities is larger than the threshold. ",
+      "groupName": "dependencyScan",
+      "visibleRule": "scaVulnerabilityThreshold = true && enableDependencyScan = true"
+    },
+    {
+      "name": "scaMedium",
+      "type": "string",
+      "label": "CxSCA Medium",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the medium severity vulnerabilities. The build will be marked as failed  if the number of the medium severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "dependencyScan",
+      "visibleRule": "scaVulnerabilityThreshold = true && enableDependencyScan = true"
+    },
+    {
+      "name": "scaLow",
+      "type": "string",
+      "label": "CxSCA Low",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the low severity vulnerabilities. The build will be marked as failed  if the number of the low severity vulnerabilities is larger than the threshold.  Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "dependencyScan",
+      "visibleRule": "scaVulnerabilityThreshold = true && enableDependencyScan = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "target/index.js"
+    }
+  },
+  "messages": {
+  }
+}

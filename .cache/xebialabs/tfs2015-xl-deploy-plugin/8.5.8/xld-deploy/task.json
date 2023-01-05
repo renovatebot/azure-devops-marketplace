@@ -1,0 +1,68 @@
+{
+    "author": "Xebialabs",
+    "category": "Deploy",
+    "dataSourceBindings": [
+        {
+            "dataSourceName": "Repositories",
+            "endpointId": "$(connectedServiceName)",
+            "target": "targetEnvironment"
+        }
+    ],
+    "description": "Import and deploy the artifact to XL Deploy server.",
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    },
+    "friendlyName": "Deploy with XL Deploy",
+    "helpMarkDown": "[More Information](https://docs.xebialabs.com/xl-deploy/concept/team-foundation-server-2015-plugin.html)",
+    "id": "589DCE45-4881-4410-BCF0-1AFBD0FC0F65",
+    "inputs": [
+        {
+            "helpMarkDown": "The XL Deploy server endpoint.",
+            "label": "XL Deploy Endpoint",
+            "name": "connectedServiceName",
+            "required": true,
+            "type": "connectedService:xldserver"
+        },
+        {
+            "name": "darPackage",
+            "type": "filePath",
+            "label": "DAR Package",
+            "defaultValue": "**/*.dar",
+            "required": true,
+            "helpMarkDown": "Path to the DAR package. Wildcards can be used. NOTE: In case of multiple finds, only a single package will be imported."
+        },
+        {
+            "defaultValue": "",
+            "helpMarkDown": "Environment name as specified in XL Deploy.",
+            "label": "Target Environment",
+            "name": "targetEnvironment",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "required": true,
+            "type": "pickList"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "Invoke a rollback in the case of deployment failure.",
+            "label": "Rollback on deployment failure",
+            "name": "rollback",
+            "required": true,
+            "type": "boolean"
+        }
+    ],
+    "instanceNameFormat": "XL Deploy - Import and Deploy",
+    "minimumAgentVersion": "2.117.0",
+    "name": "xldDeploy",
+    "version": {
+        "Major": 7,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ]
+}

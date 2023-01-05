@@ -1,0 +1,116 @@
+{
+    "id":  "c8baf37a-ffc8-48c3-b64f-9eba1b53af40",
+    "name":  "puma-scan-pro-build-task",
+    "friendlyName":  "Puma Scan Professional",
+    "description":  "Puma Scan is a software security source code analysis extension that scans code for vulnerabilities, generates security reports, and enforces security requirements.",
+    "helpMarkDown":  "[More Information](https://pumascan.com/configuration/#azuredevops)",
+    "category":  "Build",
+    "visibility":  [
+                       "Build"
+                   ],
+    "author":  "Puma Security, LLC",
+    "version":  {
+                    "Major":  "1",
+                    "Minor":  "5",
+                    "Patch":  "0005"
+                },
+    "demands":  [
+
+                ],
+    "minimumAgentVersion":  "2.0.0",
+    "inputs":  [
+                   {
+                       "name":  "projectPath",
+                       "type":  "filePath",
+                       "label":  "Path to Solution File",
+                       "helpMarkDown":  "Solution or project to analyze [MyApplication.sln | MyProject.csproj]",
+                       "defaultValue":  "",
+                       "required":  true
+                   },
+                   {
+                       "name":  "settingsFilename",
+                       "type":  "filePath",
+                       "label":  "Path to Settings file.",
+                       "helpMarkDown":  "Optional: Puma Scan custom scan settings file location. Expected value is .pumafile in the repository root. If no value is supplied, the default scanner settings will be used.",
+                       "defaultValue":  "",
+                       "required":  false
+                   },
+                   {
+                       "name":  "license",
+                       "type":  "string",
+                       "label":  "Puma Scan License",
+                       "helpMarkDown":  "Copy the Puma Scan Professional Azure license from your Puma Scan account and store the value in a secret Pipeline variable. Then, reference the variable name in the build step. E.g. $(PumaLicense)",
+                       "defaultValue":  "$(PumaLicense)",
+                       "required":  false
+                   },
+                   {
+                       "name":  "scanResultsFormat",
+                       "type":  "pickList",
+                       "label":  "Scan Results Format",
+                       "defaultValue":  "json",
+                       "required":  true,
+                       "helpMarkDown":  "Format of the generated scan results [json,html,msbuild,trx,csv,sarif,sonarcloud]",
+                       "properties":  {
+                                          "EditableOptions":  "False",
+                                          "MultiSelectFlatList":  "True"
+                                      },
+                       "options":  {
+                                       "json":  "JSON",
+                                       "html":  "HTML",
+                                       "msbuild":  "MSBuild",
+                                       "trx":  "MSTest",
+                                       "csv":  "CSV",
+                                       "sarif":  "SARIF",
+                                       "sonarcloud":  "SonarCloud"
+                                   }
+                   },
+                   {
+                       "name":  "outputFilename",
+                       "type":  "filePath",
+                       "label":  "Path to Output File",
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Output file name for the generated scan results [MyApplication-PumaScan]. The file extension will automatically be added for each selected format.",
+                       "required":  true
+                   },
+                   {
+                       "name":  "verboseMode",
+                       "type":  "boolean",
+                       "label":  "Verbose",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "helpMarkDown":  "Writes verbose output to the console: instance details, errors, etc."
+                   },
+                   {
+                       "name":  "thresholdHigh",
+                       "type":  "string",
+                       "label":  "Threshold High",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Sets a threshold on the allowable number of high risk results before the build task fails."
+                   },
+                   {
+                       "name":  "thresholdMedium",
+                       "type":  "string",
+                       "label":  "Threshold Medium",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Sets a threshold on the allowable number of medium risk results before the build task fails."
+                   },
+                   {
+                       "name":  "thresholdLow",
+                       "type":  "string",
+                       "label":  "Threshold Low",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Sets a threshold on the allowable number of low risk results before the build task fails."
+                   }
+               ],
+    "instanceNameFormat":  "Puma Scan Professional",
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "$(currentDirectory)\\puma-scan-pro-build-task.ps1",
+                                          "argumentFormat":  "",
+                                          "workingDirectory":  "$(currentDirectory)"
+                                      }
+                  }
+}

@@ -1,0 +1,164 @@
+{
+  "category": "Deploy", 
+  "inputs": [
+    {
+      "name": "pathtozip", 
+      "defaultValue": "archive.zip", 
+      "required": true, 
+      "label": "Archive Path", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Path of the archive being used to deploy to Apprenda.", 
+      "type": "filePath"
+    }, 
+    {
+      "name": "name", 
+      "defaultValue": "", 
+      "required": "true", 
+      "label": "Application Display Name", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Application Name", 
+      "type": "string"
+    }, 
+    {
+      "name": "alias", 
+      "defaultValue": "$(name)", 
+      "required": true, 
+      "label": "Applicaton Alias", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Application alias. Aliases must not contain spaces and must be unique to the platform, and only use DNS-entry-safe characters.", 
+      "type": "string"
+    }, 
+    {
+      "name": "description", 
+      "defaultValue": "", 
+      "required": false, 
+      "label": "Application description", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Description of the application for display in operator and developer portals.", 
+      "type": "string"
+    }, 
+    {
+      "name": "versionName", 
+      "defaultValue": "", 
+      "required": false, 
+      "label": "Version Name", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Version display name. May include spaces and other DNS-incompatible characters", 
+      "type": "string"
+    }, 
+    {
+      "name": "retainScalingSettings", 
+      "defaultValue": false, 
+      "label": "Retain Instance Count", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Check this if you want to keep the published instance's scaling definition instead of the Platform Default", 
+      "type": "boolean"
+    }, 
+    {
+      "name": "versionPrefix", 
+      "defaultValue": "v", 
+      "required": false, 
+      "label": "Version Prefix", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "This is the prefix for the version alias. This integration will increment the version number as new versions of the app are deployed.", 
+      "type": "string"
+    }, 
+    {
+      "name": "stage", 
+      "defaultValue": "Published", 
+      "required": true, 
+      "label": "Target Deployment Stage", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "This is the desired stage of deployment. Values can be either definition, sandbox, or published.", 
+      "type": "string"
+    }, 
+    {
+      "name": "cloudurl", 
+      "defaultValue": "$(cloudurl)", 
+      "required": true, 
+      "label": "Apprenda Cloud URL", 
+      "groupName": "ConnInfo", 
+      "helpMarkDown": "This is the base cloud URL that is used to connect to ACP.", 
+      "type": "string"
+    }, 
+    {
+      "name": "ignoreCertificateValidation", 
+      "defaultValue": false, 
+      "required": false, 
+      "label": "Ignore Certificate Validation Errors", 
+      "groupName": "ConnInfo", 
+      "helpMarkDown": "Check this if certificate validation errors should be ignored, for example if your Apprenda Cloud Platform instance uses a self-signed certificate.", 
+      "type": "boolean"
+    }, 
+    {
+      "name": "clouduser", 
+      "defaultValue": "$(apprendauser)", 
+      "required": true, 
+      "label": "Apprenda Username", 
+      "groupName": "ConnInfo", 
+      "helpMarkDown": "This is the username that is used to connect to ACP.", 
+      "type": "string"
+    }, 
+    {
+      "name": "cloudpw", 
+      "defaultValue": "$(apprendapw)", 
+      "required": true, 
+      "label": "Apprenda Password", 
+      "groupName": "ConnInfo", 
+      "helpMarkDown": "This is the password that is used to connect to ACP.", 
+      "type": "string"
+    }, 
+    {
+      "name": "clouddevteam", 
+      "defaultValue": "$(devteam)", 
+      "required": true, 
+      "label": "Apprenda Development Team", 
+      "groupName": "ConnInfo", 
+      "helpMarkDown": "This is the development team alias that is used to connect to ACP.", 
+      "type": "string"
+    }, 
+    {
+      "name": "forcenewversion", 
+      "defaultValue": false, 
+      "label": "Force a New Version", 
+      "groupName": "AppInfo", 
+      "helpMarkDown": "Check this if you want to force a new version each time a deployment is generated.", 
+      "type": "boolean"
+    }
+  ], 
+  "instanceNameFormat": "ApprendaDeploy $(message)", 
+  "description": "This task deploys your application onto ACP", 
+  "demands": [], 
+  "groups": [
+    {
+      "isExpanded": true, 
+      "displayName": "Application Information", 
+      "name": "AppInfo"
+    }, 
+    {
+      "isExpanded": true, 
+      "displayName": "Connection Information", 
+      "name": "ConnInfo"
+    }
+  ], 
+  "author": "Apprenda", 
+  "visibility": [
+    "Build", 
+    "Release"
+  ], 
+  "version": {
+    "Major": 2, 
+    "Minor": 0, 
+    "Patch": 4
+  }, 
+  "helpMarkDown": "Deploys an application archive to an Apprenda Cloud instance", 
+  "friendlyName": "Apprenda - Deploy Application", 
+  "execution": {
+    "PowerShell3": {
+      "target": "deploy.ps1"
+    }
+  }, 
+  "id": "22a3cc76-45e3-4ac1-92bb-cbe3f8201a4a", 
+  "minimumAgentVersion": "1.95.0", 
+  "name": "ApprendaDeploy"
+}

@@ -1,0 +1,72 @@
+{
+  "id": "5805278E-455E-4DC9-9E30-87B22E01993F",
+  "name": "Artifacts-Compress",
+  "friendlyName": "Artifacts Compress",
+  "description": "Task for artifact compress. Removes source files\\folders.",
+  "category": "Utility",
+  "author": "Piotr Roshkovski",
+  "helpMarkDown": "[More Information](odministrator@gmail.com)",
+  "demands": [
+    "msbuild"
+  ],
+  "version": {
+    "Major": 1,
+    "Minor": 5,
+    "Patch": 1
+  },
+  "visibility": [
+    "Build"
+  ],
+  "minimumAgentVersion": "2.114.0",
+  "instanceNameFormat": "Artifacts Compress",
+  "inputs": [
+    {
+      "name": "source",
+      "type": "string",
+      "label": "Source",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Source to compress."
+    },
+    {
+      "name": "dest",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Destination for compressed files."
+    },
+    {
+      "name": "compressionLevel",
+      "type": "pickList",
+      "label": "Compression Level",
+      "defaultValue": "Fastest",
+      "required": true,
+      "helpMarkDown": "Compression level.",
+      "options": {
+        "Fastest": "Fastest",
+        "NoCompression": "NoCompression",
+        "Optimal": "Optimal"
+      }
+    },
+    {
+      "name": "multiplePackages",
+      "type": "boolean",
+      "label": "Multiple Packages",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "If true - creates multiple packages from child items."
+    }
+  ],
+  "execution": {
+    "Powershell": {
+      "target": "$(currentDirectory)\\scripts\\compress-it!.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  },
+  "messages": {
+    "TaskSuccessCode": "Successfully passed task.",
+    "TaskFailedCode": "Failed to pass task."
+  }
+}

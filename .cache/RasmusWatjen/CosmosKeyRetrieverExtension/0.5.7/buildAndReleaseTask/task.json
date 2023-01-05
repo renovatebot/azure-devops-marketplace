@@ -1,0 +1,104 @@
+{
+    "id": "11f18d28-72b3-41e0-a85b-291e2739752b",
+    "name": "CosmosKeyRetriever",
+    "friendlyName": "Cosmos DB Key Retriever",
+    "description": "Retrieve access keys for a Cosmos DB account version 1.0.0",
+    "helpMarkDown": "[More Information](http://bit.ly/2RIR8iw)",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Rasmus Wätjen",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [ "PowerShell" ],
+    "instanceNameFormat": "Retrieve Cosmos Key for $(cosmosDbAccountName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager connection to use when authenticating to Azure",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group where the Cosmos DB instance is located",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The resource group in which the Cosmos DB account is."
+        },
+        {
+            "name": "cosmosDbAccountName",
+            "type": "pickList",
+            "label": "Account name for the Cosmos DB instance",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Cosmos DB account name (the server name without \"documents.azure.com\")"
+        },
+        {
+            "name": "keyType",
+            "type": "pickList",
+            "label": "Key type",
+            "required": "true",
+            "defaultValue": "PrimaryMasterKey",
+            "helpMarkDown": "The key type to retrieve",
+            "options": {
+                "PrimaryMasterKey": "Primary read-write key",
+                "SecondaryMasterKey": "Secondary read-write key",
+                "PrimaryReadonlyMasterKey": "Primary read-only key",
+                "SecondaryReadonlyMasterKey": "Secondary read-only key"
+            }
+        },
+        {
+            "name": "outputVariableName",
+            "type": "string",
+            "label": "Output variable name",
+            "required": "true",
+            "defaultValue": "CosmosKey",
+            "helpMarkDown": "Enter the name of the variable that will receive the key value"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "cosmosDbAccountName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(ResourceGroupName)/providers/Microsoft.DocumentDB/databaseAccounts/?api-version=2015-04-08",
+            "resultSelector": "jsonpath:$.value[*].name"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "RetrieveCosmosDbKey.ps1"
+        }
+    }
+}

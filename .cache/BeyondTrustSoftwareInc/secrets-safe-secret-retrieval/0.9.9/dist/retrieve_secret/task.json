@@ -1,0 +1,125 @@
+{
+    "id": "d0dbe1de-73ea-44a6-8247-e01527eb171e",
+    "name": "secrets-safe-secret-retrieval",
+    "friendlyName": "Secrets Safe Secret Retrieval",
+    "description": "Retrieve secrets from BeyondTrusts DevOps Secrets Safe.",
+    "helpMarkDown": "Retrieve a given secret from Secrets Safe by providing instance configuration and authentication details.",
+    "category": "Utility",
+    "visibility": [
+       "Build",
+       "Release"
+    ],
+    "author": "BeyondTrust",
+    "version": {
+       "Major": 1,
+       "Minor": 0,
+       "Patch": 0
+    },
+    "instanceNameFormat": "Secrets Safe Secret Retrieval",
+    "groups": [
+       {
+          "name": "ssInstance",
+          "displayName": "Secrets Safe Instance",
+          "isExpanded": true
+       },
+       {
+          "name": "ssAuthentication",
+          "displayName": "Authentication",
+          "isExpanded": true
+       },
+       {
+          "name": "secret",
+          "displayName": "Secret",
+          "isExpanded": true
+       }
+    ],
+    "inputs": [
+        {
+            "name": "secretsSafeHost",
+            "type": "string",
+            "label": "Secrets Safe hostname/IP",
+            "required": true,
+            "helpMarkDown": "Specifies the hostname/IP of the Secrets Safe instance.",
+            "groupName": "ssInstance"
+        },
+        {
+            "name": "secretsSafePort",
+            "type": "string",
+            "label": "Secrets Safe port",
+            "defaultValue": "443",
+            "required": true,
+            "helpMarkDown": "Specifies the port of the Secrets Safe instance.",
+            "groupName": "ssInstance"
+        },
+        {
+            "name": "apiVersion",
+            "type": "radio",
+            "label": "Secrets Safe API version",
+            "defaultValue": "v1",
+            "required": false,
+            "options": {
+                "v1": "v1"
+             },
+            "helpMarkDown": "Specifies the version of the Secrets Safe instances API.",
+            "groupName": "ssInstance"
+        },
+        {
+            "name": "requestTimeout",
+            "type": "string",
+            "label": "Request timeout",
+            "defaultValue": "15",
+            "required": false,
+            "helpMarkDown": "Specifies the socket timeout in milliseconds. This will set the timeout before the socket is disconnected.",
+            "groupName": "ssInstance"
+        },
+        {
+            "name": "verifyServerCertificate",
+            "type": "boolean",
+            "label": "Verify server certificate",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Signifies whether the server certificate is verified against the list of supplied CAs.",
+            "groupName": "ssInstance"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "Application name",
+            "defaultValue": "azure-devops",
+            "required": true,
+            "helpMarkDown": "Specifies the application name of the requesting principal.",
+            "groupName": "ssAuthentication"
+        },
+        {
+            "name": "apiKey",
+            "type": "string",
+            "label": "API key",
+            "required": true,
+            "helpMarkDown": "Specifies the API key of the requesting application.",
+            "groupName": "ssAuthentication"
+        },
+        {
+            "name": "secretUri",
+            "type": "string",
+            "label": "URI",
+            "required": true,
+            "helpMarkDown": "Specifies URI of the secret in which to retrieve.",
+            "groupName": "secret"
+        },
+        {
+            "name": "variableName",
+            "type": "string",
+            "label": "Variable name",
+            "required": true,
+            "helpMarkDown": "Specifies the pipeline variable name to assign the secret content to.",
+            "groupName": "secret"
+        }
+    ],
+    "execution": {
+       "Node": {
+          "target": "retrieve_secret.js",
+          "argumentFormat": "",
+          "workingDirectory": ""
+       }
+    }
+ }

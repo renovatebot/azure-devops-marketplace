@@ -1,0 +1,88 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "dd4b4db4-fd71-4be9-aa67-15b9501870ee",
+    "name": "yavt",
+    "friendlyName": "Yet another versioning tool",
+    "description": "Git versioning, made simple.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "tschmiedlechner",
+    "version": {
+        "Major": 1,
+        "Minor": 5,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Set versions",
+    "inputs": [
+        {
+            "name": "mode",
+            "type": "pickList",
+            "label": "Single or multiple version.json files",
+            "defaultValue": "Single",
+            "required": false,
+            "options": {
+                "Single": "Use a single version.json for all projects",
+                "Multi": "Automatically scan for (multiple) version.jso files"
+            },
+            "helpMarkDown": "_Single_ will use one `version.json` file for all found projects. When set to _Multi_, a Directory.build.props file is created on the same level as each detected `version.json`. "
+        },
+        {
+            "name": "pathToVersionJson",
+            "type": "filePath",
+            "label": "Path to version.json",
+            "defaultValue": "version.json",
+            "required": true,
+            "helpMarkDown": "The path to the version.json, which should contain the following properties: _'version': string_ (e.g. '1.3.0'), _'releaseBranches': string[]_ (the branch names that will be used for release versions).",
+            "visibleRule": "mode = Single"
+        },
+        {
+            "name": "updateNuspecFiles",
+            "type": "boolean",
+            "label": "Update Nuspec files",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If set to _true_, the version will also be inserted/updated in `.nuspec` files"
+        },
+        {
+            "name": "updateBuildNumber",
+            "type": "boolean",
+            "label": "Set build number",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If set to _true_, the build number is set to the computed version"
+        },
+        {
+            "name": "addCiLabel",
+            "type": "boolean",
+            "label": "Add CI label to PR builds if no postfix is set",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If set to _true_, the postfix label 'ci' will be set for PR builds if no other label is set. For example, creating a PR build with the specified version `1.0.0` will result in `1.0.0-ci.20045.123`. When the label is already set, e.g. to `1.0.0-rc1`, it will be respected and results in `1.0.0-rc1.20045.123`"
+        },
+        {
+            "name": "includeParentProps",
+            "type": "boolean",
+            "label": "Include parent Directory.Build.props (if one exists)",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If set to _true_, the task will scan for parent Directory.Build.props and add them via an _<Import>_ statement"
+        },
+        {
+            "name": "semverVersion",
+            "type": "pickList",
+            "label": "SemVer version",
+            "defaultValue": "v2",
+            "required": false,
+            "options": {
+                "v1": "v1",
+                "v2": "v2"
+            },
+            "helpMarkDown": "If v1 is selected, labels are separated by a `-` instead of a `.` - e.g. `1.0.0-rc1-20123-42` instead of `1.0.0-rc1.20123.42`."
+        }        
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

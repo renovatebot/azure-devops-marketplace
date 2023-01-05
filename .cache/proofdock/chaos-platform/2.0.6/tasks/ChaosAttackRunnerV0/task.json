@@ -1,0 +1,77 @@
+{
+  "id": "a0d95e01-832d-4d0f-8114-c6f15c8dd418",
+  "name": "ChaosAttackRunner",
+  "friendlyName": "Chaos attack runner ",
+  "description": "Run the chaos attack and report results to the Proofdock.",
+  "helpUrl": "https://docs.proofdock.io/chaos/devops/tasks/#runner-task",
+  "helpMarkDown": "[Learn more about this task](https://docs.proofdock.io/chaos/devops/tasks/#runner-task)",
+  "category": "Test",
+  "runsOn": ["Agent", "DeploymentGroup"],
+  "author": "Proofdock",
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "61"
+  },
+  "satisfies": ["Node", "npm"],
+  "demands": [],
+  "groups": [
+    {
+      "name": "azureConnection",
+      "displayName": "Azure Connection",
+      "isExpanded": false
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "token",
+      "label": "Proofdock Cloud token",
+      "type": "string",
+      "helpMarkDown": "Token to authenticate with the Proofdock Cloud.",
+      "defaultValue": "",
+      "visibleRule": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "attackId",
+      "type": "string",
+      "label": "Attack or scenario ID",
+      "required": true,
+      "helpMarkDown": "UUID of the attack or scneario."
+    },
+    {
+      "name": "azureConnection",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "required": false,
+      "helpMarkDown": "Select an Azure resource manager subscription",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != ManagementGroup"
+      },
+      "groupName": "azureConnection"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Output additional details of the experiment run.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "chaos-runner.js"
+    }
+  },
+  "messages": {}
+}

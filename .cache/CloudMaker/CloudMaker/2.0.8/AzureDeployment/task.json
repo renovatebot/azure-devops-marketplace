@@ -1,0 +1,99 @@
+{
+  "id": "25e3decd-0119-43cd-8819-85b4a5fdde84",
+  "name": "CloudMakerAzureDeployment",
+  "friendlyName": "Cloud Maker Azure Deployment",
+  "description": "Deploys a Cloud Maker blueprint",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "author": "Cloud Maker",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 8
+  },
+  "instanceNameFormat": "Cloud Maker Azure Deployment",
+  "inputs": [
+    {
+      "name": "Organisation",
+      "type": "connectedService:cloudmaker",
+      "label": "Organisation",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The CloudMaker service endpoint configured for your organisation"
+    },
+    {
+      "name": "SolutionName",
+      "type": "pickList",
+      "label": "Solution",
+      "required": true,
+      "helpMarkDown": "Select the solution to deploy."
+    },
+    {
+      "name": "StageName",
+      "type": "pickList",
+      "label": "Stage",
+      "required": true,
+      "helpMarkDown": "The name of the stage to deploy"
+    },
+    {
+      "name": "ConnectedServiceName",
+      "aliases": [
+        "azureSubscription"
+      ],
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
+    },
+    {
+      "name": "SubscriptionLocation",
+      "type": "pickList",
+      "label": "Metadata location",
+      "required": true,
+      "helpMarkDown": "Location for deploying subscription level metadata.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "DeploymentMode",
+      "type": "pickList",
+      "label": "Deployment mode",
+      "defaultValue": "Incremental",
+      "required": true,
+      "helpMarkDown": "Select the deployment mode to use for deploying resources. The selected mode applies to all resources created for the solution.\n\nRefer to [this](https://docs.microsoft.com/en-us/azure/azure-resource-manager/deployment-modes) for more details. \n\n Incremental mode handles deployments as incremental updates to the resource group. It leaves unchanged resources that exist in the resource group but are not specified in the template. \n\n Complete mode deletes resources that are not in your template. Complete mode takes relatively more time than incremental mode. If the task times out, consider increasing the timeout, or changing the mode to 'Incremental'. \n [Warning] This action will delete all the existing resources in the resource group that are not specified in the template. \n\n Validate mode enables you to find problems with the template before creating actual resources. \n\n By default, Incremental mode is used.",
+      "options": {
+        "Incremental": "Incremental",
+        "Complete": "Complete"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "SubscriptionLocation",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureLocations"
+    },
+    {
+      "target": "SolutionName",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "Solutions",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\":\"{{{name}}}\"}"
+    },
+    {
+      "target": "StageName",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "Stages",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\":\"{{{name}}}\"}",
+      "parameters": {
+        "SolutionId": "$(SolutionName)"
+      }
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "src/index.js"
+    }
+  }
+}

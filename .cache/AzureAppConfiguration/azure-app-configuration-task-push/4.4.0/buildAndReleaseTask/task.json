@@ -1,0 +1,230 @@
+﻿{
+    "id":  "014d1f42-f7ad-4418-b165-5bf03802417e",
+    "name":  "AzureAppConfigurationPush",
+    "friendlyName":  "Azure App Configuration Push",
+    "description":  "Push key-values to an Azure App Configuration instance",
+    "helpUrl":  "https://marketplace.visualstudio.com/items?itemName=AzureAppConfiguration.dev-azure-app-configuration-task-push",
+    "helpMarkDown":  "Email AzureAppConfig@microsoft.com for questions.",
+    "category":  "Utility",
+    "author":  "Microsoft Corporation",
+    "version":  {
+                    "Major":  4,
+                    "Minor":  4,
+                    "Patch":  0
+                },
+    "instanceNameFormat":  "Azure App Configuration",
+    "minimumAgentVersion":  "2.144.0",
+    "inputs":  [
+                   {
+                       "name":  "ConnectedServiceName",
+                       "aliases":  [
+                                       "azureSubscription"
+                                   ],
+                       "type":  "connectedService:AzureRM",
+                       "label":  "Azure subscription",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Select the Azure Subscription for the Azure App Configuration instance.",
+                       "groupName":  "AppConfiguration"
+                   },
+                   {
+                       "name":  "AppConfigurationEndpoint",
+                       "type":  "pickList",
+                       "label":  "App Configuration Endpoint",
+                       "required":  true,
+                       "helpMarkDown":  "Provide the endpoint of an existing [Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/concept-key-value).",
+                       "groupName":  "AppConfiguration",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "validation":  {
+                                          "expression":  "isUrl(value)",
+                                          "message":  "Provide a valid app configuration endpoint."
+                                      }
+                   },
+                   {
+                       "name":  "ConfigurationFile",
+                       "type":  "filePath",
+                       "label":  "Configuration File Path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "groupName":  "Source",
+                       "helpMarkDown":  "the path to the configuration file (supported: yaml, json, properties)",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "validation":  {
+                                          "expression":  "isMatch(value, \u0027.+\\.(json|ya?ml|properties)$\u0027, \u0027IgnoreCase\u0027)",
+                                          "message":  "Supported file types are: .yml, .yaml, .json, and .properties"
+                                      }
+                   },
+                   {
+                       "name":  "FileContentProfile",
+                       "type":  "radio",
+                       "label":  "File Content Profile",
+                       "defaultValue":  "appconfig/default",
+                       "required":  false,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "The configuration file\u0027s [content profile](https://docs.microsoft.com/azure/azure-app-configuration/concept-config-file)",
+                       "options":  {
+                                       "appconfig/default":  "Default",
+                                       "appconfig/kvset":  "KVSet"
+                                   }
+                   },
+                   {
+                       "name":  "Separator",
+                       "type":  "pickList",
+                       "label":  "Separator",
+                       "required":  true,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "separator used to flatten the configuration file (json \u0026 yaml files)",
+                       "options":  {
+                                       ".":  ".  (Period)",
+                                       "/":  "/  (Forward Slash)",
+                                       ":":  ":  (Colon)",
+                                       ";":  ";  (Semicolon)",
+                                       ",":  ",  (Comma)",
+                                       "-":  "-  (Hyphen)",
+                                       "_":  "_  (Underscore)",
+                                       "__":  "__ (Double Underscore)"
+                                   },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "Depth",
+                       "type":  "string",
+                       "label":  "Depth",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "max depth to flatten to in configuration file (json and yaml files)",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "Prefix",
+                       "type":  "string",
+                       "label":  "Prefix",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "a prefix to append to all keys in the configuration file",
+                       "groupName":  "Options",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "Label",
+                       "type":  "string",
+                       "label":  "Label",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies which label should be used when selecting key-values from App Configuration. If no label is provided then key-values with the _null_ label will be retrieved. The following characters are not allowed: `,` `*`.",
+                       "groupName":  "Options",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "ContentType",
+                       "type":  "string",
+                       "label":  "Content Type",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "a content type to append to all keys in the configuration file",
+                       "groupName":  "Options",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "Tags",
+                       "type":  "multiLine",
+                       "label":  "Tags",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies one or more tag that should be added to key-value settings being pushed to App Configuration. Tags should be of a valid JSON format and can span multiple lines. Example: {\"tag1\": \"value1\", \"tag2\": \"value2\"}",
+                       "groupName":  "Options",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "FileContentProfile EndsWith default"
+                   },
+                   {
+                       "name":  "Strict",
+                       "type":  "boolean",
+                       "label":  "Delete key-values that are not included in the configuration file",
+                       "defaultValue":  false,
+                       "required":  true,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "The behavior of this option depends on the configuration file\u0027s content profile.\n \u0027Default\u0027: Any key-values in the store with the specified prefix and label that are not included in the configuration file will be deleted. \n\u0027KVSet\u0027: Any key-values in the store that are not included in the configuration file will be deleted.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "DryRun",
+                       "type":  "boolean",
+                       "label":  "Dry Run",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "When dry run is enabled, this task will not perform any updates to App Configuration. Instead, any updates that would have been performed in a normal run will be printed to the console for review",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "ImportMode",
+                       "type":  "pickList",
+                       "label":  "Import Mode",
+                       "defaultValue":  "All",
+                       "required":  false,
+                       "groupName":  "Options",
+                       "helpMarkDown":  "Determines the behavior when importing key-values. The default value, \u0027All\u0027 will import all key-values in the input file to App Configuration. \u0027Ignore-Match\u0027 will only import settings that have no matching key-value in App Configuration.",
+                       "options":  {
+                                       "All":  "All",
+                                       "Ignore-Match":  "Ignore-Match"
+                                   },
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   }
+               ],
+    "groups":  [
+                   {
+                       "name":  "AppConfiguration",
+                       "displayName":  "AppConfiguration",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "Source",
+                       "displayName":  "Source",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "Options",
+                       "displayName":  "Options",
+                       "isExpanded":  true
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "AppConfigurationEndpoint",
+                                   "endpointId":  "$(ConnectedServiceName)",
+                                   "endpointUrl":  "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.AppConfiguration/configurationStores?api-version=2020-06-01",
+                                   "resultSelector":  "jsonpath:$.value[*]",
+                                   "resultTemplate":  "{ \"Value\" : \"{{{properties.endpoint}}}\", \"DisplayValue\" : \"{{{properties.endpoint}}}\" }"
+                               }
+                           ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "index.js"
+                                 }
+                  }
+}

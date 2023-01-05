@@ -1,0 +1,184 @@
+{
+  "id": "48291cae-14a6-44c8-8440-74c97b1d90c9",
+  "name": "ManageRemoteWindowsService",
+  "friendlyName": "Manage remote Windows service",
+  "description": "Manages Windows services on remote machine",
+  "author": "automagically",
+  "helpMarkDown": "Manages Windows services on remote machine",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "groups": [
+    {
+      "name": "createOrConfigureService",
+      "displayName": "Create or configure service",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "remoteServer",
+      "type": "string",
+      "label": "Remote server",
+      "defaultValue": "$(serverName)",
+      "required": true,
+      "helpMarkDown": "Remote server name or comma separated list of remote server names"
+    },
+    {
+      "name": "remoteUserName",
+      "type": "string",
+      "label": "Remote username",
+      "defaultValue": "$(deployUserName)",
+      "required": true,
+      "helpMarkDown": "Username of user on remote computer."
+    },
+    {
+      "name": "remoteUserPassword",
+      "type": "string",
+      "label": "Remote user password",
+      "defaultValue": "$(deployUserPassword)",
+      "required": true,
+      "helpMarkDown": "Password of the user on remote computer."
+    },
+    {
+      "name": "remoteWinRMProtocol",
+      "type": "radio",
+      "label": "Protocol",
+      "required": true,
+      "defaultValue": "http",
+      "options": {
+        "http": "HTTP",
+        "https": "HTTPS"
+      },
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Action to perform",
+      "groupname": "createOrConfigureService",
+      "options": {
+        "start": "Start",
+        "stop": "Stop",
+        "restart": "Restart",
+        "create": "Create",
+        "delete": "Delete",
+        "configure": "Configure"
+      }
+    },
+    {
+      "name": "serviceName",
+      "type": "string",
+      "label": "Service Name",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "createOrConfigureService",
+      "helpMarkDown": "Service Name"
+    },
+    {
+      "name": "serviceExe",
+      "type": "string",
+      "label": "Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Full path to service executable",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create"
+    },
+    {
+      "name": "serviceLoginUserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Service login user name",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    },
+    {
+      "name": "serviceLoginUserPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Service login user password",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    },
+    {
+      "name": "serviceStartupMode",
+      "type": "pickList",
+      "label": "Startup mode",
+      "defaultValue": "Automatic",
+      "required": true,
+      "options": {
+        "Automatic": "Automatic",
+        "AutomaticDelayedStart": "Automatic (Delayed Start)",
+        "Manual": "Manual",
+        "Disabled": "Disabled"
+      },
+      "helpMarkDown": "Service startup mode",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    },
+    {
+      "name": "serviceDisplayName",
+      "type": "string",
+      "label": "Display name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Service display name",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    },
+    {
+      "name": "serviceDescription",
+      "type": "string",
+      "label": "Description",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Service description",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    },
+    {
+      "name": "serviceDependsOn",
+      "type": "string",
+      "label": "Depends on",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Service dependencies",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create"
+    },
+    {
+      "name": "serviceRecoveryOptions",
+      "type": "string",
+      "label": "Recovery options",
+      "defaultValue": "restart/30000/restart/30000/restart/30000",
+      "required": false,
+      "helpMarkDown": "Service recovery options. For example, restart/15000/restart/30000//1000",
+      "groupname": "createOrConfigureService",
+      "visibleRule": "action = create || action = configure"
+    }
+  ],
+  "instanceNameFormat": "$(action): $(serviceName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ManageRemoteWindowsService.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

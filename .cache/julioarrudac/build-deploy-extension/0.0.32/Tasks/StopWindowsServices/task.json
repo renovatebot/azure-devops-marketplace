@@ -1,0 +1,90 @@
+{
+    "id":  "f12486d0-7d09-11e7-b6b2-091599e20064",
+    "name":  "StopWindowsServices",
+    "friendlyName":  "Stop Windows Service",
+    "description":  "Task used to Stop Windows Service in remote Machines",
+    "author":  "Julio Arruda",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  0,
+                    "Minor":  0,
+                    "Patch":  32
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Stop Windows Service $(ServiceName)",
+    "groups":  [
+                   {
+                       "name":  "configuracoes",
+                       "displayName":  "Configurations",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "servico",
+                       "displayName":  "Service",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "runRemote",
+                       "type":  "boolean",
+                       "label":  "Run Remote",
+                       "defaultValue":  "true",
+                       "groupName":  "configuracoes",
+                       "required":  false,
+                       "helpMarkDown":  "Select this option if this task run with WinRM"
+                   },
+                   {
+                       "name":  "EnvironmentName",
+                       "type":  "multiLine",
+                       "label":  "Machines",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "List separated per coma with the IPs or FQDNs to destination machines"
+                   },
+                   {
+                       "name":  "AdminUserName",
+                       "type":  "string",
+                       "label":  "Admin Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "User to connect in remote machines"
+                   },
+                   {
+                       "name":  "AdminPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Password to connect in remote machines"
+                   },
+                   {
+                       "name":  "ServiceName",
+                       "type":  "string",
+                       "label":  "Nome do ServiÃ§o",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Name of the service to stop"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "stopService.ps1"
+                                      }
+                  }
+}

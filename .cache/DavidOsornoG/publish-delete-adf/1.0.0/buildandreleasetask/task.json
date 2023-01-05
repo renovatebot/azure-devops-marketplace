@@ -1,0 +1,199 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "B3E0B588-5BEB-4D6D-972B-57BFC4A66ED7",
+    "name": "delete-adf-pipelines-triggers",
+    "friendlyName": "Delete ADF pipelines and triggers",
+    "description": "Delete Azure Data Factory pipelines and triggers after check the resource group is not locked.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "David Osorno G",
+    "preview": false,
+    "visibility": ["Build", "Release"],
+    "runsOn": ["Agent"],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.100.0",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "adf",
+            "displayName": "Data Factory Details",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": ["azureSubscription"],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is needed to connect to your Azure account.<br>To configure new service connection, select the Azure subscription from the list and click 'Authorize'.<br>If your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using 'Add' or 'Manage' button."
+        },
+        {
+            "name": "DatafactoryType",
+            "type": "pickList",
+            "label": "Data Integration Capabilities",
+            "helpMarkDown": "Azure Data Factory or Azure Synapse Analytics",
+            "defaultValue": "adf",
+            "options": {
+                "adf": "Azure Data Factory",
+                "synapse": "Azure Synapse Analytics"
+            },
+            "groupname": "azure"
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "required": true,
+            "helpMarkDown": "Provide the name of the resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "visibleRule": "DatafactoryType = adf",
+            "groupname": "azure"
+        },
+        {
+            "name": "DatafactoryName",
+            "type": "string",
+            "label": "Azure Data Factory",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Name of the Azure Data Factory.",
+            "visibleRule": "DatafactoryType = adf",
+            "groupname": "azure"
+        },
+        {
+            "name": "WorkspaceUrl",
+            "type": "string",
+            "label": "Synapse workspace development endpoint URL",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Name of the Synapse workspace development endpoint, eg. https://myworkspace.dev.azuresynapse.net",
+            "visibleRule": "DatafactoryType = synapse",
+            "groupname": "azure"
+        },
+        {
+            "name": "ServiceFilter",
+            "type": "string",
+            "label": "Linked Service Filter",
+            "helpMarkDown": "Regex filter to determine which linked service to delete.\n-Empty string: *none* linked services will be deleted.\n-`*`: *all* linked services will be deleted.",
+            "groupname": "adf"
+        },
+        {
+            "name": "PipelineFilter",
+            "type": "string",
+            "label": "Pipeline Filter",
+            "helpMarkDown": "Regex filter to determine which pipeline to delete.\n-Empty string: *none* pipelines will be deleted.\n-`*`: *all* pipelines will be deleted.",
+            "groupname": "adf"
+        },
+        {
+            "name": "DataflowFilter",
+            "type": "string",
+            "label": "Data flow Filter",
+            "helpMarkDown": "Regex filter to determine which data flow to delete.\n-Empty string: *none* data flows will be deleted.\n-`*`: *all* data flows will be deleted.",
+            "groupname": "adf"
+        },
+        {
+            "name": "DatasetFilter",
+            "type": "string",
+            "label": "Dataset Filter",
+            "helpMarkDown": "Regex filter to determine which datasets to delete.\n-Empty string: *none* datasets will be deleted.\n-`*`: *all* datasets will be deleted.",
+            "groupname": "adf"
+        },
+        {
+            "name": "TriggerFilter",
+            "type": "string",
+            "label": "Trigger Filter",
+            "helpMarkDown": "Filter to determine which trigger to delete.\n-Empty string: *none* triggers will be deleted.\n-`*`: *all* triggers will be deleted.",
+            "groupname": "adf"
+        },
+        {
+            "name": "continue",
+            "type": "boolean",
+            "label": "Continue on Error",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Continue on deployment failures",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Throttle",
+            "type": "string",
+            "label": "Number of parallel actions",
+            "defaultValue": "5",
+            "required": false,
+            "helpMarkDown": "Number of parallel actions, default is 5",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Sorting",
+            "type": "pickList",
+            "label": "Set sorting direction of the delete order",
+            "required": "true",
+            "defaultValue": "descending",
+            "groupname": "advanced",
+            "options": {
+                "ascending": "Ascending",
+                "descending": "Descending"
+            }
+        },
+        {
+            "name": "detectDependancy",
+            "type": "boolean",
+            "label": "Detect object dependancy",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Option to scan deployment files to detect dependancy between the same objects types. This dependancy is used to sort the deploy order.",
+            "groupName": "advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "instanceNameFormat": "Delete items from $(DatafactoryName)",
+    "execution": {
+        "Node10": {
+            "target": "index.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "TaskParameters_ConstructorFailed": "Task failed while initializing. Error: %s.",
+        "TaskParameters_MissingResourceGroup": "Missing required input 'ResourceGroupName', or define the input 'WorkspaceUrl'",
+        "TaskParameters_MissingDataFactoryName": "Missing required input 'DatafactoryName', or define the input 'WorkspaceUrl'",
+        "TaskParameters_IgnoredParameter": "Provided task parameter is ignored: %s",
+        "AzureModels_ConstructorFailed": "Unable to retrieve endpoint details for Azure",
+        "Generic_LoginAzure": "Error login in to Azure. Please check the Service Configuration. Error: %s.",
+        "Generic_CheckDataFactory": "Error calling DataFactory API. Error: %s.",
+        "Generic_CheckDataFactory2": "Datafactory not found: %s.",
+        "DeleteAdfJson_SynapseWarning": "Deploying artifact to Azure Synapse Analytics are asynchronous and uploaded without validation.",
+        "DeleteAdfJson_Depencency": "Error detecting dependencies: circular reference in %s(s): %s.",
+        "DeleteAdfJson_Depencency2": "Found missing reference in %s(s).",
+        "DeleteAdfItems_GetObjects": "Error calling DataFactory/%s API. Error: %s.",
+        "DeleteAdfItems_GetObjects2": "No %s found.",
+        "DeleteAdfItems_DeleteItem": "Error calling DELETE DataFactory/%s API. Error: %s.",
+        "DeleteAdfItems_DeleteItem2": "Error deleting '%s' %s : %s",
+        "DeleteAdfItems_DeleteItems": "Error retrieving %s: Error: %s.",
+        "ResourceGroup_NotFound": "Resource Group not found: %s",
+        "ResourceGroup_Protected": "%s has a %s protection. %s"
+    }
+}

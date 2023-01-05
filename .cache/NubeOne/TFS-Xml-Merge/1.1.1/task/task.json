@@ -1,0 +1,218 @@
+{
+    "id": "F1B0212C-6443-435B-8A15-3BA2900E85D4",
+    "name": "XmlMerge",
+    "friendlyName": "Remote XML Merge",
+    "description": "Merge a new XML File into a remote one, overwriting conflicting values with those from the new file",
+    "helpMarkDown": "[More Information](https://github.com/nubeone/tfs-extensions#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "NubeOne",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Remote Xml Merge",
+    "groups": [
+        {
+            "name": "file1",
+            "displayName": "XML file 1",
+            "isExpanded": true
+        },
+        {
+            "name": "file2",
+            "displayName": "XML file 2",
+            "isExpanded": true
+        },
+        {
+            "name": "target",
+            "displayName": "Target XML file",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "remote1",
+            "type": "pickList",
+            "label": "File location",
+            "defaultValue": "Local",
+            "required": true,
+            "helpMarkDown": "Select 'local' if the file is located on the TFS Server or in a build artifact, remote otherwise",
+            "groupName": "file1",
+            "options": {
+                "true": "Remote",
+                "false": "Local"
+            }
+        },
+        {
+            "name": "path1",
+            "type": "filePath",
+            "label": "File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "",
+            "groupName": "file1"
+        },
+        {
+            "name": "server1",
+            "type": "string",
+            "label": "Server Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the server where the XML file is located",
+            "groupName": "file1",
+            "visibleRule": "remote1 = true"
+        },
+        {
+            "name": "userName1",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Username to be used to connect to the server",
+            "groupName": "file1",
+            "visibleRule": "remote1 = true"
+        },
+        {
+            "name": "password1",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password to be used to connect to the server",
+            "groupName": "file1",
+            "visibleRule": "remote1 = true"
+        },
+        {
+            "name": "remote2",
+            "type": "pickList",
+            "label": "File location",
+            "defaultValue": "Local",
+            "required": true,
+            "helpMarkDown": "Select 'local' if the file is located on the TFS Server or in a build artifact, remote otherwise",
+            "groupName": "file2",
+            "options": {
+                "true": "Remote",
+                "false": "Local"
+            }
+        },
+        {
+            "name": "path2",
+            "type": "filePath",
+            "label": "File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "",
+            "groupName": "file2"
+        },
+        {
+            "name": "server2",
+            "type": "string",
+            "label": "Server Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the server where the XML file is located",
+            "groupName": "file2",
+            "visibleRule": "remote2 = true"
+        },
+        {
+            "name": "userName2",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Username to be used to connect to the server",
+            "groupName": "file2",
+            "visibleRule": "remote2 = true"
+        },
+        {
+            "name": "password2",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password to be used to connect to the server",
+            "groupName": "file2",
+            "visibleRule": "remote2 = true"
+        },
+        {
+            "name": "conflictVictor",
+            "type": "pickList",
+            "label": "For conflicts, use",
+            "options": {
+                "file1": "File 1",
+                "file2": "File 2"
+            },
+            "defaultValue": "file1",
+            "required": false,
+            "helpMarkDown": "When a value, node or list exists in both XML files, the Value from the file selected here will be used."
+        },
+        {
+            "name": "remoteTarget",
+            "type": "pickList",
+            "label": "File location",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Select 'local' if the file is located on the TFS Server or in a build artifact, remote otherwise",
+            "groupName": "target",
+            "options": {
+                "file1": "Overwrite file 1",
+                "file2": "Overwrite file 2",
+                "true": "Remote",
+                "false": "Local"
+            }
+        },
+        {
+            "name": "pathTarget",
+            "type": "filePath",
+            "label": "File Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "",
+            "groupName": "target",
+            "visibleRule": "remoteTarget == true || remoteTarget == false"
+        },
+        {
+            "name": "serverTarget",
+            "type": "string",
+            "label": "Server Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the server where the XML file is located",
+            "groupName": "target",
+            "visibleRule": "remoteTarget = true"
+        },
+        {
+            "name": "userNameTarget",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Username to be used to connect to the server",
+            "groupName": "target",
+            "visibleRule": "remoteTarget = true"
+        },
+        {
+            "name": "passwordTarget",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password to be used to connect to the server",
+            "groupName": "target",
+            "visibleRule": "remoteTarget = true"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "xmlMerge.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

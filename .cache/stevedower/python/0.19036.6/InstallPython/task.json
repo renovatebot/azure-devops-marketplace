@@ -1,0 +1,103 @@
+{
+    "id": "6095FBBE-853D-4F2E-BC15-A88C92A78B4D",
+    "name": "InstallPython",
+    "friendlyName": "Install Python on Windows",
+    "description": "Installs one or more Python versions into your build environment",
+    "helpMarkDown": "The *Install Python* task will install Python using a package from [nuget.org](https://nuget.org) and add it to `PATH`. These packages are part of the official release of CPython.\n\nMost other tasks assume you have already run this task to install the desired runtime. The folder where they are installed is customizable, but be aware that you may need to update subsequent task configuration if you change this.\n\nThe recommended configuration for using this task with multiple versions of Python is to enable multi-configuration on the phase and specify the version number as a Multiplier. See [the documentation](https://go.microsoft.com/fwlink/?linkid=835763) for information about parallel execution.\n\n(Note that the first-party *Use Python Version* task is preferable on the Hosted queues and works on all platforms, though as of 02 May 2018 is not fully available.)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 13
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "version",
+            "displayName": "Python",
+            "isExpanded": true
+        },
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Install Python",
+    "inputs": [
+        {
+            "name": "version",
+            "type": "pickList",
+            "label": "Python Version",
+            "defaultValue": "python",
+            "helpMarkDown": "Select a version to install, or enter a package constraint such as `python2==2.7.12`, `pythonx86==3.6` or `python==3.7.0-rc1`. To run multiple builds, use `PythonVersion` as a multiplier and provide multiple package constraints.",
+            "required" : true,
+            "groupName": "version",
+            "options": {
+                "python": "Latest 3.x (64-bit)",
+                "pythonx86": "Latest 3.x (32-bit)",
+                "python2": "Latest 2.x (64-bit)",
+                "python2x86": "Latest 2.x (32-bit)",
+                "pythondaily": "Latest daily build (64-bit only)",
+                "$(PythonVersion)": "Use $(PythonVersion) variable"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "prerelease",
+            "type": "boolean",
+            "label": "Install prerelease versions",
+            "defaultValue": false,
+            "groupName": "version",
+            "helpMarkDown": "Allow prerelease versions of Python to be installed. (Not required for daily builds.)"
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "",
+            "groupName": "packages",
+            "helpMarkDown": "Packages to install or upgrade immediately after installing Python. Packages are always upgraded. Specify `-r requirements.txt` to install from a requirements file."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Install Folder",
+            "defaultValue": "$(Agent.ToolsDirectory)\\PythonNuget",
+            "groupName": "advanced",
+            "helpMarkDown": "Folder where packages will be installed. By default, `$(Agent.ToolsDirectory)\\PythonNuget` will be used. The final install locations will be stored in output variables and on `PATH`."
+        },
+        {
+            "name": "nuGetAdditionalArgs",
+            "type": "string",
+            "label": "NuGet Arguments",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Additional arguments passed to NuGet.exe install. [More Information](https://docs.microsoft.com/nuget/tools/nuget-exe-cli-reference#install)."
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "pythonLocation",
+            "description": "The directory of the Python installation. Use this in subsequent tasks to access this copy of Python"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "InstallPython.ps1"
+        }
+    }
+}

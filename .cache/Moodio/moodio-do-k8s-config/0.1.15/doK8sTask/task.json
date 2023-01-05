@@ -1,0 +1,66 @@
+{
+    "id": "e207873a-8f07-4376-9a97-c48a21ea9fe6",
+    "name": "DO-K8S-Auth",
+    "friendlyName": "Digital Ocean Kubernetes Config Retriever",
+    "description": "Task to automatically get the latest kubernetes config file for a Digital Ocean Kubernetes cluster",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Moodio",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 15
+    },
+    "instanceNameFormat": "Retrieve k8s config",
+    "inputs": [
+        {
+            "name": "pat",
+            "type": "string",
+            "label": "Personal Access Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Personal access token for the DigitalOcean api"
+        },
+        {
+            "name": "clusterName",
+            "type": "string",
+            "label": "Cluster name",
+            "defaultValue": "",
+            "required":true,
+            "helpMarkDown": "Name of the DigitalOcean kubernetes cluster. This can be found on your DigitalOcean dashboard"
+        },
+        {
+            "name": "configOutput",
+            "type":"Radio",
+            "label": "Output config to",
+            "required": true,
+            "options": {
+                "file": "File",
+                "variable": "Variable"
+            },
+            "helpMarkDown":"Where to output retrieved config.yaml. To output to a file, select file, otherwise select variable and enter a variable name"
+        },
+        {
+            "name":"outputFilePath",
+            "type":"filePath",
+            "label": "Output file path",
+            "required":false,
+            "helpMarkDown" : "The file path to output the kubeconfig config.yaml file to",
+            "visibleRule":"configOutput=file"
+        },
+        {
+            "name":"outputVariable",
+            "type":"string",
+            "label": "Output variable name",
+            "defaultValue": "kubeconfig",
+            "required":false,
+            "helpMarkDown":"Variable name to output config to",
+            "visibleRule":"configOutput=variable"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

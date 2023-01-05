@@ -1,0 +1,73 @@
+{
+    "id": "832c5a5a-c8c7-4bf3-9776-265f113a2ed3",
+    "name": "InclusivenessAnalyzer",
+    "friendlyName": "Inclusiveness Analyzer",
+    "description": "Inclusiveness Analyzer",
+    "helpMarkDown": "Make your code inclusive! This extension checks code and docs on every commit for offensive and exclusive terms like blacklist and suggests alternatives.",
+    "category": "Utility",
+    "author": "Microsoft",
+    "helpUrl": "https://microsoft.github.io/InclusivenessAnalyzer/azuredevopsextension",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "groups": [
+        {
+            "name": "buildStatus",
+            "displayName": "Build status",
+            "isExpanded": true
+        },        
+        {
+            "name": "exclusions",
+            "displayName": "Exclude from scan",
+            "isExpanded": true
+        }
+    ],    
+    "inputs": [
+        {
+            "name": "buildStatusOnNonInclusiveTerm",
+            "type": "pickList",
+            "label": "The status of the build when non-inclusive terms are found.",
+            "defaultValue": "warning",
+            "required": false,
+            "groupName": "buildStatus",
+            "helpMarkDown": "Status of the build when non-inclusive terms are found.<br/>Options:<br/>`warning` (Default) - Build completes with a warning state.<br/>`failed` -  Breaks the build if non-inclusive terms are found.<br/>`success` - Build completes successfully",
+            "options": {
+                "warning": "warning",
+                "failed": "failed",
+                "success": "success"
+            }
+        },
+        {
+            "name": "excludeUnchangedFiles",
+            "type": "boolean",
+            "label": "Limit scan to files changed in the latest commit",
+            "defaultValue": true,
+            "required": false,
+            "groupName": "exclusions",
+            "helpMarkDown": "If `true` (Default) limits the scan to files changed in the latest commit. If `false` a full scan is run on each commit.<br/>The git checkout step needs to have at least 'with: fetch-depth: 2' configured."
+        },
+        {
+            "name": "excludeFromScan",
+            "type": "string",
+            "label": "Files and directory to exclude from scan",
+            "required": false,
+            "groupName": "exclusions",
+            "helpMarkDown": "Comma separated list of file patterns to exclude from analysis. [Glob patterns](https://github.com/isaacs/node-glob#glob-primer) are supported with a prefix of `**/`<br/>Eg. `**/skipme.txt,**/donotscan/*`"
+        },
+        {
+            "name": "excludeTerms",
+            "type": "string",
+            "label": "Non-inclusive terms to exclude from scan",
+            "required": false,
+            "groupName": "exclusions",
+            "helpMarkDown": "Comma separated list of non-inclusive terms to exclude from analysis.<br/>Eg. `he,she`"
+        }
+    ],
+    "execution": {
+        "Node16": {
+            "target": "index.js"
+        }
+    }
+}

@@ -1,0 +1,166 @@
+{
+    "id": "3017ab6d-dedb-452d-b342-c3c3ccc9db40",
+    "name": "DES-Azure-Taskgroup-Distribution",
+    "friendlyName": "Des-Azure Taskgroup Distribution",
+    "description": "Distribute one or more Azure DevOps Task Groups to one or more Azure DevOps Team Projects.",
+    "helpUrl": "https://docs.microsoft.com/en-us/azure/devops/extend/overview?toc=%2Fazure%2Fdevops%2Fextend%2Ftoc.json&bc=%2Fazure%2Fdevops%2Fextend%2Fbreadcrumb%2Ftoc.json&view=azure-devops",
+    "helpMarkDown": "[More information](https://docs.microsoft.com/en-us/azure/devops/extend/overview?toc=%2Fazure%2Fdevops%2Fextend%2Ftoc.json&bc=%2Fazure%2Fdevops%2Fextend%2Fbreadcrumb%2Ftoc.json&view=azure-devops)",
+    "category": "Azure Pipelines",
+    "author": "Developer enabling services for Azure (Des-Azure)",
+    "version": {
+        "Major": 7,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build"
+    ],
+    "preview": "false",
+    "instanceNameFormat": "Taskgroup Distribution",
+    "groups": [
+        {
+            "name": "Credentials",
+            "displayName": "Azure DevOps Credentials",
+            "isExpanded": true
+        },
+        {
+            "name": "RunType",
+            "displayName": "Run Type",
+            "isExpanded": true
+        },
+        {
+            "name": "SecurityPermission",
+            "displayName": "Access Permission",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "Token",
+            "type": "string",
+            "label": "PAT",
+            "defaultValue": "$(Maintain.Pipelines.Pat)",
+            "required": true,
+            "groupName": "Credentials",
+            "helpMarkDown": "Your Azure DevOps PAT with all scopes"
+        },
+        {
+            "name": "FileOrFolderSelector",
+            "type": "picklist",
+            "label": "Source Type",
+            "defaultValue": "Folder",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Select either Folder or Files as input",
+            "options": {
+                "Folder": "Folder",
+                "Files": "Files"
+            }
+        },
+        {
+            "name": "TeamProjectsToTarget",
+            "type": "picklist",
+            "label": "Team Projects to Target",
+            "defaultValue": "Neither",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Select the run target",
+            "options": {
+                "TeamProjects": "Specific Team Projects",
+                "Exclude": "All Team Projects Except",
+                "Neither": "All Team Projects"
+            }
+        },
+        {
+            "name": "CommitMessage",
+            "type": "string",
+            "label": "Commit Message",
+            "defaultValue": "$(Build.SourceVersionMessage)",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Last Commit message or reason for change"
+        },
+        {
+            "name": "Projects",
+            "type": "array",
+            "label": "Projects",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "One or more team project names comma separated",
+            "visibleRule": "TeamProjectsToTarget = TeamProjects"
+        },
+        {
+            "name": "ExcludeTeamProjects",
+            "type": "array",
+            "label": "Projects to Exclude",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "One or more team project names to ignore comma separated",
+            "visibleRule": "TeamProjectsToTarget = Exclude"
+        },
+        {
+            "name": "Folder",
+            "type": "string",
+            "label": "Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "The name of a folder containing Taskgroups",
+            "visibleRule": "FileOrFolderSelector = Folder"
+        },
+        {
+            "name": "Files",
+            "type": "array",
+            "label": "Files",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "A list of JSON Taskgroup files comma separated",
+            "visibleRule": "FileOrFolderSelector = Files"
+        },
+        {
+            "name": "DenyContributorEditPermission",
+            "type": "boolean",
+            "label": "Deny Contributors edit permissions on distributed task groups",
+            "defaultValue": "false",
+            "required": true,
+            "groupName": "SecurityPermission",
+            "helpMarkDown": "Deny the Contributor security role edit access on any distributed task groups. This feature prevents unexpected changes to centrally managed task groups used within multiple projects"
+        },
+        {
+            "name": "ExtraVerbose",
+            "type": "boolean",
+            "label": "Increase Verbosity",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Some verbose messages are always shown. Set to true to increase the level of verbosity, i.e. log additional verbose messages",
+            "groupName": "advanced"
+        },
+        {
+            "name": "RequestSleepTime",
+            "type": "string",
+            "pattern": "^\\d+$",
+            "label": "Request Throttle",
+            "required": false,
+            "defaultValue": "5",
+            "helpMarkDown": "This is the time in seconds to pause while retrieving the Access Control List (ACL) for a specific Security Namespace, Project and Taskgroup.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "Main.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

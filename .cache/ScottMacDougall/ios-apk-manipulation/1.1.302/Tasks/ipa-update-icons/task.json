@@ -1,0 +1,96 @@
+{
+    "id": "fc5764c4-2283-490e-9562-6aaa8c8e267a",
+    "name": "UpdateiOSIcons",
+    "friendlyName": "Update iOS App Icons",
+    "description": "Update the iOS app icons in the assets.car file. Works with source code or compiled ipa file.",
+    "helpMarkDown": "",
+    "category": "build",
+    "author": "Scott MacDougall",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 302
+    },
+    "instanceNameFormat": "Update iOS App Icons",
+    "demands": [
+        "xcode"
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourceOrIpa",
+            "type": "radio",
+            "label": "Location of assets being replaced",
+            "required": false,
+            "defaultValue": "source",
+            "helpMarkDown": "Select Source if you want to update the assets in your source code before compiling. Select IPA if you're looking to replace the assets in an ipa file",
+            "options": {
+                "source": "Source",
+                "ipa": "IPA"
+            }
+        },
+        {
+            "name": "ipaPath",
+            "type": "filePath",
+            "label": "Path to IPA",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "sourceOrIpa = ipa",
+            "helpMarkDown": "Relative path to the ipa file you want to replace the assets in."
+        },
+        {
+            "name": "iconPath",
+            "type": "filePath",
+            "label": "Icon",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Relative path to the file you want to use as a new icon."
+        },
+        {
+            "name": "assetsPath",
+            "type": "filePath",
+            "label": "Path to Assets.xcassets folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Relative path to Assets.xcassets folder where App Icon will be replaced."
+        },
+        {
+            "name": "cwdPath",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Working directory. Defaults to the root of the repository.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "appIconName",
+            "type": "string",
+            "label": "App Icon Asset Name",
+            "defaultValue": "AppIcon",
+            "required": true,
+            "helpMarkDown": "Name of the App Icon asset",
+            "groupName": "advanced"
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "repackagedIpaFile",
+            "description": "The resulting ipa file after assets update. This needs to be re-signed."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "ipa-update-icons.js"
+        }
+    },
+    "messages": {
+        "InvalidFilePath": "Invalid file path"
+    }
+}

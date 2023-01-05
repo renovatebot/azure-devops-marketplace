@@ -1,0 +1,72 @@
+{
+    "id": "DEF84F71-43AA-4905-B44D-4DA5FEF782A2",
+    "name": "WebSmokeTest",
+    "friendlyName": "Web app smoke test",
+    "description": "Test response status of web applications.",
+	"author": "Frédérick Ries",
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 2
+    },
+    "helpMarkDown": "",
+    "category": "Test",
+	"visibility": [
+        "Release"
+    ],
+	"runsOn": [
+        "Agent"
+    ],
+	"demands": [ "azureps" ],
+	"minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "RetryPolicy",
+            "displayName": "Retry policy",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "serviceUri",
+            "type": "string",
+			"defaultValue": "",
+            "required": true,
+            "label": "Service URI",
+            "helpMarkDown": "The complete URI of the application that must be tested.",
+        },
+		{
+            "name": "validResponseStatus",
+            "type": "string",
+			"defaultValue": "200",
+			"required": true,
+            "label": "Excpected status",
+            "helpMarkDown": "The expected HTTP status result expected.",
+        },
+		{
+            "name": "retries",
+            "type": "string",
+			"defaultValue": "0",
+			"required": true,
+            "label": "Number of retries",
+            "helpMarkDown": "Specify the number of retries if a check failed.",
+			"groupName": "RetryPolicy",
+        },
+		{
+            "name": "waitingTime",
+            "type": "string",
+			"defaultValue": "1500",
+			"required": true,
+            "label": "Waiting time",
+            "helpMarkDown": "Waiting time before a retry (in milliseconds)",
+			"groupName": "RetryPolicy",
+        }
+    ],
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\main.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

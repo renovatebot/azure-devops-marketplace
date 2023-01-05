@@ -1,0 +1,115 @@
+{
+  "id": "C016CC55-9914-4A9C-B9DF-F24D6F9A40F6",
+  "name": "AzSKSVTs",
+  "friendlyName": "AzSK Security Verification Tests",
+  "description": "Scan Azure resources for security issues using AzSK.",
+  "helpMarkDown": "[More Information](http://aka.ms/devopskit/cicd)",
+  "category": "Test",
+  "visibility": [
+    "Release"
+  ],
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "AzSK_SVTs $(message)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription connection required to access Azure resources from the pipeline"
+    },
+    {
+      "name": "GenerateMethodParameterSetSelection",
+      "type": "pickList",
+      "label": "Select Parameter Set",
+      "required": true,
+      "helpMarkDown": "",
+      "options": {
+        "ResourceGroupName": "ResourceGroupName",
+        "TagNameValuePair": "TagNameValuePair"
+      }
+    },
+    {
+      "name": "ResourceGroupName",
+      "type": "string",
+      "label": "ResourceGroup Names",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Comma-separated list of resource groups against which Security Verification Tests (SVTs) should be run.",
+      "visibleRule": "GenerateMethodParameterSetSelection = ResourceGroupName"
+    },
+    {
+      "name": "TagName",
+      "type": "string",
+      "label": "Tag Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Tag Name/Value pair to identify resources against which Security Verification Tests (SVTs) should be run.",
+      "visibleRule": "GenerateMethodParameterSetSelection = TagNameValuePair"
+    },
+    {
+      "name": "TagValue",
+      "type": "string",
+      "label": "Tag Value",
+      "defaultValue": "",
+      "helpMarkDown": "Tag Name/Value pair to identify resources against which Security Verification Tests (SVTs) should be run.",
+      "required": true,
+      "visibleRule": "GenerateMethodParameterSetSelection = TagNameValuePair"
+    },
+    {
+      "name": "SubscriptionId",
+      "type": "string",
+      "label": "Subscription ID",
+      "defaultValue": "",
+      "helpMarkDown": "Id of the subscription hosting the resources against which Security Verification Tests (SVTs) should be run. ",
+      "required": true
+    },
+    {
+      "name": "EnableGSSscan",
+      "type": "boolean",
+      "label": "Also scan subscription controls",
+      "defaultValue": "false",
+      "helpMarkDown": "Enable this option to run subscription security scan (GSS)  <br><b> Make sure SPN has reader access on the subscription </b>",
+      "required": false
+    },
+    {
+      "name": "EnableOMSLogging",
+      "type": "boolean",
+      "label": "Send events to Log Analytics",
+      "defaultValue": "true",
+      "helpMarkDown": "Enable this option to publish SVT evaluation results to a Log Analytics Workspace (specified via environment variables).",
+      "required": false
+    },
+    {
+      "name": "AggregateControlsStatus",
+      "type": "boolean",
+      "label": "Aggregate control status",
+      "defaultValue": "false",
+      "helpMarkDown": "Switch to aggregate the SVTs control output. When this is turned off each control failure is shown as one task error in the summary output.",
+      "required": false
+    },
+    {
+      "name": "DisableAutoUpdate",
+      "type": "boolean",
+      "label": "Do not auto-update AzSK",
+      "defaultValue": "false",
+      "helpMarkDown": "Switch to toggle auto update of AzSK and required AzureRM modules on the build server. Keep this un-checked for Hosted agents.",
+      "required": false
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "AzSKSVTRuntime.ps1"
+    }
+  }
+}

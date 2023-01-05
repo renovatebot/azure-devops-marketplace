@@ -1,0 +1,205 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "49e32553-9a91-4694-a513-72e52933a681",
+    "name": "NeuVectorScan",
+    "friendlyName": "Scan image with NeuVector",
+    "description": "Scan an image using the NeuVector Vulnerability Scanner",
+    "helpMarkDown": "",
+    "category": "Test",
+    "author": "NeuVector Inc.",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Scan image",
+    "groups": [
+        {
+            "name": "image",
+            "displayName": "Image to scan",
+            "isExpanded": true
+        },
+        {
+            "name": "highSeverityThreshold",
+            "displayName": "High severity threshold",
+            "isExpanded": true
+        },
+        {
+            "name": "mediumSeverityThreshold",
+            "displayName": "Medium severity threshold",
+            "isExpanded": true
+        },
+        {
+            "name": "cveBlacklist",
+            "displayName": "CVE black list",
+            "isExpanded": true
+        },
+        {
+            "name": "report",
+            "displayName": "Report",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "scanType",
+            "type": "radio",
+            "label": "Scan image on",
+            "required": true,
+            "defaultValue": "standalone",
+            "helpMarkDown": "",
+            "options": {
+                "external": "External Scanner",
+                "standalone": "Standalone Scanner"
+            }
+        },
+        {
+            "name": "neuvectorScanner",
+            "type": "connectedService:neuvectorScanner",
+            "label": "External Scanner",
+            "required": true,
+            "visibleRule": "scanType = external",
+            "helpMarkDown": "Select the service endpoint of the NeuVector Scanner which will perform the scan. To create an endpoint, click the Manage link and create a new NeuVector scanner service endpoint."
+        },
+        {
+            "name": "nvContainerRegistry",
+            "type": "connectedService:dockerregistry",
+            "label": "NeuVector Scanner Registry",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "scanType = standalone",
+            "helpMarkDown": "the registry where to pull the NeuVector scanner image "
+        },
+        {
+            "name": "nvRepository",
+            "type": "string",
+            "label": "NeuVector Scanner Repository",
+            "defaultValue": "neuvector/scanner",
+            "required": true,
+            "visibleRule": "scanType = standalone",
+            "helpMarkDown": "NeuVector Scanner Repository"
+        },
+        {
+            "name": "nvTag",
+            "type": "string",
+            "label": "NeuVector Scanner Tag",
+            "defaultValue": "latest",
+            "required": true,
+            "visibleRule": "scanType = standalone",
+            "helpMarkDown": "Tag of the NeuVector Scanner image."
+        },
+        {
+            "name": "containerRegistry",
+            "type": "connectedService:dockerregistry",
+            "label": "Container registry",
+            "groupName": "image",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select a Docker registry service connection which contains the image to scan. If no container registry is provided, the scanner scans only local images."
+        },
+        {
+            "name": "repository",
+            "type": "string",
+            "label": "Repository",
+            "groupName": "image",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Repository to scan"
+        },
+        {
+            "name": "tag",
+            "type": "string",
+            "label": "Tag",
+            "groupName": "image",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Tag of the image to scan."
+        },
+        {
+            "name": "scanLayers",
+            "type": "boolean",
+            "label": "Scan layers",
+            "groupName": "image",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Scan vulnerabilities in each image layer"
+        },
+        {
+            "name": "failOnHighSeverityThreshold",
+            "type": "boolean",
+            "label": "Fail on high severity vulnerability threshold",
+            "groupName": "highSeverityThreshold",
+            "defaultValue": "false",
+            "required": false
+        },
+        {
+            "name": "highSeverityThreshold",
+            "type": "string",
+            "label": "High severity threshold",
+            "groupName": "highSeverityThreshold",
+            "defaultValue": "1",
+            "required": false,
+            "visibleRule": "failOnHighSeverityThreshold = true",
+            "helpMarkDown": "Threshold of high severity vulnerabilities which will cause a failed build."
+        },
+        {
+            "name": "failOnMediumSeverityThreshold",
+            "type": "boolean",
+            "label": "Fail on medium severity vulnerability threshold",
+            "groupName": "mediumSeverityThreshold",
+            "defaultValue": "false",
+            "required": false
+        },
+        {
+            "name": "mediumSeverityThreshold",
+            "type": "string",
+            "label": "Medium severity threshold",
+            "groupName": "mediumSeverityThreshold",
+            "defaultValue": "3",
+            "required": true,
+            "visibleRule": "failOnMediumSeverityThreshold = true",
+            "helpMarkDown": "Threshold of high severity vulnerabilities which will cause a failed build."
+        },
+        {
+            "name": "failOnCveBlacklist",
+            "type": "boolean",
+            "label": "Fail on specific CVE vulnerabilities",
+            "groupName": "cveBlacklist",
+            "defaultValue": "false",
+            "required": false
+        },
+        {
+            "name": "cveBlacklist",
+            "type": "multiLine",
+            "label": "CVE black list",
+            "groupName": "cveBlacklist",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "failOnCveBlacklist = true",
+            "helpMarkDown": "List of CVEs which will cause a failed build. Provide a CVE per line (e.g. CVE-2019-10098)"
+        },
+        {
+            "name": "reportJsonOutputPath",
+            "type": "string",
+            "label": "JSON output path",
+            "groupName": "report",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "If provided, the scan report will be saved to the provided path as JSON. Example: `$(Build.ArtifactStagingDirectory)/neuvector-scan-report.json`."
+        },
+        {
+            "name": "reportMarkdownOutputPath",
+            "type": "string",
+            "label": "Markdown output path",
+            "groupName": "report",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "If provided, the scan report will be saved to the provided path as Markdown. Example: `$(Build.ArtifactStagingDirectory)/neuvector-scan-report.md`."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "scan.js"
+        }
+    }
+}

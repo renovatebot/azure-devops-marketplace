@@ -1,0 +1,414 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "azureml-endpoint-type",
+            "description": "Service connection type for Azure Machine Learning Workspace",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "azuremlws",
+                "displayName": "AML Workspace",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://management.azure.com",
+                    "isVisible": "false",
+                    "helpText": "",
+                    "dependsOn": {
+                        "map": [
+                            {
+                                "key": "AzureCloud",
+                                "value": "https://management.azure.com/"
+                            },
+                            {
+                                "key": "AzureChinaCloud",
+                                "value": "https://management.chinacloudapi.cn/"
+                            },
+                            {
+                                "key": "AzureUSGovernment",
+                                "value": "https://management.usgovcloudapi.net/"
+                            },
+                            {
+                                "key": "AzureGermanCloud",
+                                "value": "https://management.microsoftazure.de/ "
+                            }
+                        ]
+                    }
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "environment",
+                        "name": "Environment",
+                        "description": "Microsoft Azure Environment for the subscription",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "environmentValues",
+                            "defaultValue": "AzureCloud",
+                            "possibleValues": [
+                                {
+                                    "value": "AzureCloud",
+                                    "displayValue": "Azure Cloud"
+                                },
+                                {
+                                    "value": "AzureChinaCloud",
+                                    "displayValue": "Azure China Cloud"
+                                },
+                                {
+                                    "value": "AzureUSGovernment",
+                                    "displayValue": "Azure US Government"
+                                },
+                                {
+                                    "value": "AzureGermanCloud",
+                                    "displayValue": "Azure German Cloud"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "location",
+                        "name": "Location",
+                        "description": "Location for AML Workspace",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "environmentValues",
+                            "defaultValue": "eastus",
+                            "possibleValues": [
+                                {
+                                    "value": "eastus",
+                                    "displayValue": "East US"
+                                },
+                                {
+                                    "value": "eastus2",
+                                    "displayValue": "East US 2"
+                                },
+                                {
+                                    "value": "westcentralus",
+                                    "displayValue": "West Central US"
+                                },
+                                {
+                                    "value": "westus2",
+                                    "displayValue": "West US 2"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "subscriptionId",
+                        "name": "Subscription Id",
+                        "description": "Subscription Id from the <a href=\"https://go.microsoft.com/fwlink/?LinkID=312990\" target=\"_blank\">publish settings file</a>",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "guid",
+                            "maxLength": 38
+                        }
+                    },
+                    {
+                        "id": "resourceGroupName",
+                        "name": "Resource Group Name",
+                        "description": "Resource Group Name from the <a href=\"https://go.microsoft.com/fwlink/?LinkID=312990\" target=\"_blank\">publish settings file</a>",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "id": "workspaceName",
+                        "name": "Workspace Name",
+                        "description": "Workspace Name from the <a href=\"https://go.microsoft.com/fwlink/?LinkID=312990\" target=\"_blank\">publish settings file</a>",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}?api-version=2016-06-01",
+                        "resultSelector": "jsonpath:$.value[*]"
+                    },
+                    {
+                        "name": "Models",
+                        "endpointUrl": "https://{{endpoint.location}}.modelmanagement.azureml.net/api/subscriptions/{{endpoint.subscriptionId}}/resourceGroups/{{endpoint.resourceGroupName}}/providers/Microsoft.MachineLearningServices/workspaces/{{endpoint.workspaceName}}/models?count=50&api-version=2018-03-01-preview",
+                        "resultSelector": "jsonpath:$.value[0].id == '\bsklearn_regression_model\b'"
+                    },
+                    {
+                        "name": "ComputeTargets",
+                        "endpointUrl": "https://management.azure.com/subscriptions/{{endpoint.subscriptionId}}/resourceGroups/{{endpoint.resourceGroupName}}/providers/Microsoft.MachineLearningServices/workspaces/{{endpoint.workspaceName}}/computes?api-version=2018-11-19",
+                        "resultSelector": "jsonpath:$.value[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-service-principal",
+                        "inputDescriptors": [
+                            {
+                                "id": "accessToken",
+                                "name": "Access Token",
+                                "description": "Access token to be used for creating the service principal",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 256
+                                },
+                                "values": {
+                                    "inputId": "accessTokenInput",
+                                    "isDisabled": true
+                                }
+                            },
+                            {
+                                "id": "role",
+                                "name": "Role",
+                                "description": "Role to be assigned to the service principal",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 256
+                                },
+                                "values": {
+                                    "inputId": "roleInput",
+                                    "isDisabled": true
+                                }
+                            },
+                            {
+                                "id": "scope",
+                                "name": "Scope",
+                                "description": "Scope on which the role should be assigned to the service principal",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 1024
+                                },
+                                "values": {
+                                    "inputId": "scopeInput",
+                                    "isDisabled": true
+                                }
+                            },
+                            {
+                                "id": "accessTokenFetchingMethod",
+                                "name": "Access Fetching Method",
+                                "description": "How the Access Token is fetched",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 128
+                                },
+                                "values": {
+                                    "inputId": "accessTokenFetchingMethodInput",
+                                    "isDisabled": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-managed-service-identity"
+                    }
+                ],
+                "helpMarkDown": "For Service Principal: refer to <a href=\"https://go.microsoft.com/fwlink/?LinkID=623000\" target=\"_blank\"><b>link</b></a>. <a href=\"https://msdn.microsoft.com/Library/vs/alm/Release/author-release-definition/understanding-tasks#serviceconnections\" target=\"_blank\"><b>Learn More</b></a>",
+                "icon": "icons/azure-endpoint-icon.png"
+            }
+        },
+        {
+            "id": "azureml-mms-artifact-type",
+            "description": "Azure Machine Learning Model Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "AzureMLMMS",
+                "displayName": "AML Model Artifact",
+                "endpointTypeId": "azuremlws",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}",
+                "artifactType": "Build",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service Endpoint",
+                        "description": "Service Endpoint Id",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Model Names",
+                        "description": "Name(s) of the Model(s), separated by coma",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest version for the specified models"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Name: \"{{name}}\", downloadUrl : \"https://{{endpoint.location}}.modelmanagement.azureml.net/api/subscriptions/{{endpoint.subscriptionId}}/resourceGroups/{{endpoint.resourceGroupName}}/providers/Microsoft.MachineLearningServices/workspaces/{{endpoint.workspaceName}}/models?count=50&api-version=2018-03-01-preview\" }"
+                    },
+                    {
+                        "target": "createwebhook",
+                        "endpointUrl": "{{{endpoint.url}}}team-events/rmwebhook",
+                        "requestVerb": "Post",
+                        "requestContent": "{\"eventType\":\"rmwebhook-create\", \"resource\": {\"webHookName\": \"{{{webHookName}}}\", \"secret\":\"{{{secret}}}\", \"payloadUrl\": \"{{{payloadUrl}}}\"}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "target": "deletewebhook",
+                        "endpointUrl": "{{{endpoint.url}}}team-events/rmwebhook",
+                        "requestVerb": "Post",
+                        "requestContent": "{\"eventType\":\"rmwebhook-remove\", \"resource\": {\"webHookName\" : \"{{{webHookName}}}\" }}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "target": "listwebhook",
+                        "endpointUrl": "{{{endpoint.url}}}team-events/rmwebhook",
+                        "requestVerb": "Post",
+                        "requestContent": "{\"eventType\":\"rmwebhook-list\", \"resource\": {}}",
+                        "resultSelector": "jsonpath:$.ReleaseWebHooks[*]",
+                        "resultTemplate": "{ \"value\" : \"{{{ PayloadUrl }}}\", \"displayValue\" : \"{{{ WebHookName }}}\" }"
+                    }
+                ],
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": true,
+                    "isTriggerSupportedOnlyInHosted": false,
+                    "isWebhookSupportedAtServerLevel": false,
+                    "resources": {
+                        "TriggerDisabledMessage": "Enabling the trigger will create a new release every time the model is updated"
+                    },
+                    "payloadHashHeaderName": "X-AMLDevops-Signature",
+                    "webhookPayloadMapping": {
+                        "version": "{{id}}",
+                        "definition": "{{name}}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "azureml-mms-download-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/DownloadAMLModel"
+            }
+        },
+        {
+            "id": "azureml-model-deploy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLModelDeploy"
+            }
+        },
+        {
+            "id": "azureml-run-experiment-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLRunExperiment"
+            }
+        },
+        {
+            "id": "azureml-model-register-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLRegisterModel"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

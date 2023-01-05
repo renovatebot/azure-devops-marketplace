@@ -1,0 +1,123 @@
+{
+  "id": "1f570c9d-9134-406c-b654-eca4b880ec3b",
+  "name": "swagger-diff",
+  "friendlyName": "OpenApi Contract Diff V2",
+  "description": "A build/release task for comparing two OpenAPI (v3) or Swagger (v2) REST Contracts.",
+  "helpMarkdown": "### Compare two Contracts - left-side and right-side.\nContracts can be either OpenAPI (v3) or Swagger (v2).",
+  "category": "Test",
+  "visibility": ["Build", "Release"],
+  "author": "duy",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "demands": ["npm"],
+  "groups": [
+    {
+      "name": "left",
+      "displayName": "Left-Side Contract",
+      "isExpanded": true
+    },
+    {
+      "name": "right",
+      "displayName": "Right-Side Contract",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "swaggerVersion",
+      "type": "radio",
+      "label": "Contract Version:",
+      "defaultValue": "v3",
+      "required": "true",
+      "helpMarkDown": "Which version of contract schema is being used",
+      "options": {
+        "v3": "OpenAPI (v3)",
+        "v2": "Swagger (v2)"
+      }
+    },
+    {
+      "name": "webhookUrl",
+      "type": "string",
+      "label": "Webhook Url:",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "The URL of the webhook. We use to send the breaking changes notification"
+    },
+    {
+      "name": "leftType",
+      "type": "radio",
+      "label": "Left Contract Type:",
+      "defaultValue": "file",
+      "required": "true",
+      "helpMarkDown": "Whether the left-side contract is a file path or Url.",
+      "options": {
+        "file": "File",
+        "url": "Url"
+      },
+      "groupName": "left"
+    },
+    {
+      "name": "leftFilePath",
+      "type": "filePath",
+      "label": "Left Contract File Path:",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "The file path of the left-side contract.",
+      "visibleRule": "leftType = file",
+      "groupName": "left"
+    },
+    {
+      "name": "leftUrl",
+      "type": "string",
+      "label": "Left Contract Url:",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "The URL of the left-side contract.",
+      "visibleRule": "leftType = url",
+      "groupName": "left"
+    },
+    {
+      "name": "rightType",
+      "type": "radio",
+      "label": "Right Contract Type:",
+      "defaultValue": "file",
+      "required": "true",
+      "helpMarkDown": "Whether the right-side contract is a file path or Url.",
+      "options": {
+        "file": "File",
+        "url": "Url"
+      },
+      "groupName": "right"
+    },
+    {
+      "name": "rightFilePath",
+      "type": "filePath",
+      "label": "Right Contract File Path:",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "The file path of the right-side contract.",
+      "visibleRule": "rightType = file",
+      "groupName": "right"
+    },
+    {
+      "name": "rightUrl",
+      "type": "string",
+      "label": "Right Contract Url:",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "The URL of the right-side contract.",
+      "visibleRule": "rightType = url",
+      "groupName": "right"
+    }
+  ],
+  "instanceNameFormat": "OpenAPI Contract Diff $(name)",
+  "execution": {
+    "Node10": {
+      "target": "task.js",
+      "argumentFormat": ""
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+    "id": "{D1776EE2-1EDF-46DE-BDF2-3CBA0CBF35E5}",
+    "name": "AppPoolStopStart Local/Remote",
+    "friendlyName": "Application Pool Stop/start/Restart on Local/Remote machine",
+    "description": "Application Pool Stop/Start/Restart on Local/Remote machine",
+    "helpMarkDown": "This is to start or stop or restart the IIS based website Application Pool.",
+    "category": "Deploy",
+	 "visibility": [
+    "Build",
+    "Release"
+  ],
+    "author": "VikramaReddy",
+    "version": {
+        "Major": 7,
+        "Minor": 0,
+        "Patch": 0
+    },
+	"instanceNameFormat": "Application Pool $(samplestring)",
+    "inputs": [	
+	{
+      "name": "machinesList",
+      "type": "multiLine",
+      "label": "Machines",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the machine IP address or FQDNs Saparated by (,) Comma."
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Admin Login",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the administrator's login of the target machine."
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the administrator's password of the target machine. <br>The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it, and then use it here, like '$(adminPassword)'."
+    },
+        {
+            "name": "ApppoolName",
+            "type": "string",
+            "label": "Application Pool name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide the application pool name."
+        },
+        {
+            "name": "stopstart",
+            "type": "pickList",
+            "label": "Application Pool STOP/START",
+            "required": true,
+            "defaultValue": "",
+            "options": {
+                "STOP": "STOP",
+                "START": "START",
+                "RESTART": "RESTART"				
+        },
+		"helpMarkDown": "Select STOP or START or RESTART to stop or start or restart the application pool."
+		}
+    ],
+    "execution": {
+        "PowerShell": {
+        "target": "$(currentDirectory)\\invokePS.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+        }
+    }

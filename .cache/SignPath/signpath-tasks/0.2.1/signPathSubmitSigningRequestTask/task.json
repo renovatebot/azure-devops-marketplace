@@ -1,0 +1,133 @@
+{
+    "id":  "d779950a-be59-4a8f-88bf-84a2fbb60476",
+    "name":  "SignPathSubmitSigningRequest",
+    "friendlyName":  "SignPath: Submit Signing Request",
+    "description":  "Submit an artifact to SignPath for code signing.",
+    "helpMarkDown":  "",
+    "category":  "Signing",
+    "author":  "SignPath GmbH",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  2,
+                    "Patch":  1
+                },
+    "instanceNameFormat":  "SignPath SubmitSigningRequest $(projectName) / $(signingPolicyName)",
+    "groups":  [
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "waitForCompletion",
+                       "type":  "pickList",
+                       "label":  "Wait until signing request has completed?",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "options":  {
+                                       "sync":  "Wait synchronously, download immediately",
+                                       "async":  "Start asynchronously, download later"
+                                   },
+                       "helpMarkDown":  "Set to true if you want the task to wait synchronously for the signing request to complete and to immediately download the signed artifact. If you, instead, start signing asynchronously you can define a variable to which the signing request ID is written. You can then use the SignPathDownloadArtifact task to download the sigend artifact later."
+                   },
+                   {
+                       "name":  "inputArtifactPath",
+                       "type":  "filePath",
+                       "label":  "Input artifact path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Your build artifact which should be signed by SignPath."
+                   },
+                   {
+                       "name":  "inputArtifactDescription",
+                       "type":  "multiLine",
+                       "label":  "Artifact description",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A description of your artifact, used as the created signing request\u0027s description."
+                   },
+                   {
+                       "name":  "organizationId",
+                       "type":  "string",
+                       "label":  "Organization ID",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Your SignPath organization ID. If you don\u0027t know it, log into SignPath and go to the organization details page."
+                   },
+                   {
+                       "name":  "projectName",
+                       "type":  "string",
+                       "label":  "Project name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The project name. If you don\u0027t know it, log into SignPath, go to the projects list page and select one of the projects."
+                   },
+                   {
+                       "name":  "signingPolicyName",
+                       "type":  "string",
+                       "label":  "Signing policy name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The signing policy name. If you don\u0027t know it, log into SignPath, go to the project\u0027s details page and select one of the signing policies."
+                   },
+                   {
+                       "name":  "artifactConfigurationName",
+                       "type":  "string",
+                       "label":  "Artifact configuration name (optional)",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The artifact configuration name. If left empty, the default artifact configuration is selected. If you don\u0027t know it, log into SignPath, go to the project\u0027s details page and select one of the artifact configurations."
+                   },
+                   {
+                       "name":  "outputArtifactPath",
+                       "type":  "filePath",
+                       "label":  "Output artifact path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "visibleRule":  "waitForCompletion = sync",
+                       "helpMarkDown":  "The path for the signed artifact returned by SignPath."
+                   },
+                   {
+                       "name":  "allowOverwriting",
+                       "type":  "boolean",
+                       "label":  "Overwrite output artifact if file exists",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "visibleRule":  "waitForCompletion = sync",
+                       "helpMarkDown":  "If the output artifact path already exists, should it be overwritten?"
+                   },
+                   {
+                       "name":  "outputVariableName",
+                       "type":  "string",
+                       "label":  "Output variable name",
+                       "defaultValue":  "SigningRequestId",
+                       "required":  false,
+                       "visibleRule":  "waitForCompletion = async",
+                       "helpMarkDown":  "The variable to which the signing request ID is written to."
+                   },
+                   {
+                       "name":  "ciUserToken",
+                       "type":  "string",
+                       "label":  "CI user token",
+                       "defaultValue":  "$(CIUserToken)",
+                       "required":  true,
+                       "helpMarkDown":  "The CI user\u0027s access token. Do NOT save it inside your YAML build definition, use a password variable to obtain the value!"
+                   },
+                   {
+                       "name":  "apiUrl",
+                       "type":  "string",
+                       "label":  "API URL",
+                       "defaultValue":  "https://app.signpath.io/api/",
+                       "required":  true,
+                       "groupName":  "advanced",
+                       "helpMarkDown":  "The URL of your SignPath instance or the SignPath cloud instance URL."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "SignPathSubmitSigningRequestTask.ps1"
+                                      }
+                  }
+}

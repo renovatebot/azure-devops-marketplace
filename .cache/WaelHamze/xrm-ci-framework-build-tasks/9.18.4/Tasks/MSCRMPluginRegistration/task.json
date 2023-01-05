@@ -1,0 +1,104 @@
+{
+  "id": "a48708ef-a5d6-4af5-a9be-589847132834",
+  "name": "MSCRMPluginRegistration",
+  "friendlyName": "Plugin Registration",
+  "description": "Updates a CDS Plugin/Workflow activity assembly/types/steps in a PowerApps/CDS/Dynamics 365 environment",
+  "author": "Wael Hamze",
+  "helpMarkDown": "Upsert plugin/workflow assembly, types and steps",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "preview": true,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Plugin Registration",
+  "inputs": [
+    {
+      "name": "crmConnectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "More information on [format](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/xrm-tooling/use-connection-strings-xrm-tooling-connect#connection-string-parameters)"
+    },
+    {
+      "name": "registrationType",
+      "type": "pickList",
+      "label": "Registration Type",
+      "defaultValue": "None",
+      "required": true,
+      "options": {
+        "upsert": "Upsert",
+        "reset": "Reset",
+        "delsert": "Delsert"
+      },
+      "helpMarkDown": "Upsert: Updates existing assembly/types/steps and creates if not present.  Reset: Deletes existing assembly/types/steps and re-creates everything.  Delsert: Deletes types/steps not present in json followed by Upsert"
+    },
+    {
+      "name": "assemblyPath",
+      "type": "filePath",
+      "label": "Assembly path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path of assembly to be register."
+    },
+    {
+      "name": "solutionName",
+      "type": "string",
+      "label": "CRM solution name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Unique name of solution to which plugin/workflow assembly has to be register."
+    },
+    {
+      "name": "useSplitAssembly",
+      "type": "boolean",
+      "label": "Split Plugin Assembly",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Set to true to split plugin assembly."
+    },
+    {
+      "name": "projectFilePath",
+      "type": "filePath",
+      "label": "Project File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Plugin project file path.",
+      "visibleRule": "useSplitAssembly = true"
+    },
+    {
+      "name": "mappingFile",
+      "type": "filePath",
+      "label": "Mapping File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Plugin registration json/xml mapping used to register assembly/types/steps.  Mapping json PluginRegistrationMappingExample.json/xml file sample can be found [here](https://github.com/WaelHamze/xrm-ci-framework/blob/master/MSDYNV9/Xrm.Framework.CI/Xrm.Framework.CI.PowerShell.Cmdlets/PluginRegistration).  JSON schema which will help you to generate plugin registration mapping can be found [here](https://github.com/WaelHamze/xrm-ci-framework/blob/master/MSDYNV9/Xrm.Framework.CI/Xrm.Framework.CI.PowerShell.Cmdlets/PluginRegistration/PluginRegistrationSchema.json).  How to use schema can be found [here](https://blogs.msdn.microsoft.com/webdev/2014/04/10/intellisense-for-json-schema-in-the-json-editor/).  To generate plugin registration JSON mapping from existing assembly/type/steps from a specific solution, please use this [script](https://github.com/WaelHamze/xrm-ci-framework/blob/master/MSDYNV9/Xrm.Framework.CI/Xrm.Framework.CI.PowerShell.Scripts/GetPluginRegistration.ps1)."
+    },
+    {
+      "name": "crmConnectionTimeout",
+      "type": "string",
+      "label": "Connection Timeout",
+      "defaultValue": "360",
+      "required": true,
+      "helpMarkDown": "The connection timeout in seconds"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMPluginRegistration.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

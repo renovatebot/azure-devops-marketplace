@@ -1,0 +1,80 @@
+{
+    "id": "f8c97cf9-4e17-4244-b0fb-f540cea78153",
+    "name": "GooglePlayIncreaseRollout",
+    "friendlyName": "Google Play - Increase Rollout",
+    "description": "Increase the rollout fraction of an app previously deployed to the Google Play store",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "npm"
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Increase $(packageName) rollout fraction to $(userFraction)",
+    "inputs": [
+        {
+            "name": "authType",
+            "type": "pickList",
+            "label": "Authentication Method",
+            "defaultValue": "ServiceEndpoint",
+            "helpMarkDown": "",
+            "options": {
+                "JsonFile": "JSON Auth File",
+                "ServiceEndpoint": "Service Endpoint"
+            }
+        },
+        {
+            "name": "serviceEndpoint",
+            "type": "connectedService:google-play",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Google Play service endpoint that is configured with your account credentials.",
+            "visibleRule": "authType = ServiceEndpoint"
+        },
+        {
+            "name": "serviceAccountKey",
+            "type": "filePath",
+            "label": "JSON Key Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The JSON file provided by Google Play that includes the service account's identity you wish to publish your APK under.",
+            "visibleRule": "authType = JsonFile"
+        },
+        {
+            "name": "packageName",
+            "type": "string",
+            "label": "Package Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The unique package identifier (e.g. com.foo.myapp) that you wish to update."
+        },
+        {
+            "name": "userFraction",
+            "type": "string",
+            "label": "Rollout Fraction",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "User fraction to update your rollout release to."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "google-play-rollout-update.js",
+            "argumentFormat": ""
+        },
+        "PowerShell": {
+            "target": "$(currentDirectory)\\google-play-rollout-update.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

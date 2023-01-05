@@ -1,0 +1,112 @@
+{
+	"id": "4A7C4629-355F-4EB4-9165-4ED3829E2A10",
+	"name": "Kudu.Upload",
+	"friendlyName": "Kudu Tasks Upload",
+	"description": "Uploads package into Kudu.",
+	"helpMarkDown": "[More Information](https://github.com/aquiladev/vsts-kudu-tasks)",
+	"category": "Deploy",
+	"visibility": [ "Build", "Release" ],
+	"author": "Sergii Bomko",
+	"version": {
+		"Major": 0,
+		"Minor": 2,
+		"Patch": 3
+	},
+	"demands": [ "azureps" ],
+	"minimumAgentVersion": "1.95.0",
+	"groups": [
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:Azure:Certificate,UsernamePassword",
+			"label": "Azure Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure subscription to target for deployment."
+		},
+		{
+			"name": "WebsiteName",
+			"type": "pickList",
+			"label": "Web App Name",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "WebsiteLocation",
+			"type": "pickList",
+			"label": "Web App Location",
+			"defaultValue": "South Central US",
+			"required": true,
+			"helpMarkDown": "Select a region for deployment.Possible options are **East US**, **East US 2**, **Central US**, **South Central US**, **West US**, **North Europe**, **West Europe** and others.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "Slot",
+			"type": "string",
+			"label": "Slot",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Slot"
+		},
+		{
+			"name": "Package",
+			"type": "filePath",
+			"label": "Zip Package",
+			"defaultValue": "",
+			"helpMarkDown": "Path to the zip package under the default artifact directory.",
+			"required": true
+		},
+		{
+			"name": "DestinationPath",
+			"type": "string",
+			"label": "Destination Path",
+			"defaultValue": "/site/wwwroot",
+			"helpMarkDown": "Destination path in Kudu.",
+			"required": true,
+			"groupName": "advanced"
+		},
+		{
+			"name": "StopWebsite",
+			"type": "boolean",
+			"label": "Stop Web App",
+			"defaultValue": "false",
+			"helpMarkDown": "By enabling this, Web App stops before upload and starts after upload.",
+			"required": false,
+			"groupName": "advanced"
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "WebsiteName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureWebSiteNames",
+			"parameters": {
+				"WebSiteLocation": "$(WebsiteLocation)"
+			}
+		},
+		{
+			"target": "WebsiteLocation",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureLocations"
+		}
+	],
+	"instanceNameFormat": "Upload: $(WebsiteName)",
+	"execution": {
+		"AzurePowerShell": {
+			"target": "$(currentDirectory)\\Upload.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

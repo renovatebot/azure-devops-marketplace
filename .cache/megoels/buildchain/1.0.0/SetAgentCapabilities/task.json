@@ -1,0 +1,105 @@
+{
+  "id": "a6808a30-c138-11e6-8c43-453c29d2d2d0",
+  "name": "SetAgentCapabilities",
+  "friendlyName": "Set Agent Capabilities",
+  "description": "Add or Modify Agent capabilities during the build run",
+  "author": "megoels",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "groups": [
+    {
+      "name": "system",
+      "displayName": "System Settings",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "SetAgentCapabilities $(message)",
+  "inputs": [
+    {
+      "name": "customAuth",
+      "type": "boolean",
+      "label": "Custom Auth (Endpoint)",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Access the build api via custom Endpoint. Set it to false for bearer token authorization via System.AccessToken variable."
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "Server Endpoint",
+      "required": true,
+      "helpMarkDown": "The server generic endpoint, set the key -Password/Token Key- field to your API key.",
+      "visibleRule": "customAuth = true"
+    },
+    {
+      "name": "capabilityByBuildStatus",
+      "type": "boolean",
+      "label": "Capabilities by build status",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Use this parameter to create or modify capability according to build status."
+    },
+    {
+      "name": "capabilities",
+      "type": "string",
+      "label": "Capabilities",
+      "required": true,
+      "defaultValue": "Key=Value",
+      "helpMarkDown": "List of capabilities in the form of capability1=value1;capability2=value2;...",
+      "visibleRule": "capabilityByBuildStatus = false"
+    },
+    {
+      "name": "capabilitiesOnSuccess",
+      "type": "string",
+      "label": "Capabilities On Success",
+      "required": true,
+      "defaultValue": "Key=Value",
+      "helpMarkDown": "List of capabilities in the form of capability1=value1;capability2=value2;...",
+      "visibleRule": "capabilityByBuildStatus = true"
+    },
+    {
+      "name": "capabilitiesOnFailure",
+      "type": "string",
+      "label": "Capabilities On Failure",
+      "required": true,
+      "defaultValue": "Key=Value",
+      "helpMarkDown": "List of capabilities in the form of capability1=value1;capability2=value2;...",
+      "visibleRule": "capabilityByBuildStatus = true"
+    },
+    {
+      "name": "http_proxy",
+      "type": "string",
+      "label": "HTTP Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here",
+      "required": false,
+      "groupName": "system"
+    },
+    {
+      "name": "https_proxy",
+      "type": "string",
+      "label": "HTTPS Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here",
+      "required": false,
+      "groupName": "system"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "setCapabilities.js",
+      "argumentFormat": ""
+    }
+  }
+}

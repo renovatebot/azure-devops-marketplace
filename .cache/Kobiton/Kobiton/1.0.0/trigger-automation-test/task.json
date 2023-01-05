@@ -1,0 +1,203 @@
+{
+    "id": "4cac8c72-5d22-4afc-88c3-5043739fd0c8",
+    "name": "Trigger-automation-test",
+    "friendlyName": "Kobiton Automation Test Executor",
+    "description": "This task is used to trigger your automation test script on Kobiton devices",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "tech@kobiton.com",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 12
+    },
+    "instanceNameFormat": "Kobiton Automation Test Executor",
+    "inputs": [
+        {
+            "name": "kobitonEndpoint",
+            "aliases": [
+                "Kobiton"
+            ],
+            "type": "connectedService:kobiton",
+            "label": "Kobiton API credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Set your Kobiton credentials for authorization purposes. The Username and API key will be consumed by `KOBITON_USERNAME` and `KOBITON_API_KEY` environment variables in your test script. To get your Kobiton Username and API Key, please follow instructions at `IV. Configure Test Script for Kobiton` section on [our blog](https://kobiton.com/blog/tutorial/parallel-testing-selenium-webdriver/)"
+        },
+        {
+            "name": "kobitonRemoteEndpoint",
+            "aliases": [
+                "remote-server"
+            ],
+            "type": "connectedService:kobiton-remote-server",
+            "label": "Kobiton executor server credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Please contract Kobiton to get your organization's Username and Password to be authenicated to Kobiton executor server."
+        },
+        {
+            "name": "gitRepo",
+            "type": "string",
+            "label": "Git repository URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Link to your Git repository."
+        },
+        {
+            "name": "gitBranch",
+            "type": "string",
+            "label": "Git repository branch",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The branch of your Git repository you want to execute automation test with."
+        },
+        {
+            "name": "gitSSH",
+            "type": "multiLine",
+            "label": "Git repository SSH key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This is required if your Git Repository is private"
+        },
+        {
+            "name": "checkUploadApp",
+            "type": "boolean",
+            "label": "Upload New App Version",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check if you want to upload new app version from your Azure Devops Release Artifact and use it for testing. In this current version, it is required that you already upload the first version of your app to Kobiton App Repository via Portal or API."
+        },
+        {
+            "name": "appFilePath",
+            "type": "filePath",
+            "label": "App file path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The directory to your app file (apk/ipa).",
+            "visibleRule" : "checkUploadApp = true"
+        },
+        {
+            "name": "uploadAppId",
+            "type": "string",
+            "label": "App ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The AppID number of your uploaded app in Kobiton App Repo (Example: `1234`). This value will be consumed by the `KOBITON_SESSION_APPLICATION` environment variable in your test script.",
+            "visibleRule" : "checkUploadApp = true",
+            "validation": {
+                "expression": "isMatch(value, '^[0-9]{0,}$', 'IgnoreCase')",
+                "message": "App ID must contains only numeric characters."
+            }
+        },
+        {
+            "name": "appId",
+            "type": "string",
+            "label": "App ID/URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The App ID or App URL to use in your test script. You can put the AppID of your existed App on Kobiton App Repository (*Format*: `kobiton-store:APP_ID`), or you can also put a URL to your apk/ipa file. This value will be consumed by the `KOBITON_SESSION_APPLICATION` environment variable in your test script.",
+            "visibleRule" : "checkUploadApp = false"
+        },
+        {
+            "name": "useCustomDevice",
+            "type": "boolean",
+            "label": "Use Custom Device",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Check if you want to execute one or some test cases with a specific Kobiton Cloud Device. If you already set your device information in your test script, leave this field unchecked."
+        },
+        {
+            "name": "deviceName",
+            "type": "string",
+            "label": "Kobiton Cloud Device Name",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "useCustomDevice = true",
+            "helpMarkDown": "This value will be consumed by the `KOBITON_DEVICE_NAME` environment variable in your test script. [Kobiton Automation Testing DesiredCaps](https://docs.kobiton.com/automation-testing/desired-capabilities-usage/)"
+        },
+        {
+            "name": "devicePlatformVersion",
+            "type": "string",
+            "label": "Device platform version",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "useCustomDevice = true",
+            "helpMarkDown": "This value will be consumed by the `KOBITON_SESSION_PLATFORM_VERSION` environment variable in your test script. [Kobiton Automation Testing DesiredCaps](https://docs.kobiton.com/automation-testing/desired-capabilities-usage/)"
+        },
+        {
+            "name": "devicePlatformName",
+            "type": "radio",
+            "label": "Device platform",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "useCustomDevice = true",
+            "helpMarkDown": "This value will be consumed by the `KOBITON_DEVICE_PLATFORM_NAME` environment variable in your test script. [Kobiton Automation Testing DesiredCaps](https://docs.kobiton.com/automation-testing/desired-capabilities-usage/)",
+            "options": {
+                "Android": "Android",
+                "IOS": "IOS"
+            }
+        },
+        {
+            "name": "rootDirectory",
+            "type": "string",
+            "label": "Root directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Input the root directory of your Git repository. All the commands and report logs will be created based from this directory. If this field is left empty, Kobiton server will use the root directory of your Git repository."
+        },
+        {
+            "name": "commands",
+            "type": "multiLine",
+            "label": "Commands",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Command lines to install dependencies and execute your automation test script. These commands will run from the root directory of your Git repository."
+        },
+        {
+            "name": "waitForExecution",
+            "type": "boolean",
+            "label": "Wait for execution",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Check if your want the release pipeline to wait until your automation testing is completed or failed, then print out the console log and test result."
+        },
+        {
+            "name": "logType",
+            "type": "radio",
+            "label": "Log type",
+            "required": true,
+            "visibleRule": "waitForExecution = true",
+            "helpMarkDown": "Your desired log type to be showed. Choose Combined to show logs in chronological order, or Separated for single type of log (Ouput or Error)",
+            "options": {
+                "combined": "Combined",
+                "separated": "Separated"
+            }
+        },
+        {
+            "name": "logTypeDetails",
+            "type": "radio",
+            "label": "Log type details",
+            "required": true,
+            "visibleRule" : "logType = separated",
+            "helpMarkDown": "Choose a specific type of log to show.",
+            "options": {
+                "out": "Output",
+                "error": "Error"
+            }
+        },
+        {
+            "name": "terminateOnFailedJob",
+            "type": "boolean",
+            "label": "Terminate release pipeline on failed job",
+            "defaultValue": false,
+            "visibleRule": "waitForExecution = true",
+            "required": false,
+            "helpMarkDown": "Check if you want to terminate the release pipeline when this execution job is failed (mostly due to server errors or configuration errors)"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

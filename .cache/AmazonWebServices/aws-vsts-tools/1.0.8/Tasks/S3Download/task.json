@@ -1,0 +1,138 @@
+{
+    "id": "30f6a876-1d27-450c-b2bb-9f390a592082",
+    "name": "S3Download",
+    "friendlyName": "AWS S3 Download",
+    "description": "Download file and folder content from an Amazon Simple Storage Service (S3) Bucket",
+    "author": "Amazon Web Services",
+    "helpMarkDown": "Please refer to [Working with Amazon S3 Buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) for more information on working with Amazon S3.",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "8"
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "S3 Download: $(bucketName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        },
+        {
+            "name": "diagnostic",
+            "displayName": "Diagnostic",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "awsCredentials",
+            "type": "connectedService:AWS",
+            "label": "AWS Credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AWS credentials to use. If needed, click on 'Manage', and add a new Service Endpoint of type 'AWS'."
+        },
+        {
+            "name": "regionName",
+            "label": "AWS Region",
+            "type": "string",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "AWS region name, please check https://docs.aws.amazon.com/general/latest/gr/rande.html."
+        },
+        {
+            "name": "bucketName",
+            "type": "string",
+            "label": "Bucket Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the bucket containing the content to be download."
+        },
+        {
+            "name": "sourceFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The source folder (or S3 key prefix) in the bucket that the content pattern(s) will be run against to select objects to download. If not set the root of the bucket is assumed."
+        },
+        {
+            "name": "globExpressions",
+            "type": "multiLine",
+            "label": "Filename Patterns",
+            "defaultValue": "**",
+            "required": true,
+            "helpMarkDown": "Glob patterns to select the content to be downloaded. Supports multiple lines of minimatch patterns."
+        },
+        {
+            "name": "targetFolder",
+            "type": "filePath",
+            "label": "Target Folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The target folder to contain the downloaded content. You can use [variables](https://go.microsoft.com/fwlink/?LinkID=550988)."
+        },
+        {
+            "name": "overwrite",
+            "type": "boolean",
+            "label": "Overwrite",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Replace existing files in and beneath the target folder. If not set and the file already exists in the target location an error is thrown.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "forcePathStyleAddressing",
+            "type": "boolean",
+            "label": "Force path style addressing",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If enabled path style URLs will be used for S3 objects. The default is off meaning the task will automatically switch between virtual host style addressing and path style addressing depending on whether the bucket name is DNS compatible.<br/><br/>For more information see [Virtual Hosting of Buckets](http://docs.aws.amazon.com/AmazonS3/latest/dev/VirtualHosting.html).",
+            "groupName": "advanced"
+        },
+        {
+            "name": "logRequest",
+            "type": "boolean",
+            "label": "Log Request",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If selected, request headers and other data for calls to AWS services are logged to the task's debug log.",
+            "groupName": "diagnostic"
+        },
+        {
+            "name": "logResponse",
+            "type": "boolean",
+            "label": "Log Response",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If selected, the response metadata and body content of non-streaming responses from calls to AWS services are output to the task's debug log. The unique request ID, which can be useful when contacting AWS for support, is always logged to the task output regardless of this option setting.",
+            "groupName": "diagnostic"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "S3Download.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "FileOverwriteWarning": "Target file %s exists for matched key %s, overwriting",
+        "FileExistsError": "Target file %s exists for matched key %s, overwrite switch not set, cannot download",
+        "ListingKeysFromPrefix": "Querying object keys with prefix %s for bucket %s",
+        "ListingKeysFromRoot": "Querying object keys for bucket %s",
+        "QueueingDownload": "Queueing download of %s",
+        "GlobbingFromPrefix": "Globbing object keys with prefix %s against %s to determine file downloads",
+        "GlobbingFromRoot": "Globbing object keys from bucket root against %s to determine file downloads",
+        "MatchedKey": "...matched key %s",
+        "DownloadingFiles": "Downloading files from %s in bucket %s to %s",
+        "BucketNotExist": "Bucket %s does not exist",
+        "TaskCompleted": "Downloads from S3 completed"
+    }
+}

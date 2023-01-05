@@ -1,0 +1,91 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "8f9cb13f-f551-439c-83e4-fac6801c3fab",
+    "name": "trivy",
+    "friendlyName": "Trivy: Take control of your application security",
+    "description": "Trivy is the world’s most popular open source vulnerability and misconfiguration scanner. It is reliable, fast, extremely easy to use, and it works wherever you need it.",
+    "helpMarkDown": "[Learn more about this task](https://github.com/aquasecurity/trivy-azure-pipelines-task)",
+    "category": "Test",
+    "author": "Aqua Security",
+    "version": { "Major":1,"Minor":3,"Patch":1 },
+    "instanceNameFormat": "Echo trivy $(version)",
+    "inputs": [
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Trivy Version",
+            "defaultValue": "latest",
+            "required": false,
+            "helpMarkDown": "The version of Trivy to use"
+        },
+        {
+            "name": "docker",
+            "type": "boolean",
+            "label": "Run Trivy using the aquasec/trivy docker image",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "This can be useful when being rate limited by dockerhub etc."
+        },
+        {
+            "name": "debug",
+            "type": "boolean",
+            "label": "Enable Debug",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Enable debug logging in build output"
+        },
+        {
+            "name": "path",
+            "type": "string",
+            "label": "The path to scan",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The specified path will be scanned using an 'fs' scan type. If this option is used, the 'image' option cannot be set."
+        },
+        {
+            "name": "image",
+            "type": "string",
+            "label": "The image to scan",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The specified image will be scanned using an 'image' scan type. If this option is used, the 'path' option cannot be set."
+        },
+        {
+            "name": "exitCode",
+            "type": "string",
+            "label": "Exit code when Trivy detects issues.",
+            "defaultValue": "1",
+            "required": false,
+            "helpMarkDown": "Set this to 0 to prevent the build failing when Trivy detects issues."
+        },
+        {
+            "name": "aquaKey",
+            "type": "string",
+            "label": "Aqua API Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Aqua API Key is used to upload scan results to your Aqua Security account."
+        },
+        {
+            "name": "aquaSecret",
+            "type": "string",
+            "label": "Aqua API Secret",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Aqua API Secret is used to upload scan results to your Aqua Security account."
+        },
+        {
+            "name": "devMode",
+            "type": "boolean",
+            "label": "Enable development mode (used for internal testing)",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Not recommended."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

@@ -1,0 +1,77 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "24e8ca67-5e15-4818-8c08-f13cbfded9a9",
+    "name": "embedApimPoliciesToArm",
+    "friendlyName": "Embed Azure APIM policies into ARM",
+    "description": "Enables you to embed APIM policies developed separatelly into ARM templates.",
+    "author": "DarkLoop",
+    "category": "Azure Pipelines",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 16
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "groups": [],
+    "inputs": [
+        {
+            "label": "ARM template",
+            "name": "armTemplate",
+            "type": "filePath",
+            "required": false,
+            "helpMarkDown": "The path to the ARM template file."
+        },
+        {
+            "label": "Start delimeter",
+            "name": "startDelimeter",
+            "type": "string",
+            "required": true,
+            "defaultValue": "_{",
+            "helpMarkDown": "The start delimeter to specify the name of the policy file to be embedded.<br/>Example: `_{my-policy-file}_` - in this case a file `my-policy-file.cshtml` is expected to exist."
+        },
+        {
+            "label": "End delimeter",
+            "name": "endDelimeter",
+            "type": "string",
+            "required": true,
+            "defaultValue": "}_",
+            "helpMarkDown": "The end delimeter to specify the name of the policy file to be embedded.<br/>Example: `_{my-policy-file}_` - in this case a file `my-policy-file.cshtml` is expected to exist."
+        },
+        {
+            "label": "Output ARM template file",
+            "name": "outputFile",
+            "type": "string",
+            "required": false,
+            "helpMarkDown": "Optional output file path for the final result. If not specified, the original template will be the ouput."
+        },
+        {
+            "label": "Policies root folder",
+            "name": "policiesRoot",
+            "type": "string",
+            "required": false,
+            "helpMarkDown": "The folder where the policies being embedded are stored. If none specified, the task default directory will be used."
+        },
+        {
+            "label": "Fail on missing policies",
+            "name": "failOnMissingPolicy",
+            "type": "boolean",
+            "defaultValue": true,
+            "helpMarkDown": "True to fail the task if any of the referenced policies does not exist."
+        }
+    ],
+    "instanceNameFormat": "Embed Azure APIM policies into ARM",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\EmbedApimPoliciesToArm.ps1"
+        }
+    }
+}

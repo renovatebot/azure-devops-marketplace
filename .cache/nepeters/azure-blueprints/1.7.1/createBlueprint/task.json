@@ -1,0 +1,106 @@
+{
+	"id": "1a8623d7-1d5c-423c-9d92-5e9587bbb02a",
+	"name": "CreateBlueprint",
+	"friendlyName": "Create Azure Blueprint",
+	"description": "Creates an Azure Blueprint",
+	"helpMarkDown": "",
+	"category": "Build",
+	"visibility": [
+		"Preview",
+		"Build",
+		"Release"
+	],
+	"author": "Neil Peterson",
+	"version": {
+		"Major": 1,
+		"Minor": 7,
+		"Patch": 1
+	},
+	"instanceNameFormat": "Create Azure Blueprint",
+	"inputs": [{
+			"name": "ConnectedServiceName",
+			"aliases": ["azureSubscription"],
+			"type": "connectedService:AzureRM",
+			"label": "Azure Service Connection (scope)",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure service connection for the Blueprints task. This can be an Azure Management Group or Subscription. By default, this is the location at which the Blueprint is created. If selecting a Management Group, an alternate creation subscription can be specified.",
+			"properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+		},
+		{
+			"name": "BlueprintName",
+			"type": "string",
+			"label": "Blueprint Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Blueprint name."
+		},
+		{
+			"name": "BlueprintPath",
+			"type": "filePath",
+			"label": "Blueprint Directory",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Path to a directory with a blueprint.json file and a directory named artifacts."
+		},
+		{
+			"name": "IncludeSubFolders",
+			"type": "boolean",
+			"label": "Include SubFolders",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "When set to true, artifacts in subfolders of artifacts-folder will be included."
+		},
+		{
+			"name": "AlternateLocation",
+			"type": "boolean",
+			"label": "Create Blueprint at child subscription (requires Management Group scope)",
+			"defaultValue": "false",
+			"required": true,
+			"helpMarkDown": "By default, Blueprints are created at the Management Group or subscription associated with the Azure Pipeline service connection. Select this option to provide an alternate subscription."
+		},
+		{
+			"name": "AlternateSubscription",
+			"type": "string",
+			"label": "Subscription Id",
+			"required": false,
+			"helpMarkDown": "Subscription at which the Blueprint is created.",
+			"visibleRule": "AlternateLocation = true"
+		},
+		{
+			"name": "PublishBlueprint",
+			"type": "boolean",
+			"label": "Publish Blueprint",
+			"defaultValue": "false",
+			"required": true,
+			"helpMarkDown": "Select to publish the Blueprint."
+		},
+		{
+			"name": "Version",
+			"type": "string",
+			"label": "Blueprint version",
+			"defaultValue": "Increment",
+			"required": false,
+			"helpMarkDown": "Blueprint version. A value of 'Increment' will increment the version number if the version is an integer.",
+			"visibleRule": "PublishBlueprint = true"
+		},
+		{
+			"name": "ChangeNote",
+			"type": "string",
+			"label": "Blueprint Changenote",
+			"required": false,
+			"helpMarkDown": "Notes to describe the contents of this blueprint version.",
+			"visibleRule": "PublishBlueprint = true"
+		}
+	],
+	"dataSourceBindings": [],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\createBlueprint.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

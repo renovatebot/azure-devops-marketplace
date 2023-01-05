@@ -1,0 +1,142 @@
+{
+    "id": "f9c6fd68-e0da-43c0-ac91-0cc483015067",
+    "name": "ExecuteLoadRunnerProfessional",
+    "friendlyName": "Execute LoadRunner Professional tests",
+    "description": "Execute LoadRunner Professional tests from file system",
+    "helpUrl": "https://github.com/MicroFocus/ADM-AzureDevOps-LR-CI-Plugin/blob/master/README.md",
+    "helpMarkDown": "Execute LoadRunner Professional tests from file system",
+    "category": "Utility",
+    "author": "Micro Focus",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Execute LoadRunner Professional tests",
+    "groups": [
+        {
+            "name": "loadRunnerSettings",
+            "displayName": "LoadRunner Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "handleResultsSettings",
+            "displayName": "Results Handling Settings",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SourcePath",
+            "type": "filePath",
+            "label": "Source path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path for the test or path for the folder that contains the tests."
+        },
+        {
+            "name": "ResultsDirectory",
+            "type": "string",
+            "label": "Results directory",
+            "defaultValue": "C:\\LoadRunnerResults",
+            "required": false,
+            "helpMarkDown": "The directory where the test results are saved."
+        },
+        {
+            "name": "ControllerPollingInterval",
+            "type": "string",
+            "label": "Controller polling interval",
+            "defaultValue": "30",
+            "groupName": "loadRunnerSettings",
+            "required": false,
+            "helpMarkDown": "Polling interval for checking the scenario status, in seconds. The default is 30 seconds."
+        },
+        {
+            "name": "ScenarioExecutionTimeout",
+            "type": "string",
+            "label": "Scenario execution timeout",
+            "defaultValue": "10",
+            "groupName": "loadRunnerSettings",
+            "required": false,
+            "helpMarkDown": "The maximum time allotted for scenario execution, in minutes."
+        },
+		{
+            "name": "AnalysisTemplate",
+            "type": "string",
+            "label": "Analysis template",
+            "defaultValue": "",
+            "groupName": "loadRunnerSettings",
+            "required": false,
+            "helpMarkDown": "Apply a template for the build (path to a .tem file). Leave blank to use the default template."
+        },
+        {
+            "name": "TreatFailuresAsErrors",
+            "type": "boolean",
+            "label": "Treat failures as errors",
+            "defaultValue": true,
+            "groupName": "loadRunnerSettings",
+            "required": false,
+            "helpMarkDown": "When marked as true, if a test scenario fails, the task will be marked as failed."
+        },
+		{
+            "name": "TaskTimeout",
+            "type": "string",
+            "label": "Task timeout",
+            "defaultValue": "-1",
+            "required": false,
+            "helpMarkDown": "Timeout value for the task execution, in minutes. If this is empty, there will be no timeout for the task."
+        },
+        {
+            "name": "PublishScenarioResults",
+            "type": "boolean",
+            "label": "Publish scenario results",
+            "defaultValue": true,
+            "groupName": "handleResultsSettings",
+            "required": false,
+            "helpMarkDown": "If this is selected, the results will be available as a web application hosted by the agent used for the job. (IIS must be available on the agent.)"
+        },
+        {
+            "name": "PublishArtifactsManually",
+            "type": "boolean",
+            "label": "Publish artifacts manually",
+            "defaultValue": false,
+            "groupName": "handleResultsSettings",
+            "required": false,
+            "helpMarkDown": "If this is not selected, the results will be uploaded automatically as build artifacts. If it is selected, you can choose to upload (or not) the results manually later. (See [Publish Build Artifacts task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azure-devops))"
+        },
+        {
+            "name": "BuildArtifactsDirectory",
+            "type": "string",
+            "label": "Build artifacts directory",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)\\LoadRunnerArtifacts",
+            "groupName": "handleResultsSettings",
+            "visibleRule": "PublishArtifactsManually = true",
+            "required": false,
+            "helpMarkDown": "Directory used for build artifacts. The scenario results are stored here. This directory will not be cleaned (all the contained files will be not be deleted)"
+        },
+        {
+            "name": "PublishTestReportsManually",
+            "type": "boolean",
+            "label": "Publish test reports manually",
+            "defaultValue": false,
+            "groupName": "handleResultsSettings",
+            "required": false,
+            "helpMarkDown": "If this is not selected, the tests reports will be published automatically. If it is selected, you can choose to publish (or not) them manually later. (See  [Publish Test Results task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml))"
+        },
+        {
+            "name": "BuildTestReportsDirectory",
+            "type": "string",
+            "label": "Build test reports directory",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)\\LoadRunnerReports",
+            "groupName": "handleResultsSettings",
+            "visibleRule": "PublishTestReportsManually = true",
+            "required": false,
+            "helpMarkDown": "Directory used for reports. The scenario reports are stored here. This directory will not be cleaned (all the contained files will be not be deleted)"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

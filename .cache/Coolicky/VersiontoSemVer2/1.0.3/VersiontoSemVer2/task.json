@@ -1,0 +1,40 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "81108283-f186-492d-bcfc-d6a64c7003b1",
+    "name": "VersiontoSemVer2",
+    "friendlyName": "Format Assembly Version",
+    "description": "Takes .Net assembly version and formats it to SemVer 2.0",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Coolicky",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "instanceNameFormat": "Generate Assembly Version $(searchPattern)",
+    "inputs": [{
+            "name": "searchPattern",
+            "type": "filePath",
+            "label": "Path to AssemblyInfo file",
+            "defaultValue": "{Folder Path}\\AssemblyInfo.cs",
+            "required": true,
+            "helpMarkDown": "Pattern to use for finding the AssemblyInfo file."
+        },
+        {
+            "name": "variableName",
+            "type": "string",
+            "label": "Variable Name",
+            "defaultValue": "VersionNumber",
+            "helpMarkDown": "Variable with this name will be generated",
+            "required": true
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\GetAssemblyVersion.ps1",
+            "argumentFormat": "",
+            "workingDirectory": ""
+        }
+    }
+}

@@ -1,0 +1,122 @@
+{
+  "id": "2f7a32d0-699f-4693-8955-e5ff64e3f4a1",
+  "name": "WaitForKeptnEventTask",
+  "friendlyName": "Wait for Keptn Event",
+  "description": "Wait for an answer of a Keptn event",
+  "author": "Inetum-Realdolmen (Bert Van der Heyden)",
+  "helpMarkDown": "Wait for an answer of a Keptn event",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 2,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "groups": [
+    {
+      "name": "keptn-event",
+      "displayName": "Keptn Event Config",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+  	{
+      "name": "keptnApiEndpoint",
+      "type": "connectedService:Keptn",
+      "label": "Keptn API Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Connection to the Keptn API which is managed as a connectedService in AzureDevOps."
+    },
+    {
+      "name": "bridgeURL",
+      "type": "string",
+      "label": "URL of the Keptn Bridge",
+      "defaultValue": "$(KeptnBridge)",
+      "required": false,
+      "helpMarkDown": "URL of the bridge including https://bridge.keptn.domain"
+    },
+    {
+      "name": "waitForEventType",
+      "type": "pickList",
+      "label": "Wait for sequence finished",
+      "defaultValue": "evaluation",
+      "options": {
+        "evaluation": "evaluation",
+        "delivery": "delivery",
+        "generic" : "generic"
+      },
+      "required": true,
+      "helpMarkDown": "The type of sequence to wait for",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "sequence",
+      "type": "string",
+      "label": "Sequence (when not evaluation or delivery)",
+      "required": false,
+      "helpMarkDown": "The name of the sequence to wait for finished",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Wait until timeout minutes",
+      "defaultValue": "3",
+      "required": true,
+      "helpMarkDown": "Maximum amount of minutes to wait before timeout",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "keptnContextVar",
+      "type": "string",
+      "label": "KeptnContext variable",
+      "defaultValue": "keptnContext",
+      "required": true,
+      "helpMarkDown": "The name of the pipeline variable containing the keptnContext",
+      "groupName": "keptn-event"
+    },
+    {
+      "name": "markBuildOnError",
+      "type": "pickList",
+      "label": "Mark build as ... on result error from Keptn",
+      "defaultValue": "WARNING",
+      "options": {
+        "NOTHING": "as passed - do nothing",
+        "WARNING": "as passed with warnings",
+        "FAILED": "as failed"
+      },
+      "required": false,
+      "helpMarkDown": "What should happen when error state is returned by Keptn?",
+      "groupName": "keptn-event",
+      "visibleRule": "waitForEventType = evaluation"
+    },
+    {
+      "name": "markBuildOnWarning",
+      "type": "pickList",
+      "label": "Mark build as ... on result warning from Keptn",
+      "defaultValue": "WARNING",
+      "options": {
+        "NOTHING": "as passed - do nothing",
+        "WARNING": "as passed with warnings",
+        "FAILED": "as failed"
+      },
+      "required": false,
+      "helpMarkDown": "What should happen when warning state is returned by Keptn?",
+      "groupName": "keptn-event",
+      "visibleRule": "waitForEventType = evaluation"
+    }
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Wait for Keptn Event",
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

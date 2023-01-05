@@ -1,0 +1,79 @@
+{
+  "id": "31f040e5-e040-4336-878a-59a494425534",
+  "name": "AzureServiceBus",
+  "friendlyName": "Post a message to Azure Service Bus",
+  "description": "Post a message to Azure Service Bus from a build or release pipeline",
+  "helpMarkDown": "Information on how to use the task: [Blog](https://pgroene.wordpress.com/",
+  "category": "Utility",
+  "visibility": [ "Build", "Release" ],
+  "author": "Peter Groenewegen - Xpirit",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "demands": [ ],
+  "minimumAgentVersion": "1.95.0",
+
+  "inputs": [
+    {
+      "name": "ServiceBusNamespace",
+      "type": "string",
+      "label": "Service bus namespace",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Namespace of the queue https://serviceBusNamespace.servicebus.windows.net/queueName"
+    },
+    {
+      "name": "QueueName",
+      "type": "string",
+      "label": "Queue/Topic name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the queue or topic"
+    },
+    {
+      "name": "IsMooncake",
+      "type": "boolean",
+      "label": "Is mooncake (China)",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "True if you are in china, changes the service bus url to https://serviceBusNamespace.servicebus.chinacloudapi.cn/queueName"
+    },
+
+    {
+      "name": "SenderKeyName",
+      "type": "string",
+      "label": "Sender key name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Sender key name for sending messages"
+    },
+    {
+      "name": "SenderKey",
+      "type": "string",
+      "label": "Sender key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Sender key for sending messages"
+    },
+    {
+      "name": "Message",
+      "type": "multiLine",
+      "label": "Message",
+      "defaultValue": "Hello world",
+      "required": true,
+      "helpMarkDown": "Message to post to the queue",
+      "properties": {
+        "resizable": true,
+        "rows": "5"
+      }
+    }
+  ],
+  "instanceNameFormat": "Post to Azure Service Bus",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PostAzureServiceBus.ps1"
+    }
+  }
+}

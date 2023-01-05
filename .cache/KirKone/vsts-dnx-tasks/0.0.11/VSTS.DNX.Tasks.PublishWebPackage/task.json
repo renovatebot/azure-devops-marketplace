@@ -1,0 +1,108 @@
+{
+    "id": "EDEE4D57-FD49-466B-BFC3-1CBBA4E8C24A",
+    "name": "DNX.Tasks.PublishWebPackage",
+    "friendlyName": "DNX Tasks Azure PublishWebPackage",
+    "description": "Publish a DNX package to Azure Website",
+    "helpMarkDown": "(todo)",
+    "category": "Deploy",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "azureps"
+    ],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure",
+            "label": "Azure Classic Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to configure before running PowerShell"
+        },
+        {
+            "name": "WebSiteName",
+            "type": "pickList",
+            "label": "Web App Name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "SlotName",
+            "type": "pickList",
+            "label": "Deployment Slot",
+            "defaultValue": "",
+            "helpMarkdown": "Slotname where to deploy.  Leave empty if not used.",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "Dev": "Dev",
+                "Staging": "Staging"
+            }
+        },
+        {
+            "name": "SourceFolder",
+            "label": "Source Folder",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\Publish",
+            "helpMarkdown": "The source folder with the content to deploy.",
+            "required": false
+        },
+        {
+            "name": "StopBeforeDeploy",
+            "type": "boolean",
+            "label": "Stop Before Deploy",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Stop website before deployment to avoid 'File in use' Error.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ForceRestart",
+            "type": "boolean",
+            "label": "Restart After Deploy",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Restart website after deployment.",
+            "groupName": "advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebSiteName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureWebSiteNames",
+            "parameters": {
+                "WebSiteLocation": ""
+            }
+        }
+    ],
+    "instanceNameFormat": "Publish Web Package: $(WebSiteName)",
+    "execution": {
+        "AzurePowerShell": {
+            "target": "$(currentDirectory)\\PublishWebPackage.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "id": "4b8ea1ca-9132-4caa-8127-7490130e131f",
+   // "id": "1422087E-F8F5-4D0F-B890-4038C0BAE426",
+    "name": "Tokenization",
+    "friendlyName": "Tokenization: Transform file",
+    "description": "Replaces __<variable>__ with the user-defined variables' values",
+    "helpMarkDown": "[More Information](https://github.com/TotalALM/VSTS-Tasks/blob/master/Tasks/Tokenization/README.md)",
+    "category": "Utility",
+    "visibility": [
+        "Release",
+        "Build"
+    ],
+    "author": "Total ALM",
+    "version": {
+        "Major": 2,
+        "Minor": 10,
+        "Patch": 0
+    },
+    "demands": [
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+
+    "inputs": [
+        {
+            "name": "SourcePath",
+            "type": "string",
+            "label": "Source Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Source path to start looking recursively for the TargetFileName that contains the tokens (__<variable-name>__). These patterns will be replaced with user-defined variables."
+        },
+        {
+            "name": "TargetFileNames",
+            "type": "string",
+            "label": "Target Filenames",
+            "defaultValue": "",
+            "helpMarkDown": "The target filenames (comma-delimited) that have tokens replaced by user-defined variables. Wild card searching is support.  Example: Web.config or *.config",
+            "required": true
+        },
+        {
+            "name": "RecursiveSearch",
+            "type": "boolean",
+            "label": "Recursive Search",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Recursively Search through all folders."
+        },
+        {
+            "name": "RequireVariable",
+            "type": "boolean",
+            "label": "Require Variable",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Require variables to be present when tokenizing."
+        },
+        {
+            "name": "TokenStart",
+            "type": "string",
+            "label": "Token Placeholder Start",
+            "defaultValue": "__",
+            "helpMarkDown": "The token place holder at the front of the variable name. [__]<variable-name>__",
+            "required": true
+        },
+        {
+            "name": "TokenEnd",
+            "type": "string",
+            "label": "Token Placeholder End",
+            "defaultValue": "__",
+            "helpMarkDown": "The token place holder at the end of the variable name.  __<variable-name>[__]",
+            "required": true
+        }
+    ],
+    "instanceNameFormat": "Tokenization: Transform file $(TargetFileNames)",
+    "execution": {
+        "Powershell": {
+            "target": "$(currentDirectory)\\tokenization.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

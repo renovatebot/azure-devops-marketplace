@@ -1,0 +1,67 @@
+{
+    "id": "7C997C5B-7C8D-4E50-A110-E8E6B2769E57",
+    "name": "Artifacts-Expand",
+    "friendlyName": "Artifacts Expand",
+    "instanceNameFormat": "Artifacts Expand",
+    "description": "Task for artifact expand. Removes source files.",
+    "category": "Utility",
+    "author": "Piotr Roshkovski",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=roshkovski.2B9619D5-7BE9-4ED7-BF10-707CB17F657A)",
+    "demands": [
+        "msbuild"
+    ],
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 8
+    },
+    "visibility": [
+        "Release"
+    ],
+    "minimumAgentVersion": "2.114.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "source",
+            "type": "string",
+            "label": "Source",
+            "defaultValue": "$(System.ArtifactsDirectory)\\$(Build.DefinitionName)\\$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Source to expand.  Should be directory path."
+        },
+        {
+            "name": "dest",
+            "type": "string",
+            "label": "Destination",
+            "defaultValue": "$(System.ArtifactsDirectory)\\$(Build.DefinitionName)\\$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Destination to expand files\\folders. Should be directory path."
+        },
+        {
+            "name": "cleanDest",
+            "type": "boolean",
+            "label": "Clean Destination",
+            "defaultValue": false,
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "If true - removes all files and directories on destination before unpack."
+        }
+    ],
+    "execution": {
+        "Powershell": {
+            "target": "$(currentDirectory)\\scripts\\decompress-it!.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    },
+    "messages": {
+        "TaskSuccessCode": "Successfully passed task.",
+        "TaskFailedCode": "Failed to pass task."
+    }
+}

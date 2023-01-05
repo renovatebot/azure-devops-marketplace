@@ -1,0 +1,106 @@
+{
+    "id": "d1d65fc8-c86f-4de9-81d2-16d5d20ec6c7",
+    "name": "JFrogAudit",
+    "friendlyName": "JFrog Audit",
+    "description": "Audit the project for security vulnerabilities.",
+    "author": "JFrog",
+    "helpMarkDown": "[More Information](https://www.jfrog.com/confluence/display/JFROG/JFrog+Azure+DevOps+Extension#JFrogAzureDevOpsExtension-AuditProjectforSecurityVulnerabilitieswithJFrogXray)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "3",
+        "Patch": "0"
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.89.0",
+    "instanceNameFormat": "JFrog Audit",
+    "inputs": [
+        {
+            "name": "xrayConnection",
+            "type": "connectedService:jfrogXrayService",
+            "label": "Xray service connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Xray service to be used by this task. (This functionality requires version 3.29.0 or above of JFrog Xray)"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working Directory.",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The working directory where the command will run. When empty, the value of '$(System.DefaultWorkingDirectory)' is used."
+        },
+        {
+            "name": "watchesSource",
+            "type": "pickList",
+            "label": "Xray Watches Source",
+            "defaultValue": "none",
+            "helpMarkDown": "Choose the source to obtain Xray watches, to determine Xray's violations creation.",
+            "required": true,
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "options": {
+                "none": "-",
+                "watches": "Xray watches list",
+                "project": "JFrog Project Key",
+                "repoPath": "Artifactory Repository Path"
+            }
+        },
+        {
+            "name": "watches",
+            "type": "string",
+            "label": "Xray watches list",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "watchesSource=watches",
+            "helpMarkDown": "A comma separated list of Xray watches, to determine Xray's violations creation."
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "JFrog project key",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "watchesSource=project",
+            "helpMarkDown": "The JFrog project key."
+        },
+        {
+            "name": "repoPath",
+            "type": "string",
+            "label": "Artifactory Repository Path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "watchesSource=repoPath",
+            "helpMarkDown": "Target repo path, to enable Xray to determine watches accordingly."
+        },
+        {
+            "name": "licenses",
+            "type": "boolean",
+            "label": "Show licenses",
+            "defaultValue": "false",
+            "required": true,
+            "visibleRule": "watchesSource=none",
+            "helpMarkDown": "Select if you'd also like to show licenses information for the project dependencies."
+        },
+        {
+            "name": "allowFailBuild",
+            "type": "boolean",
+            "label": "Allow fail build",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Uncheck if you do not wish to fail the build, following rules with 'Fail Build' actions."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "audit.js",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

@@ -1,0 +1,99 @@
+{
+    "id":  "264cc1a0-7ebe-11e7-b0cd-638a06729af9",
+    "name":  "IniciaWindowsServices",
+    "friendlyName":  "Start Windows Services",
+    "description":  "Task used only to start Windows Services in remote Machines",
+    "author":  "Julio Arruda",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  0,
+                    "Minor":  0,
+                    "Patch":  32
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Start Windows Services $(message)",
+    "inputs":  [
+                   {
+                       "name":  "runRemote",
+                       "type":  "boolean",
+                       "label":  "Run Remote",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "Enable this option if this task need to run in remote servers. If you can use this in deployment group for example, disable this."
+                   },
+                   {
+                       "name":  "EnvironmentName",
+                       "type":  "multiLine",
+                       "label":  "Machines",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Provide a comma separated list of machine IP addresses or FQDNs along with ports. Port is defaulted based on the selected protocol. \u003cbr\u003eEg: dbserver.fabrikam.com,dbserver_int.fabrikam.com:5986,192.168.12.34:5986 \u003cbr\u003eOr provide output variable of other tasks. Eg: $(variableName) \u003cbr\u003eIf you are using HTTPS, name/IP of machine should match the CN in the certificate."
+                   },
+                   {
+                       "name":  "AdminUserName",
+                       "type":  "string",
+                       "label":  "Admin Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Administrator login for the target machines."
+                   },
+                   {
+                       "name":  "AdminPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Administrator password for the target machines. \u003cbr\u003eIt can accept variable defined in Build/Release definitions as \u0027$(passwordVariable)\u0027. \u003cbr\u003eYou may mark variable type as \u0027secret\u0027 to secure it."
+                   },
+                   {
+                       "name":  "serviceName",
+                       "type":  "multiLine",
+                       "label":  "Name of your Services to start",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "input the services name with coma separated"
+                   },
+                   {
+                       "name":  "configuraUsuario",
+                       "type":  "boolean",
+                       "label":  "Change User Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Change the Login used in Windows Service"
+                   },
+                   {
+                       "name":  "serviceUser",
+                       "type":  "string",
+                       "label":  "Service Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "configuraUsuario = true",
+                       "helpMarkDown":  "Login used in your Windows Service"
+                   },
+                   {
+                       "name":  "servicePassword",
+                       "type":  "string",
+                       "label":  "Service Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "configuraUsuario = true",
+                       "helpMarkDown":  "Password Used in your windows Service"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "IniciaServico.ps1"
+                                      }
+                  }
+}

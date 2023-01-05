@@ -1,0 +1,65 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "dxapm-azuredevops-monitoringgate-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/DXAPMMonitoringTask"
+            }
+        },
+        {
+            "id": "dxapm-metricquery-endpoint",
+            "description": "Metric query endpoint type for Broadcom DX APM",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "broadcomdxapm",
+                "displayName": "Broadcom DX APM",
+                "icons": {
+                    "default": "icon.png",
+                    "large": "icon.png"
+                },
+                "url": {
+                    "displayName": "Broadcom DX APM Tenant Metric Query API URL",
+                    "value": "https://apmgw.dxi-na1.saas.broadcom.com:443/atc/metric/queryMetric",
+                    "isVisible": "true",
+                    "required": "true"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "DXAPM-API-TOKEN",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "DX APM Public API Token required to connect to DX APM Tenant",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 4000
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://techdocs.broadcom.com/us/en/ca-enterprise-software/it-operations-management/dx-apm-saas/SaaS/configure-your-monitoring-environment/Generate-Security-Token.html\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

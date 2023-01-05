@@ -1,0 +1,64 @@
+{
+  "id": "b243a92e-a77d-4cfa-81c9-949ec5501e55",
+  "name": "PromoteProduction",
+  "friendlyName": "Promote Production",
+  "description": "Promote Production with CloudShell Colony",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 63
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "Promote Production",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "colonyEndpoint",
+      "type": "connectedService:colonyServiceEndpoint",
+      "label": "Colony server URL",
+      "required": true,
+      "helpMarkDown": "Select the Colony end point to use. If needed, click on 'manage', and add a new service connection of type 'Colony Service connection'"
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your CloudShell Colony space."
+    },
+    {
+      "name": "productionId",
+      "type": "string",
+      "label": "Production ID",
+      "required": true,
+      "helpMarkDown": "Enter the Id of the production you want to promote."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "project",
+      "endpointId": "$(colonyEndpoint)",
+      "dataSourceName": "Colony Endpoint"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}

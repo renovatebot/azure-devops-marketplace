@@ -1,0 +1,71 @@
+{
+    "id": "7d267ce6-24a1-497b-901d-70e71f4bb1a4",
+    "name": "vsts-habitat-expose-habitat-build-vars",
+    "friendlyName": "Expose Habitat Build Variables",
+    "description": "Expose the Habitat Plan build environment variables to the environment",
+    "helpMarkDown": "[More information](https://chef-partners.github.io/azuredevops-habitat/expose-build-variables.html)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 74
+    },
+    "instanceNameFormat": "Expose Habitat Build Variables",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "habitatLastBuildEnvPath",
+            "type": "string",
+            "label": "Build Environment File",
+            "defaultValue": "$(Build.SourcesDirectory)/results",
+            "required": true,
+            "helpMarkDown": "Directory containing the `last_build.env` file or `last_build.ps1` file. The task will determine which one to use"
+        },
+        {
+            "name": "habitatSetBuildNumber",
+            "type": "boolean",
+            "label": "Set Build Number",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Set the Azure Devops build number from the habitat build"
+        },
+        {
+            "name": "habitatSetImageNames",
+            "type": "boolean",
+            "label": "Write Image Names",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Write out the name of the image to be tagged to a file. File entries and filename can be set in the Advanced section below"
+        },
+        {
+            "name": "habitatImageNames",
+            "type": "multiLine",
+            "label": "Image Names",
+            "defaultValue": "$(pkg_origin)/$(pkg_name)",
+            "required": false,
+            "helpMarkDown": "List of images that need to be tagged",
+            "groupName": "advanced"
+        },
+        {
+            "name": "habitatImageNamesFilename",
+            "type": "string",
+            "label": "Image Names Filename",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/image.names",
+            "required": true,
+            "helpMarkDown": "Name of the file that contains the image names to tag",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "expose_build_vars.js"
+        }
+    }
+}

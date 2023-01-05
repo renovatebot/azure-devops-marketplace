@@ -1,0 +1,87 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/keyoke/NexusPipelineArtifact"
+    },
+    "contributions": [
+        {
+            "id": "Nexus-endpoint-type",
+            "description": "Service connection type for Sonatype Nexus",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Nexus",
+                "displayName": "Sonatype Nexus",
+                "url": {
+                    "displayName": "Repository URL"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username for connecting to the endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for connecting to the endpoint",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "Allows self-signed SSL certificates.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "dataSources": []
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms.vss-distributedtask-web.new-serviceconnections-ui"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "Nexus-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/Tasks/DownloadArtifactsNexus"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

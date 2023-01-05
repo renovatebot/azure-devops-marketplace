@@ -1,0 +1,154 @@
+{
+  "id": "2002ea40-168a-11e8-a8e0-13723dcf3280",
+  "name": "AzureAPIUrlImport",
+  "friendlyName": "API Import (Azure)",
+  "description": "Add/Import API definition to Azure API Manager using SWAGGER/WADL/WSDL URL",
+  "author": "paulpuvi@outlook.com",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "demands": [
+    "azureps",
+    "DotNetFramework"
+  ],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Azure API Import $(weburlpath)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceNameARM",
+      "options": {
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Classic Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "ApiRG",
+      "type": "pickList",
+      "label": "APIM RG Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Resource group name of APIM Instance.",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    
+    },
+    {
+      "name": "Apimname",
+      "type": "pickList",
+      "label": "APIM Name ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Api Instance name ",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "endpointurl",
+      "type": "pickList",
+      "label": "API Definition Url ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "API Definition Valid URL ",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "Specificationformat",
+      "type": "pickList",
+      "label": "Specification Format",
+      "defaultValue": "swagger",
+      "required": true,
+      "options": {
+        "swagger": "swagger",
+        "wadl": "wadl",
+        "wsdl": "wsdl"
+      },
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "weburlpath",
+      "type": "pickList",
+      "label": "API Suffix ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Last part of the API's public URL",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "KeyHeaderName",
+      "type": "pickList",
+      "label": "KeyHeaderName",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "SubscriptionKey Headername",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "KeyQueryParamName",
+      "type": "pickList",
+      "label": "KeyQueryParamName",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Subscriptionkey QueryParam",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\API_URL_IMPORT_Asset.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
+

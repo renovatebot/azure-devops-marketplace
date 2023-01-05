@@ -1,0 +1,159 @@
+{
+    "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+    "id": "31201e24-f8c9-477d-9498-7cdb48ef5bf1",
+    "name": "reference-conflicts-analyzer",
+    "friendlyName": "Reference Conflicts Analyzer",
+    "description": "Analyze reference conflicts and dependency graph of .NET applications.",
+    "author": "Dealogic",
+    "helpMarkDown": "[More information](https://marketplace.visualstudio.com/items?itemName=Dealogic.reference-conflicts-analyzer-azure-devops-task)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "node.js"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "reference-conflicts-analyzer",
+    "inputs": [
+        {
+            "name": "pathOfFileToAnalyze",
+            "type": "filePath",
+            "label": "path of file to analyze",
+            "required": true,
+            "helpMarkDown": "Path of the .NET application entry point."
+        },
+        {
+            "name": "pathOfConfigFile",
+            "type": "filePath",
+            "label": "path of config file",
+            "required": false,
+            "helpMarkDown": "Path of the .NET application configuration file."
+        },
+        {
+            "name": "ignoreSystemAssemblies",
+            "type": "boolean",
+            "label": "ignore system assemblies",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Exclude from the analysis assemblies with names starting with 'System'. Default value is true."
+        },
+        {
+            "name": "diagramAttachmentEnabled",
+            "type": "boolean",
+            "label": "attach diagram to build summary",
+            "required": true,
+            "defaultValue": "true",
+            "helpMarkDown": "The dependency graph as a diagram will be shown on the build summary page. WARNING! OAuth token must be provided for this to the build step."
+        },
+        {
+            "name": "diagramZoomLevel",
+            "type": "string",
+            "label": "diagram zoom level",
+            "required": true,
+            "defaultValue": "1",
+            "helpMarkDown": "The zoom level of the attached diagram. By default it's 1. It has to be a floating number."
+        },
+        {
+            "name": "treatVersionConflictsAs",
+            "type": "pickList",
+            "label": "treat version conflicts as",
+            "defaultValue": "warnings",
+            "required": true,
+            "helpMarkDown": "How to treat version conflicts.",
+            "options": {
+                "warnings": "warnings",
+                "errors": "errors",
+                "info": "info"
+            }
+        },
+        {
+            "name": "treatResolvedVersionConflictsAs",
+            "type": "pickList",
+            "label": "treat resolved version conflicts as",
+            "defaultValue": "warnings",
+            "required": true,
+            "helpMarkDown": "How to treat version conflicts are resolved by configuration file.",
+            "options": {
+                "warnings": "warnings",
+                "errors": "errors",
+                "info": "info"
+            }
+        },
+        {
+            "name": "treatOtherConflictsAs",
+            "type": "pickList",
+            "label": "treat other reference conflicts as",
+            "defaultValue": "warnings",
+            "required": true,
+            "helpMarkDown": "How to treat other reference conflicts.",
+            "options": {
+                "warnings": "warnings",
+                "errors": "errors",
+                "info": "info"
+            }
+        },
+        {
+            "name": "treatUnusedAssembliesAs",
+            "type": "pickList",
+            "label": "treat unused assemblies as",
+            "defaultValue": "warnings",
+            "required": true,
+            "helpMarkDown": "How the unused assemblies are reported. By default reported as warnings.",
+            "options": {
+                "warnings": "warnings",
+                "errors": "errors",
+                "info": "info"
+            }
+        },
+        {
+            "name": "treatMissedAssembliesAs",
+            "type": "pickList",
+            "label": "treat missed assemblies as",
+            "defaultValue": "warnings",
+            "required": true,
+            "helpMarkDown": "How the assembly is missed are reported. By default reported as warnings.",
+            "options": {
+                "warnings": "warnings",
+                "errors": "errors",
+                "info": "info"
+            }
+        },
+        {
+            "name": "workingFolder",
+            "type": "filePath",
+            "label": "working folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Working folder where the reference conflicts analysis will run. If you leave it blank it is the root of the repository.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "referenceConflictsAnalyzerCliDownloadUrl",
+            "type": "string",
+            "label": "url of Reference Conflicts Analyzer",
+            "defaultValue": "https://github.com/marss19/reference-conflicts-analyzer/releases/download/v.1.0.7/ReferenceConflictAnalyzer.CommandLine.1.0.7.zip",
+            "required": true,
+            "helpMarkDown": "The URL of the Reference Conflicts Analyzer command line tool.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

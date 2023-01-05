@@ -1,0 +1,244 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+  "id": "abac7cc0-bf26-11e7-a088-b346a4273930",
+  "name": "FindResource",
+  "friendlyName": "Find Azure Resource",
+  "description": "Find an Azure resource given its type and tags",
+  "author": "louisgerard",
+  "helpMarkDown": "Find an Azure resource given its type and tags",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "FindResource $(message)",
+  "groups": [
+    {
+      "displayName": "Generic Output",
+      "name": "output",
+      "isExpanded": true
+    },
+    {
+      "displayName": "KeyVault Specific Output",
+      "name": "keyvault",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=keyvault"
+    },
+    {
+      "displayName": "App Service Specific Output",
+      "name": "appservice",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=appservice"
+    },
+    {
+      "displayName": "Sql Server Specific Output",
+      "name": "sqlserver",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=sqlserver"
+    },
+    {
+      "displayName": "App Service Plan Specific Output",
+      "name": "appserviceplan",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=appserviceplan"
+    },
+    {
+      "displayName": "App Insights Specific Output",
+      "name": "appinsights",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=appinsights"
+    },
+    {
+      "displayName": "Storage Account Specific Output",
+      "name": "storageaccount",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=storageaccount"
+    },
+    {
+      "displayName": "Sql Database Specific Output",
+      "name": "sqldatabase",
+      "isExpanded": true,
+      "visibleRule":"ResourceType=sqldatabase"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription"
+    },
+    {
+      "name": "ResourceType",
+      "type": "pickList",
+      "label": "Resource Type",
+      "required": true,
+      "defaultValue": "",
+      "options": {
+        "keyvault": "Microsoft.KeyVault/vaults",
+        "appservice": "Microsoft.Web/sites",
+        "sqlserver": "Microsoft.Sql/servers",
+        "appserviceplan": "Microsoft.Web/serverfarms",
+        "appinsights": "Microsoft.Insights/components",
+        "storageaccount": "Microsoft.Storage/storageAccounts",
+        "sqldatabase": "Microsoft.Sql/servers/databases"
+      },
+      "helpMarkDown": "Select the type of Azure resource"
+    },
+    {
+      "name": "Tags",
+      "type": "multiLine",
+      "label": "Tags",
+      "required": true,
+      "defaultValue": "{\r\n\t\"environment\" : \"prod\"\r\n}",
+      "properties": {
+        "resizable": "True",
+        "rows": "5"
+      },
+      "helpMarkDown": "Enter the tags in Json format. eg. { \"environment\" : \"prod\", \"version\" : \"2\" }"
+    },
+    {
+      "name": "ResourceNameVar",
+      "label": "Resource Name",
+      "type": "string",
+      "required": false,
+      "groupName": "output",
+      "helpMarkDown": "Will contain the name of the resource if found."
+    },
+    {
+      "name": "ResourceIdVar",
+      "label": "Resource Id",
+      "type": "string",
+      "required": false,
+      "groupName": "output",
+      "helpMarkDown": "Will contain the Azure Id of the resource if found."
+    },
+    {
+      "name": "ResourceGroupNameVar",
+      "label": "Resource Group Name",
+      "type": "string",
+      "required": false,
+      "groupName": "output",
+      "helpMarkDown": "Will contain the resource group name of the resource if found."
+    },
+    {
+      "name": "ResourceLocationVar",
+      "label": "Resource Location",
+      "type": "string",
+      "required": false,
+      "groupName": "output",
+      "helpMarkDown": "Will contain the location of the resource if found. (eg. northeurope)"
+    },
+    {
+      "name": "KeyVaultUriVar",
+      "label": "KeyVault Uri",
+      "type": "string",
+      "required": false,
+      "groupName": "keyvault",
+      "helpMarkDown": "Will contain the uri of the Key Vault if found. (eg. https://mykeyvault.vault.azure.net/)"
+    },
+    {
+      "name": "AppServiceHostNameVar",
+      "label": "App Service Host Name",
+      "type": "string",
+      "required": false,
+      "groupName": "appservice",
+      "helpMarkDown": "Will contain the first host name of the App Service if found. (eg. myappservice.azurewebsites.net)"
+    },
+    {
+      "name": "FqdnVar",
+      "label": "Fully Qualified Domain Name",
+      "type": "string",
+      "required": false,
+      "groupName": "sqlserver",
+      "helpMarkDown": "Will contain the fully qualified name of the Sql Server if found. (eg. myserver.database.windows.net)"
+    },
+    {
+      "name": "AdministratorLoginVar",
+      "label": "Administrator Login",
+      "type": "string",
+      "required": false,
+      "groupName": "sqlserver",
+      "helpMarkDown": "Will contain the administrator login of the Sql Server if found."
+    },
+    {
+      "name": "SkuNameVar",
+      "label": "Sku Name",
+      "type": "string",
+      "required": false,
+      "groupName": "appserviceplan",
+      "helpMarkDown": "Will contain the Sku name of the App Service Plan if found. (eg. S2)"
+    },
+    {
+      "name": "SkuCapacityVar",
+      "label": "Sku Capacity",
+      "type": "string",
+      "required": false,
+      "groupName": "appserviceplan",
+      "helpMarkDown": "Will contain the capacity of the App Service Plan if found. (eg. 2)"
+    },
+    {
+      "name": "AppInsightsKeyVar",
+      "label": "InstrumentationKey",
+      "type": "string",
+      "required": false,
+      "groupName": "appinsights",
+      "helpMarkDown": "Will contain the instrumentation key of the AppInsights if found."
+    },
+    {
+      "name": "StoragePrimaryKeyVar",
+      "label": "Primary Key",
+      "type": "string",
+      "required": false,
+      "groupName": "storageaccount",
+      "helpMarkDown": "Will contain the primary key of the Storage Account if found."
+    },
+    {
+      "name": "StorageSecondaryKeyVar",
+      "label": "Secondary Key",
+      "type": "string",
+      "required": false,
+      "groupName": "storageaccount",
+      "helpMarkDown": "Will contain the secondary key of the Storage Account if found."
+    },
+    {
+      "name": "SqlDbServerNameVar",
+      "label": "Sql Server Name",
+      "type": "string",
+      "required": false,
+      "groupName": "sqldatabase",
+      "helpMarkDown": "Will contain the name of the Sql Server hosting the database if found."
+    },
+    {
+      "name": "SqlDbServiceLevelObjectiveVar",
+      "label": "Sql Database Service Level Objective",
+      "type": "string",
+      "required": false,
+      "groupName": "sqldatabase",
+      "helpMarkDown": "Will contain the service level objective of the database if found. (eg. Basic, S0)"
+    },
+    {
+      "name": "SqlDbEditionVar",
+      "label": "Sql Database Edition",
+      "type": "string",
+      "required": false,
+      "groupName": "sqldatabase",
+      "helpMarkDown": "Will contain the edition of the database if found. (eg. Basic, Standard)"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

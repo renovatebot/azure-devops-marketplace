@@ -1,0 +1,101 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "launchdarkly-workitempage",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "LaunchDarkly Work Item Page",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "LaunchDarkly",
+                "uri": "static/workItemPage.html"
+            }
+        },
+        {
+            "id": "launchdarkly-rm-summarysection",
+            "type": "ms.vss-releaseManagement-web.release-summary-section",
+            "targets": [
+                "ms.vss-releaseManagement-web.release-details-summary-tab"
+            ],
+            "properties": {
+                "name": "LaunchDarkly",
+                "uri": "static/rmSummarySection.html"
+            }
+        },
+        {
+            "id": "launchdarkly-endpoint",
+            "description": "LaunchDarkly provides feature flags as a service.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "launchdarkly",
+                "displayName": "LaunchDarkly",
+                "url": "https://ld-vsts-v2.herokuapp.com/api",
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Access token",
+                                "description": "Access token for the LaunchDarkly V2 API",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "api_key {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "Projects",
+                        "endpointUrl": "https://ld-vsts-v2.herokuapp.com/proxy/api/v2/projects",
+                        "resultSelector": "jsonpath:$.items"
+                    },
+                    {
+                        "name": "Flags",
+                        "endpointUrl": "https://ld-vsts-v2.herokuapp.com/proxy/api/v2/flags/{{projectKey}}?env={{environmentKey}}",
+                        "resultSelector": "jsonpath:$.items"
+                    },
+                    {
+                        "name": "FlagByKey",
+                        "endpointUrl": "https://ld-vsts-v2.herokuapp.com/proxy/api/v2/flags/{{projectKey}}/{{flagKey}}?env={{environmentKey}}",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "launchdarkly-rollout-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Rollout"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.profile",
+        "vso.serviceendpoint_query",
+        "vso.work",
+        "vso.release"
+    ],
+    "baseUri": "https://ld-vsts-v2.herokuapp.com",
+    "contributionTypes": []
+}

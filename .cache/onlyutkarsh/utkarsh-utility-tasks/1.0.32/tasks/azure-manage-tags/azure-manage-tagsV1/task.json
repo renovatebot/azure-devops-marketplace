@@ -1,0 +1,80 @@
+{
+    "id": "23a08f61-afcb-48aa-8b1c-e7e842eda3f3",
+    "name": "azuremanagetags",
+    "friendlyName": "Manage Azure Tags",
+    "description": "Append, Replace or Clear one or many Azure tags",
+    "helpMarkDown": "v1.0.32<br/>[More Information](https://marketplace.visualstudio.com/items?itemName=onlyutkarsh.utkarsh-utility-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Utkarsh Shigihalli",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 32
+    },
+    "instanceNameFormat": "$(action) tags in $(resourceGroupName)",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure subscription for the key vault"
+        },
+        {
+            "name": "resourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "required": true,
+            "helpMarkDown": "Provide the name of a resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "action",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "Append",
+            "required": true,
+            "helpMarkDown": "Action to be performed. \n**Append** - Keeps existing tags as is and adds the new ones defined here.\n**Replace** - Removes existing tags and replaces them with the ones defined here.\n**Remove** - Removes the existing tags.",
+            "options": {
+                "Append": "Append",
+                "Replace": "Replace",
+                "Clear": "Clear"
+            }
+        },
+        {
+            "name": "tagsList",
+            "type": "multiLine",
+            "label": "Tags",
+            "defaultValue": "AddedBy:Azure DevOps",
+            "required": true,
+            "helpMarkDown": "Provide a list tags in `key:value` pair each separated by a newline.",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            },
+            "visibleRule": "action!=Clear"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

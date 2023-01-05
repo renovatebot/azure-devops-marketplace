@@ -1,0 +1,94 @@
+{
+    "id":  "1da752a0-03bf-429c-a239-b5f06d43d629",
+    "name":  "ALOpsLicenseImport",
+    "friendlyName":  "ALOps License Import",
+    "description":  "Import Business Central license (.flf)",
+    "author":  "Hodor",
+    "helpMarkDown":  "Import Business Central license (.flf).",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps License Import",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "license_path",
+                       "type":  "filePath",
+                       "label":  "FLF Path",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Path of the FLF license to import. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory) or a downloadable Url. $(license_path) $(license_path) $(license_path)"
+                   },
+                   {
+                       "name":  "remove_license_file",
+                       "type":  "boolean",
+                       "label":  "Remove License File",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Remove license file after import. $(remove_license_file) $(remove_license_file) $(remove_license_file)"
+                   },
+                   {
+                       "name":  "print_license_info",
+                       "type":  "boolean",
+                       "label":  "Print License Info",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Set if License is printed into the pipeline. $(print_license_info) $(print_license_info) $(print_license_info)"
+                   },
+                   {
+                       "name":  "license_scope",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "License Scope",
+                       "defaultValue":  "Default",
+                       "options":  {
+                                       "Default":  "Default",
+                                       "Master":  "Master",
+                                       "NavDatabase":  "NavDatabase",
+                                       "Tenant":  "Tenant"
+                                   },
+                       "helpMarkDown":  "Set the scope for license upload. $(license_scope) $(license_scope) $(license_scope)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "3021ed1a-5415-49d6-9f02-c1672d89406e.ps1"
+                                      }
+                  }
+}

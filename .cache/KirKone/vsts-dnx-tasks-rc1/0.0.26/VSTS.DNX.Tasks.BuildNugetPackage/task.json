@@ -1,0 +1,112 @@
+{
+    "id": "787F5AA8-6065-4756-9247-235596A98CF9",
+    "name": "DNX.Tasks.BuildNugetPackage",
+    "friendlyName": "DNX Tasks Build Nuget Package RC1",
+    "description": "Build a Nuget package with dnx.",
+    "helpMarkDown": "Version: 0.0.6",
+    "category": "Build",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "visibility": [
+        "Build"
+    ],
+    "demands": [ ],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ProjectName",
+            "label": "Project Name",
+            "type": "string",
+            "defaultValue": "",
+            "helpMarkdown": "Name of the Projects to build. <br> You can provide a list by seperating the entrys with SPACE. <br>Make sure to wrap entrys with spaces in double quotes. <br>Eg: \"My Sample.Web\" Sample.Api",
+            "required": false
+        },
+        {
+            "name": "BuildConfiguration",
+            "label": "Build Configuration",
+            "type": "pickList",
+            "defaultValue": "",
+            "helpMarkdown": "The build configuration to use. Default is \"Release",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "Release": "Release",
+                "Debug": "Debug"
+            }
+        },
+        {
+            "name": "OutputFolder",
+            "label": "Output Folder",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\Pack",
+            "helpMarkdown": "Where to put the pack output.",
+            "required": false
+        },
+        {
+            "name": "PreRelease",
+            "type": "boolean",
+            "label": "Pre Release",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If this is true, the nuget package will build as prerelease with VERSIONNUMBER-pre-BUILDNUMBER",
+            "groupName": "advanced"
+        },
+        {
+            "name": "WorkingFolder",
+            "type": "filePath",
+            "label": "Working Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkDown": "Current working directory when script is run.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SourceFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "\\src",
+            "required": false,
+            "helpMarkDown": "Folder where your project directories are. <br>Default is: \\src",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SpecificRuntime",
+            "type": "boolean",
+            "label": "Specific Runtime",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If this is true, the runtime will be same as in global.json including architecture",
+            "groupName": "advanced"
+        },
+        {
+            "name": "UnstableRuntime",
+            "type": "boolean",
+            "label": "Unstable Runtime",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If this is true, the runtime will be from the unstable dev feed. This will give you the latest development version of the runtime.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Build Nuget Package: $(ProjectName)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\BuildNugetPackage.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(WorkingFolder)"
+        }
+    }
+}

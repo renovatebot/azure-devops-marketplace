@@ -1,0 +1,99 @@
+{
+    "id": "ec5c1f40-f00e-4475-acb4-e86be6d206fa",
+    "name": "ServiceNow-DevOps-Server-Job-Notification",
+    "friendlyName": "ServiceNow DevOps Server Job Notification",
+    "description": "Add as the first and last task in each server job to send notifications to ServiceNow DevOps.",
+    "author": "ServiceNow",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Server Job Notification",
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "Service Now endpoint",
+            "required": true,
+            "helpMarkDown": "Service Now endpoint connection."
+        },
+        {
+            "name": "UpstreamJob",
+            "type": "string",
+            "label": "Upstream Job Executed"
+        },
+        {
+            "name": "Phase",
+            "type": "pickList",
+            "label": "Job Execution Phase",
+            "required": "true",
+            "options": {
+                "STARTED" : "STARTED",
+                "COMPLETED": "COMPLETED"
+            }
+        }
+    ],
+    "execution": {
+        "HttpRequestChain": {
+            "Execute": [
+                {
+                    "RequestInputs": {
+                        "EndpointId": "$(connectedServiceName)",
+                        "EndpointUrl": "$(endpoint.url)/api/sn_devops/v1/devops/orchestration/stepMapping?toolId=$(endpoint.toolId)&toolType=adop",
+                        "Method": "POST",
+                        "Body": {
+                                "orchestrationTaskURL":"$(system.collectionUri)$(system.teamProject)/_build?name=$(build.definitionName)#$(system.jobDisplayName)",
+                                "orchestrationTaskName":"$(system.teamProject)/$(build.definitionName)#$(system.jobDisplayName)",
+                                "stageName":"$(system.stageName)"
+                            },
+                        "Headers": "{\"Content-Type\":\"application/json\"}",
+                        "WaitForCompletion": "false",
+                        "Expression":"and(eq(response['statuscode'], 'OK'), eq(response['content']['result']['stepValid'], true),eq(response['content']['result']['status'], 'Success'))"
+                    },
+                    "ExecutionOptions": {
+                        "SkipSectionExpression": "eq('$(Phase)', 'COMPLETED')"
+                     }
+                },
+                {
+                    "RequestInputs": {
+                        "EndpointId": "$(connectedServiceName)",
+                        "EndpointUrl": "$(endpoint.url)/api/sn_devops/v1/devops/tool/orchestration?toolId=$(endpoint.toolId)",
+                        "Method": "POST",
+                        "Body": {
+                                  "stageModel": {
+                                    "name": "$(system.jobDisplayName)",
+                                    "phase":"$(Phase)","url": "$(system.collectionUri)$(system.teamProject)/_build/results?buildId=$(build.buildId)#$(system.jobDisplayName)/",
+                                    "upstreamStageName":"$(UpstreamJob)",
+                                    "systemTeamProject": "$(system.teamProject)",
+                                    "buildDefinitionName":"$(build.definitionName)",
+                                    "stageName":"$(system.stageName)"
+                                  },
+                                  "jobModel": {
+                                    "name": "$(build.definitionName)",
+                                    "url":"$(system.collectionUri)$(system.teamProject)/_build?name=$(build.definitionName)"
+                                  },
+                                  "url":"$(system.collectionUri)$(system.teamProject)/_build/results?buildId=$(build.buildId)",
+                                  "pronoun": "Pipeline",
+                                  "isMultiBranch": "false",
+                                  "number": "$(build.buildId)",
+                                  "phase": " ",
+                                  "sn_tool_id":"$(endpoint.toolId)"  
+                              },
+                        "Headers": "{\"Content-Type\":\"application/json\"}",
+                        "WaitForCompletion": "false",
+                        "Expression":"and(eq(response['statuscode'], 'Created'), eq(response['content']['result']['status'], 'Success'))"
+                    }
+                }
+            ]
+        }
+    }
+}

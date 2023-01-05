@@ -1,0 +1,179 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "RunNotebook",
+            "description": "Run Jupyter Notebook(s) on AzureML",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/RunNotebook"
+            }
+        },
+        {
+            "id": "azureml-mms-artifact-type",
+            "description": "Azure Machine Learning Model Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "AzureMLMMS",
+                "displayName": "AML Model Artifact",
+                "endpointTypeId": "AzureRM",
+                "url": {
+                    "value": "http://webhook-gswayne.azurewebsites.net",
+                    "isVisible": "false"
+                },
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}",
+                "artifactType": "Build",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service Endpoint",
+                        "description": "Service Endpoint Id",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Model Names",
+                        "description": "Name(s) of the Model(s), separated by coma",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest version for the specified models"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "ModelVersion",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "ModelVersion",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "dataSourceName": "Models",
+                        "resultTemplate": "{ Name: \"{{name}}\", downloadUrl : \"https://{{endpoint.location}}.modelmanagement.azureml.net/api/subscriptions/{{endpoint.subscriptionId}}/resourceGroups/{{endpoint.resourceGroupName}}/providers/Microsoft.MachineLearningServices/workspaces/{{endpoint.workspaceName}}/models?count=50&api-version=2018-03-01-preview\" }"
+                    },
+                    {
+                        "target": "createwebhook",
+                        "dataSourceName": "CreateWebhook"
+                    },
+                    {
+                        "target": "deletewebhook",
+                        "dataSourceName": "DeleteWebhook"
+                    },
+                    {
+                        "target": "listwebhook",
+                        "dataSourceName": "ListWebhook"
+                    },
+                    {
+                        "target": "linkwebhook",
+                        "dataSourceName": "LinkWebhook"
+                    },
+                    {
+                        "target": "unlinkwebhook",
+                        "dataSourceName": "UnlinkWebhook"
+                    }
+                ],
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": true,
+                    "isTriggerSupportedOnlyInHosted": false,
+                    "isWebhookSupportedAtServerLevel": false,
+                    "resources": {
+                        "TriggerDisabledMessage": "Enabling the trigger will create a new release every time a new AML Devops build is available"
+                    },
+                    "webhookPayloadMapping": {
+                        "version": "{{EntityVersion}}",
+                        "definition": "{{EntityName}}"
+                    }
+                }
+            }
+        },
+        {
+            "id": "azureml-model-deploy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLModelDeploy"
+            }
+        },
+        {
+            "id": "azureml-run-experiment-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLRunExperiment"
+            }
+        },
+        {
+            "id": "azureml-model-register-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/AMLRegisterModel"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

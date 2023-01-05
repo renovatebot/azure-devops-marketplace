@@ -1,0 +1,124 @@
+{
+    "author": "Xebialabs",
+    "category": "Deploy",
+    "dataSourceBindings": [
+        {
+            "dataSourceName": "Repositories",
+            "endpointId": "$(connectedServiceName)",
+            "target": "targetEnvironment"
+        }
+    ],
+    "description": "Create, upload and deploy artifacts to XL Deploy server.",
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    },
+    "friendlyName": "XL Deploy",
+    "groups": [
+        {
+            "displayName": "Advanced options",
+            "isExpanded": false,
+            "name": "advanced"
+        }
+    ],
+    "helpMarkDown": "This build task enables you to create a deployment archive package (DAR package), import it to your XL Deploy server, and trigger a deployment.\r\n\r\nEnsure that the manifest file path points to a file in your source control.\r\n\r\nIf no endpoints are defined, you need to create one. For XL Deploy, use a generic endpoint option. ",
+    "id": "C36FC88A-B479-461F-8067-8C3254AF356C",
+    "inputs": [
+        {
+            "defaultValue": "",
+            "helpMarkDown": "Set the path to the manifest file that needs to be used to compose your deployment archive; for example, $/MyApplication/src/deployit-manifest.xml.",
+            "label": "Manifest Path",
+            "name": "manifestPath",
+            "required": true,
+            "type": "filePath"
+        },
+        {
+            "helpMarkDown": "The XL Deploy server endpoint.",
+            "label": "XL Deploy Endpoint",
+            "name": "connectedServiceName",
+            "required": true,
+            "type": "connectedService:xldserver"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "Publish your DAR package as a named artifact for the current pipeline.",
+            "label": "Publish as Pipeline Artifact",
+            "name": "publish",
+            "required": false,
+            "type": "boolean"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "If you want to provide a specific value that should be set in your manifest file, use a placeholder and provide it with this option.",
+            "label": "Version",
+            "name": "version",
+            "required": false,
+            "type": "boolean"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "Triggers the deployment toward a specified environment after the import succeeds.",
+            "label": "Deploy",
+            "name": "deploy",
+            "required": false,
+            "type": "boolean"
+        },
+        {
+            "defaultValue": "",
+            "helpMarkDown": "Environment name as specified in XL Deploy.",
+            "label": "Target Environment",
+            "name": "targetEnvironment",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "required": true,
+            "type": "pickList",
+            "visibleRule": "deploy = true"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "Invoke a rollback in the case of deployment failure.",
+            "label": "Rollback on deployment failure",
+            "name": "rollback",
+            "required": true,
+            "type": "boolean",
+            "visibleRule": "deploy = true"
+        },
+        {
+            "groupName": "advanced",
+            "helpMarkDown": "If you want DAR packages to be delivered in a folder other than the default (Staging folder), specify the folder path.",
+            "label": "Output Folder",
+            "name": "outputFolder",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "groupName": "advanced",
+            "helpMarkDown": "If the root folder for your archive is different than the default (Staging folder), specify a valid path.",
+            "label": "Package root folder",
+            "name": "rootFolder",
+            "required": false,
+            "type": "string"
+        },
+        {
+            "groupName": "advanced",
+            "helpMarkDown": "If you intend to use a different value than the default $(Build.BuildNumber), specify it here.",
+            "label": "Version value override",
+            "name": "versionNumber",
+            "required": false,
+            "type": "string"
+        }
+    ],
+    "instanceNameFormat": "Publish to XL Deploy",
+    "minimumAgentVersion": "2.117.0",
+    "name": "XLDeploy",
+    "version": {
+        "Major": 7,
+        "Minor": 0,
+        "Patch": 13
+    },
+    "visibility": [
+        "Build"
+    ]
+}

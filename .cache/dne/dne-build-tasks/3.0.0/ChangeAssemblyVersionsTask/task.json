@@ -1,0 +1,290 @@
+{
+  "id": "A516EAB5-3EEC-455E-8685-38A41606D2AC",
+  "name": "ChangeAssemblyVersionsTask",
+  "friendlyName": "Change Assembly Versions",
+  "description": "Allows to change/add AssemblyVersion, AssemblyFileVersion and AssemblyInformationalVersion in AssemblyInfo.cs files using a custom shema or from the build-number.",
+  "helpMarkDown": "No help available yet!",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Jens Hofmann",
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "AssemblyVersionGroup",
+      "displayName": "Assembly Version",
+      "isExpanded": true
+    },
+    {
+      "name": "AssemblyFileVersionGroup",
+      "displayName": "Assembly File Version",
+      "isExpanded": true
+    },
+    {
+      "name": "AssemblyInformationalVersionGroup",
+      "displayName": "Assembly Informational Version",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "assemblyInformationalVersionBehaviorString",
+      "type": "pickList",
+      "label": "Versioning behavior",
+      "defaultValue": "None",
+      "required": true,
+      "helpMarkDown": "The behavior used for versioning",
+      "options": {
+        "None": "Keep defaults - do nothing",
+        "Custom": "Provide a static version or use variables to define the version.",
+        "BuildNumber": "Extract the version from the Buildnumber using a regular expression"
+      },
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionString",
+      "type": "string",
+      "label": "AssemblyInformationalVersion",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide a static version or use variables to define the version. You can use the special variable $TfvcChangeset which is the Tfvc Changesetnumber.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = Custom",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionBuildNumberRegex",
+      "type": "string",
+      "label": "Buildnumber Version-Regex",
+      "defaultValue": "(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<build>\\d+)\\.(?<revision>\\d+)",
+      "required": false,
+      "helpMarkDown": "This is the regex used to extract the version number from the build numer of the current build. The task will search for the named groups major, minor, build and revision. All groups are optional and will be replaced with 0 if they do not exist. Additionally there are 2 more groups: prefix and postfix, which both are optional. Matches of these groups will be put in the front or back of the version.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionPrefixString",
+      "type": "string",
+      "label": "Prefix",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "An optional string which is put in front of the matched version numbers but after an optionally matched prefix-regex-group. You can use the special variable $TfvcChangeset which is the Tfvc Changesetnumber.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionPostfixString",
+      "type": "string",
+      "label": "Postfix",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "An optional string which is put at the end of the matched version numbers but before an optionally matched postfix-regex-group. You can use the special variable $TfvcChangeset which is the Tfvc Changesetnumber.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionCustomMissingPartDefault",
+      "type": "boolean",
+      "label": "Custom default for missing version group",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, the default is '0.'. By enabling this option, you can define your own default in the input field 'Default for missing version group'.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionMissingPartDefaultString",
+      "type": "string",
+      "label": "Default for missing version group",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, this is the default for the part of the version.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString = BuildNumber && assemblyInformationalVersionCustomMissingPartDefault = true",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyInformationalVersionMustExist",
+      "type": "boolean",
+      "label": "Fail if attribute does not exist",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Fail the tasks if the AssemblyInformationVersion attribute does not exist in all matched files.",
+      "visibleRule": "assemblyInformationalVersionBehaviorString != None",
+      "groupName": "AssemblyInformationalVersionGroup"
+    },
+    {
+      "name": "assemblyVersionBehaviorString",
+      "type": "pickList",
+      "label": "Versioning behavior",
+      "defaultValue": "None",
+      "required": true,
+      "helpMarkDown": "The behavior used for versioning",
+      "options": {
+        "None": "Keep defaults - do nothing",
+        "Custom": "Provide a static version or use variables to define the version.",
+        "BuildNumber": "Extract the version from the Buildnumber using a regular expression"
+      },
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyVersionString",
+      "type": "string",
+      "label": "AssemblyVersion",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide a static version or use variables to define the version. You can use the special variable $TfvcChangeset which is the Tfvc Changesetnumber.",
+      "visibleRule": "assemblyVersionBehaviorString = Custom",
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyVersionBuildNumberRegex",
+      "type": "string",
+      "label": "Buildnumber Version-Regex",
+      "defaultValue": "(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<build>\\d+)\\.(?<revision>\\d+)",
+      "required": false,
+      "helpMarkDown": "This is the regex used to extract the version number from the build numer of the current build. The task will search for the named groups major, minor, build and revision. All groups are optional and will be replaced with 0 if they do not exist.",
+      "visibleRule": "assemblyVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyVersionCustomMissingPartDefault",
+      "type": "boolean",
+      "label": "Custom default for missing version group",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, the default is '0.'. By enabling this option, you can define your own default in the input field 'Default for missing version group'.",
+      "visibleRule": "assemblyVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyVersionMissingPartDefaultString",
+      "type": "string",
+      "label": "Default for missing version group",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, this is the default for the part of the version.",
+      "visibleRule": "assemblyVersionBehaviorString = BuildNumber && assemblyVersionCustomMissingPartDefault = true",
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyVersionMustExist",
+      "type": "boolean",
+      "label": "Fail if attribute does not exist",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Fail the tasks if the AssemblyVersion attribute does not exist in all matched files.",
+      "visibleRule": "assemblyVersionBehaviorString != None",
+      "groupName": "AssemblyVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionBehaviorString",
+      "type": "pickList",
+      "label": "Versioning behavior",
+      "defaultValue": "None",
+      "required": true,
+      "helpMarkDown": "The behavior used for versioning",
+      "options": {
+        "None": "Keep defaults - do nothing",
+        "Custom": "Provide a static version or use variables to define the version.",
+        "BuildNumber": "Extract the version from the Buildnumber using a regular expression"
+      },
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionString",
+      "type": "string",
+      "label": "AssemblyFileVersion",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide a static version or use variables to define the version. You can use the special variable $TfvcChangeset which is the Tfvc Changesetnumber.",
+      "visibleRule": "assemblyFileVersionBehaviorString = Custom",
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionBuildNumberRegex",
+      "type": "string",
+      "label": "Buildnumber Version-Regex",
+      "defaultValue": "(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<build>\\d+)\\.(?<revision>\\d+)",
+      "required": false,
+      "helpMarkDown": "This is the regex used to extract the version number from the build numer of the current build. The task will search for the named groups major, minor, build and revision. All groups are optional and will be replaced with 0 if they do not exist.",
+      "visibleRule": "assemblyFileVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionCustomMissingPartDefault",
+      "type": "boolean",
+      "label": "Custom default for missing version group",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, the default is '0.'. By enabling this option, you can define your own default in the input field 'Default for missing version group'.",
+      "visibleRule": "assemblyFileVersionBehaviorString = BuildNumber",
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionMissingPartDefaultString",
+      "type": "string",
+      "label": "Default for missing version group",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If any of the groups: major, minor, build or revision is not provided in the regex, this is the default for the part of the version.",
+      "visibleRule": "assemblyFileVersionBehaviorString = BuildNumber && assemblyFileVersionCustomMissingPartDefault = true",
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "assemblyFileVersionMustExist",
+      "type": "boolean",
+      "label": "Fail if attribute does not exist",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Fail the tasks if the AssemblyFileVersion attribute does not exist in all matched files.",
+      "visibleRule": "assemblyFileVersionBehaviorString != None",
+      "groupName": "AssemblyFileVersionGroup"
+    },
+    {
+      "name": "searchDirectory",
+      "type": "filePath",
+      "label": "Directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the directory in which to search for the filename"
+    },
+    {
+      "name": "fileNamePattern",
+      "type": "string",
+      "label": "Filename",
+      "defaultValue": "AssemblyInfo.cs",
+      "required": true,
+      "helpMarkDown": "Specify the *.cs file in which to search/update the attributes/versions"
+    },
+    {
+      "name": "recursiveSearch",
+      "type": "boolean",
+      "label": "Recursive",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Specify whether to do a recursive search for the file pattern"
+    },
+    {
+      "name": "overwriteReadOnly",
+      "type": "boolean",
+      "label": "Overwrite readonly",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Specify whether to overwrite read-only assembly version info files"
+    }
+  ],
+  "instanceNameFormat": "Update versions in file '$(fileNamePattern)' of directory '$(searchDirectory)' - recursive: '$(recursiveSearch)' ",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ChangeVersions.ps1"
+    }
+  }
+}

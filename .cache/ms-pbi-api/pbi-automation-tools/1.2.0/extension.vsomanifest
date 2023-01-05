@@ -1,0 +1,193 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/microsoft/powerbi-azure-pipelines-extensions/tree/main"
+    },
+    "contributions": [
+        {
+            "id": "Pipelines_Deploy",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_Deploy"
+            }
+        },
+        {
+            "id": "Pipelines_Create",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_Create"
+            }
+        },
+        {
+            "id": "Pipelines_Delete",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_Delete"
+            }
+        },
+        {
+            "id": "Pipelines_Assign",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_Assign"
+            }
+        },
+        {
+            "id": "Pipelines_Unassign",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_Unassign"
+            }
+        },
+        {
+            "id": "Pipelines_AddUser",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Pipelines_AddUser"
+            }
+        },
+        {
+            "id": "Workspaces_AddUser",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Workspaces_AddUser"
+            }
+        },
+        {
+            "id": "powerbi-service-endpoint",
+            "description": "Service endpoint for Power BI",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "icons": {
+                "default": "Icons/icon.png"
+            },
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "PowerBIService",
+                "displayName": "Power BI",
+                "inputDescriptors": [
+                    {
+                        "id": "Environment",
+                        "name": "Environment",
+                        "description": "Environment",
+                        "inputMode": "combo",
+                        "validation": {
+                            "isRequired": true
+                        },
+                        "values": {
+                            "inputId": "Environments",
+                            "defaultValue": "Public",
+                            "possibleValues": [
+                                {
+                                    "displayValue": "Public",
+                                    "value": "Public"
+                                },
+                                {
+                                    "displayValue": "US Government",
+                                    "value": "USGov"
+                                },
+                                {
+                                    "displayValue": "US Government - High",
+                                    "value": "USGovHigh"
+                                },
+                                {
+                                    "displayValue": "US Government - DoD",
+                                    "value": "USGovMil"
+                                },
+                                {
+                                    "displayValue": "China",
+                                    "value": "China"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "url": {
+                    "isVisible": "false",
+                    "dependsOn": {
+                        "input": "Environment",
+                        "map": [
+                            {
+                                "key": "Public",
+                                "value": "https://api.powerbi.com"
+                            },
+                            {
+                                "key": "USGov",
+                                "value": "https://api.powerbigov.us"
+                            },
+                            {
+                                "key": "USGovHigh",
+                                "value": "https://api.high.powerbigov.us"
+                            },
+                            {
+                                "key": "USGovMil",
+                                "value": "https://api.mil.powerbigov.us"
+                            },
+                            {
+                                "key": "Germany",
+                                "value": "https://api.powerbi.de"
+                            },
+                            {
+                                "key": "China",
+                                "value": "https://api.powerbi.cn"
+                            }
+                        ]
+                    }
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-service-principal",
+                        "displayName": "Service Principal (recommended)",
+                        "inputDescriptors": [
+                            {
+                                "id": "authenticationType",
+                                "name": "Authentication type",
+                                "inputMode": "RadioButtons",
+                                "values": {
+                                    "inputId": "authenticationType",
+                                    "defaultValue": "spnKey",
+                                    "isDisabled": true,
+                                    "possibleValues": [
+                                        {
+                                            "value": "spnKey"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "Username and password (doesn’t support MFA)"
+                    }
+                ]
+            }
+        }
+    ],
+    "$schema": "./schemas/override-schema.json",
+    "scopes": [],
+    "contributionTypes": []
+}

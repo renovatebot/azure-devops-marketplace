@@ -1,0 +1,110 @@
+{
+  "id": "1B216BBE-E57A-4E09-B78D-10D3910D48E1",
+  "name": "QueueBuild",
+  "friendlyName": "Queue a Build",
+  "description": "Queues a Build",
+  "helpMarkDown": "[More Information](https://github.com/geeklearningio/gl-vsts-tasks-inception/wiki/Queue-Build) (Version 1.3.999)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Geek Learning",
+  "version": {
+    "Major": 1,
+    "Minor": 3,
+    "Patch": 999
+  },
+  "demands": [
+    "npm"
+  ],
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "Queues Build Definition : $(BuildDefinition)$(BuildDefinitionId)",
+  "groups": [
+    {
+      "name": "advancedOptions",
+      "displayName": "Advanced Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "BuildDefinitionSelectionMode",
+      "type": "radio",
+      "label": "Build Definition Selection Mode",
+      "defaultValue": "Id",
+      "required": true,
+      "helpMarkDown": "",
+      "options": {
+        "List": "From List",
+        "Id": "By Id"
+      }
+    },
+    {
+      "name": "BuildDefinitionId",
+      "type": "string",
+      "label": "Build Definition Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "visibleRule": "BuildDefinitionSelectionMode = Id"
+    },
+    {
+      "name": "BuildDefinition",
+      "type": "pickList",
+      "label": "Build Definition",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "DisableManageLink": "True"
+      },
+      "visibleRule": "BuildDefinitionSelectionMode = List"
+    },
+    {
+      "name": "BuildParameters",
+      "type": "multiLine",
+      "label": "Parameters to set when queueing the build",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "resizable": "true",
+        "rows": "5",
+        "maxLength": "5000"
+      }
+    },
+    {
+      "name": "IgnoreWarnings",
+      "type": "boolean",
+      "label": "Ignore queue build warnings",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "TargetSourceBranch",
+      "type": "string",
+      "label": "Source branch to build",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide the target branch name. Same branch will be used if empty.",
+      "groupName": "advancedOptions"
+    }
+  ],
+  "sourceDefinitions": [
+    {
+      "target": "BuildDefinition",
+      "endpoint": "/$(system.teamProject)/_apis/build/definitions?api-version=2.0&type=build",
+      "selector": "jsonpath:$.value[*].name",
+      "keySelector": "jsonpath:$.value[*].id",
+      "authKey": "tfs:teamfoundation"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "queueBuild.js",
+      "argumentFormat": ""
+    }
+  }
+}

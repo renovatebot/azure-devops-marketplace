@@ -1,0 +1,129 @@
+{
+  "id": "12345679-85E2-4625-BE0F-E8B23323C9F8",
+  "name": "AXEnterprisePortalDeploy",
+  "friendlyName": "AX Enterprise Portal - Deploy",
+  "description": "Deploys the Enterprise Portal site of an AX environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-enterprise-portal/ax-enterprise-portal-deploy)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "identificationType",
+      "type": "pickList",
+      "label": "Identification type",
+      "defaultValue": "ConfigurationFile",
+      "required": true,
+      "helpMarkDown": "How should the AXUpdatePortal utility be identified?",
+      "groupName": "",
+      "options": {
+        "ConfigurationFile": "Configuration file",
+        "AXUpdatePortalFile": "AXUpdatePortal file"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "visibleRule": "identificationType = ConfigurationFile",
+      "groupName": ""
+    },
+    {
+      "name": "axUpdatePortalFileName",
+      "type": "filePath",
+      "label": "AXUpdatePortal file path",
+      "defaultValue": "C:\\Program Files\\Microsoft Dynamics AX\\60\\Setup\\AXUpdatePortal.exe",
+      "required": false,
+      "helpMarkDown": "The file path of the AXUpdatePortal file.",
+      "visibleRule": "identificationType = AXUpdatePortalFile",
+      "groupName": ""
+    },
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "UpdateAll",
+      "required": true,
+      "helpMarkDown": "What action should be done?",
+      "groupName": "",
+      "options": {
+        "UpdateAll": "Update all",
+        "CreateSite": "Create site",
+        "Deploy": "Deploy site",
+        "UpdateProxies": "Update proxies",
+        "UpdateImages": "Update images",
+        "UpdateWebComponent": "Update web component",
+        "UpdateWebsites": "Update websites",
+        "ListVirtualServer": "List virtual servers"
+      }
+    },
+    {
+      "name": "siteUrl",
+      "type": "string",
+      "label": "Site url",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The url of the Enterprise Prtal site, for example \"http://ServerName[:port]/Sites/SiteName\".",
+      "visibleRule": "action != UpdateWebsites",
+      "groupName": ""
+    },
+    {
+      "name": "treeNodePath",
+      "type": "string",
+      "label": "Tree node path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The tree node path of the web component, for example \"\\Web\\Web Files\\Web Controls\\WorkOrderDetails\\\".",
+      "visibleRule": "action = UpdateWebComponent",
+      "groupName": ""
+    },
+    {
+      "name": "iisReset",
+      "type": "boolean",
+      "label": "Reset IIS",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the IIS be reset after the operation has been completed?",
+      "visibleRule": "action != ListVirtualServer",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Enterprise Portal - Deploy: $(configurationFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

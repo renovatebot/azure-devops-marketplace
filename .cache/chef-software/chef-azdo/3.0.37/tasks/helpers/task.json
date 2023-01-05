@@ -1,0 +1,127 @@
+{
+    "id": "e96c7e8c-aca1-4eaa-ac86-78e0d639e81f",
+    "name": "helper",
+    "friendlyName": "Chef Helpers",
+    "description": "This task contains helper tasks, such as updating your cookbook version, which are not accommodated by the other tasks",
+    "helpMarkDown": "[More Information](https://chef-partners.github.io/azuredevops-chef-extension/docs/tasks/helpers.html",
+    "category": "Azure Pipelines",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 37
+    },
+    "instanceNameFormat": "Helper: $(helper)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "helper",
+            "type": "picklist",
+            "label": "Helpers",
+            "defaultValue": "",
+            "helpMarkDown": "Select the Helper to use for this task",
+            "options": {
+                "envCookbookVersion": "Set Cookbook Version on Chef Environment",
+                "readEnvFile": "Read Environment File",
+                "setCookbookVersion": "Set Cookbook Version Number",
+                "setupBerkshelf": "Setup Berkshelf",
+                "setupChef": "Setup Chef",
+                "setupHabitat": "Setup Habitat Environment",
+                "setupTestKitchen": "Setup Test Kitchen Environment"
+            },
+            "required": true
+        },
+        {
+            "name": "cookbookVersionNumber",
+            "type": "string",
+            "label": "Version Number",
+            "defaultValue": "$(Build.BuildNumber)",
+            "helpMarkDown": "Version number to apply to the metadata of the cookbook. By default this is set to the build number of the run.",
+            "visibleRule": "helper == setCookbookVersion || helper = envCookbookVersion",
+            "required": true
+        },
+        {
+            "name": "cookbookMetadataPath",
+            "type": "string",
+            "label": "Cookbook Metadata File",
+            "defaultValue": "$(Build.SourcesDirectory)/metadata.rb",
+            "helpMarkDown": "Path to the `metadata.rb` file for the cookbook",
+            "visibleRule": "helper == setCookbookVersion",
+            "required": true
+        },
+        {
+            "name": "cookbookVersionRegex",
+            "type": "string",
+            "label": "Version Regex",
+            "defaultValue": "version\\s+['\"]?.*['\"]?",
+            "helpMarkDown": "Regular Expression to be used in the `metadata.rb` file to set the version number",
+            "visibleRule": "helper == setCookbookVersion",
+            "required": true
+        },
+        {
+            "name": "habitatOrigin",
+            "type": "connectedService:habitatoriginendpointv1",
+            "label": "Habitat Origin",
+            "defaultValue": "",
+            "visibleRule": "helper == setupHabitat",
+            "helpMarkDown": "The Habitat Origin endpoint that contains the necessary origin name, revision and keys",
+            "required": true
+        },
+        {
+            "name": "chefendpoint",
+            "type": "connectedService:chefendpointv1",
+            "label": "Chef Endpoint",
+            "defaultValue": "",
+            "visibleRule": "helper = setupChef || helper = setupBerkshelf",
+            "helpMarkdown": "Select the endpoint to use when communicating with the Chef server",
+            "required": true
+        },
+        {
+            "name": "azureendpoint",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Endpoint",
+            "defaultValue": "",
+            "visibleRule": "helper = setupTestKitchen",
+            "helpMarkdown": "Endpoint containing credentials to communicate with Azure to perform Test Kitchen tests",
+            "required": true
+        },
+        {
+            "name": "environmentName",
+            "type": "string",
+            "label": "Chef environment",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "helper = envCookbookVersion",
+            "helpMarkDown": "Name of the Chef environment to modify"
+        },
+        {
+            "name": "cookbookName",
+            "type": "string",
+            "label": "Cookbook name",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "helper = envCookbookVersion",
+            "helpMarkDown": "Name of the target cookbook"
+        },
+        {
+            "name": "envFilePath",
+            "type": "string",
+            "label": "Environment File Path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "helper = readEnvFile",
+            "helpMarkDown": "Path to the file containing variables that should be set as environment variables"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "helpers.js"
+        }
+    }
+}

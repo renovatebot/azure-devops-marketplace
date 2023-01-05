@@ -1,0 +1,177 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "0c2e3a3c-ace4-4e32-ae7e-6aac67b6c0b1",
+    "name": "ExtmvnDependencyResolver",
+    "friendlyName": "External Maven ING Dependency Resolver",
+    "description": "ING Maven dependency resolver for external Repositories",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Lester Manglicmot",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0 
+    },
+    "instanceNameFormat": "External Maven Dependency Resolver",
+    "groups": [
+        {
+            "name": "azureArtifactsSettings",
+            "displayName": "Azure Artifacts Authentication",
+            "isExpanded": true
+        },
+        {
+            "name": "advancedSettings",
+            "displayName": "Advanced Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "specificFileUploads",
+            "displayName": "Specific File Uploads",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "mavenPOMFile",
+            "type": "filePath",
+            "label": "Maven POM file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Relative path from the repository root to the Maven POM file. e.g. 'pom.xml'"
+        },
+        {
+            "name": "targetFeed",
+            "type": "string",
+            "label": "Target Feed Name",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "azureArtifactsSettings",
+            "helpMarkDown": "Target Azure Artifacts Feed Name"
+        },
+        {
+            "name": "targetFeedUrl",
+            "type": "string",
+            "label": "Target Feed Url",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "azureArtifactsSettings",
+            "helpMarkDown": "Target Azure Artifacts Feed Url for Maven"
+        },
+        {
+            "name": "UserSettingsFile",
+            "type": "filePath",
+            "label": "Settings file for other Repositories",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "artifactorySettings",
+            "helpMarkDown": "Path from the repository where user's setting.xml is located. This is recommended if artifacts needed is not in 'releases_mvn_all' repository of Artifactory. e.g. settings/user-settings.xml"
+        },
+        {
+            "name": "dependencyFilter",
+            "type": "string",
+            "label": "Dependency Filter",
+            "defaultValue": "\\bing\\b|\\binglease\\b|\\bingcb\\b|\\bingdirect\\b|\\bingbank\\b|\\\\be\\\\bl|\/be\/bl",
+            "required": true,
+            "groupName": "advancedSettings",
+            "helpMarkDown": "The regular expression (regex) for the dependency names. e.g. '\\bing\\b', '\\bingbank\\b'"
+        },
+        {
+            "name": "mvnResolveParameters",
+            "type": "string",
+            "label": "Parameters to resolve Maven dependencies",
+            "defaultValue": "-DskipTests package dependency:go-offline",
+            "required": true,
+            "groupName": "advancedSettings",
+            "helpMarkDown": "Preferred Maven Parameters to download dependencies. e.g. dependency:go-offline, dependency:resolve. Default: '-DskipTests package dependency:go-offline'"
+        },
+        
+        {
+            "name": "javaHomeSelection",
+            "type": "radio",
+            "label": "Set JAVA_HOME by",
+            "required": true,
+            "groupName": "advancedSettings",
+            "defaultValue": "JDKVersion",
+            "helpMarkDown": "Sets JAVA_HOME either by selecting a JDK version that will be discovered during builds or by manually entering a JDK path.",
+            "options": {
+                "JDKVersion": "JDK Version",
+                "Path": "Path"
+            }
+        },
+        {
+            "name": "jdkVersion",
+            "type": "pickList",
+            "label": "JDK version",
+            "required": false,
+            "groupName": "advancedSettings",
+            "defaultValue": "default",
+            "helpMarkDown": "Will attempt to discover the path to the selected JDK version and set JAVA_HOME accordingly. Default: JDK 8",
+            "visibleRule": "javaHomeSelection = JDKVersion",
+            "options": {
+                "default": "default",
+                "1.11": "JDK 11",
+                "1.10": "JDK 10 (out of support)",
+                "1.9": "JDK 9 (out of support)",
+                "1.8": "JDK 8",
+                "1.7": "JDK 7",
+                "1.6": "JDK 6 (out of support)"
+            }
+        },
+        {
+            "name": "jdkUserInputPath",
+            "type": "string",
+            "label": "JDK path",
+            "required": true,
+            "groupName": "advancedSettings",
+            "defaultValue": "",
+            "helpMarkDown": "Sets JAVA_HOME to the given path.",
+            "visibleRule": "javaHomeSelection = Path"
+        },
+        {
+            "name": "jdkArchitecture",
+            "type": "pickList",
+            "label": "JDK architecture",
+            "defaultValue": "x64",
+            "required": false,
+            "helpMarkDown": "Optionally supply the architecture (x86, x64) of the JDK.",
+            "visibleRule": "jdkVersion != default",
+            "groupName": "advancedSettings",
+            "options": {
+                "x86": "x86",
+                "x64": "x64"
+            }
+        },
+        {
+            "name": "mvnFilesToUpload",
+            "type": "string",
+            "label": "Files to be uploaded individually",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "specificFileUploads",
+            "helpMarkDown": "For artifacts which only has pom and has a missing jar files in the Azure Feeds. Can input multiple files separated by ','. e.g. commons-io-2.4.jar,commons-3.0.jar"
+        },
+        {
+            "name": "specificUploadOnly",
+            "type": "boolean",
+            "label": "Only run specific file uploads",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "specificFileUploads",
+            "helpMarkDown": "If checked, other files not indicated in the individual uploads will be excluded in the list to publish/upload. Default: batch uploads will also run."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "publishFeed",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{#if project}}{{{project.id}}}\\/{{/if}}{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

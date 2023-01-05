@@ -1,0 +1,67 @@
+{
+    "id": "1c2003d9-e86f-4502-9571-6a7752a2b909",
+    "name": "semantic-tagger",
+    "friendlyName": "Semantic Tagger",
+    "description": "A build pipeline task to add a timestamp pre-release tag to a semantic version.",
+    "helpMarkDown": "Will set the tagged version in the build variable $(TaggedSemanticVersion). [More info](https://github.com/setagana/semantic-tagger)",
+    "category": "Utility",
+    "visibility": ["Build"],
+    "author": "Matthew de Beer",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "inputs": [
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Semantic version",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide a version number to be tagged. Must adhere to the [Semantic Versioning 2.0 Standard](https://semver.org/)."
+        },
+        {
+            "name": "onExistingTag",
+            "type": "pickList",
+            "label": "On existing tag",
+            "helpMarkDown": "If the provided version already contains a pre-release tag, how should it be handled?",
+            "required": true,
+            "options": {
+                "error": "Fail the task",
+                "honor": "Honor the tag",
+                "overwrite": "Overwrite the tag"
+            }
+        },
+        {
+            "name": "prefix",
+            "type": "string",
+            "label": "Pre-release tag prefix",
+            "defaultValue": "alpha",
+            "required": true,
+            "helpMarkDown": "Provide a prefix for the pre-release tag. May only contain alphanumerics and hyphens and as such does not support period-separated identifiers as described in SemVer V2."
+        },
+        {
+            "name": "addTimestamp",
+            "type": "boolean",
+            "label": "Add timestamp to tag",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Optionally add a unix timestamp to the prerelease tag. If true, the final tag will be **-{prefix}{timestamp}** or **-{existingtag}{timestamp}**."
+        },
+        {
+            "name": "setBuildNumber",
+            "type": "boolean",
+            "label": "Set Build Number to tagged version",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Optionally set the Build Number of the current build to the version once it's tagged."
+        }
+    ],
+    "instanceNameFormat": "Add version pre-release tag",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

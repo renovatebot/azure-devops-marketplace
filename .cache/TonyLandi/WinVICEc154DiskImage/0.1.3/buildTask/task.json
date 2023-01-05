@@ -1,0 +1,76 @@
+{
+    "id": "452d20bc-cc20-4e93-8652-333696af24bf",
+    "name": "WinVICEc154DiskImage",
+    "friendlyName": "Create Commodore Disk Image",
+    "description": "Create a disk image for your Commodore projects",
+    "helpMarkDown": "",
+    "category": "Package",
+    "visibility": [
+        "Build",
+        "Package"
+    ],
+    "author": "Tony Landi",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Create disk image $(diskname)",
+    "inputs": [
+        {
+            "name": "diskname",
+            "type": "string",
+            "label": "Disk name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Definesa unique name for your media. The disk name allows for a maximum of 16 alpha-numeric characters and spaces are not permitted.",
+            "pattern": "^[A-Za-z0-9\\-]{1,16}+$"
+        },
+        {
+            "name": "diskimagetype",
+            "type": "string",
+            "label": "Disk image type",
+            "defaultValue": "d64 - VC1541",
+            "required": true,
+            "enum": [
+                "d64 - VC1541",
+                "d71 - VC1571",
+                "d81 - VC1581"
+            ],            
+            "helpMarkDown": "The type of disk image to create. Default is d64 for the 1541 disk drive"
+        },        
+        {
+            "name": "sourcefile",
+            "type": "filePath",
+            "label": "Path to source file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The source file which will be passed to ACME to compile."
+        },
+        {
+            "name": "outputfile",
+            "type": "string",
+            "label": "Output file pattern",
+            "defaultValue": "*.prg",
+            "required": true,
+            "helpMarkDown": "Filename(s) to publish"
+        },                
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "ACME build arguments",
+            "defaultValue": "-v3",
+            "required": false,
+            "helpMarkDown": "Additional arguments passed to ACME."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "task.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

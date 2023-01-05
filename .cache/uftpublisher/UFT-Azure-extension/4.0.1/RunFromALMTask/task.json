@@ -1,0 +1,156 @@
+﻿{
+  "id": "A571AE7C-E100-42E1-8CED-498B46029772",
+  "name": "RunFromALMTask",
+  "friendlyName": "UFT One ALM Run",
+  "description": "Run UFT One tests from ALM",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-alm.htm",
+  "demands": [
+    "UFT_LAUNCHER"
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "varAlmserv",
+      "type": "string",
+      "label": "ALM Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The address of your ALM server, in the format http:s//(ALM server name):(port)/qcbin"
+    },
+    {
+      "name": "varSSOEnabled",
+      "type": "boolean",
+      "label": "SSO Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Obtain the Client ID and API key secret from your ALM site administrator"
+    },
+    {
+      "name": "varClientID",
+      "type": "string",
+      "label": "Client ID",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = true",
+      "helpMarkDown": "The Client ID that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varApiKeySecret",
+      "type": "string",
+      "label": "Api Key Secret",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = true",
+      "helpMarkDown": "The API Secret Key for the client that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varUserName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = false",
+      "helpMarkDown": "The username that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varPass",
+      "type": "string",
+      "label": "Password",
+      "isConfidential": true,
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "varSSOEnabled = false",
+      "helpMarkDown": "The password for the user that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varDomain",
+      "type": "string",
+      "label": "Domain",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM domain in which the tests to run are stored"
+    },
+    {
+      "name": "varProject",
+      "type": "string",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM project in which the tests to run are stored"
+    },
+    {
+      "name": "varTestsets",
+      "type": "multiLine",
+      "label": "Test Sets",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The test sets to run in the current build step"
+    },
+    {
+      "name": "varTimeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Timeout value in seconds. If left empty, there is no timeout"
+    },
+    {
+      "name": "varReportName",
+      "type": "string",
+      "label": "Report Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the file containing the ALM report link"
+    },
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run Mode",
+      "defaultValue": "runLocally",
+      "required": false,
+      "helpMarkDown": "The place to run the test sets: locally (on the agent machine), remotely (on a specified host) or on a planned host (set for the test set in ALM)",
+      "groupName": "advanced",
+      "options": {
+        "runLocally": "Run locally",
+        "runOnPlannedHost": "Run on planned host",
+        "runRemotely": "Run remotely"
+      }
+    },
+    {
+      "name": "testingToolHost",
+      "type": "string",
+      "label": "Testing Tool Host",
+      "defaultValue": "",
+      "groupName": "advanced",
+      "required": false,
+      "visibleRule": "runMode = runRemotely",
+      "helpMarkDown": "Required for running remotely: The name of the host that runs the test sets"
+    }
+  ],
+
+  "instanceNameFormat": "Run From ALM",
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

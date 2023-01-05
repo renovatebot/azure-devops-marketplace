@@ -1,0 +1,103 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Microsoft/windows-dev-center-vsts-extension"
+    },
+    "contributions": [
+        {
+            "id": "devCenterApiEndpoint",
+            "description": "DevCenterEndpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "devCenter",
+                "displayName": "Windows Dev Center",
+                "url": "https://manage.devcenter.microsoft.com",
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "url",
+                                "name": "Windows Store API URL",
+                                "description": "Server URL",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "url",
+                                    "isDisabled": false,
+                                    "defaultValue": "https://manage.devcenter.microsoft.com"
+                                }
+                            },
+                            {
+                                "id": "tenantId",
+                                "name": "Azure tenant ID",
+                                "description": "ID of the Azure tenant",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "servicePrincipalId",
+                                "name": "Client ID",
+                                "description": "ID of the client",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "servicePrincipalKey",
+                                "name": "Client secret",
+                                "description": "Secret of the client",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "publish-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "store-publish"
+            }
+        },
+        {
+            "id": "flight-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "store-flight"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

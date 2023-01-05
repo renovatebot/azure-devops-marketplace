@@ -1,0 +1,103 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "5e683ca0-59bf-4a1e-ac5c-f4885372271c",
+  "name": "cosmosdbquery",
+  "friendlyName": "deixei :: Cosmos Db Query",
+  "description": "deixei.com :: Querying a Cosmos Db in your CI/CD to get data as a variable",
+  "helpMarkDown": "[More Information](http://www.deixei.com/tasks.html#cosmosdbquery)",
+  "category": "Utility",
+  "author": "Marcio Parente da Silva",
+  "version": {
+    "Major": 1,
+    "Minor": 4,
+    "Patch": 6
+  },
+  "instanceNameFormat": "Cosmos Db Querying $(name)",
+  "groups": [
+    {
+      "name": "query",
+      "displayName": "Query",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "outputs",
+      "displayName": "Outputs",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "cosmosdbservice",
+      "type": "connectedService:CosmosDB",
+      "label": "Cosmos DB service connection name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select your Azure Cosmos DB",
+      "groupName": "query"
+    },
+    {
+      "name": "cosmosdbquery",
+      "type": "multiLine",
+      "label": "Cosmos Db Query in JSON",
+      "defaultValue": "{\"query\": \"SELECT * from c WHERE c.category = @category AND c.id = @id\",\"parameters\": [{\"name\": \"@id\",\"value\": \"1\"},{\"name\": \"@category\",\"value\": \"masterkey\"}]}\"",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "query"
+    },
+    {
+      "name": "databaseDefinition",
+      "type": "string",
+      "label": "Database Definition",
+      "defaultValue": "MasterRecords",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "collectionDefinition",
+      "type": "string",
+      "label": "Collection Definition",
+      "defaultValue": "Metadata",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "partitionKey",
+      "type": "string",
+      "label": "Partition Key",
+      "defaultValue": "/category",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "outputVariableName",
+      "type": "string",
+      "label": "Output Variable Name",
+      "defaultValue": "$(name)",
+      "required": true,
+      "helpMarkDown": "It will return a variable named COSMOSDB_$(outputVariableName) to be used in the same stage",
+      "groupName": "outputs"
+    },
+    {
+      "name": "outputFilename",
+      "type": "filePath",
+      "label": "Output Filename",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "(Optional) Enter the file name for the results. If no value is entered, the root will be used. It can be used in next stages.",
+      "groupName": "outputs"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

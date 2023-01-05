@@ -1,0 +1,284 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/OctopusDeploy/OctoTFS"
+    },
+    "scopes": [
+        "vso.build",
+        "vso.build_execute",
+        "vso.serviceendpoint_query"
+    ],
+    "demands": [],
+    "contributions": [
+        {
+            "id": "OctoProjectEnvironmentWidget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                ".OctoProjectEnvironmentWidget.Configuration"
+            ],
+            "properties": {
+                "name": "Octopus Deploy Status",
+                "description": "Shows the status of an Octopus Deploy Project for a given Environment",
+                "catalogIconUrl": "img/catalog-image.jpg",
+                "previewImageUrl": "img/preview-image.jpg",
+                "uri": "widgets/ProjectStatus/octo-status.html",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 1
+                    },
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 2
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "OctoProjectEnvironmentWidget.Configuration",
+            "type": "ms.vss-dashboards-web.widget-configuration",
+            "targets": [
+                "ms.vss-dashboards-web.widget-configuration"
+            ],
+            "properties": {
+                "name": "Octopus Project and Environment Status Configuration",
+                "description": "Configures Octopus Project and Environment Status Widget",
+                "uri": "widgets/ProjectStatus/configuration.html"
+            }
+        },
+        {
+            "id": "octopus-create-release",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/CreateOctopusRelease"
+            }
+        },
+        {
+            "id": "octopus-deploy",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/Deploy"
+            }
+        },
+        {
+            "id": "octopus-pack",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/Pack"
+            }
+        },
+        {
+            "id": "octopus-push",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/Push"
+            }
+        },
+        {
+            "id": "octopus-metadata",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/BuildInformation"
+            }
+        },
+        {
+            "id": "octo-installer",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/OctoInstaller"
+            }
+        },
+        {
+            "id": "octopus-promote",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/Promote"
+            }
+        },
+        {
+            "id": "octopus-cli",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/OctoCli"
+            }
+        },
+        {
+            "id": "octopus-endpoint-type",
+            "description": "Octopus Deploy Endpoint type for Octopus Build tasks",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "OctopusEndpoint",
+                "displayName": "Octopus Deploy",
+                "dataSources": [
+                    {
+                        "name": "OctopusAllSpaces",
+                        "endpointUrl": "$(endpoint.url)/api/spaces/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllProjectGroups",
+                        "endpointUrl": "$(endpoint.url)/api/projectgroups/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllProjectGroupsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/projectgroups/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusListProjectsInProjectGroup",
+                        "endpointUrl": "$(endpoint.url)/api/projectgroups/$(ProjectGroupId)/projects?take=500",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusListProjectsInProjectGroupInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/projectgroups/$(ProjectGroupId)/projects?take=500",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusAllEnvironments",
+                        "endpointUrl": "$(endpoint.url)/api/environments/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllEnvironmentsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/environments/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusProjectEnvironmentsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/environments/all?projectId=$(ProjectId)",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusProjectChannelEnvironmentsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/environments/all?projectId=$(ProjectId)&channelId=$(ChannelId)",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllTenants",
+                        "endpointUrl": "$(endpoint.url)/api/tenants/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusProjectTenantsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/tenants/all?projectId=$(ProjectName)",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusProjectChannels",
+                        "endpointUrl": "$(endpoint.url)/api/projects/$(ProjectName)/channels",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusProjectChannelsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/projects/$(ProjectName)/channels",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusProjectEnvironmentDeployments",
+                        "endpointUrl": "$(endpoint.url)/api/deployments?projects=$(ProjectId)&environments=$(EnvironmentId)",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusProjectEnvironmentDeploymentsInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/deployments?projects=$(ProjectId)&environments=$(EnvironmentId)",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    },
+                    {
+                        "name": "OctopusDashboardForProject",
+                        "endpointUrl": "$(endpoint.url)/api/dashboard?projectId=$(ProjectId)",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "OctopusDashboardForProjectInSpace",
+                        "endpointUrl": "$(endpoint.url)/api/$(SpaceId)/dashboard?projectId=$(ProjectId)",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "OctopusTaskDetails",
+                        "endpointUrl": "$(endpoint.url)$(TaskApiUri)",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "OctopusTaskDetailsInSpace",
+                        "endpointUrl": "$(endpoint.url)$(TaskApiUri)",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "ignoreSslErrors",
+                        "name": "Ignore SSL Errors",
+                        "description": "Enable this option to ignore SSL errors when connecting to the Octopus server from the agent.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "API key for connection to Octopus Deploy",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 36
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "X-Octopus-ApiKey",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "The Octopus URL must be accessible from any agents that are running builds or releases. See [g.octopushq.com/ApiKey](http://g.octopushq.com/ApiKey) for details on how to generate an API key."
+            }
+        }
+    ],
+    "contributionTypes": []
+}

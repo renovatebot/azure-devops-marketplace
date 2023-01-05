@@ -1,0 +1,127 @@
+{
+  "id": "8fafff6a-ce0d-4e16-b80d-857050815382",
+  "name": "APIM product",
+  "friendlyName": "Create or Update the product in Azure APIM",
+  "description": "Create or Update the product in Azure APIM",
+  "author": "Siddharth Kalai",
+  "helpMarkDown": "Create or Update the product in Azure APIM",
+      "preview": true,
+	  
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Create or Update the product in Azure APIM $(message)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"
+
+    },
+    {
+      "name": "ResourceGroupName",
+      "label": "Resource Group",
+      "type": "pickList",
+      "required": true,
+      "helpMarkDown": "Select resource group which contains the API Manager",
+      "properties": {
+        "EditableOptions": "True"
+      }
+
+    },
+    {
+      "name": "APIMname",
+      "type": "pickList",
+      "label": "API Manager Name",
+      "required": true,
+      "helpMarkDown": "The API Manager which you want to create the product",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "productname",
+      "type": "string",
+      "label": "Product Name",
+      "required": true,
+      "helpMarkDown": "provide new product name to create in APIM",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "shortname",
+      "type": "string",
+      "label": "Short Name",
+      "required": true,
+      "helpMarkDown": "Enter the short name of the product in 3 letter",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+	{
+      "name": "Description",
+      "type": "string",
+      "label": "Description of the Product",
+      "required": true,
+      "helpMarkDown": "Enter the Description of the product",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+	{
+      "name": "productname",
+      "type": "string",
+      "label": "Full Name of the Product",
+      "required": true,
+      "helpMarkDown": "Enter the Full Name of the Product",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+	{
+      "name": "apis",
+      "type": "multiline",
+      "label": "APIs Name",
+      "required": true,
+      "helpMarkDown": "Provide the APIs name. One API per line",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "APIMname",
+      "target": "APIMname",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ApiManagement/service?api-version=2016-07-07",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ResourceGroupName)"
+      }
+    }
+    
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "apimcreateorupdateproduct.ps1"
+    }
+  }
+}

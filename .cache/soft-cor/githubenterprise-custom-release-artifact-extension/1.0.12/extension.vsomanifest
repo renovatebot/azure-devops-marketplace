@@ -1,0 +1,298 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/keyoke/GithubEnterpriseServerRMArtifact"
+    },
+    "badges": [
+        {
+            "href": "https://dev.azure.com/softcores/GithubEnterpriseServerRMArtifact/_build?definitionId=1&_a=summary",
+            "uri": "https://dev.azure.com/softcores/GithubEnterpriseServerRMArtifact/_apis/build/status/keyoke.GithubEnterpriseServerRMArtifact?branchName=master",
+            "description": "Azure Pipeline for GithubEnterpriseServerRMArtifact"
+        }
+    ],
+    "demands": [
+        "contribution/ms.vss-endpoint.githubenterprise-endpoint-type",
+        "api-version/5.0"
+    ],
+    "contributions": [
+        {
+            "id": "gitclone-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/Tasks/DownloadArtifactsGitHubEnterprise"
+            }
+        },
+        {
+            "id": "githubenterprise-custom-release-artifact-type",
+            "description": "GitHub Enterprise Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "GitHubEnterprise",
+                "displayName": "GitHub Enterprise",
+                "endpointTypeId": "githubenterprise",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}",
+                "downloadTaskId": "6a23cb82-09af-48a3-bec7-0d30ca0c25e7",
+                "artifactType": "SourceControl",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service connection",
+                        "description": "Service connection ID",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Source (repository)",
+                        "description": "Repository to pull",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "branch",
+                        "name": "Default branch",
+                        "description": "Branch to checkout",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestFromBranchType",
+                            "isLimitedToPossibleValues": true,
+                            "possibleValues": [
+                                {
+                                    "value": "latestFromBranchType",
+                                    "displayValue": "Latest from the default branch"
+                                },
+                                {
+                                    "value": "specificVersionType",
+                                    "displayValue": "Specific commit from default branch"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "checkoutSubmodules",
+                        "name": "Checkout submodules",
+                        "description": "Checkout submodules",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "checkoutNestedSubmodules",
+                        "name": "Recursion level",
+                        "description": "Recursion level",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false
+                        },
+                        "properties": {
+                            "visibleRule": "checkoutSubmodules == true"
+                        },
+                        "values": {
+                            "inputId": "checkoutNestedSubmodulesValues",
+                            "defaultValue": true,
+                            "isLimitedToPossibleValues": true,
+                            "possibleValues": [
+                                {
+                                    "value": false,
+                                    "displayValue": "Top-level submodules only"
+                                },
+                                {
+                                    "value": true,
+                                    "displayValue": "Any nested submodules within"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "defaultVersionSpecific",
+                        "name": "Commit",
+                        "description": "Default to a specific commit",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "branch",
+                            "defaultVersionType"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "properties": {
+                            "visibleRule": "defaultVersionType == specificVersionType"
+                        }
+                    },
+                    {
+                        "id": "fetchDepth",
+                        "name": "Shallow fetch depth",
+                        "description": "Limits fetching to the specified number of commits from the tip of each remote branch history.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "artifacts",
+                        "name": "Artifacts",
+                        "description": "Artifacts",
+                        "inputMode": "none",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "defaultVersionType",
+                            "branch",
+                            "defaultVersionSpecific"
+                        ]
+                    }
+                ],
+                "taskInputMapping": {
+                    "connection": "{{{connection}}}",
+                    "definition": "{{{definition}}}",
+                    "submodules": "{{#equals checkoutSubmodules 'true' 1}}{{#equals checkoutNestedSubmodules 'true' 1}}Recursive{{else}}True{{/equals}}{{/equals}}",
+                    "fetchDepth": "{{{fetchDepth}}}"
+                },
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Repositories",
+                        "resultTemplate": "{ Value : \"{{{full_name}}}\", DisplayValue : \"{{{full_name}}}\" }"
+                    },
+                    {
+                        "target": "branch",
+                        "dataSourceName": "RepoBranches",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "defaultVersionSpecific",
+                        "dataSourceName": "Commits",
+                        "resultTemplate": "{ Value : \"{{{sha}}}\", DisplayValue : \"{{#stringLeft sha 8}}{{/stringLeft}} ({{#stringLeft commit.message 245}}{{/stringLeft}})\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "Commits",
+                        "resultTemplate": "{ Value : \"{{{sha}}}\", DisplayValue : \"{{#stringLeft sha 8}}{{/stringLeft}} ({{#stringLeft commit.message 245}}{{/stringLeft}})\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "LatestCommit",
+                        "resultTemplate": "{ Value : \"{{{sha}}}\", DisplayValue : \"{{#stringLeft sha 8}}{{/stringLeft}} ({{#stringLeft commit.message 245}}{{/stringLeft}})\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "dataSourceName": "Artifacts",
+                        "resultTemplate": "{ \"value\" : \"{{{path}}}\",  \"displayValue\" : \"{{{name}}}\",  \"data\" : { {{#equals type 'dir'}} \"artifactType\": \"folder\" {{else}} \"itemType\": \"file\" {{/equals}} } }"
+                    },
+                    {
+                        "target": "artifactItems",
+                        "dataSourceName": "ArtifactItems",
+                        "resultTemplate": "{ \"value\" : \"{{{path}}}\",  \"displayValue\" : \"{{{name}}}\",  \"data\" : { {{#equals type 'dir'}} \"artifactType\": \"folder\" {{else}} \"itemType\": \"file\" {{/equals}} } }"
+                    },
+                    {
+                        "target": "createwebhook",
+                        "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+                        "requestVerb": "Post",
+                        "requestContent": "{\"name\":\"web\", \"active\":true, \"events\":[\"push\", \"pull_request\", \"issue_comment\"], \"config\": {\"secret\":\"{{{secret}}}\", \"url\": \"{{{payloadUrl}}}\", \"content_type\": \"json\"}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "target": "deletewebhook",
+                        "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks/{{{id}}}",
+                        "requestVerb": "Delete",
+                        "resultSelector": "none"
+                    },
+                    {
+                        "target": "listwebhook",
+                        "endpointUrl": "{{{endpoint.url}}}api/v3/repos/{{{definition}}}/hooks",
+                        "requestVerb": "Get",
+                        "resultSelector": "jsonpath:$.[*]",
+                        "resultTemplate": "{ \"value\" : \"{{{config.url}}}\", \"displayValue\" : \"{{{config.url}}}\", \"data\": { \"id\": {{{id}}} }}"
+                    }
+                ],
+                "browsableArtifactTypeMapping": {
+                    "folder": "artifactItems"
+                },
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": true,
+                    "isTriggerSupportedOnlyInHosted": true,
+                    "resources": {
+                        "TriggerDisabledMessage": "Enabling the trigger will create a new release every time there is a change on the Github Enterprise Repo"
+                    },
+                    "payloadHashHeaderName": "X-Hub-Signature",
+                    "webhookPayloadMapping": {
+                        "version": "{{head_commit.id}}",
+                        "definition": "{{repository.full_name}}"
+                    }
+                }
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

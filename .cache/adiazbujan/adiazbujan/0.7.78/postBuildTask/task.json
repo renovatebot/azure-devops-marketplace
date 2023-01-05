@@ -1,0 +1,92 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "83a6b817-c838-4eff-b6bc-1fa6d884321e",
+    "name": "ECSPostBuildTask",
+    "friendlyName": "ECS Cloud Parametrization Post Build Task",
+    "description": "Post Build Task used to upload configuration files values to ECS",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "SkypeECS",
+    "version": {
+        "Major": 7,
+        "Minor": 78,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "instanceNameFormat": "Cloud Parametrization Post Build Task",
+    "inputs": [
+        {
+            "name": "serviceTreeId",
+            "type": "string",
+            "label": "Service tree ID",
+            "required": true,
+            "helpMarkDown": "Service tree ID that identifies the client on ECS."
+        },
+        {
+            "name": "serviceName",
+            "type": "string",
+            "label": "Service name",
+            "required": true,
+            "helpMarkDown": "Service name that identifies the project team on ECS."
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Service version",
+            "required": true,
+            "helpMarkDown": "Version of the configurations to be uploaded to ECS."
+        },
+        {
+            "name": "configType",
+            "type": "radio",
+            "label": "Type of configuration file",
+            "defaultValue": "1",
+            "required": true,
+            "helpMarkDown": "Type of configuration file.",
+            "options": {
+                "1": "CSCF",
+                "2": "JSON",
+                "3": "XML"
+            }
+        },
+        {
+            "name": "pathToConfigFile",
+            "type": "filePath",
+            "label": "Path to the configuration file",
+            "required": true,
+            "helpMarkDown": "Path to the configuration file."
+        },
+        {
+            "name": "pathToScopeBindingsFile",
+            "type": "filePath",
+            "label": "Path to the EV2 scope bindings file",
+            "required": true,
+            "helpMarkDown": "Path to the EV2 scope bindings file."
+        },
+        {
+            "name": "defaultOwner",
+            "type": "string",
+            "label": "User alias of the owner for the configuration",
+            "required": true,
+            "helpMarkDown": "User alias of the owner for the configuration."
+        },
+        {
+            "name": "connectedServiceARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "postbuildtask.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

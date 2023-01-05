@@ -1,0 +1,122 @@
+{
+    "id": "6095FBBE-853D-4F2E-BC15-A88C92A78B4D",
+    "name": "InstallPython",
+    "friendlyName": "Install Python (Experimental)",
+    "description": "Installs one or more Python versions into your build environment",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 13
+    },
+    "minimumAgentVersion": "1.103.0",
+    "groups": [
+        {
+            "name": "versions",
+            "displayName": "Versions",
+            "isExpanded": true
+        },
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Install Python",
+    "inputs": [
+        {
+            "name": "versions",
+            "type": "pickList",
+            "label": "Version pack",
+            "defaultValue": "python;pythonx86;python2;python2x86",
+            "helpMarkDown": "Select a set of versions to install.",
+            "required" : true,
+            "groupName": "versions",
+            "options": {
+                "python;pythonx86;python2;python2x86": "Latest 3.x and 2.x",
+                "python;pythonx86": "Latest 3.x",
+                "pythonx86": "Latest 3.x (32-bit only)",
+                "python": "Latest 3.x (64-bit only)",
+                "python2;python2x86": "Latest 2.x",
+                "python2x86": "Latest 2.x (32-bit only)",
+                "python2": "Latest 2.x (64-bit only)"
+            }
+        },
+        {
+            "name": "prerelease",
+            "type": "boolean",
+            "label": "Install prerelease versions",
+            "defaultValue": false,
+            "groupName": "versions",
+            "helpMarkDown": "Allow prerelease versions of Python to be installed."
+        },
+        {
+            "name": "versionlist",
+            "type": "string",
+            "label": "Versions",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "versions",
+            "helpMarkDown": "List of specific versions to install, e.g. `python==3.5.2;python==3.6.0`. If specified, the version pack option is ignored."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Install Folder",
+            "defaultValue": "$(Build.BinariesDirectory)",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where packages will be installed. By default, `$(Build.BinariesDirectory)` will be used."
+        },
+        {
+            "name": "nuGetAdditionalArgs",
+            "type": "string",
+            "label": "NuGet Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional arguments passed to NuGet.exe pack. [More Information](https://docs.nuget.org/consume/command-line-reference#user-content-pack-command).",
+            "groupName": "advanced"
+        },
+        {
+            "name": "nuGetPath",
+            "type": "string",
+            "label": "Path to NuGet.exe",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to NuGet.exe",
+            "groupName": "advanced"
+        },
+        {
+            "name": "nuGetSource",
+            "type": "string",
+            "label": "Source URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the NuGet source to obtain the packages from.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "clean",
+            "type": "boolean",
+            "label": "Clean existing installs",
+            "defaultValue": true,
+            "helpMarkDown": "Optionally delete all python* directories in the output",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "InstallPython.ps1"
+        }
+    }
+}

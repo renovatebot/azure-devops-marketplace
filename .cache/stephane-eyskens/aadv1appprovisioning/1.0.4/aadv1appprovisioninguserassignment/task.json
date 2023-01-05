@@ -1,0 +1,167 @@
+{
+  "id": "3b5e0d1e-63f1-4c5b-8744-2fb0459c65f1",
+  "name": "aadv1appprovisioninguserassignment",
+  "friendlyName": "Azure Active Directory v1.0 App Provisioning with Group Assignment",
+  "description": "Deploy and configure AAD v1.0 Apps",
+  "author": "Stephane Eyskens",
+  "helpMarkDown": "To deploy and configure AAD v1.0 Apps",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "1",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Azure Active Directory v1.0 Apps with Group Assignment $(message)",
+  "inputs": [
+    {
+      "name": "vault",
+      "type": "string",
+      "label": "Vault",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "$(vault)"
+    },
+    {
+      "name": "vstsappclientid",
+      "type": "string",
+      "label": "vsts appclientid",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "$(vstsappid)"
+    },
+    {
+      "name": "vstsappsecret",
+      "type": "string",
+      "label": "vsts app secret",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "$(vstsappsecret)"
+    },
+    {
+      "name": "vstsaccount",
+      "type": "string",
+      "label": "vsts account",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "$(vstsaccount)"
+    },
+    {
+      "name": "tenant",
+      "type": "string",
+      "label": "tenant",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "$(tenant)"
+    },
+    {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceNameARM",
+      "options": {
+        "ConnectedServiceName": "Azure Classic",
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Classic Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "TemplateSelector",
+      "type": "pickList",
+      "label": "AAD starting template",
+      "required": true,
+      "helpMarkDown": "Choose a default template to start from",
+      "defaultValue": "NativeAndWebAPI",
+      "options": {
+        "NativeAndWebAPI": "1 mobile app + 1 API",
+        "JavascriptAndWebAPI": "1 JavaScript app + 1 API",
+        "WebAndWebAPI": "1 web client + 1 API",
+        "NativeAndWebAndWebAPI": "1 mobile app + 1 web client + 1 API",
+        "APIWithRolesAndScopesAndWebClient": "1 API with custom roles + custom OAuth2 permissions + 1 web client",
+        "APIWithRolesAndScopesAssignmentAndWebClient": "1 API with custom roles + custom OAuth2 permissions + role assignment+1 web client"
+      }
+    },
+    {
+      "name": "NativeAndWebAPI",
+      "type": "string",
+      "label": "Navite Client+WebAPI",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapinativeclient\",      \"overwrite\": true,      \"ReplyUrls\": [\"https://sampleapinativeclient\"],      \"IsPublicClient\": true,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"user_impersonation\",              \"type\": \"Scope\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "Native Client and WebAPI",
+      "visibleRule": "TemplateSelector = NativeAndWebAPI"
+    },
+    {
+      "name": "JavascriptAndWebAPI",
+      "type": "string",
+      "label": "Navite Client+WebAPI",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapinativeclient\",      \"overwrite\": true,      \"ReplyUrls\": [\"https://sampleapinativeclient\"],      \"IsPublicClient\": true, \"Oauth2AllowImplicitFlow\": true,     \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"user_impersonation\",              \"type\": \"Scope\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "Native Client and WebAPI",
+      "visibleRule": "TemplateSelector = JavascriptAndWebAPI"
+    },
+    {
+      "name": "WebAndWebAPI",
+      "type": "string",
+      "label": "Web Client+WebAPI",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapiwebcli\",      \"overwrite\": true,      \"IdentifierUri\": \"https://sampleapiwebcli\",      \"ReplyUrls\": [ \"https://sampleapiwebcli.azurewebsites.net/\" ],      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"webcliappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"webcliappsecretsecretname\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"Oauth2AllowImplicitFlow\": false,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"user_impersonation\",              \"type\": \"Scope\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "Web client and WebAPI",
+      "visibleRule": "TemplateSelector = WebAndWebAPI"
+    },
+    {
+      "name": "NativeAndWebAndWebAPI",
+      "type": "string",
+      "label": "Native+Web Client+WebAPI",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapiwebcli\",      \"overwrite\": true,      \"IdentifierUri\": \"https://sampleapiwebcli\",      \"ReplyUrls\": [ \"https://sampleapiwebcli.azurewebsites.net/\" ],      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"webcliappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"webcliappsecretsecretname\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"Oauth2AllowImplicitFlow\": false,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"user_impersonation\",              \"type\": \"Scope\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    },    {      \"name\": \"sampleapinativeclient\",      \"overwrite\": true,      \"ReplyUrls\": [\"https://sampleapinativeclient\"],      \"IsPublicClient\": true,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"user_impersonation\",              \"type\": \"Scope\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "Native Client, Web Client and WebAPI",
+      "visibleRule": "TemplateSelector = NativeAndWebAndWebAPI"
+    },
+    {
+      "name": "APIWithRolesAndScopesAndWebClient",
+      "type": "string",
+      "label": "API with custom OAuth2 permissions and app roles + web client",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"GroupMembershipClaims\": null,      \"AppRoles\": [        {          \"DisplayName\": \"role1\",          \"Description\": \"role1 example\",          \"Value\": \"role1\"        }      ],      \"Oauth2Permissions\": [        {          \"userConsentDescription\": \"This app...\",          \"userConsentDisplayName\": \"This app...\",          \"value\": \"MyDelegatePermission\"        }      ],      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapiwebcli\",      \"overwrite\": true,      \"IdentifierUri\": \"https://sampleapiwebcli\",      \"ReplyUrls\": [ \"https://sampleapiwebcli.azurewebsites.net/\" ],      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"webcliappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"webcliappsecretsecretname\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"Oauth2AllowImplicitFlow\": false,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"MyDelegatePermission\",              \"type\": \"Scope\"            },            {              \"name\": \"role1\",              \"type\": \"Role\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "API with custom OAuth2 permissions and app roles + web client",
+      "visibleRule": "TemplateSelector = APIWithRolesAndScopesAndWebClient"
+    },
+    {
+      "name": "APIWithRolesAndScopesAssignmentAndWebClient",
+      "type": "string",
+      "label": "API with custom OAuth2 permissions and app roles + web client",
+      "defaultValue": "{  \"applications\": [    {      \"name\": \"sampleapi\",      \"overwrite\": true,      \"ReplyUrls\": [],      \"IdentifierUri\": \"https://sampleapi\",      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"sampleapiappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"GroupMembershipClaims\": null,      \"AppRoles\": [        {          \"DisplayName\": \"role1\",          \"Description\": \"role1 example\",          \"Value\": \"role1\"        }      ],\"UserAndGroupAssignment\":[{\"name\": \"agroup\",\"type\": \"Group\",\"AssignedRole\": \"role1\"},{\"name\": \"user upn typically user@tenant\",\"type\": \"user\",\"AssignedRole\": \"role1\"}],      \"Oauth2Permissions\": [        {          \"userConsentDescription\": \"This app...\",          \"userConsentDisplayName\": \"This app...\",          \"value\": \"MyDelegatePermission\"        }      ],      \"RequiredResourceAccess\": {}    },    {      \"name\": \"sampleapiwebcli\",      \"overwrite\": true,      \"IdentifierUri\": \"https://sampleapiwebcli\",      \"ReplyUrls\": [ \"https://sampleapiwebcli.azurewebsites.net/\" ],      \"IsPublicClient\": false,      \"KeyVaultAppIdName\": \"webcliappidentifiersecretname\",      \"KeyVaultAppSecretName\": \"webcliappsecretsecretname\",      \"MSIEnabledRelatedWebAppName\": \"\",      \"Oauth2AllowImplicitFlow\": false,      \"RequiredResourceAccess\": [        {          \"resource\": \"https://sampleapi\",          \"perms\": [            {              \"name\": \"MyDelegatePermission\",              \"type\": \"Scope\"            },            {              \"name\": \"role1\",              \"type\": \"Role\"            }          ]        },        {          \"resource\": \"https://graph.windows.net\",          \"perms\": [            {              \"name\": \"User.Read\",              \"type\": \"Scope\"            }          ]        }      ]    }  ]}",
+      "required": true,
+      "helpMarkDown": "API with custom OAuth2 permissions and role assignment + web client",
+      "visibleRule": "TemplateSelector = APIWithRolesAndScopesAssignmentAndWebClient"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "aadprovision.ps1"
+    }
+  }
+}

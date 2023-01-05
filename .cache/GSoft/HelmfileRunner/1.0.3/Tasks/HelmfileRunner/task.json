@@ -1,0 +1,324 @@
+{
+  "id": "be10e55f-92fd-41ad-adb3-c9cf905cc71f",
+  "name": "HelmfileRunner",
+  "friendlyName": "Execute helmfile cli",
+  "description": "Runs helmfile cli tool on agent host.",
+  "author": "GSoft Inc.",
+  "helpMarkDown": "See [extension page](https://marketplace.visualstudio.com/items?itemName=gsoft.HelmfileRunner) for more information.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "helmfile $(command)",
+  "groups": [
+    {
+      "name": "cluster",
+      "displayName": "Kubernetes Cluster",
+      "isExpanded": true
+    },
+    {
+      "name": "commands",
+      "displayName": "Commands",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "connectionType",
+      "type": "pickList",
+      "label": "Connection Type",
+      "defaultValue": "Azure Resource Manager",
+      "required": true,
+      "options": {
+        "Azure Resource Manager": "Azure Resource Manager",
+        "Kubernetes Service Connection": "Kubernetes Service Connection",
+        "None": "None"
+      },
+      "helpMarkDown": "Select 'Azure Resource Manager' to connect to an Azure Kubernetes Service by using Azure Service Connection. Select 'Kubernetes Service Connection' to connect to any Kubernetes cluster by using kubeconfig or Service Account",
+      "groupName": "cluster"
+    },
+    {
+      "name": "azureSubscriptionEndpoint",
+      "aliases": [
+        "azureSubscription"
+      ],
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "helpMarkDown": "Select an Azure subscription, which has your Azure Container Registry.",
+      "visibleRule": "connectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "cluster"
+    },
+    {
+      "name": "azureResourceGroup",
+      "label": "Resource group",
+      "type": "pickList",
+      "helpMarkDown": "Select an Azure Resource Group.",
+      "visibleRule": "connectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "cluster",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "kubernetesCluster",
+      "label": "Kubernetes cluster",
+      "type": "pickList",
+      "helpMarkDown": "Select an Azure Managed Cluster.",
+      "visibleRule": "connectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "cluster",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "useClusterAdmin",
+      "type": "boolean",
+      "label": "Use cluster admin credentials",
+      "defaultValue": "false",
+      "visibleRule": "connectionType = Azure Resource Manager",
+      "groupName": "cluster",
+      "helpMarkDown": "Use cluster administrator credentials instead of default cluster user credentials."
+    },
+    {
+      "name": "kubernetesServiceEndpoint",
+      "aliases": [
+        "kubernetesServiceConnection"
+      ],
+      "type": "connectedService:kubernetes",
+      "label": "Kubernetes Service Connection",
+      "helpMarkDown": "Select a Kubernetes service connection.",
+      "visibleRule": "connectionType = Kubernetes Service Connection",
+      "required": true,
+      "groupName": "cluster"
+    },
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "diff",
+      "required": true,
+      "options": {
+        "diff": "diff",
+        "apply": "apply",
+        "sync": "sync",
+        "deps": "deps",
+        "repos": "repos",
+        "charts": "charts",
+        "template": "template",
+        "write-values": "write-values",
+        "lint": "lint",
+        "status": "status",
+        "delete": "delete",
+        "destroy": "destroy",
+        "test": "test",
+        "build": "build",
+        "list": "list",
+        "fetch": "fetch",
+        "version": "version",
+        "help": "help"
+      },
+      "helpMarkDown": "Select a helmfile command.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "commands"
+    },
+    {
+      "name": "helmfilePath",
+      "label": "Helmfile Path",
+      "type": "string",
+      "helpMarkDown": "Load config from file or directory. defaults to helmfile.yaml",
+      "defaultValue": "helmfile.yaml",
+      "visibleRule": "command != version || command != help",
+      "required": "true",
+      "groupName": "commands"
+    },
+    {
+      "name": "environment",
+      "label": "Environment",
+      "type": "string",
+      "helpMarkDown": "Specify the environment name (--environment or -e).",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "namespace",
+      "label": "Namespace",
+      "type": "string",
+      "helpMarkDown": "Set namespace. Uses the namespace set in the context by default, and is available in templates as {{ .Namespace }}.",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "selector",
+      "label": "Selector(s)",
+      "type": "multiline",
+      "helpMarkDown": "Only run using the releases that match labels. Labels can take the form of foo=bar or foo!=bar. A release must match all labels in a group in order to be used. Multiple groups can be specified at once. *Use one line per label.*",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "stateValuesSet",
+      "label": "State Values Set",
+      "type": "string",
+      "helpMarkDown": "Set state values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2).",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "stateValuesFile",
+      "label": "State Values File",
+      "type": "string",
+      "defaultValue": "",
+      "helpMarkDown": "Specify state values in a YAML file.",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "kubeContext",
+      "label": "kubectl context",
+      "type": "string",
+      "helpMarkDown": "Set kubectl context. Uses current context by default.",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "commandArgs",
+      "label": "Command specific arguments",
+      "type": "multiline",
+      "helpMarkDown": "Command specific arguments to append to the end of the command. *Use one line per argument.*",
+      "visibleRule": "command != version || command != help",
+      "required": "false",
+      "groupName": "commands"
+    },
+    {
+      "name": "installHelmDiff",
+      "type": "boolean",
+      "label": "Install or update Helm diff plugin",
+      "defaultValue": "true",
+      "visibleRule": "command == diff",
+      "helpMarkDown": "Install the [Helm diff plugin](https://github.com/databus23/helm-diff) used with the helmfile diff command.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "helmDiffVersion",
+      "type": "string",
+      "label": "Helm diff plugin version to use",
+      "defaultValue": "latest",
+      "visibleRule": "installHelmDiff == true",
+      "helpMarkDown": "Version of the helm-diff plugin to use.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "quiet",
+      "type": "boolean",
+      "label": "Quiet output",
+      "defaultValue": "false",
+      "visibleRule": "command != version || command != help",
+      "helpMarkDown": "Silence output. Equivalent to log-level warn.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "debug",
+      "type": "boolean",
+      "label": "Debug",
+      "defaultValue": "false",
+      "visibleRule": "command != version || command != help",
+      "helpMarkDown": "Enable verbose output for Helm and set log-level to debug, this disables --quiet/-q effect",
+      "groupName": "advanced"
+    },
+    {
+      "name": "noColor",
+      "type": "boolean",
+      "label": "No color",
+      "defaultValue": "false",
+      "visibleRule": "command != version || command != help",
+      "helpMarkDown": "Output without color.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "logLevel",
+      "type": "pickList",
+      "label": "Log level",
+      "required": false,
+      "options": {
+        "error": "Error",
+        "warn": "Warn",
+        "info": "Info",
+        "debug": "Debug"
+      },
+      "helpMarkDown": "Select a log level (defaults to error).",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "advanced"
+    },
+    {
+      "name": "allowNoMatchingRelease",
+      "type": "boolean",
+      "label": "Allow no matching release",
+      "defaultValue": "false",
+      "visibleRule": "command != version || command != help",
+      "helpMarkDown": "Do not exit with an error code if the provided selector has no matching releases.",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "kubernetesCluster",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(azureResourceGroup)/providers/Microsoft.ContainerService/managedClusters?api-version=2017-08-31",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{name}}}"
+    },
+    {
+      "target": "azureResourceGroup",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.ContainerService/managedClusters?api-version=2017-08-31",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{ #extractResource id resourcegroups}}}"
+    }
+  ],
+  "showEnvironmentVariables": true,
+  "outputVariables": [
+    {
+      "name": "helmfileExitCode",
+      "description": "Exit code emitted from the execution of specified helmfile command"
+    },
+    {
+      "name": "helmfileOutput",
+      "description": "Output emitted from the execution of specified helmfile command"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "src//index.js",
+      "argumentFormat": ""
+    }
+  }
+}

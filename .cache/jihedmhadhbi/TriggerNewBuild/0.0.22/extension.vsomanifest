@@ -1,0 +1,50 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "BuildTrigger",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        },
+        {
+            "id": "vstsTfsApi-endpoint-type",
+            "description": "Service Endpoint type for vsts connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vstsTfsApi",
+                "displayName": "VSTS/TFS api connection",
+                "url": {
+                    "displayName": "Server Url"
+                },
+                "dataSources": [
+                    {
+                        "name": "projects",
+                        "endpointUrl": "{{endpoint.url}}DefaultCollection/_apis/projects?api-version=1.0",
+                        "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]"
+                    },
+                    {
+                        "name": "buildDefinitions",
+                        "endpointUrl": "{{endpoint.url}}DefaultCollection/{{project}}/_apis/build/definitions?api-version=2.0",
+                        "resultSelector": "jsonpath:$.value[?(@.quality=='definition')]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

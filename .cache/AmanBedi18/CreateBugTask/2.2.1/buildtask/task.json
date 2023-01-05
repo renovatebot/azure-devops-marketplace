@@ -1,0 +1,89 @@
+{
+    "id": "9faa6a4c-9c25-45b6-b4cd-97e5e95977c6",
+    "name": "CreateBug",
+    "friendlyName": "Create Bug on Release failure",
+    "description": "Creates a bug with error report in VSTS when a release is failed & assigns it to the person who triggered the release.",
+    "helpMarkDown": "Please visit https://github.com/amanbedi18/CreateBug-VSTS-Task to configure the task in your release pipelines.",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "author": "Aman Bedi",
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Create a bug on release failure.",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "isyamlpipeline",
+            "type": "boolean",
+            "label": "Check this if the target pipeline is yaml based.",
+            "defaultValue": "false",
+            "helpMarkDown": "Enable if the pipeline containing this task is yaml based. Note: DO NOT CHECK THIS FOR CLASSIC RELEASE PIPELINES.",
+            "required": true
+        },
+        {
+            "name": "custompaths",
+            "type": "boolean",
+            "label": "Provide custom Area & Iteration Paths (leave un-checked to default to current area/iteration path) ",
+            "defaultValue": "false",
+            "helpMarkDown": "Enable to provide values for custom Area & Iteration paths for the work item to be created. This will override current area and iteration path of the project.",
+            "required": true
+        },
+        {
+            "name": "areapath",
+            "type": "string",
+            "label": "Area Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Custom Area path for the work item to be created.",
+            "visibleRule": "custompaths=true"
+        },
+        {
+            "name": "iterationpath",
+            "type": "string",
+            "label": "Iteration Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Custom Iteration path for the work item to be created.",
+            "visibleRule": "custompaths=true"
+        },
+        {
+            "name": "customrequestor",
+            "type": "boolean",
+            "label": "Provide custom requestor against whom the bug would be created (check this in case of scheduled deployment)",
+            "defaultValue": "false",
+            "helpMarkDown": "Enable to provide value for custom requestor against whom the bug would be created and assigned to. This is useful for scheduled deployment as it does not have an associated requestor but can be used otherwise too.",
+            "required": true
+        },
+        {
+            "name": "customrequestorid",
+            "type": "string",
+            "label": "Custom Requestor",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Custom requestor against whom the bug would be created and assigned to.",
+            "visibleRule": "customrequestor=true"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "CreateWorkItem.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

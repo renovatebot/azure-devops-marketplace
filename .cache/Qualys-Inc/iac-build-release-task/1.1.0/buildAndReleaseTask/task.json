@@ -1,0 +1,155 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "47a00f8c-e36a-4810-afa4-06fa553d0fae",
+    "name": "QualysIaCSecurityConnector",
+    "friendlyName": "Scan IaC templates using Qualys CloudView",
+    "description": "Detect Misconfigurations in IaC Templates using Qualys CloudView",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Qualys",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Scan IaC templates using Qualys CloudView",
+    "groups": [
+        {
+            "name": "scanAPIParameters",
+            "displayName": "Launch Scan API Parameters",
+            "isExpanded": true
+        },
+        {
+            "name": "failureConditions",
+            "displayName": "Build Failure Conditions",
+            "isExpanded": true
+        },
+        {
+            "name": "timeoutSettings",
+            "displayName": "Timeout Settings",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "scanName",
+            "type": "string",
+            "label": "Scan Name",
+            "groupName": "scanAPIParameters",
+            "defaultValue": "$(DefinitionName)_azureDevOps_$(ID)",
+            "helpMarkDown": "Qualys requires scan names to be unique. To make this scan name unique, this plugin will always append execution time to this scan name. Additionally, to add your Azure DevOps job name and build/release number in the scan name, you can use this ->  `$(DefinitionName)_azureDevOps_$(ID)`",
+            "required": false
+        },
+        {
+            "name": "scanDirectory",
+            "type": "string",
+            "label": "Compressed File path/Directory to be scanned on (optional)",
+            "groupName": "scanAPIParameters",
+            "helpMarkDown": "Provide the compressed file path to be scanned or a Directory to be looked up for IaC template files for the scan to be launched on them. Keep it empty to scan the entire repository.",
+            "required": false
+        },
+        {
+            "name": "failByCriticalStatus",
+            "type": "boolean",
+            "label": "Fail if the count of 'Critical' failed controls is more than",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditions",
+            "helpMarkDown": "Fail the build if count of failed controls (of given type) is greater than the configured count.All criticality levels conditions are 'OR'ed together.example: Fail with more than 0 Critical controls OR Fail with more than 0 High controls OR .."
+        },
+        {
+            "name": "critical",
+            "type": "string",
+            "label": "Enter Count",
+            "visibleRule": "failByCriticalStatus = true",
+            "groupName": "failureConditions",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failByHighStatus",
+            "type": "boolean",
+            "label": "Fail if the count of 'High' failed controls is more than",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditions",
+            "helpMarkDown": "Fail the build if count of failed controls (of given type) is greater than the configured count.All criticality levels conditions are 'OR'ed together.example: Fail with more than 0 Critical controls OR Fail with more than 0 High controls OR .."
+        },
+        {
+            "name": "high",
+            "type": "string",
+            "label": "Enter Count",
+            "visibleRule": "failByHighStatus = true",
+            "groupName": "failureConditions",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failByMediumStatus",
+            "type": "boolean",
+            "label": "Fail if the count of 'Medium' failed controls is more than",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditions",
+            "helpMarkDown": "Fail the build if count of failed controls (of given type) is greater than the configured count.All criticality levels conditions are 'OR'ed together.example: Fail with more than 0 Critical controls OR Fail with more than 0 High controls OR .."
+        },
+        {
+            "name": "medium",
+            "type": "string",
+            "label": "Enter Count",
+            "visibleRule": "failByMediumStatus = true",
+            "groupName": "failureConditions",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failByLowStatus",
+            "type": "boolean",
+            "label": "Fail if the count of 'Low' failed controls is more than",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditions",
+            "helpMarkDown": "Fail the build if count of failed controls (of given type) is greater than the configured count.All criticality levels conditions are 'OR'ed together.example: Fail with more than 0 Critical controls OR Fail with more than 0 High controls OR .."
+        },
+        {
+            "name": "low",
+            "type": "string",
+            "label": "Enter Count",
+            "visibleRule": "failByLowStatus = true",
+            "groupName": "failureConditions",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "dataCheckFrequency",
+            "type": "string",
+            "label": "How often to check for data (in seconds)",
+            "defaultValue": "30",
+            "required": false,
+            "groupName": "timeoutSettings",
+            "helpMarkDown": "The polling interval in seconds. It is the time to wait between subsequent API calls.If this field is kept empty, plugin will by default use 30 secs as frequency interval."
+        },
+        {
+            "name": "waitTimeforScanResult",
+            "type": "string",
+            "label": "How long to wait for scan results (in minutes)",
+            "defaultValue": "10",
+            "required": false,
+            "groupName": "timeoutSettings",
+            "helpMarkDown": "The timeout period for fetching scanned misconfiguration data. The Qualys task will end after the timeout period.If this field kept empty, plugin will by default use 10 minutes as Timeout period."
+        },
+        {
+            "name": "IacService",
+            "type": "connectedService:Iac",
+            "label": "IaC Scan service/server endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the IaC end point to use. If needed, select 'manage', and add a new service endpoint of type 'IaC Scan server connection'"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

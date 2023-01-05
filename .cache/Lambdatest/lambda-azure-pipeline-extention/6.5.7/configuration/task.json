@@ -1,0 +1,66 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "35030d2d-d5dd-4bba-86bb-c5b98fd42d8f",
+    "name": "configuration",
+    "friendlyName": "Configuration setup",
+    "description": "This task sets Lambdatest credentials and starts Lambdatest tunnel.",
+    "helpMarkDown": "",
+    "author": "LambdaTest",
+  
+    "preview": false,
+    "showEnvironmentVariables": true,
+    "runsOn": [
+      "Agent",
+      "MachineGroup",
+      "Server"
+    ],
+    "category": "Azure Pipelines",
+    "version": {
+      "Major": 1,
+      "Minor": 0,
+      "Patch": 3
+    },
+  
+        "instanceNameFormat": "LambdaTest configuration setup",
+        "inputs": [
+        {
+            "type": "connectedService:LambdaTest",
+            "name": "connection",
+            "label": "LambdaTest service end point",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the LambdaTest credentials to use. If needed, click on 'Manage', and add a new Service Endpoint of type 'LambdaTest service connection'."
+        },
+        {
+            "type": "boolean",
+            "name": "isTunnelActivate",
+            "label": "LambdaTest Tunnel",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Check to enable LambdaTest tunnel."
+        },
+
+        {
+            "name": "tunnelOptions",
+            "type": "string",
+            "label": "LambdaTest Tunnel Options",
+            "required": false,
+            "visibleRule": "isTunnelActivate == true",
+            "helpMarkDown":"Enter a valid json with fields specified <a href='https://www.lambdatest.com/support/docs/lambda-tunnel-modifiers/'>here</a>"
+        },
+        {
+            "type": "boolean",
+            "name": "isAppAutomate",
+            "label": "App Automation",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Check to enable app automation test report."
+        }
+        ],
+        "execution": {
+            "Node10": {
+                "target": "configuration.js",
+                "argumentFormat": ""
+            }
+        }
+  }

@@ -1,0 +1,122 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "23b50454-c64e-4bd4-a574-eaf48501e1b0",
+    "name": "dbForgeExecute",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Execute",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Execute",
+    "description": "Automates executing the scripts",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "groups": [
+        {
+            "name": "soursceOptions",
+            "displayName": "Source",
+            "isExpanded": true
+        },
+        {
+            "name": "targetOptions",
+            "displayName": "Target",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "input",
+            "type": "string",
+            "label": "Input",
+            "required": true,
+            "helpMarkDown": "Enter an SQL or ZIP file with the script to execute or a folder with SQL or ZIP files",
+            "groupName": "soursceOptions"
+        },
+        {
+            "name": "encoding",
+            "type": "string",
+            "label": "Encoding",
+            "required": false,
+            "helpMarkDown": "Enter the encoding which should be applied to open and execute the script",
+            "groupName": "soursceOptions"
+        },
+        {
+            "name": "zipPassword",
+            "type": "string",
+            "label": "ZipPassword",
+            "required": false,
+            "helpMarkDown": "Enter the password to protected archive with password",
+            "groupName": "soursceOptions"
+        },
+        {
+            "name": "ignoreError",
+            "type": "boolean",
+            "label": "IgnoreError",
+            "required": false,
+            "helpMarkDown": "Use this parameter to continue executing scripts in the folder despite errors",
+            "groupName": "soursceOptions"
+        },
+        {
+            "name": "sqlServer",
+            "type": "string",
+            "label": "SQL Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance use '(local)'",
+            "groupName": "targetOptions"
+        },
+        {
+            "name": "dbName",
+            "type": "string",
+            "label": "Database",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database name",
+            "groupName": "targetOptions"
+        },
+        {
+            "name": "authMethod",
+            "type": "pickList",
+            "label": "Authentication method",
+            "defaultValue": "sqlServerAuth",
+            "helpMarkDown": "Select the Authentication method, either SQL Server authentication or Windows authentication",
+            "groupName": "targetOptions",
+            "required": true,
+            "options": {
+                "sqlServerAuth": "SQL Server authentication",
+                "windowsAuth": "Windows authentication"
+            }
+        },
+        {
+            "name": "connUserName",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter login name to use for SQL Server authentication",
+            "groupName": "targetOptions",
+            "visibleRule": "authMethod=sqlServerAuth"
+        },
+        {
+            "name": "connPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter password to use for SQL Server authentication",
+            "groupName": "targetOptions",
+            "visibleRule": "authMethod=sqlServerAuth"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

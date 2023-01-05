@@ -1,0 +1,69 @@
+{
+  "id": "f1ee1406-4e61-4f3f-91ac-fba22c5e24a9",
+  "name": "MTESSDeploiement",
+  "friendlyName": "MTESS - Déployer formulaire FRW",
+  "description": "Déployez vos formulaires facilement",
+  "author": "MTESS - Division Transformation Numérique",
+  "helpMarkDown": "Pour du support contactez DTN - MonDossier - MTESS",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "15"
+  },
+  "minimumAgentVersion": "2.115.0",
+  "instanceNameFormat": "Déployer formulaires $(message)",
+  "inputs": [
+    {
+      "name": "sourceDir",
+      "type": "filePath",
+      "label": "Répertoire des formulaires",
+      "required": true,
+      "helpMarkDown": "Correspond au répertoire qui contient les formulaires."
+    },
+    {
+      "name": "apiSiteWeb",
+      "type": "pickList",
+      "label": "API à utiliser",
+      "defaultValue": "QA",
+      "required": true,
+      "helpMarkDown": "Peut-être DEBUG, QA, PROD ou une adresse complète.",
+      "options": {
+        "QA": "Assurance qualité",
+        "PROD": "Production"
+      },
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "noPublicSystemeAutorise",
+      "type": "string",
+      "label": "Numéro publique de système autorisé",
+      "required": true,
+      "helpMarkDown": "Correspond au GUID de votre système"
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "Clée d'API - Secret",
+      "required": true,
+      "helpMarkDown": "Correspond à l'api key de votre système"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\DeploiementFRW.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

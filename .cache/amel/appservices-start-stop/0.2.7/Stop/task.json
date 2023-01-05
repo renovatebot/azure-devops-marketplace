@@ -1,0 +1,86 @@
+{
+    "id": "9a610776-bf44-420c-8c39-6c3eaa907b19",
+    "name": "Stop",
+    "friendlyName": "Azure AppServices / WebApp Stop / WebJob Stop",
+    "description": "Task for stopping an Azure App Service as a part of a VSTS build",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "amel",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 5
+    },
+	"demands": [
+		"azureps"
+	],
+    "minimumAgentVersion": "1.101.2",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameSelector",
+            "type": "pickList",
+            "label": "Azure Connection Type",
+            "required": false,
+            "helpMarkDown": "",
+            "defaultValue": "ConnectedServiceName",
+            "options": {
+                "ConnectedServiceName": "Azure Classic",
+                "ConnectedServiceNameARM": "Azure Resource Manager"
+            }
+        },
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure",
+            "label": "Azure Classic Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+            "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+        {
+            "name": "WebAppName",
+            "type": "string",
+            "label": "Web App Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the name of an existing Azure App Service Application."
+        },
+		{
+            "name": "WebJobName",
+            "type": "string",
+            "label": "Web Job Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter the name of an existing Azure App Service WebJob Application."
+        }
+    ],  
+	"execution": {
+	    "AzurePowerShell": {
+			"target": "$(currentDirectory)\\Stop.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+	    }
+	},
+	"instanceNameFormat": "Azure AppServices Stop",
+    "messages": {
+    }    
+}

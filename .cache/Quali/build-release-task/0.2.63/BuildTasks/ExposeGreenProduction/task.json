@@ -1,0 +1,72 @@
+{
+  "id": "adb0a044-30c9-417d-ac1c-a213ced5d519",
+  "name": "ExposeGreenProduction",
+  "friendlyName": "Expose Green Production",
+  "description": "Expose Green Production with CloudShell Colony",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 63
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "Expose Green Production",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "colonyEndpoint",
+      "type": "connectedService:colonyServiceEndpoint",
+      "label": "Colony server URL",
+      "required": true,
+      "helpMarkDown": "Select the Colony end point to use. If needed, click on 'manage', and add a new service connection of type 'Colony Service connection'"
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your CloudShell Colony space."
+    },
+    {
+      "name": "productionId",
+      "type": "string",
+      "label": "Production Id",
+      "required": true,
+      "helpMarkDown": "Enter the ID of the Production you want to end. Use $(Colony.Production_Id) if you have the Deploy Production Green task in the pipeline."
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "label": "Exposure Value",
+      "defaultValue": "100",
+      "helpMarkDown": "Set the Exposure Value for your Green, allowed values are 0, 50 or 100.",
+      "required": true
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "project",
+      "endpointId": "$(colonyEndpoint)",
+      "dataSourceName": "Colony Endpoint"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}

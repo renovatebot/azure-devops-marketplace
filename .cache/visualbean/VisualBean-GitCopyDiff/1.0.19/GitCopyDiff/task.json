@@ -1,0 +1,60 @@
+{
+	"id": "c2f186c9-9a84-427b-bbbc-93f30eb1ac55",
+	"name": "GitCopyDiff",
+	"friendlyName": "Git Copy Diff",
+	"description": "A task that copies added/modified/renamed/moved files to a specified directory.",
+	"author": "Alex Carlsen",
+	"helpMarkDown": "copies added/modified/renamed/moved files to a specified directory. ### Prerequisites * Repository must be Git. * Allow scripts to access Oauth must be **Enabled**",
+	"category": "Utility",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "0",
+		"Patch": "21"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "GitCopyDiff $(message)",
+	"inputs": [
+	{
+			"name": "destination",
+            "type": "string",
+            "label": "Destination",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "The directory where files should be placed."
+	},
+	{
+		"name": "changeType",
+		"type": "pickList",
+		"label": "Change Type",
+		"defaultValue": "A,C,M,R,T",
+		"required": true,
+		"helpMarkDown": "Specify which files to copy by change type",
+		"options": {
+                "A": "Added",
+				"C": "Copied",
+                "M": "Modified",
+                "R100": "Renamed",
+                "T": "Type Changed",
+				"A,C,M,R100,T":"All"
+            }
+	},
+	{
+		"name": "flatten",
+		"type": "boolean",
+		"label": "Flatten",
+		"defaultValue": false,
+		"required": false,
+		"helpMarkDown": "Flatten directory structure (all files to same directory)"
+	}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "copychanged.ps1"
+		}
+	}
+}

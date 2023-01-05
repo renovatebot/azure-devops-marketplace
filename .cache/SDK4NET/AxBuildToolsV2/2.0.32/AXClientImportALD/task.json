@@ -1,0 +1,158 @@
+{
+  "id": "12345679-DB91-47C1-8E66-83586C8B4C05",
+  "name": "AXClientImportALD",
+  "friendlyName": "AX Client - Import ALD",
+  "description": "Imports an label file into an AX 2009/2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-import-ald)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 19
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Classic",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Classic": "Classic",
+        "ClassicM": "Classic (multiple)"
+      }
+    },
+    {
+      "name": "aldFileName",
+      "type": "filePath",
+      "label": "ALD file path (.ald)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the label file.",
+      "visibleRule": "runMode = Classic",
+      "groupName": ""
+    },
+    {
+      "name": "sourcePath",
+      "type": "filePath",
+      "label": "Source path of ald files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The source path of the label files.",
+      "visibleRule": "runMode = ClassicM",
+      "groupName": ""
+    },
+    {
+      "name": "recurse",
+      "type": "boolean",
+      "label": "Recurse source path",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the source path recursed?",
+      "visibleRule": "runMode = ClassicM",
+      "groupName": ""
+    },
+    {
+      "name": "include",
+      "type": "string",
+      "label": "Include filter(s)",
+      "defaultValue": "*.ald",
+      "required": false,
+      "helpMarkDown": "Define multiple include filters. (comma-seperated, optional)",
+      "visibleRule": "runMode = ClassicM",
+      "groupName": ""
+    },
+    {
+      "name": "exclude",
+      "type": "string",
+      "label": "Exclude filter(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Define multiple exclude filters. (comma-seperated, optional)",
+      "visibleRule": "runMode = ClassicM",
+      "groupName": ""
+    },
+    {
+      "name": "flushLabelCache",
+      "type": "boolean",
+      "label": "Flush label cache",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the label cache flushed after a label file has imported?",
+      "visibleRule": "",
+      "groupName": ""
+    },
+    {
+      "name": "layerName",
+      "type": "string",
+      "label": "Layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies which layer to open in the AOT. (optional)",
+      "visibleRule": "",
+      "groupName": ""
+    },
+    {
+      "name": "layerCode",
+      "type": "string",
+      "label": "Layer code",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the developer license code for developer options. (optional)",
+      "visibleRule": "",
+      "groupName": ""
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The \"current model\" is the model where all new AOT elements are created in. (optional)",
+      "visibleRule": "",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Import ALD: $(configurationFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

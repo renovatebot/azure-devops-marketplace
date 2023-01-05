@@ -1,0 +1,66 @@
+{
+	"id": "f4fa7c4e-d870-438a-bf2f-552638cfb7a3",
+	"name": "TrackyonStartStop",
+	"friendlyName": "Trackyon Start/Stop Slot",
+	"description": "Starts or Stops a slot of an Azure Web App",
+	"category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Trackyon",
+	"version": {
+		"Major": "1",
+		"Minor": "0",
+		"Patch": "987"
+	},
+	"demands": [
+		"azureps"
+	],
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:Azure",
+			"label": "Azure Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure subscription to target for deployment."
+		},
+		{
+			"name": "AzureWebsiteName",
+			"type": "string",
+			"label": "Web App Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure Web App with slot you want to Start or Stop."
+		},
+		{
+			"name": "Slot",
+			"type": "string",
+			"label": "Slot",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The slot you want to Start or Stop from."
+		},
+		{
+			"name": "Action",
+			"type": "pickList",
+			"label": "Action",
+			"defaultValue": "Stop",
+			"required": true,
+			"helpMarkDown": "The slot you want to Start or Stop.",
+			"options": {
+				"Stop": "Stop",
+				"Start": "Start"
+			}
+		}
+	],
+	"instanceNameFormat": "$(Action) slot on $(AzureWebsiteName) Web App",
+	"execution": {
+		"AzurePowerShell": {
+			"target": "$(currentDirectory)\\src\\task.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

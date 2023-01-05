@@ -1,0 +1,157 @@
+﻿{
+    "id":  "cbb7a300-c53f-11e6-b51b-597a61b3b6ee",
+    "name":  "FitNesseRun",
+    "friendlyName":  "Run FitNesse Test",
+    "description":  "Run a FitNesse test via local deployment or calling an external instance",
+    "author":  "Rik Essenius",
+    "helpMarkDown":  "Version 0.9.4",
+    "category":  "Azure Pipelines",
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  0,
+                    "Minor":  9,
+                    "Patch":  4
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "FitNesseRun $(TestSpec)",
+    "groups":  [
+                   {
+                       "name":  "all",
+                       "displayName":  "Common",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "call",
+                       "displayName":  "Call",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "execute",
+                       "displayName":  "Execute",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "command",
+                       "type":  "pickList",
+                       "label":  "Command",
+                       "defaultValue":  "Call",
+                       "required":  true,
+                       "helpMarkDown":  "Execute: Run via local deployment; Call: run using already operational Wiki",
+                       "groupName":  "all",
+                       "options":  {
+                                       "call":  "Call",
+                                       "execute":  "Execute"
+                                   }
+                   },
+                   {
+                       "name":  "workingFolder",
+                       "type":  "filePath",
+                       "label":  "Working Directory",
+                       "defaultValue":  ".",
+                       "required":  false,
+                       "helpMarkDown":  "Working directory for the FitNesseRun Task",
+                       "groupName":  "all"
+                   },
+                   {
+                       "name":  "testSpec",
+                       "type":  "string",
+                       "label":  "Test or Suite to run",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Relative FitNesse wiki page containing the test or suite to be run",
+                       "groupName":  "all"
+                   },
+                   {
+                       "name":  "includeHtml",
+                       "type":  "boolean",
+                       "label":  "Include HTML",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "Whether or not to include the HTML test pages in the result",
+                       "groupName":  "all"
+                   },
+                   {
+                       "name":  "port",
+                       "type":  "string",
+                       "label":  "Desired port",
+                       "defaultValue":  "9123",
+                       "required":  false,
+                       "helpMarkDown":  "Desired port to run a local FitNesse instance on",
+                       "groupName":  "execute"
+                   },
+                   {
+                       "name":  "dataFolder",
+                       "type":  "filePath",
+                       "label":  "Data Folder",
+                       "defaultValue":  ".",
+                       "required":  false,
+                       "helpMarkDown":  "Location of the FitNesse data folder (parent of FitNesseRoot)",
+                       "groupName":  "execute"
+                   },
+                   {
+                       "name":  "fixtureFolder",
+                       "type":  "filePath",
+                       "label":  "Fixture Folder",
+                       "defaultValue":  ".",
+                       "required":  false,
+                       "helpMarkDown":  "Location of the fixture assemblies (work folder of FitNesse)",
+                       "groupName":  "execute"
+                   },
+                   {
+                       "name":  "appSearchRoot",
+                       "type":  "filePath",
+                       "label":  "Application Search Root",
+                       "defaultValue":  ".",
+                       "required":  false,
+                       "helpMarkDown":  "Location where the task should start searching for FitNesse and FitSharp binaries",
+                       "groupName":  "execute"
+                   },
+                   {
+                       "name":  "baseUri",
+                       "type":  "string",
+                       "label":  "Base URI",
+                       "defaultValue":  "http://localhost:8080",
+                       "required":  false,
+                       "helpMarkDown":  "URI of the existing FitNesse installation to use",
+                       "groupName":  "call"
+                   },
+                   {
+                       "name":  "timeoutSeconds",
+                       "type":  "string",
+                       "label":  "Timeout in seconds",
+                       "defaultValue":  "Default",
+                       "required":  false,
+                       "helpMarkDown":  "Read timeout in seconds. Default = 300. Infinite = wait forever",
+                       "groupName":  "call"
+                   },
+                   {
+                       "name":  "resultFolder",
+                       "type":  "filePath",
+                       "label":  "Result Folder",
+                       "defaultValue":  ".",
+                       "required":  false,
+                       "helpMarkDown":  "Folder where test output will be placed",
+                       "groupName":  "all"
+                   },
+                   {
+                       "name":  "extraParam",
+                       "type":  "string",
+                       "label":  "Extra Parameters",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Extra variables to be passed to FitNesse (format: name1=value1\u0026name2=value2)",
+                       "groupName":  "all"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "FitNesseRun.ps1",
+                                          "argumentFormat":  "",
+                                          "workingDirectory":  "$(workingFolder)"
+                                      }
+                  }
+}

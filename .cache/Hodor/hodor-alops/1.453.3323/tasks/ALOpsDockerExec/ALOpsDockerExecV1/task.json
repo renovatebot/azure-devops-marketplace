@@ -1,0 +1,74 @@
+{
+    "id":  "dc95ccb0-98dc-4140-8b4d-7791c5c4f869",
+    "name":  "ALOpsDockerExec",
+    "friendlyName":  "ALOps Docker Execute",
+    "description":  "Execute powershell script in a Business Central container",
+    "author":  "Hodor",
+    "helpMarkDown":  "Execute powershell script in container.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps Docker Execute",
+    "inputs":  [
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)"
+                   },
+                   {
+                       "name":  "scriptsource",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "Script Source",
+                       "defaultValue":  "InLine",
+                       "options":  {
+                                       "Path":  "Path",
+                                       "Workfolder":  "Workfolder",
+                                       "Download":  "Download",
+                                       "InLine":  "InLine"
+                                   },
+                       "helpMarkDown":  "Set type for requiring the script. $(scriptsource) $(scriptsource) $(scriptsource)"
+                   },
+                   {
+                       "name":  "script_location",
+                       "type":  "string",
+                       "label":  "Script location",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Location of the script to fetch. $(script_location) $(script_location) $(script_location)",
+                       "visibleRule":  "scriptsource != InLine"
+                   },
+                   {
+                       "name":  "inline_script",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "5"
+                                      },
+                       "label":  "Powershell Script",
+                       "defaultValue":  "# Write your powershell commands here.\r\nWrite-Host \"Hello World\"\r\n",
+                       "required":  false,
+                       "helpMarkDown":  "Inline Powershell Script. $(inline_script) $(inline_script) $(inline_script)",
+                       "visibleRule":  "scriptsource = InLine"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "ad789293-ebeb-4ee7-a90b-7d53f19b668c.ps1"
+                                      }
+                  }
+}

@@ -1,0 +1,139 @@
+{
+    "id": "11a6dcc5-6209-4a5b-b314-d593de2e8125",
+    "name": "Website Warmup",
+    "friendlyName": "Website Warmup",
+    "description": "This task warms up a website by calling its url",
+    "helpMarkDown": "[More Information](https://github.com/luuksommers/vsts-website-warmup)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Luuk Sommers",
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "preview": false,
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name":"auth",
+            "displayName":"Authorization",
+            "isExpanded":true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "Urls",
+            "type": "multiLine",
+            "label": "Add 1 or more Root URLs to warmup (1 Root URL per line)",
+            "required": true,
+            "defaultValue": "/",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },
+            "helpMarkDown": "Provide the url(s) of the website to warmup"
+        },
+        {
+            "name": "RetryCount",
+            "type": "string",
+            "label": "Retry count",
+            "defaultValue": "10",
+            "required": false,
+            "helpMarkDown": "Provide the number of retries"
+        },
+        {
+            "name": "SleepPeriod",
+            "type": "string",
+            "label": "Sleep period",
+            "defaultValue": "1",
+            "required": false,
+            "helpMarkDown": "Provide the sleep period in seconds after failure before retry"
+        },
+        {
+            "name": "IgnoreError",
+            "type": "boolean",
+            "label": "Ignore errors",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Ignore when the website has an error and continue (default false)"
+        },
+        {
+            "name": "IgnoreSslError",
+            "type": "boolean",
+            "label": "Ignore SSL errors",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Ignore certificate errors (default false)"
+        },
+        {
+            "name": "Suffixes",
+            "type": "multiLine",
+            "label": "Add multiple site suffixes to warmup (1 suffix per line)",
+            "required": false,
+            "defaultValue": "/",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },
+            "helpMarkDown": "Ignore when the website has an error and continue"
+        },
+        {
+            "name": "Authentication",
+            "type": "pickList",
+            "label": "Select authentication type",
+            "required": false,
+            "defaultValue": "none",
+            "groupName": "auth",
+            "options": {
+                "basic": "Basic",
+                "cred": "Credentials",
+                "none": "None"
+            },
+            "helpMarkDown": "Optionally choose an authentication type."
+        },
+        {
+            "name": "User",
+            "type": "string",
+            "label": "Username",
+            "required": false,
+            "helpMarkDown": "Provide the username",
+            "groupName": "auth"
+        },
+        {
+            "name": "Password",
+            "type": "string",
+            "label": "Password",
+            "required": false,
+            "helpMarkDown": "Provide the password",
+            "groupName": "auth"
+        },
+        {
+            "name": "Timeout",
+            "type": "string",
+            "label": "Timeout",
+            "defaultValue": "600",
+            "required": false,
+            "helpMarkDown": "Timeout for requests in seconds"
+        },
+        {
+            "name": "SuccessCount",
+            "type": "string",
+            "label": "Success count",
+            "defaultValue": "1",
+            "required": false,
+            "helpMarkDown": "Number of successfull requests needed"
+        }
+    ],
+    "instanceNameFormat": "Warmup website",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\run-vsts.ps1"
+        }
+    }
+}

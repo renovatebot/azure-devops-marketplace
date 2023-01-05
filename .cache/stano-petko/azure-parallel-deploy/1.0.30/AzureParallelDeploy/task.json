@@ -1,0 +1,136 @@
+{
+	"$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+	"id": "0477968a-4686-4790-bb4a-e1213a2e58a9",
+	"name": "AzureParallelDeploy",
+	"friendlyName": "Azure Parallel Deploy",
+	"description": "Minimize service deploy time by deploying multiple services to Azure Portal in parallel.",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Stano Peťko",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 30
+	},
+	"instanceNameFormat": "Deploy services",
+	"execution": {
+		"Node": {
+			"target": "AzureParallelDeploy.js"
+		}
+	},
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:AzureRM",
+			"label": "Azure subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select an Azure resource manager subscription for the deployment.",
+			"properties": {
+				"EndpointFilterRule": "ScopeLevel != ManagementGroup"
+			}
+		},
+		{
+			"name": "ResourceGroup",
+			"type": "pickList",
+			"label": "Resource group",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			},
+			"helpMarkDown": "Resource group name in Azure Portal."
+		},
+		{
+			"name": "AppType",
+			"type": "radio",
+			"label": "Application type",
+			"options": {
+				"WebApp": "Web App",
+				"FunctionApp": "Function App"
+			},
+			"defaultValue": "WebApp",
+			"required": false,
+			"helpMarkDown": "Type of applications to deploy. All deployed applications must be of the same type. If the value is not set, Web application ('WebApp') is used."
+		},
+		{
+			"name": "Services",
+			"type": "multiLine",
+			"label": "Services",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Logical names of the services to deploy, one name per line."
+		},
+		{
+			"name": "AppNameFormat",
+			"type": "string",
+			"label": "Azure application name format string",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Format string for app service name in Azure Portal. Format string accepts one parameter `{0}`, which will be replace by the logical name of the service. For example if format string is `prod-{0}-api` and logical service name is `forecast`, the application will be deployed to `prod-forecast-api` app service. If the value is not set, \"{0}\" format string will be used."
+		},
+		{
+			"name": "AppSourceFormat",
+			"type": "string",
+			"label": "Application source file format string",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Format string for path to source ZIP files for services. Every service is deployed from ZIP file. The format string accepts one parameter `{0}`, which will be replace by the logical name of the service. For example if this format string is `{0}-api.zip` and logical service name is `forecast`, source file path will be `forecast-api.zip`. \"zip\" extension must be specified expplicitly. If the value is not set, \"{0}.zip\" format string will be used."
+		},
+		{
+			"name": "AppSourceBasePath",
+			"type": "filePath",
+			"label": "Applications' sources base path",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Base path for services' source files. If not set, agent's default working directory is used (predefined variable `System.DefaultWorkingDirectory`). Services are deployed from ZIP files searched recursively under this directory."
+		},
+		{
+			"name": "SlotName",
+			"type": "string",
+			"label": "Slot name",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "The name of the slot for deployment. The slot name is used for all deployed services."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "ResourceGroup",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureRMWebAppResourceGroup"
+		}
+	],
+	"messages": {
+		"AuthSchemeNotSupported": "Auth Scheme %s is not supported",
+		"AzureSDKNotFound": "Azure CLI 2.x is not installed on this machine.",
+		"ErrorInSettingUpSubscription": "Error in setting up subscription",
+		"FailedToLogout": "The following error occurred while logging out: %s",
+		"GlobalCliConfigAgentVersionWarning": "For agent version < 2.115.0, only global Azure CLI configuration can be used",
+		"LoginFailed": "Azure login failed",
+		"MSILoginFailed": "Azure login failed using Managed Service Identity",
+		"ScriptFailed": "Script failed with error: %s",
+		"SettingAzureCloud": "Setting active cloud to: %s",
+		"SettingAzureConfigDir": "Setting AZURE_CONFIG_DIR env variable to: %s",
+		"DeployingServices": "Deploying services.",
+		"DeployingServicesBaseFolder": "Base folder for services' source files: \"%s\"",
+		"DeployingServiceStart": "Started deploying service \"%s\".",
+		"DeployingServiceFilename": "  Service source filename: \"%s\"",
+		"DeployingServiceAzureName": "  Azure service name: \"%s\"",
+		"DeployingServiceNoSourceFile": "Did not find source file \"%s\" for service \"%s\".",
+		"DeployingServiceMoreSourceFiles": "Found more than one source file \"%s\" for service \"%s\".",
+		"DeployingServiceUsingSourceFile": "Using source file: \"%s\"",
+		"DeployingServiceOk": "Service is deployed.",
+		"DeployingServiceError": "Failed to deploy service.",
+		"InitializingSettings": "Initializing settings...",
+		"SettingsUsingDefaultValue": "(parameter not set, using default value)",
+		"SettingsUsingStagingDirectory": "(parameter not set, using 'Build.StagingDirectory')",
+		"SettingsUsingDefaultWorkingDirectory": "(parameter not set, using 'System.DefaultWorkingDirectory')",
+		"TaskResultFailed": "Services were not deployed.",
+		"TaskResultSucceeded": "All services were deployed."
+	}
+}

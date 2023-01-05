@@ -1,0 +1,93 @@
+{
+	"id": "feb612c3-7fee-49d9-a741-bb0d9e8bb406",
+	"name": "update-work-item",
+	"friendlyName": "Update Work Item",
+	"description": "Update work items associated to a build",
+	"helpMarkDown": "Requires **Allow Scripts to Access OAuth Token** to be **enabled**.<br/><br>Having Problems? Please [create an issue on our Github](https://github.com/BoolBySigma/UpdateWorkItem/issues) and we will try to help you.",
+	"category": "Utility",
+	"author": "Bool (by Sigma)",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 0
+	},
+	"instanceNameFormat": "Update Work Item: $(workItemType)",
+	"inputs": [
+		{
+			"name": "workItemType",
+			"type": "pickList",
+			"label": "Work Item Type",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The type of associated work items to update",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "workItemState",
+			"type": "pickList",
+			"label": "State",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The new state to assign to work items. Must be a valid state for the work item type.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "reason",
+			"type": "string",
+			"label": "Reason",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "The reason for updating work item state. Must be a valid reason for the state. If left blank, the default reason value for the state will be used."
+		},
+		{
+			"name": "addBuildLink",
+			"type": "boolean",
+			"label": "Add Link to build",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Add a link to the current build to the work items."
+		},
+		{
+			"name": "errorAction",
+			"type": "pickList",
+			"label": "Error Action",
+			"defaultValue": "1",
+			"required": false,
+			"helpMarkDown": "The action to take when an error is encountered during work item update.",
+			"properties": {
+				"DisableManageLink": "True"
+			},
+			"options": {
+				"1": "Fail",
+				"2": "Warn",
+				"3": "Log"
+			}
+		}
+	],
+	"sourceDefinitions": [
+		{
+			"target": "workItemType",
+			"endpoint": "/$(system.teamProject)/_api/_wit/workItemTypes?__v=5",
+			"keySelector": "jsonpath:$.__wrappedArray[*].name",
+			"selector": "jsonpath:$.__wrappedArray[*].name",
+			"authKey": "tfs:teamfoundation"
+		},
+		{
+			"target": "workItemState",
+			"endpoint": "/$(system.teamProject)/_api/_wit/allowedValues?fieldId=2",
+			"keySelector": "jsonpath:$.__wrappedArray[*]",
+			"selector": "jsonpath:$.__wrappedArray[*]",
+			"authKey": "tfs:teamfoundation"
+		}
+	],
+	"execution": {
+		"Node": {
+			"target": "index.js",
+			"argumentFormat": ""
+		}
+	}
+}

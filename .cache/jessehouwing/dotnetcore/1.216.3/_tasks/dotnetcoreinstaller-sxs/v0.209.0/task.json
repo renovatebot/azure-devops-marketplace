@@ -1,0 +1,76 @@
+{
+  "category": "Tool",
+  "instanceNameFormat": "Use .NET Core $(packageType) $(version)",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?linkid=853651)",
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer",
+  "inputs": [
+    {
+      "name": "packageType",
+      "required": true,
+      "defaultValue": "sdk",
+      "type": "pickList",
+      "helpMarkDown": "Please select whether to install only runtime or full SDK.",
+      "options": {
+        "sdk": "SDK (contains runtime)",
+        "runtime": "Runtime"
+      },
+      "label": "Package to install"
+    },
+    {
+      "name": "version",
+      "required": true,
+      "defaultValue": "1.0.4",
+      "type": "string",
+      "helpMarkDown": "Specify exact version of .NET Core SDK or runtime to install.<br/>Find the value of `version-sdk` for installing SDK, or `version-runtime` for installing Runtime from any releases [here](https://github.com/microsoft/azure-pipelines-tasks/blob/master/Tasks/DotNetCoreInstallerV0/externals/releases.json).\n **NOTE: the task will not work with new versions of .NET Core. Kindly upgrade to 2.\\* version of the task to download latest versions od .NET Core.**",
+      "label": "Version"
+    }
+  ],
+  "name": "DotNetCoreInstaller-sxs",
+  "author": "Microsoft Corporation",
+  "messages": {
+    "FailedToDownloadPackage": "Failed to download package for installation",
+    "getMachinePlatformFailed": "Failed to get machine platform details. Error: %s.",
+    "ToolToInstall": "Tool to install: .NET Core %s version %s.",
+    "CouldNotDownload": "Could not download installation package from this URL: %s Error: %s",
+    "PrependGlobalToolPath": "Creating global tool path and pre-prending to PATH.",
+    "CouldNotDetectPlatform": "Could not detect the machine's OS",
+    "CheckingToolCache": "Checking if a cached copy exists for this version...",
+    "SuccessfullyInstalled": "Successfully installed .NET Core %s version %s.",
+    "UpdateToNewerVersion": "Kindly upgrade to new major version of this task 'Use .NET Core (2.*)' for installing newer versions of .NET Core. '0.*' task version might not be able to download newer .NET core versions. To know more about 'Use Dot Net (2.*)', refer https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.",
+    "UsingCachedTool": "Cached copy of .NET Core exists. No need to install afresh. Cached tool location: %s.",
+    "CachingTool": "Caching this installed tool.",
+    "InstallingAfresh": "The cache does not contain the requested version of .NET Core. Downloading and installing it now.",
+    "GettingDownloadUrl": "Getting URL to download .NET Core %s version: %s.",
+    "VersionsFileMalformed": "The specified version's download links are not correctly formed in the supported versions document => %s/",
+    "LegacyPlatform": "Detected platform (Legacy): %s",
+    "DownloadingUrl": "Downloading .NET Core package from URL: %s",
+    "getDownloadUrlsFailed": "Failed to get download urls. Error: %s.",
+    "PrimaryPlatform": "Detected platform (Primary): %s",
+    "ToolFailed": "Tool install failed: %s",
+    "ExtractingPackage": "Extracting downloaded package %s.",
+    "NullDownloadUrls": "Could not construct download URL. Please ensure that specified version %s is valid.",
+    "WarningVersionNotFound": "Could not fetch download information for version %s. Please check if the version specified is correct. You can refer the link for supported versions => https://github.com/microsoft/azure-pipelines-tasks/blob/master/Tasks/DotNetCoreInstallerV0/externals/releases.json. Falling back to creating convention based URL.",
+    "ImplicitVersionNotSupported": "Version should be a valid and explicit version: %s"
+  },
+  "execution": {
+    "Node10": {
+      "target": "dotnetcoreinstaller.js"
+    }
+  },
+  "id": "293bf4ff-c53b-5966-a88e-a9bfe843bc1d",
+  "satisfies": [
+    "DotNetCore"
+  ],
+  "version": {
+    "Major": 0,
+    "Patch": 0,
+    "Minor": 209
+  },
+  "demands": [],
+  "friendlyName": ".NET Core SDK/runtime installer (Side-by-side)",
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "description": "Acquire a specific version of the .NET Core SDK from the internet or local cache and add it to the PATH"
+}

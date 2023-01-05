@@ -1,0 +1,63 @@
+{
+  "id": "f8226c79-c11c-442f-99a9-f58ec42b6935",
+  "name": "PushToHeroku",
+  "friendlyName": "Push to Heroku",
+  "description": "Updates a Heroku app via git push.",
+  "helpMarkDown": "[More Information](https://github.com/prc322/azure-devops-heroku-tools/Tasks/PushToHeroku/README.md)",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "author": "Christian Kernstock",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "demands": [
+    "msbuild",
+    "visualstudio"
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ApiKey",
+      "type": "string",
+      "label": "Api Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "An api key which represents an app contributor. [Create one via Heroku cli](https://devcenter.heroku.com/articles/platform-api-quickstart#authentication)."
+    },
+    {
+      "name": "AppName",
+      "type": "string",
+      "label": "App Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the Heroku app that you want to push to."
+    },
+    {
+      "name": "PushRoot",
+      "type": "filePath",
+      "label": "Push Root",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The root folder to be pushed."
+    }
+  ],
+  "instanceNameFormat": "Push to Heroku: $(ArtifactName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Run.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

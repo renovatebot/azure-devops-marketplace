@@ -1,0 +1,92 @@
+{
+    "id": "239cfb9a-d68a-49f9-820f-6538ee98ad0a",
+    "name": "corystein-hashicorp-packer-task",
+    "friendlyName": "Read Secrets from Hashi Vault",
+    "description": "Reads secrets from Hashi Vault and creates Azure DevOps variables",
+    "helpMarkDown": "[More Information, setup...](https://github.com/corystein/ReadHashiVaultSecrets)",
+    "category": "Utility",
+    "author": "Cory Stein",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "demands": ["azureps"],
+    "visibility": [
+        "Release",
+        "Build"
+    ],
+    "minimumAgentVersion": "1.102.0",
+    "instanceNameFormat": "Read Hashi Vault Secrets",
+    "groups": [{
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": false
+    }],
+    "inputs": [{
+            "name": "uri",
+            "type": "string",
+            "label": "Hashi Vault Uri",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "End point for Hashi Vault instance"
+        },
+        {
+            "name": "token",
+            "type": "string",
+            "label": "Hashi Vault Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Hashi Vault authentication token"
+        },
+        {
+            "name": "engineName",
+            "type": "string",
+            "label": "Engine Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of Hashi Vault key/value engine"
+        },
+        {
+            "name": "engineVersion",
+            "type": "pickList",
+            "label": "Engine Version",
+            "defaultValue": "1.0",
+            "options": {
+                "1.0": "1.0 Hashi Vault Secret Engine",
+                "2.0": "2.0 Hashi Vault Secret Engine"
+            },
+            "required": false,
+            "helpMarkDown": "Version of Hashi Vault key/value engine to use"
+        },
+        {
+            "name": "path",
+            "type": "string",
+            "label": "Path of Hashi Vault secrets",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path and/or location where to retrieve the secrets from the Hashi Vault engine"
+        },
+        {
+            "name": "addPrefix",
+            "type": "boolean",
+            "label": "Add a prefix to variables",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether a prefix should be added to the generated variables"
+        },
+        {
+            "name": "variablePrefix",
+            "type": "string",
+            "label": "Prefix to be added to variables",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of variable prefix to be added"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

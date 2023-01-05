@@ -1,0 +1,164 @@
+{
+  "id": "122796cd-516d-1023-aff1-ca58da24e2b7",
+  "name": "power-crm-tools-register-step",
+   "public": true,
+  "friendlyName": "Register plugin step with output variable, $(powercrmstepId)",
+  "description": "Register plugin step with output variable, $(powercrmstepId)",
+  "author": "Adnan Samuel",
+  "helpMarkDown": "Register plugin step with output variable, $(powercrmstepId)",
+  "category": "Build,Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "5"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Crm Register Step",
+  "inputs": [
+     {
+            "name": "1crmconnectionstring9",
+            "type": "string",
+            "label": "OAuth Crm Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAuth Crm Connection"
+    },
+	{
+      "name": "1registrationtype",
+      "type": "radio",
+      "label": "Registration Type",
+      "required": true,
+      "defaultValue": "0",
+      "helpMarkDown": "Seclect to register webhook or service endpoints",
+      "options": {
+        "0": "WebHook (Synchronous or Asynchronous)",
+        "1": "ServiceEndpoint (Asynchronous (post) only)"
+      }
+    },
+	{
+            "name": "1crmwebhookName7",
+            "type": "string",
+            "label": "WebHook/ServiceEndpoint Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "WebHook/ServiceEndpoint Name"
+    },
+	{
+            "name": "1crmwebhookId7",
+            "type": "string",
+            "label": "Webhook/ServiceEndpoint Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Webhook/ServiceEndpoint Id (guid)"
+    },
+	{
+            "name": "1crmentityname3",
+            "type": "string",
+            "label": "Crm entity/table name e.g: (account, contact ...) lower case",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Lower case Crm entity/table name e.g: (account, contact ...)"
+    },
+	{
+            "name": "1crmentitymessage3",
+            "type": "string",
+            "label": "Entity Message e.g: (update, create ...) lower case",
+            "defaultValue": "update",
+            "required": true,
+            "helpMarkDown": "(Always lower case) Learn More</b></a>"
+    },	
+	{
+            "name": "1crmentityatt8",            
+            "label": "Comma separted filtering attributes. e.g: statuscode, createdon",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "(Comma separted filtering attributes. e.g: statuscode, createdon, modifiedon)",			
+			  "type": "multiLine",	  
+			  "properties": {
+				"resizable": true,
+				"rows": "2"
+				},
+				"visibleRule": "1crmentitymessage3=update"
+	},	
+	{
+      "name": "1pluginexecutionmode",
+      "type": "pickList",
+      "label": "Execution Mode",
+      "defaultValue": "0",
+      "helpMarkDown": "Run step in Asynchronous mode.",
+      "required": false,
+      "options": {
+        "0": "Synchronous" ,
+		"1": "Asynchronous"		
+      },
+	  "visibleRule": "1registrationtype=0"
+    },
+	{
+      "name": "1pluginexecutionmodeasync",
+      "type": "pickList",
+      "label": "Execution Mode",
+      "defaultValue": "99",
+      "helpMarkDown": "Run step in Asynchronous mode.",
+      "required": false,
+      "options": {
+        "99": "Asynchronous"             
+      },
+	  "visibleRule": "1registrationtype=1"
+    },
+	{
+      "name": "1pluginpipielinestage",
+      "type": "pickList",
+      "label": "Execution pipieline stage",
+      "defaultValue": "40",
+      "helpMarkDown": "Plugin execution stage of execution",
+      "required": false,
+      "options": {
+        "10": "PreValidation",
+        "20": "PreOperation",
+        "40": "PostOperation"        
+      },
+	  "visibleRule": "1registrationtype=0 && 1pluginexecutionmode=0"
+    },
+	{
+      "name": "1pluginpipielinestageasync",
+      "type": "pickList",
+      "label": "Execution pipieline stage",
+      "defaultValue": "40",
+      "helpMarkDown": "Plugin execution stage of execution",
+      "required": false,
+      "options": {       
+        "40": "PostOperation"        
+      },
+	  "visibleRule": "1registrationtype=1 && 1pluginpipielinestageasync=1"
+    },
+	{
+            "name": "1crmexerank7",
+            "type": "string",
+            "label": "Execution order",
+            "defaultValue": "1",
+            "required": true,
+            "helpMarkDown": ""
+    },
+	{
+      "name": "1deleteasycopt1",
+      "type": "boolean",
+      "label": "Delete AsyncOperation if StatusCode = Successful",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Delete AsyncOperation if StatusCode = Successful",
+      "visibleRule": "1pluginexecutionmode = 1 || 1pluginexecutionmodeasync=99"
+    }
+  ],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PowerCrmToolsRegisterStep.ps1",
+	"workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

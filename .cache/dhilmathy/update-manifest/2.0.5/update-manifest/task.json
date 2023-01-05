@@ -1,0 +1,74 @@
+{
+  "id": "38337b43-cd26-4267-98b4-5e0e3ff420da",
+  "name": "update-manifest",
+  "friendlyName": "Update Manifest file(s)",
+  "description": "Task to update one or more XML tags inside manifest file(s).",
+  "helpMarkDown": "[More information](https://github.com/dhilmathy/update-manifest-extension)",
+  "category": "Utility",
+  "author": "Mathivanan Palanisamy",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "preview": false,
+  "showEnvironmentVariables": false,
+  "instanceNameFormat": "Update manifest file(s): $(manifestFilePaths)",
+  "inputs": [
+    {
+      "name": "manifestFilePaths",
+      "type": "filePath",
+      "label": "Manifest file path(s)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Manifest file path(s). For multiple files separate by pipe (|)."
+    },
+    {
+      "name": "nodeToUpdate",
+      "type": "string",
+      "label": "Node inside manifest file to update",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Node in manifest for which the value need to be updated (case-sensitive). e.g. **/App/Version**"
+    },
+    {
+      "name": "isVersion",
+      "type": "boolean",
+      "label": "Is it a version to update?",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "If it's a version to update, the task can be used to auto-increment it. **Version format:** *major.minor.build.revision*"
+    },
+    {
+      "name": "versionPart",
+      "type": "pickList",
+      "label": "Part of the version to increment",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Part of the version that needs to be incremented.",
+      "visibleRule": "isVersion=true",
+      "options": {
+        "major": "Major",
+        "minor": "Minor",
+        "build": "Build",
+        "revision": "Revision"
+      }
+    },
+    {
+      "name": "valueToUpdate",
+      "type": "string",
+      "label": "Value to update in node",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Value that needs to be updated inside the tag.",
+      "visibleRule": "isVersion=false"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+    "id": "d7b8f29f-640e-4e08-926b-de4e265b6742",
+    "name": "udClient",
+    "friendlyName": "IBM UrbanCode Deploy Client (udclient)",
+    "description": "Run a command using the IBM UrbanCode Deploy Client command line interface (udclient).",
+    "helpMarkDown": "Run a command using the [IBM UrbanCode Deploy Client](http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.reference.doc/topics/cli_ch.html)<br/>For more details about this task, to report bugs, or to contribute, refer to: [https://github.com/Microsoft/vsts-urbancode-deploy](https://github.com/Microsoft/vsts-urbancode-deploy)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Microsoft",
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 121,
+        "Patch": 0
+    },
+    "groups": [
+        {
+          "name": "advanced",
+          "displayName": "Advanced",
+          "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "udclient $(udclientCommand)",
+    "inputs": [
+      {
+        "name": "serverEndpoint",
+        "type": "connectedService:Generic",
+        "label": "IBM UrbanCode Deploy service endpoint",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the service endpoint for your IBM UrbanCode Deploy server instance.  To create one, click the Manage link and create a new Generic Service Endpoint, enter the IBM UrbanCode Deploy server URL for the server URL, e.g. http://ucdserver.example.com:8080, and required credentials.  To use an authorization token, leave the user name blank, and enter the token in the password field."
+      },     
+      {
+        "name": "udClientCommandArgs",
+        "type": "multiLine",
+        "label": "Command arguments",
+        "defaultValue": "--verbose",
+        "required": true,
+        "helpMarkDown": "The command arguments to execute.  [Variables](https://www.visualstudio.com/docs/build/define/variables) might be helpful here.  For best results (for debugging purposes), enter each argument on a new line, for example, to create a new version for the 'Widget' component using the build number, enter:<br/>`createVersion`<br/>`-component`</br>`Widget`<br/>`-name`</br>`$(Build.BuildId)`<br>For command details, refer to: http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.reference.doc/topics/cli_ch.html",
+        "properties": {
+          "resizable": "true",
+          "rows" : "10"
+        }        
+      },
+      {
+        "name": "workingDirectory",
+        "type": "filePath",
+        "label": "Working Directory",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "The working directory to run the IBM UrbanCode Deploy Client commands.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "udClientLocation",
+        "type": "filePath",
+        "label": "IBM UrbanCode Deploy Client location",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Optionally specify the location to the IBM UrbanCode Deploy Client (udclient). If the location is not specified, udclient needs to be in the PATH.",
+        "groupName": "advanced"
+      }
+    ],
+    "execution": {
+        "Node": {
+            "target": "udClient.js",
+            "argumentFormat": ""
+        }
+    }
+}

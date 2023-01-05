@@ -1,0 +1,56 @@
+﻿{
+    "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+    "id": "1561E90D-14CC-47DE-812F-33F62B04BE0A",
+    "name": "SQLServerPack",
+    "instanceNameFormat": "Deploy $(dbName)",
+    "friendlyName": "SQLServer Pack",
+    "description": "Generate a dacpac file in especific database connection string",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": "2",
+        "Minor": "2",
+        "Patch": "496"
+    },
+    "demands": [
+        "msbuild"
+    ],
+    "author": "Gustavo Américo",
+    "minimumAgentVersion": "1.89.0",
+    "inputs": [
+        {
+            "name": "path",
+            "type": "filePath",
+            "label": "SQL Project Path",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "The path from project (.sqlproj)."
+        },
+        {
+            "name": "filePattern",
+            "label": "SQL Project name pattern",
+            "defaultValue": "*.sqlproj",
+            "required": false,
+            "helpMarkDown": "The project name (mydatabase.sqlproj)."
+        },
+        {
+            "name": "output",
+            "type": "filePath",
+            "label": "Path for create the files output",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)\\SQL",
+            "required": true,
+            "helpMarkDown": "The dacpac file path or root."
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\command.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)",
+            "argumentFormat": ""
+        }
+    }
+}

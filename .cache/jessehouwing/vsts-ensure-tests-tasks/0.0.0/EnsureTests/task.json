@@ -1,0 +1,46 @@
+{
+  "id": "25d3d29e-5ea1-4453-9ce6-02e1b34ab30c",
+  "name": "Ensure tests have executed.",
+  "friendlyName": "Ensure tests have executed.",
+  "description": "Ensure tests have executed.",
+  "author": "Microsoft Corporation",
+  "helpMarkDown": "",
+  "category": "Test",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Server",
+    "ServerGate"
+  ],
+  "preview": true,
+  "groups": [
+    {
+      "name": "extension",
+      "displayName": "Extension",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Ensure tests have executed",
+  "inputs": [
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "tfs:teamfoundation",
+        "EndpointUrl": "$(endpoint.url)/$(System.TeamProject)/_apis/test/ResultSummaryByBuild?buildId=$(Build.BuildId)",
+        "Method": "GET",
+        "Body": "",
+        "Headers": "{\"Content-Type\":\"application/json\"}",
+        "WaitForCompletion": "false",
+        "Expression": "lt(0, jsonpath('$.aggregatedResultsAnalysis.totalTests')[0])"
+      }
+    }
+  }
+}

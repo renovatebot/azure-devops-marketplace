@@ -1,0 +1,111 @@
+{
+    "id": "82264530-7C14-4534-9FDB-B82B053342F4",
+    "name": "RunStoredProcedureAzure",
+    "friendlyName": "Run SQL Stored Procedure in Azure",
+    "description": "Run SQL Stored Procedure within an Azure environment",
+    "author": "Surendhar Nandhagopal",
+    "category": "Utility",
+    "version": {
+        "Major": "1",
+        "Minor": "1",
+        "Patch": "2"
+    },
+    "demands": ["azureps"],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name":"ConnectedServiceNameSelector",
+            "type":"pickList",
+            "label":"Azure Connection Type",
+            "required":false,
+            "helpMarkDown":"",
+            "defaultValue":"ConnectedServiceName",
+            "options":{
+                "ConnectedServiceName":"Azure Classic",
+                "ConnectedServiceNameARM":"Azure Resource Manager"
+            }
+        },
+        {
+            "name":"ConnectedServiceName",
+            "type":"connectedService:Azure",
+            "label":"Azure Classic Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Classic subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name":"ConnectedServiceNameARM",
+            "type":"connectedService:AzureRM",
+            "label":"Azure RM Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true,
+            "helpMarkDown": "Only enter server name as .database.windows.net will automatically appended"
+        },
+        {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true
+        },
+                {
+            "name": "sprocName",
+            "type": "string",
+            "label": "Stored Procedure",
+            "required": true
+        },
+                {
+            "name": "sprocParameters",
+            "type": "string",
+            "label": "Parameters",
+            "required": false
+        },
+        {
+            "name": "userName",
+            "type": "string",
+            "label": "SQL Server Login ID",
+            "required": true,
+            "helpMarkDown": "Azure Database Login"
+        },
+                {
+            "name": "userPassword",
+            "type": "string",
+            "label": "SQL Server Authentication password",
+            "required": true,
+            "helpMarkDown": "Password for Azure database. You should use a secret variable here."
+        },
+        {
+            "name": "queryTimeout",
+            "type": "string",
+            "label": "Query Timeout",
+            "required": true,
+            "defaultValue": "30",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Azure Run Stored Procedure $(sprocName) on $(databaseName)",
+    "execution": 
+    {
+        "AzurePowerShell": 
+        {
+            "target": "$(currentDirectory)\\RunStoredProcedureAzure.ps1",
+            "argumentFormat":"",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

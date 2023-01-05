@@ -1,0 +1,247 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/onlyutkarsh/gitlab-integration"
+    },
+    "demands": [
+        "contribution/ms.vss-releaseartifact.artifact-types"
+    ],
+    "contributions": [
+        {
+            "id": "gitlab-downloadrepo-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/DownloadRepo"
+            }
+        },
+        {
+            "id": "gitlab-endpoint-type",
+            "description": "Service connection type for all GitLab connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "gitlab",
+                "icon": "images/gitlab16.png",
+                "displayName": "GitLab",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://gitlab.com",
+                    "helpText": "Client service connection for GitLab. You don't need to change this unless you are using self hosted GitLab instance, in which case you may need to point to your instance URL. ",
+                    "isVisible": true
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "username",
+                        "name": "Username",
+                        "description": "Username you use to login to GitLab. This is required only to validate your PAT token using 'Verify connection' link below.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/users?username={{{endpoint.username}}}",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "Repositories",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/projects?membership=true",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "Branches",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/projects/{{{definition}}}/repository/branches",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "CommitsFromSelectedBranch",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/projects/{{{definition}}}/repository/commits{{#if branch}}?ref_name={{{branch}}}",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "LatestCommit",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/projects/{{{definition}}}/repository/commits",
+                        "resultSelector": "jsonpath:$[0]"
+                    },
+                    {
+                        "name": "Artifacts",
+                        "endpointUrl": "{{{endpoint.url}}}api/v4/projects/{{definition}}/repository/tree?path={{itemPath}}&ref={{branch}}",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "GitLab API Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "helpMarkDown": "<a href=\"https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html\" target=\"_blank\"><b>Creating a personal access token</b></a>"
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Private-Token",
+                                "value": "{{ endpoint.apitoken }}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Learn more about <a href=\"https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html\" target=\"_blank\"><b>Creating GitLab tokens</b></a> and <a href=\"https://docs.microsoft.com/en-us/vsts/pipelines/library/service-endpoints?view=vsts\" target=\"_blank\"><b>Service connections</b></a> "
+            }
+        },
+        {
+            "id": "gitlab-release-artifact-type",
+            "description": "GitLab Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "Gitlab",
+                "displayName": "GitLab",
+                "endpointTypeId": "gitlab:Token",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{branch}}",
+                "downloadTaskId": "e6590a51-c3b6-4b88-99e4-b3498ed7cd5b",
+                "artifactType": "SourceControl",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service Endpoint",
+                        "description": "Service Endpoint Id",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Source (repository)",
+                        "description": "Repository to pull",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "isLimitedToPossibleValues": true,
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest from default branch"
+                                },
+                                {
+                                    "value": "latestFromBranchType",
+                                    "displayValue": "Latest from specific branch"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "branch",
+                        "name": " Branch",
+                        "description": " Artifacts from selected branch will be included in release.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "defaultVersionType"
+                        ],
+                        "properties": {
+                            "visibleRule": "defaultVersionType == latestFromBranchType"
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Repositories",
+                        "resultTemplate": "{ Value : \"{{id}}\", DisplayValue : \"{{{path_with_namespace}}}\" }"
+                    },
+                    {
+                        "target": "branch",
+                        "dataSourceName": "Branches",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "CommitsFromSelectedBranch",
+                        "resultTemplate": "{ Value : \"{{id}}\", DisplayValue : \"{{{short_id}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "LatestCommit",
+                        "resultTemplate": "{ Value : \"{{id}}\", DisplayValue : \"{{{short_id}}}\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "dataSourceName": "Artifacts",
+                        "resultTemplate": "{ Value : \"{{{path}}}\", DisplayValue : \"{{{path}}}\", data: { {{ #stringReplace ['tree','blob'] ['artifactType:\"folder\"','itemType:\"file\"'] type }} } }"
+                    },
+                    {
+                        "target": "artifactItems",
+                        "dataSourceName": "Artifacts",
+                        "resultTemplate": "{ Value : \"{{{path}}}\", DisplayValue : \"{{{path}}}\", data: { itemType: \"{{ #stringReplace ['tree','blob'] ['folder','file'] type }}\" } }"
+                    }
+                ],
+                "browsableArtifactTypeMapping": {
+                    "folder": "artifactItems"
+                }
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

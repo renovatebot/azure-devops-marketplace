@@ -1,0 +1,79 @@
+{
+  "id": "4DF3C114-E3C6-4C5B-8D9D-6D974BD27BD5",
+  "name": "MSCRMGetLatestPatch",
+  "friendlyName": "Get Latest Patch",
+  "description": "Retrieves the latest patch for a given solution from a PowerApps/CDS/Dynamics 365 environment",
+  "author": "Wael Hamze",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 7
+  },
+  "preview": true,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Get Latest Patch: $(solutionName)",
+  "inputs": [
+    {
+      "name": "crmConnectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "For more information on format check the [docs](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect)"
+    },
+    {
+      "name": "solutionName",
+      "type": "string",
+      "label": "Solution Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The unique name of the solution you want to get the patch for"
+    },
+    {
+      "name": "crmConnectionTimeout",
+      "type": "string",
+      "label": "Connection Timeout",
+      "defaultValue": "120",
+      "required": false,
+      "helpMarkDown": "The connection timeout in seconds"
+    },
+    {
+      "name": "existsVariableName",
+      "type": "string",
+      "label": "Exists Variable Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the pipeline variable to be populated with true if patch exists"
+    },
+    {
+      "name": "patchVariableName",
+      "type": "string",
+      "label": "Patch Variable Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the pipeline variable to be populated with patch name"
+    }
+  ],
+  "OutputVariables": [
+    {
+      "name": "PATCH_EXISTS",
+      "description": "Returns true if the solution exists"
+    },
+    {
+      "name": "PATCH_NAME",
+      "description": "The version of the solution"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMGetLatestPatch.ps1"
+    }
+  }
+}

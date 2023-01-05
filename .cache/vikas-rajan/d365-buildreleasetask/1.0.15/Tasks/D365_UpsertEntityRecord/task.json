@@ -1,0 +1,101 @@
+{
+    "id":  "c99afc94-05a2-4841-a45d-9eede9de0b83",
+    "name":  "D365_UpsertEntityRecord",
+    "friendlyName":  "Upsert Entity Record",
+    "description":  "Insert or Update entity record with static or pipeline variable",
+    "helpMarkDown":  "",
+    "category":  "Deploy",
+    "author":  "Vikas Rajan",
+    "version":  {
+                    "Major":  1,
+                    "Minor":  1,
+                    "Patch":  18
+                },
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "instanceNameFormat":  "Upsert record for $(entityname)",
+    "inputs":  [
+                   {
+                       "name":  "connectionstring",
+                       "type":  "string",
+                       "label":  "Connection String",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Please refer [here](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/xrm-tooling/use-connection-strings-xrm-tooling-connect#connection-string-parameters) for the connection string syntax"
+                   },
+                   {
+                       "name":  "entityname",
+                       "type":  "string",
+                       "label":  "Entity Name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Entity Logical name eg: account"
+                   },
+                   {
+                       "name":  "retrieverecord",
+                       "type":  "radio",
+                       "label":  "Retrieve Record by",
+                       "required":  true,
+                       "defaultValue":  "recordbyid",
+                       "options":  {
+                                       "recordbyid":  "Record GUID",
+                                       "recordbyfetchxml":  "Filter Condition (Fetch XML)"
+                                   }
+                   },
+                   {
+                       "name":  "retrieverecordbyid",
+                       "type":  "string",
+                       "label":  "Record GUID",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Record GUID that belongs to above specified entity",
+                       "visibleRule":  "retrieverecord = recordbyid"
+                   },
+                   {
+                       "name":  "retrieverecordbyfetchxml",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "Filter Condition (Fetch XML)",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Specify the filter expression for the above specified entity. eg: \u003cfilter type=\u0027and\u0027\u003e\u003ccondition attribute=\u0027name\u0027 operator=\u0027eq\u0027 value=\u0027test\u0027 /\u003e\u003c/filter\u003e",
+                       "visibleRule":  "retrieverecord = recordbyfetchxml"
+                   },
+                   {
+                       "name":  "namevaluepair",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "Attribute Name/Value JSON array",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Specify the attriute name-value pair in a JSON format. [{name:\"accountname\", value:\"Contoso Industries\"}]. The type attribute is optional except for partylist attributes."
+                   },
+                   {
+                       "name":  "createrecord",
+                       "type":  "boolean",
+                       "label":  "Create Record (if not present)",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Create Record if the above critera is not met"
+                   }
+               ],
+    "OutputVariables":  [
+                            {
+                                "name":  "UPSERT_RECORDID",
+                                "description":  "GUID of the updated record"
+                            }
+                        ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "UpsertEntityRecord.ps1"
+                                      }
+                  }
+}

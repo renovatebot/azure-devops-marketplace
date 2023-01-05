@@ -1,0 +1,145 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.build",
+        "vso.serviceendpoint",
+        "vso.serviceendpoint_manage",
+        "vso.release_manage",
+        "vso.taskgroups_manage"
+    ],
+    "contributions": [
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Qualys IaC Scan Result",
+                "uri": "infoTab.html"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Qualys IaC Security connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "iac",
+                "displayName": "Qualys IaC Scan server connection",
+                "url": {
+                    "displayName": "Qualys Platform URL:",
+                    "helpText": "Qualys Platform URL link to connect - Example: https://qualysguard.qualys.com"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/xml"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "isConfidential": false,
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "useProxy",
+                                "name": "Use Proxy",
+                                "description": "Select the checkbox to use the proxy",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            },
+                            {
+                                "id": "proxyServerName",
+                                "name": "Proxy Server",
+                                "description": "Enter the proxy URL - Examples: 10.15.201.155, corp.proxyserver.company.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPort",
+                                "name": "Proxy Port",
+                                "description": "Enter the proxy port",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyUserName",
+                                "name": "Proxy Username",
+                                "description": "Enter the proxy username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPassword",
+                                "name": "Proxy Password",
+                                "description": "Enter the proxy password",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://www.qualys.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

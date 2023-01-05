@@ -45,8 +45,8 @@ function commit-changes
     (& git diff HEAD --exit-code) | Out-null
     if ($LASTEXITCODE -ne 0)
     {
-        & git commit -m $message
-        & git push
+        #& git commit -m $message
+        #& git push
     }
 
     write-host "::endgroup::"
@@ -67,7 +67,9 @@ $page = 1
 $totalFetched = 0
 $max = 0
 $extensions = @()
-$cacheFile = "Extensions.json"
+$cacheFile = ".cache/extensions.json"
+mkdir -path ".cache" -Force | out-null
+
 if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
 {
     do
@@ -96,9 +98,9 @@ foreach ($extension in $extensions)
     $shouldCommit = $false
 
     Write-host "::group::$publisherId/$extensionId"
-    mkdir -path "$publisherId/$extensionId/" -Force | out-null
+    mkdir -path ".cache/$publisherId/$extensionId/" -Force | out-null
 
-    $extensionDataFile = "$publisherId/$extensionId/extension.json"
+    $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     $fetchExtensionData = $true
     if (Test-Path -Path $extensionDataFile -PathType Leaf)
     {
@@ -118,8 +120,8 @@ foreach ($extension in $extensions)
     
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 } )
     {
-        $savePath = "$publisherId/$extensionId/$($version.version).vsix"
-        $extractedPath = "$publisherId/$extensionId/$($version.version)/"
+        $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
+        $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
         $vsixUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
 
         if (-not (Test-Path -Path $extractedPath -PathType Container))
@@ -128,7 +130,7 @@ foreach ($extension in $extensions)
             try{
                 $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
-                (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
+                (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
                 $shouldCommit = $true
             }finally{
                 Remove-Item $savepath

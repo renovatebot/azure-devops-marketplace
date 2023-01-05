@@ -1,0 +1,135 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e35ddd89-43d7-45d7-9245-0250dd1eec52",
+    "name": "script-retryer",
+    "friendlyName": "Script retryer",
+    "description": "Retry bash/powershell/python script several times with delay.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Lukasz Cymanowski",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 6
+    },
+    "instanceNameFormat": "Script retryer",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "inputs": [
+        {
+            "name": "targetInterperter",
+            "type": "string",
+            "label": "Target interpreter",
+            "required": true,
+            "defaultValue": "bash",
+            "helpMarkDown": "Target interpreter: bash/powershel/python, something which will be found by \"which\" command"
+        },
+        {
+            "name": "targetType",
+            "type": "radio",
+            "label": "Type",
+            "required": false,
+            "defaultValue": "filePath",
+            "helpMarkDown": "Target script type: File Path or Inline",
+            "options": {
+                "filePath": "File Path",
+                "inline": "Inline"
+            }
+        },
+        {
+            "name": "filePath",
+            "type": "filePath",
+            "label": "Script Path",
+            "visibleRule": "targetType = filePath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the script to execute. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "visibleRule": "targetType = filePath",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Arguments passed to the shell script. Either ordinal parameters or named parameters."
+        },
+        {
+            "name": "script",
+            "type": "multiLine",
+            "label": "Script",
+            "visibleRule": "targetType = inline",
+            "required": true,
+            "defaultValue": "# Write your commands here\n\necho 'Hello world'\n",
+            "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },
+            "helpMarkDown": ""
+        },
+        {
+            "name": "delay",
+            "type": "string",
+            "label": "Delay in seconds before retry script in case of failure",
+            "defaultValue": "60",
+            "required": false
+        },
+        {
+            "name": "retryTimes",
+            "type": "string",
+            "label": "How many times it should try to retry script",
+            "defaultValue": "5",
+            "required": false
+        },
+        {
+            "name": "scriptExtension",
+            "type": "string",
+            "label": "Script extension",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown":"Some interpreters requires specific file extension (e.g. powershell requires ps1)."
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced"
+        },
+        {
+            "name": "failOnStderr",
+            "type": "boolean",
+            "label": "Fail on Standard Error",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, this task will fail if any errors are written to the StandardError stream.",
+            "groupName": "advanced"
+        }
+    ],
+    "messages": {
+        "GeneratingScript": "Generating script.",
+        "JS_ExitCode": "Script exited with code '%s'.",
+        "JS_FormattedCommand": "Formatted command: %s",
+        "JS_InvalidFilePath": "Invalid file path '%s'.",
+        "JS_ScriptContents": "Script contents:",
+        "JS_Stderr": "Script wrote one or more lines to the standard error stream.",
+        "JS_TranslatePathFailed": "Unable to translate the path '%s'.",
+        "JS_InvalidInput": "Incorrect value setup for %s field, number required",
+        "JS_MissingExecutableBit": "Executable bit is not set on target script!",
+        "ErrorDetected":"Error detected in attempt %s!",
+        "Waiting":"Waiting %s seconds before next try"
+    }
+}

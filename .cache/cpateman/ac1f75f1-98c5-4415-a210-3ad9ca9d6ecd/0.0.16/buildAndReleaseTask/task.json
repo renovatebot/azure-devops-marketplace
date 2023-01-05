@@ -1,0 +1,140 @@
+{
+    "id": "ac1f75f1-98c5-4415-a210-3ad9ca9d6ecd",
+    "name": "Fortify On Demand Reporting",
+    "friendlyName": "Fortify On Demand Reporting",
+    "description": "This task reports on the lastest Fortify On Demand Static Scan Vulnerbilites",
+    "author": "Christopher Pateman",
+    "helpMarkDown": "[More Information](https://prcode.blog)",
+    "categories": [
+        "Azure Pipelines",
+        "Azure Artifacts"
+    ],
+    "visibility": [
+        "Test",
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "16"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Fortify On Demand Reporting $(message)",
+    "groups": [
+        {
+            "name": "limits",
+            "displayName": "Vulnerbilities Limites",
+            "isExpanded": false
+        },
+        {
+            "name": "reporting",
+            "displayName": "Reporting",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "releaseId",
+            "type": "int",
+            "label": "Release ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Release ID of the scans to validate against."
+        },
+        {
+            "name": "apiUrl",
+            "type": "pickList",
+            "label": "API URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Program working directory",
+            "options": {
+                "https://api.ams.fortify.com": "US",
+                "https://api.emea.fortify.com": "EMEA" ,
+                "https://api.apac.fortify.com":"APAC",
+                "https://api.fed.fortify.com": "FedRAMP"
+            }
+        },
+        {
+            "name": "apiKey",
+            "type": "string",
+            "label": "API Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Fortify API Key"
+        },
+        {
+            "name": "apiSecret",
+            "type": "string",
+            "label": "API Secret",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Fortify API Secret Key"
+        },
+        {
+            "name": "maxCriticalIssues",
+            "type": "int",
+            "label": "Max Critical Issues",
+            "defaultValue": "0",
+            "required": false,
+            "groupName": "limits"
+        },
+        {
+            "name": "maxHighIssues",
+            "type": "int",
+            "label": "Max High Issues",
+            "defaultValue": "0",
+            "required": false,
+            "groupName": "limits"
+        },
+        {
+            "name": "maxMediumIssues",
+            "type": "int",
+            "label": "Max Medium Issues",
+            "defaultValue": "10",
+            "required": false,
+            "groupName": "limits"
+        },
+        {
+            "name": "maxLowIssues",
+            "type": "int",
+            "label": "Max Low Issues",
+            "defaultValue": "20",
+            "required": false,
+            "groupName": "limits"
+        },
+        {
+            "name": "alertLevel",
+            "type": "pickList",
+            "label": "Alert Level",
+            "defaultValue": "error",
+            "required": false,
+            "helpMarkDown": "'error' to escape on breach or 'warning' to only alert on breach",
+            "options": {
+                "error":"Error",
+                "warning":"Warning"
+            },
+            "groupName": "reporting"
+        },
+        {
+            "name": "reportingLevel",
+            "type": "pickList",
+            "label": "Reporting Level",
+            "defaultValue": "results",
+            "required": false,
+            "helpMarkDown": "'results' to print out only the results of the scan or 'verbose' to print out the full response.",
+            "options": {
+                "results":"Results",
+                "verbose": "Verbose"
+            },
+            "groupName": "reporting"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "GetReleaseVulnerabilities.ps1"
+        }
+    }
+}

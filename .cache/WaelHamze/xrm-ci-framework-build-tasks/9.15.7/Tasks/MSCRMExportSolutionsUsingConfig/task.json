@@ -1,0 +1,61 @@
+{
+  "id": "810C5475-76B3-4CD1-91DD-6D455C9EEB5F",
+  "name": "MSCRMExportSolutionsUsingConfig",
+  "friendlyName": "Export Solutions Using Config",
+  "description": "Exports PowerApps/CDS/Dynamics 365 Solutions using a json configuration",
+  "author": "Wael Hamze",
+  "helpMarkDown": "This task uses [ExportSolutionRequest](https://docs.microsoft.com/en-us/dotnet/api/microsoft.crm.sdk.messages.exportsolutionrequest?view=dynamics-general-ce-9)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "preview": true,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Exports Solutions Using Config",
+  "inputs": [
+    {
+      "name": "crmConnectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "More information on [format](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/xrm-tooling/use-connection-strings-xrm-tooling-connect#connection-string-parameters)"
+    },
+    {
+      "name": "configFilePath",
+      "type": "filePath",
+      "label": "ConfigFilePath",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The absolute path to the file on the agent server containing the export config json. Example config [here](https://github.com/WaelHamze/xrm-ci-framework/blob/master/MSDYNV9/Xrm.Framework.CI/Xrm.Framework.CI.Common/Schema/ExportSolutionsExample.json)."
+    },
+    {
+      "name": "outputPath",
+      "type": "filePath",
+      "label": "Output Path",
+      "defaultValue": "$(build.binariesdirectory)",
+      "required": true,
+      "helpMarkDown": "The path on the agent machine where you want the solutions to be placed"
+    },
+    {
+      "name": "crmConnectionTimeout",
+      "type": "string",
+      "label": "Connection Timeout",
+      "defaultValue": "120",
+      "required": false,
+      "helpMarkDown": "The connection timeout in seconds"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMExportSolutionsUsingConfig.ps1"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+	"id": "ee6ff2cf-be8d-4651-8069-2f2f58d67736",
+	"name": "TagGitRelease",
+	"friendlyName": "Tag Git on Release",
+	"description": "Create an annotated git tag in the release pipeline.",
+	"author": "Chris Liquori",
+	"helpMarkDown": "Creates an annotated tag on a git commit using the Azure DevOps Rest API.",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": [ ],
+	"version": {
+        "Major": "1",
+        "Minor": "2",
+        "Patch": "5"
+	},
+	"groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+	"instanceNameFormat": "Tag Git Release",
+	"inputs": [
+		{
+			"name": "name",
+			"type": "string",
+			"label": "Name",
+			"defaultValue": "$(System.PhaseName)",
+			"required": true,
+			"helpMarkDown": "Name of the git tag."
+		},
+		{
+			"name": "message",
+			"type": "string",
+			"label": "Message",
+			"defaultValue": "$(Build.BuildNumber)",
+			"required": true,
+			"helpMarkDown": "The message or description for the git tag."
+		},
+		{
+			"name": "ignoreExisting",
+			"type": "bool",
+			"label": "Ignore Existing Tag",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "Ignore errors if the tag already exists."
+		},
+		{
+			"name": "PersonalAccessToken",
+			"type": "string",
+			"label": "Personal Access Token",
+			"required": false,
+			"groupName": "advanced"
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)/New-TfsGitTag.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

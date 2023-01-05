@@ -1,0 +1,67 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b7e2e16c-c7c7-4a4b-bdc2-e2662823beee",
+    "name": "CancelStagePostApproval",
+    "friendlyName": "Cancel Stage Approval",
+    "description": "Cancel Stage Approvals",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Mohammed Mahdy",
+    "preview": false,
+    "version": {
+        "Major": 0,
+        "Minor": 34,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Cancel Stage Approvals",
+    "groups":  [
+  
+    ],
+    "inputs": 
+    [
+        {
+            "name": "definitionName",
+            "type": "pickList",
+            "label": "Definition name",
+            "helpMarkDown": "must specify current release definition name else task will failed",
+            "required": true,
+            "defaultValue":  "",
+            "properties": {
+              "EditableOptions": "False"
+            }
+          },
+        {
+            "name":  "EnironmentToCancelApprovals",
+            "type":  "pickList",
+            "label":  "Enironment name to cancel approvals",
+            "defaultValue":  "",
+            "required":  true,
+            "groupName":  "",
+            "helpMarkDown":  "must be an environment after current environment in the pipeline, make sure the name of the environment is correct",
+            "properties": {
+                "EditableOptions": "False"
+              }
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "definitionName",
+            "endpointId": "tfs:rm",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/release/definitions",
+            "resultSelector": "jsonpath:$.value[?(@.isDeleted == false)]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+          },
+        {
+            "target": "EnironmentToCancelApprovals",
+            "endpointId": "tfs:rm",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/release/definitions/?searchText=$(definitionName)&isExactNameMatch=true&$expand=Environments",
+            "resultSelector": "jsonpath:$.value[*].environments[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+          } 
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

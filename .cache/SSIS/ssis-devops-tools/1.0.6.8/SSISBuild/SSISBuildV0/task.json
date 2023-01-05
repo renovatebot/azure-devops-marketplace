@@ -1,0 +1,47 @@
+{
+    "id":  "69F0728C-1C79-4E8D-85AE-21960A56101B",
+    "name":  "SSISBuild",
+    "friendlyName":  "SSIS Build",
+    "description":  "Build single or multiple SSIS dtproj files in project deployment model or package deployment model.",
+    "helpMarkDown":  "https://aka.ms/AA6pzmk (Check out SSIS Catalog Configuration task if you want to configure folders, projects and environments in SSIS catalog.)",
+    "category":  "Build",
+    "author":  "Microsoft Corporation",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  5,
+                    "Patch":  15
+                },
+    "minimumAgentVersion":  "2.144.0",
+    "instanceNameFormat":  "Build SSIS",
+    "inputs":  [
+                   {
+                       "name":  "projectPath",
+                       "type":  "filePath",
+                       "label":  "Project path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Path of the project folder or file to be built. If a folder path is specified, SSIS Build task will search all dtproj files recursively under this folder and build them all."
+                   },
+                   {
+                       "name":  "configuration",
+                       "type":  "string",
+                       "label":  "Project configuration",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Name of the project configuration to be used for build. If not supplied, it defaults to the first defined project configuration in each dtproj file."
+                   },
+                   {
+                       "name":  "outputPath",
+                       "type":  "string",
+                       "label":  "Output path",
+                       "defaultValue":  "$(Build.ArtifactStagingDirectory)",
+                       "required":  true,
+                       "helpMarkDown":  "Path of a separate folder to save build results, which can be published as build artifact via Publish build artifacts task."
+                   }
+               ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "index.js"
+                                 }
+                  }
+}

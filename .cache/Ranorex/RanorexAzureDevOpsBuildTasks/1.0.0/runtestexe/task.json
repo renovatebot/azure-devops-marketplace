@@ -1,0 +1,158 @@
+{
+    "id": "1deeea1d-91f6-4ec9-ae59-565bd0acaf67",
+    "name": "RanorexRunTestExe",
+    "friendlyName": "Run Ranorex Studio test executable",
+    "description": "Create a build/release task for Azure Pipelines/Team Foundation Server (TFS) that can configure and run Ranorex Studio test executables. Please note that Ranorex licensing supports self-hosted agents only.",
+    "helpMarkDown": "This task makes Ranorex more accessible to the Azure DevOps and TFS community. Ranorex licensing supports [self-hosted agents](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-windows?view=azure-devops) only. [Learn More](https://www.ranorex.com/help/latest/interfaces-connectivity/azure-devops-integration/introduction/)",
+    "category": "Test",
+    "author": "RanorexGmbH",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Run Ranorex test executable $(testExePath)",
+    "groups": [
+        {
+            "name": "general",
+            "displayName": "General Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "reporting",
+            "displayName": "Reporting Options",
+            "isExpanded": true
+        },
+        {
+            "name": "testrail",
+            "displayName": "Testrail Integration",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "testExePath",
+            "groupName": "general",
+            "type": "filePath",
+            "label": "Test Executable",
+            "defaultValue": "**/*.exe",
+            "required": true,
+            "helpMarkDown": "Relative path from the repo root to the Ranorex EXE you want to run."
+        },
+        {
+            "name": "testSuitePath",
+            "groupName": "general",
+            "type": "filePath",
+            "label": "Ranorex Test Suite",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Relative path from the repo root to the Ranorex RXTST you want to run."
+        },
+        {
+            "name": "runConfig",
+            "groupName": "general",
+            "type": "string",
+            "label": "Test Run Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Run configuration to use when tests are run."
+        },
+        {
+            "name": "attachReport",
+            "groupName": "reporting",
+            "type": "boolean",
+            "label": "Attach Ranorex Report",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "If enabled, report will be attached as an artifact to the build results."
+        },
+        {
+            "name": "reportName",
+            "groupName": "reporting",
+            "type": "string",
+            "label": "Report name",
+            "defaultValue": "%S_%Y%M%D_%T",
+            "required": false,
+            "helpMarkDown": "Report name without file extension. If not set, a default report name '%S_%Y%M%D_%T' will be used."
+        },
+        {
+            "name": "reportLevel",
+            "groupName": "reporting",
+            "type": "picklist",
+            "label": "Report Level",
+            "defaultValue": "(Default)",
+            "required": false,
+            "options": {
+                "default": "(Default)",
+                "Debug": "Debug",
+                "Info": "Info",
+                "Warn": "Warn",
+                "Error": "Error",
+                "Success": "Success",
+                "Failure": "Failure"
+            }
+        },
+        {
+            "name": "advancedCmdLine",
+            "groupName": "advanced",
+            "type": "multiline",
+            "label": "Additional Command Line Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional command line arguments to pass to the test executable."
+        },
+        {
+            "name": "enableTestRail",
+            "groupName": "testrail",
+            "type": "boolean",
+            "label": "Enable reporting to TestRail",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "If enabled test results will be published to a TestRail instance."
+        },
+{
+    "name": "testRailConnection",
+    "groupName": "testrail",
+    "type": "connectedService:Generic",
+    "label": "TestRail Connection Service",
+    "defaultValue": "",
+    "required": false,
+    "helpMarkDown": "TestRail connection service used for publishing the reports.",
+    "visibleRule": "enableTestRail = true"
+},
+        {
+            "name": "testRailRunID",
+            "visibleRule": "enableTestRail = true",
+            "groupName": "testrail",
+            "type": "string",
+            "label": "Run ID",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The identifier of an existing test run in TestRail to report test results to. Without this argument a new test run is created."
+        },
+        {
+            "name": "testRailRunName",
+            "visibleRule": "enableTestRail = true",
+            "groupName": "testrail",
+            "type": "string",
+            "label": "Run Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Creates a new test run in TestRail with the specified name to report test results to. Without this argument the default name is used."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "runTestExe.js"
+        }
+    }
+}

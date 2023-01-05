@@ -1,0 +1,103 @@
+{
+    "id": "18E7AF2F-A100-4868-9C88-BB3A07B3B3BE",
+    "name": "DNX.Tasks.BuildWebPackage",
+    "friendlyName": "DNX Tasks Build Web Package",
+    "description": "Build a package with dotnet cli for Deployment",
+    "helpMarkDown": "Version: 0.1.30",
+    "category": "Build",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "visibility": [
+        "Build"
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.95.4",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ProjectName",
+            "label": "Project Name",
+            "type": "string",
+            "defaultValue": "",
+            "helpMarkdown": "Name of the Projects to build. <br> You can provide a list by seperating the entrys with SPACE. <br>Make sure to wrap entrys with spaces in double quotes. <br>Eg: \"My Sample.Web\" Sample.Api",
+            "required": false
+        },
+        {
+            "name": "BuildConfiguration",
+            "label": "Build Configuration",
+            "type": "pickList",
+            "defaultValue": "",
+            "helpMarkdown": "The build configuration to use. Default is 'Release",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "Release": "Release",
+                "Debug": "Debug"
+            }
+        },
+        {
+            "name": "OutputFolder",
+            "label": "Output Folder",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\Publish",
+            "helpMarkdown": "Where to put the build output.",
+            "required": false
+        },
+        {
+            "name": "PublishSource",
+            "type": "boolean",
+            "label": "Publish Source",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If this is true, the source code will be included in package.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "WorkingFolder",
+            "type": "filePath",
+            "label": "Working Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkDown": "Current working directory when script is run.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SourceFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "\\src",
+            "required": false,
+            "helpMarkDown": "Folder where your project directories are. <br>Default is: \\src",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SkipDotNetInstall",
+            "type": "boolean",
+            "label": "Skip DotNet CLI Install",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Check this If you do not want to install dotnet cli or dotnet cli is already present.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Build Web Package: $(ProjectName)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\BuildWebPackage.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(WorkingFolder)"
+        }
+    }
+}

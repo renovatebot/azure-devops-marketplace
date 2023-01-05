@@ -1,0 +1,130 @@
+﻿{
+  "id": "99c745f5-fc9a-42ce-a095-daa95fa89251",
+  "name": "Send notification via IFTTT",
+  "friendlyName": "Send Notification via IFTTT",
+  "description": "Reflects the outcome of the build by changing the color of your, for instance, Philips Hue lamp with IFTTT.",
+  "helpMarkDown": "[More Information](https://github.com/robertraaijmakers/vsts-extension-huebuildlamp/wiki)",
+  "category": "Utility",
+  "visibility": [
+    "Build", 
+    "Release"
+  ],
+  "author": "Robert Raaijmakers",
+  "version": {
+    "Major": 0,
+    "Minor": 9,
+    "Patch": 49
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "SmtpOptions",
+      "displayName": "SMTP Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "IftttOptions",
+      "displayName": "IFTTT Settings",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "sendMailFrom",
+      "type": "string",
+      "label": "Email From",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "E-mailaddress specified in IFTTT as 'send from' address."
+    },
+    {
+      "name": "buildNames",
+      "type": "string",
+      "label": "Included Builds",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma seperated list of builds that are included to check, if none provided, all builds are checked."
+    },
+    /*{
+      "name": "smtpServerEndpoint", 
+      "type": "connectedService:Generic", 
+      "label": "SMTP Endpoint", 
+      "required": true, 
+      "helpMarkDown": "The SMTP server endpoint", 
+      "groupName": "SmtpOptions"
+    },*/
+    {
+      "name": "smtpServer",
+      "type": "string",
+      "label": "Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Valid SMTP server to use for sending an email to IFTTT.",
+      "groupName": "SmtpOptions"
+    },
+    {
+      "name": "smtpUserName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Username to login on SMTP server.",
+      "groupName": "SmtpOptions"
+    },
+    {
+      "name": "smtpPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "$(hue.smtp.password)",
+      "required": true,
+      "helpMarkDown": "Password belonging to Username to login on SMTP server.",
+      "groupName": "SmtpOptions"
+    },
+    {
+      "name": "smtpUseSslVariable",
+      "type": "boolean",
+      "label": "Use SSL",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Determines if you want to use SSL to connect to the SMTP server.",
+      "groupName": "SmtpOptions"
+    },
+    {
+      "name": "smtpPortVariable",
+      "type": "string",
+      "label": "Port",
+      "defaultValue": "587",
+      "required": true,
+      "helpMarkDown": "The port number for the smtp port. Default is 25, or 587 for SSL.",
+      "groupName": "SmtpOptions"
+    },
+    {
+      "name": "sendMailTo",
+      "type": "string",
+      "label": "Email To",
+      "defaultValue": "trigger@recipe.ifttt.com",
+      "required": true,
+      "helpMarkDown": "E-mailaddress to send email to. Default IFTTT mail address is: trigger@recipe.ifttt.com",
+      "groupName": "IftttOptions"
+    },
+    {
+      "name": "mailHashtag",
+      "type": "string",
+      "label": "Hashtag",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Hashtag to send to IFTTT.",
+      "groupName": "IftttOptions"
+    }
+  ],
+  "instanceNameFormat": "Build Result Notification to IFTTT",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\PhilipsHueIfttt.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

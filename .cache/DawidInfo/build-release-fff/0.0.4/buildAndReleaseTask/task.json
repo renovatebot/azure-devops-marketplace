@@ -1,0 +1,121 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7456cd58-6858-11e6-b59a-6fe0ce03f888",
+    "name": "ExampleTask",
+    "friendlyName": "taszk",
+    "description": "new taszk",
+    "helpMarkDown": "[More Information](https://github.com/knom/vsts-markdown-tasks/blob/master/README.md)",
+ 
+    "author": "DawidInfo",
+
+
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "groups": [{
+      "name": "advanced",
+      "displayName": "Advanced Settings",
+      "isExpanded": true
+    }],
+    "runsOn": [
+      "Agent",
+      "DeploymentGroup"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "2",
+      "Minor": "0",
+      "Patch": "2"
+    },
+    "instanceNameFormat": "Echo $(samplestring)",
+    "inputs": [
+        {
+            "name": "samplestring",
+            "type": "string",
+            "label": "Sample String",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A sample string"
+        },{
+      "name": "mode",
+      "type": "radio",
+      "label": "Mode",
+      "defaultValue": "multiFileFolder",
+      "required": true,
+      "options": {
+        "singleFile": "Single File",
+        "multiFile": "Multiple Files",
+        "multiFileFolder": "Multiple Files With Same Folder Structure"
+      },
+      "helpMarkDown": "Whether you want to process one or many files."
+    }, {
+      "name": "markdownPath",
+      "type": "filePath",
+      "label": "Markdown file path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the markdown file (must be UTF-8)",
+      "visibleRule": "mode=singleFile"
+    },
+    {
+      "name": "markdownPathPattern",
+      "type": "multiLine",
+      "label": "Markdown search patterns",
+      "defaultValue": "**/*.md\n,!**/node_modules/**",
+      "required": true,
+      "helpMarkDown": "Search pattern for the markdown files. Can include GLOB patterns. E.g. $(Build.ArtifactStagingDirectory)\\**\\sample*.md",
+      "visibleRule": "mode=multiFile || mode=multiFileFolder"
+    },
+
+    {
+      "name": "templatePath",
+      "type": "filePath",
+      "label": "HTML template file path",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Path to the template HTML file. Use placeholder *{body|s}* for the markdown HTML as well as additional placeholders that you can pass in as parameters."
+    },
+    {
+      "name": "parameters",
+      "type": "string",
+      "label": "JSON Template parameters",
+      "defaultValue": "{}",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "JSON object with additional parameters for the HTML template. Use the parameters as *{pName}* in the HTML template."
+    }, {
+      "name": "htmlPath",
+      "type": "filePath",
+      "label": "HTML output file path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the output HTML file",
+      "visibleRule": "mode=singleFile"
+    }, {
+      "name": "htmlOutDir",
+      "type": "filePath",
+      "label": "HTML output folder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Folder path to output HTML files to. If empty, the source directories will be used.",
+      "visibleRule": "mode=multiFile || mode=multiFileFolder"
+    },{
+      "name": "passThruHTML",
+      "type": "boolean",
+      "label": "Pass through HTML content unencoded",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Whether to pass through HTML content unencoded"
+    }
+    ],
+  "execution": {
+    "Node": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

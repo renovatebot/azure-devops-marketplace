@@ -1,0 +1,115 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+
+  "id": "dde485a1-475e-4061-8ed9-8798d08421f8",
+
+  "name": "Q-MAST",
+
+  "friendlyName": "Quokka Mobile Application Security Testing Extension",
+
+  "description": "Build Task extension for submitting the artifact file for Quokka analysis",
+
+  "helpMarkDown": "[Quokka](https://kryptowire.zendesk.com/)",
+
+  "category": "Build",
+
+  "author": "Quokka",
+
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 4
+  },
+
+  "visibility": ["Build", "Release"],
+
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+
+  "inputs": [
+    {
+      "name": "url",
+      "type": "string",
+      "label": "API URL",
+      "defaultValue": "https://mast.kryptowire.com/api",
+      "required": false,
+      "helpMarkDown": "URL for the Q-MAST API"
+    },
+    {
+      "name": "filepath",
+      "type": "string",
+      "label": "File Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Filepath for mobile binary to upload."
+    },
+    {
+      "name": "apikey",
+      "type": "string",
+      "label": "API Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "API key to access the security service."
+    },
+    {
+      "name": "platform",
+      "type": "string",
+      "label": "Platform",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The app platform"
+    },
+    {
+      "name": "resultsDir",
+      "type": "string",
+      "label": "Result Dir",
+      "defaultValue": "$(Common.TestResultsDirectory)/QuokkaResults",
+      "required": true,
+      "helpMarkDown": "Directory contains analysis results"
+    },
+    {
+      "name": "externalId",
+      "type": "string",
+      "label": "External ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The External ID to assign to this app submission"
+    },
+    {
+      "name": "subgroupIds",
+      "type": "string",
+      "label": "Sub Group IDs",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Sub Group IDs that the mobile app belongs to."
+    },
+    {
+      "name": "scoreThreshold",
+      "type": "int",
+      "label": "Score Threshold",
+      "defaultValue": "100",
+      "required": false,
+      "helpMarkDown": "Break build on greater security score than this threshold",
+      "groupName": "advanced"
+    },
+    {
+      "name": "maxAnalysisTime",
+      "type": "int",
+      "label": "Max Analysis Time (in minutes)",
+      "defaultValue": "120",
+      "required": false,
+      "helpMarkDown": "This defines how long the build should wait (in minutes) to finish security analysis.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

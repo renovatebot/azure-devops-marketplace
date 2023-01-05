@@ -1,0 +1,64 @@
+{
+    "$schema": "https://aka.ms/vsts-tasks.schema.json",
+    "id": "d8ac3c00-0e8b-11e9-a5ae-9f228aba3e18",
+    "name": "terraformoutput",
+    "friendlyName": "Terraform Output",
+    "description": "Launch terraform output",
+    "author": "arkiaconsulting",
+    "category": "Utility",
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 1
+    },
+    "minimumAgentVersion": "1.95.0",
+    "preview": true,
+    "instanceNameFormat": "Terraform Output",
+    "inputs": [{
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Current working directory when terraform init is run."
+        },
+        {
+            "name": "useazurerm",
+            "type": "boolean",
+            "label": "Use AzureRM Provider",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task."
+        },
+        {
+            "name": "connectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription",
+            "visibleRule": "useazurerm=true"
+        },
+        {
+            "name": "outputvars",
+            "type": "multiLine",
+            "label": "Output Mappings",
+            "defaultValue": "{\n\"my_tf_output_name\": \"MyTaskVariableName\"\n}",
+            "required": true,
+            "helpMarkDown": "JSON dictionary like mapping between Terraform output names and Task variable names.",
+            "properties": {
+                "resizable": true,
+                "rows": 5
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/terraformoutput/index.js",
+            "argumentFormat": ""
+        }
+    }
+}

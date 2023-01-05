@@ -1,0 +1,110 @@
+{
+    "$schema": "https://aka.ms/vsts-tasks.schema.json",
+    "id": "9cd95940-14a5-11e9-a400-87ffab4fe319",
+    "name": "terraformplan",
+    "friendlyName": "Terraform Plan",
+    "description": "Launch terraform plan",
+    "author": "arkiaconsulting",
+    "category": "Utility",
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 2
+    },
+    "preview": true,
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Terraform Plan",
+    "inputs": [{
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Current working directory when terraforminit is run."
+        },
+        {
+            "name": "useazurerm",
+            "type": "boolean",
+            "label": "Use AzureRM Provider",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task."
+        },
+        {
+            "name": "connectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription",
+            "visibleRule": "useazurerm=true"
+        },
+        {
+            "name": "usevarsfile",
+            "type": "boolean",
+            "label": "Use Vars File",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Wether or not to use a specific terraform vars file"
+        },
+        {
+            "name": "varsfile",
+            "type": "filePath",
+            "label": "Vars File",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "usevarsfile=true",
+            "helpMarkDown": "The path to a specific terraform vars file"
+        },
+        {
+            "name": "usevars",
+            "type": "boolean",
+            "label": "Use Vars",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Wether or not to use custom terraform variables"
+        },
+        {
+            "name": "varsmap",
+            "type": "multiLine",
+            "label": "Vars Map",
+            "defaultValue": "{\n\"myVar\":\"myValue\",\n\"myVar2\":\"myValue2\"\n}",
+            "required": false,
+            "visibleRule": "usevars=true",
+            "options": {
+                "rows": 5
+            },
+            "helpMarkDown": "The custom terraform variables (JSON dictionary format)"
+        },
+        {
+            "name": "savePlanResult",
+            "defaultValue": false,
+            "type": "boolean",
+            "required": true,
+            "label": "Save Plan Result",
+            "helpMarkDown": "Saves the execution plan for re-use"
+        },
+        {
+            "name": "planOutput",
+            "defaultValue": "tfplan",
+            "label": "Plan Result",
+            "required": false,
+            "type": "string",
+            "visibleRule": "savePlanResult=true",
+            "helpMarkDown": "The name of the generated execution plan to save."
+        },
+        {
+            "name": "tfrootpath",
+            "type": "string",
+            "label": "Terraform Files Path",
+            "required": false,
+            "helpMarkDown": "Optional path to terraform files"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/terraformplan/index.js",
+            "argumentFormat": ""
+        }
+    }
+}

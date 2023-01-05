@@ -1,0 +1,68 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "1cb2b558-b0a4-4703-872c-686e9c5c2806",
+    "name": "DTSRegeneration",
+    "friendlyName": "Regenerate with Dynamics 365 Translation Service (Preview)",
+    "description": "Creates and submits a regeneration request through Dynamics Translation Service",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 18
+    },
+    "groups": [
+        {
+            "name": "recycle",
+            "displayName": "Recycle Translation Memory",
+            "isExpanded": true
+        },
+        {
+            "name": "mainFiles",
+            "displayName": "Resource files",
+            "isExpanded": true
+            
+        }
+
+    ],
+    "instanceNameFormat": "DTS Regeneration ",
+
+    "inputs": [
+        {
+            "name": "LCSConnection",
+            "type": "connectedService:dts-lcsserviceendpoint",
+            "label": "LCS Service Connection",
+            "required": true,
+            "helpMarkDown": "Select a Dynamics Lifecycle Services connection to be used"
+        },
+        {
+            "name": "regenerateFile",
+            "type": "filePath",
+            "label": "Regenerate File",
+            "required": true,
+            "helpMarkDown": "Can be a path to a zip, or a folder contating the edited MT"
+        },
+
+        {
+            "name": "translationID",
+            "type": "string",
+            "label": "DTS Translation ID",
+            "required": true,
+            "helpMarkDown": "If regenerating from the Translation task, the translation id is in the task output"
+        },
+        {
+            "name": "translationOutputPath",
+            "type": "string",
+            "required": true,
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "label": "Output Path"
+        }
+    ],
+    
+    "execution": {
+        "Node": {
+            "target": "main.js"
+        }
+    }
+}

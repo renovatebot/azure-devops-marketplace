@@ -1,0 +1,192 @@
+{
+    "id": "d080aeb5-2053-42fd-846f-c66b86392b34",
+    "name": "FlutterBuild",
+    "friendlyName": "Flutter Build Task",
+    "description": "Build a Flutter application project.",
+    "helpMarkDown": "[More Information](https://github.com/hey24sheep/azure-flutter-tasks)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Hey24sheep",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 49
+    },
+    "groups": [],
+    "instanceNameFormat": "Flutter Build $(target)",
+    "inputs": [
+        {
+            "name": "target",
+            "type": "pickList",
+            "label": "Target platform",
+            "defaultValue": "apk",
+            "helpMarkDown": "The target platform of your application.",
+            "required": true,
+            "options": {
+                "all": "All Platforms",
+                "mobile": "All Mobile Platform Only",
+                "desktop": "All Desktop Platform Only",
+                "ios": "iOS",
+                "ipa": "iOS (IPA)",
+                "apk": "Android (apk)",
+                "aab": "Android (aab)",
+                "web": "Web",
+                "windows": "Desktop (windows)",
+                "macos": "Desktop (macos)",
+                "linux": "Desktop (linux)"
+            }
+        },
+        {
+            "name": "projectDirectory",
+            "type": "filePath",
+            "label": "Path to the project folder",
+            "defaultValue": ".",
+            "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
+            "required": true
+        },
+        {
+            "name": "flutterDirectory",
+            "type": "filePath",
+            "label": "Path to the Flutter SDK",
+            "defaultValue": "",
+            "helpMarkDown": "Path to the Flutter SDK if not using Flutter Install task before this one.",
+            "required": false
+        },
+        {
+            "name": "verboseMode",
+            "type": "boolean",
+            "label": "Verbose",
+            "defaultValue": false,
+            "helpMarkDown": "The output from this command might aid in diagnosing the problem.",
+            "required": false
+        },
+        {
+            "name": "debugMode",
+            "type": "boolean",
+            "label": "Debug",
+            "defaultValue": false,
+            "helpMarkDown": "Force build type to be Debug instead of Release.",
+            "required": false
+        },
+        {
+            "name": "splitPerAbi",
+            "type": "boolean",
+            "label": "Split Per ABI",
+            "defaultValue": false,
+            "helpMarkDown": "Will enable --split-per-abi option. For more details check https://flutter.dev/docs/deployment/android",
+            "required": false
+        },
+        {
+            "name": "buildFlavour",
+            "type": "string",
+            "label": "Build Flavour",
+            "defaultValue": "",
+            "helpMarkDown": "The flavour of the build, (e.g. production, development). Must match either an Android Gradle flavour or Xcode scheme.",
+            "required": false
+        },
+        {
+            "name": "buildNumber",
+            "type": "string",
+            "label": "Package build number",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "An identifier used as an internal version number. Each build must have a unique identifier to differentiate it from previous builds."
+        },
+        {
+            "name": "buildName",
+            "type": "string",
+            "label": "Version number",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
+        },
+        {
+            "name": "entryPoint",
+            "type": "string",
+            "label": "Entry-point",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The main entry-point file of the application, as run on the device. (defaults to 'lib/main.dart')"
+        },
+        {
+            "name": "apkTargetPlatform",
+            "type": "pickList",
+            "label": "Target platform architecture",
+            "defaultValue": "default",
+            "required": false,
+            "helpMarkDown": "Sets the target android platform architecture",
+            "visibleRule": "target = apk",
+            "options": {
+                "default" : "Default (set by Flutter)",
+                "android-arm": "Arm",
+                "android-arm64": "Arm64",
+                "android-x86": "Android-X86", 
+                "android-x64": "Android-X64",
+                "custom": "Custom"
+            }
+        },
+        {
+            "name": "customApkTargetPlatform",
+            "type": "string",
+            "label": "Custom target platform architecutre",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule":"apkTargetPlatform = custom",
+            "helpMarkDown": "Enter your --target-platform in here like android-arm,android-arm64,android-x64 (comma separated)"
+        },
+        {
+            "name": "iosTargetPlatform",
+            "type": "pickList",
+            "label": "Target platform architecture",
+            "defaultValue": "device",
+            "required": false,
+            "helpMarkDown": "Sets the target iOS platform",
+            "visibleRule": "target = ios",
+            "options": {
+                "device": "Device",
+                "simulator": "Simulator"
+            }
+        },
+        {
+            "name": "iosCodesign",
+            "type": "boolean",
+            "label": "Codesign application bundle",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Indicates whether the application bundle should be codesigned. **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**",
+            "visibleRule": "target = ios"
+        },
+        {
+            "name": "exportOptionsPlist",
+            "type": "string",
+            "label": "Export Options Plist path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "--export-options-plist=path/to/ExportOptions.plist. This flag cannot be combined with '--split-debug-info'. Optionally export an IPA with these options. See 'xcodebuild -h' for available exportOptionsPlist keys",
+            "visibleRule": "target = ipa"
+        },
+        {
+            "name": "dartDefine",
+            "type": "string",
+            "label": "Parameter value for --dart-define",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Parameter passed to --dart-define, example : 'Some_Var=Some_val --dart-define=Some_Var2=Val'"
+        },
+        {
+            "name": "extraArgs",
+            "type": "string",
+            "label": "Extra command arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra command arguments like --no-tree-shake-icons. Space separated"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

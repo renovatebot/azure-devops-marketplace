@@ -1,0 +1,231 @@
+{
+  "id": "e659bea1-b0ce-4f75-b063-407da66949f3",
+  "name": "azure-what-if",
+  "friendlyName": "Azure What If Deploy",
+  "description": "Generate Azure what if results from an ARM template",
+  "helpMarkDown": "[More information]https://github.com/JamieTaffurelli/azure-devops-extensions/blob/master/what-if/README.md",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent", "MachineGroup"],
+  "author": "JamieTaffurelli",
+  "version": {
+    "Major": 0,
+    "Minor": 3,
+    "Patch": 0
+  },
+  "instanceNameFormat": "What if Deployment",
+  "minimumAgentVersion": "2.119.1",
+  "groups": [
+    {
+      "name": "AzureDetails",
+      "displayName": "Azure Details",
+      "isExpanded": true
+    },
+    {
+      "name": "Template",
+      "displayName": "Template",
+      "isExpanded": true
+    },
+    {
+      "name": "Advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "deploymentScope",
+      "type": "pickList",
+      "label": "Deployment scope",
+      "defaultValue": "Resource Group",
+      "required": "true",
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Deployment scope of the deployment. To know more about deployment scopes, refer here [link](https://docs.microsoft.com/bs-latn-ba/Azure/azure-resource-manager/resource-group-template-deploy-rest#deployment-scope)",
+      "options": {
+        "Management Group": "Management Group",
+        "Subscription": "Subscription",
+        "Resource Group": "Resource Group"
+      }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "aliases": ["azureResourceManagerConnection"],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Resource Manager connection",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Select the Azure Resource Manager service connection having access to the selected deployment scope.",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel >= deploymentScope"
+      }
+    },
+    {
+      "name": "subscriptionName",
+      "aliases": ["subscriptionId"],
+      "type": "pickList",
+      "label": "Subscription",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Select the Azure subscription",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "deploymentScope != Management Group"
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "pickList",
+      "label": "Resource group",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Provide the name of a resource group.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "deploymentScope = Resource Group"
+    },
+    {
+      "name": "location",
+      "type": "pickList",
+      "label": "Location",
+      "required": true,
+      "helpMarkDown": "Location for the deployment to take place",
+      "groupName": "AzureDetails"
+    },
+
+    {
+      "name": "managementGroupId",
+      "type": "string",
+      "label": "Management Group ID",
+      "required": true,
+      "groupName": "AzureDetails",
+      "helpMarkDown": "Provide the name of a resource group.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "deploymentScope = Management Group"
+    },
+    {
+      "name": "templateLocation",
+      "type": "pickList",
+      "label": "Template location",
+      "required": true,
+      "defaultValue": "Linked artifact",
+      "groupName": "Template",
+      "options": {
+        "Linked artifact": "Linked artifact",
+        "URL of the file": "URL of the file"
+      }
+    },
+    {
+      "name": "csmFileLink",
+      "type": "string",
+      "label": "Template link",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "Template",
+      "helpMarkDown": "Specify the URL of the template file.",
+      "visibleRule": "templateLocation = URL of the file"
+    },
+    {
+      "name": "csmParametersFileLink",
+      "type": "string",
+      "label": "Template parameters link",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "Template",
+      "helpMarkDown": "Specify the URL of the parameters file.",
+      "visibleRule": " templateLocation = URL of the file"
+    },
+    {
+      "name": "csmFile",
+      "type": "filePath",
+      "label": "Template",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "Template",
+      "visibleRule": " templateLocation = Linked artifact",
+      "helpMarkDown": "Specify the path or a pattern pointing to the Azure Resource Manager template."
+    },
+    {
+      "name": "csmParametersFile",
+      "type": "filePath",
+      "label": "Template parameters",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "Template",
+      "helpMarkDown": "Specify the path or a pattern pointing for the parameters file for the Azure Resource Manager template.",
+      "visibleRule": " templateLocation = Linked artifact"
+    },
+    {
+      "name": "extraParameters",
+      "type": "multiLine",
+      "label": "Extra template parameters",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "Template",
+      "helpMarkDown": "Specify parameters not in your parameters file. To view the template parameters in a grid, click on “…” next to Extra Parameters textbox.",
+      "properties": {
+        "editorExtension": "ms.vss-services-azure.azurerg-parameters-grid"
+      }
+    },
+    {
+      "name": "deploymentName",
+      "type": "string",
+      "label": "Deployment name",
+      "required": false,
+      "groupName": "Advanced",
+      "helpMarkDown": "Specifies the name of the deployment to create."
+    },
+    {
+      "name": "resultFormat",
+      "type": "pickList",
+      "label": "Result format",
+      "defaultValue": "FullResourcePayloads",
+      "required": true,
+      "groupName": "Advanced",
+      "helpMarkDown": "Specify output type",
+      "options": {
+        "FullResourcePayloads": "FullResourcePayloads",
+        "ResourceIdOnly": "ResourceIdOnly"
+      }
+    },
+    {
+      "name": "excludeChangeType",
+      "type": "string",
+      "label": "Exclude change types",
+      "required": false,
+      "groupName": "Advanced",
+      "helpMarkDown": "Comma separated list of change types to exclude, valid values are Ignore, NoChange and Modify"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "subscriptionName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureSubscriptions",
+      "resultTemplate": "{ \"Value\" : \"{{{subscriptionId}}}\", \"DisplayValue\" : \"{{{displayName}}} ({{{subscriptionId}}})\" }"
+    },
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "location",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureLocationsByDeploymentScope",
+      "parameters": {
+        "subscriptionId": "$(subscriptionName)",
+        "deploymentScope": "$(deploymentScope)"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "what-if.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

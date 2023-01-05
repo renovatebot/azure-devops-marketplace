@@ -1,0 +1,85 @@
+{
+    "id": "{E12651AD-C43F-497D-9060-47C3DE0EED90}",
+    "name": "FolderPermissions",
+    "friendlyName": "Folder Permissions",
+    "description": "Extension to add permissions of given users to the folders.",
+    "helpMarkDown": "This is to add permissions of given users to the folders.",
+    "category": "Deploy",
+	 "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+      "Agent"
+  ],
+    "author": "mohdaslamansari",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 1
+    },
+	"instanceNameFormat": "Folder Permissions $(samplestring)",
+    "inputs": [	
+	{
+      "name": "machinesList",
+      "type": "multiLine",
+      "label": "Machines",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the machine IP address or FQDN."
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Admin Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the administrator's login of the target machine."
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the administrator's password of the target machine. <br>The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it, and then use it here, like '$(adminPassword)'."
+    },
+	{
+      "name": "Path",
+      "type": "string",
+      "label": "Folder Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the names of folders where permissions needs to be added."
+    },
+    {
+      "name": "Users",
+      "type": "string",
+      "label": "Users",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the name of users who needs permissions to the given folders."
+    },
+    {
+       "name": "Control",
+            "type": "pickList",
+            "label": "Type of Rights",
+            "required": true,
+            "defaultValue": "",
+            "options": {
+						"FullControl": "FullControl",
+						"Modify" : "Modify",
+						"Read" : "Read",
+						"Write" : "Write"             
+        },
+		"helpMarkDown": "Select the type of rights required for the users on the given folders."
+		}
+    ],
+    "execution": {
+        "PowerShell": {
+        "target": "$(currentDirectory)\\FolderPermissions.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+        }
+    }

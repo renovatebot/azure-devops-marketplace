@@ -1,0 +1,172 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "6b04316e-495f-4243-86c6-6427a6c5b4d4",
+    "name": "ado-testingextension",
+    "friendlyName": "Azure DevOps Testing Extension",
+    "description": "Extension task for utilising Azure DevOps to create test cases from BDD/Feature Files, Extending Test Suite and Test plan to publish results from non Microsoft Technologies e.g. Java/Java Script/Python",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Raj Uppadhyay",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 4
+    },
+    "instanceNameFormat": "$(Operation)",
+    "groups": [
+        {
+            "name": "genericSetting",
+            "displayName": "General Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "testCreation",
+            "displayName": "Test Case Creations",
+            "isExpanded": true
+        },
+        {
+            "name": "testUpdate",
+            "displayName": "Test Plan/Suite selection",
+            "isExpanded": true
+        }
+
+    ],
+    "inputs": [
+        {
+            "name": "Operation",
+            "type": "pickList",
+            "label": "Select the Operation",
+            "defaultValue": "createTests",
+            "required": true,
+            "helpMarkDown": "Select the Operation you wanted to perform either create tests from feature file or publish test results",
+            "options": {
+                "createTests": "Create Tests From Feature Files",
+                "updateTestResults": "Update Test Results in Test Plan/Suites"
+            }
+        },
+        {
+            "name": "DevOpsUrl",
+            "type": "string",
+            "label": "DevOps URL",
+            "defaultValue": "",
+            "groupName": "genericSetting",
+            "required": true,
+            "helpMarkDown": "Enter your devops url e.g. https://dev.azure.com/yourorg"
+        },
+        {
+            "name": "AzureProjectName",
+            "type": "string",
+            "label": "Your Project Name in DevOps",
+            "defaultValue": "",
+            "groupName": "genericSetting",
+            "required": true,
+            "helpMarkDown": "Enter your project name here"
+        },
+        {
+            "name": "PAT",
+            "type": "string",
+            "label": "Personal Access Token",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "genericSetting",
+            "helpMarkDown": "Enter your PAT with test management access"
+        },
+        {
+            "name": "DotnetExePath",
+            "type": "string",
+            "label": "Path of dotnet Exe on the agent running the Job",
+            "defaultValue": "C:\\Program Files\\dotnet\\dotnet.exe",
+            "required": true,
+            "groupName": "genericSetting",
+            "helpMarkDown": "Enter path for your donet exe on agent if different from default  value"
+        },
+        {
+            "name": "RepoName",
+            "type": "string",
+            "label": "Name of your repo containig in your test code",
+            "defaultValue": "",
+            "groupName": "genericSetting",
+            "required": false,
+            "helpMarkDown": "Enter name of your repo, this name will prefixed with your test case name"
+        },
+        {
+            "name": "xmlResultFolder",
+            "type": "filePath",
+            "label": "Folder containing the XML Result File",
+            "defaultValue": "",
+            "groupName": "testUpdate",
+            "required": false,
+            "helpMarkDown": "Folder containing the XML Result File(s)",
+            "visibleRule": "Operation = updateTestResults"
+        },
+        {
+            "name": "xmlNamingFormat",
+            "type": "string",
+            "label": "Naming Convention For XML Result File",
+            "defaultValue": "",
+            "groupName": "testUpdate",
+            "required": false,
+            "helpMarkDown": "Naming Convention For XML Result File",
+            "visibleRule": "Operation = updateTestResults"
+        },
+        {
+            "name": "FeatureFilePath",
+            "type": "filePath",
+            "label": "Folder Containing the Feature Files",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to folder contabning the feature file.",
+            "groupName": "testCreation",
+            "visibleRule": "Operation = createTests"
+        },
+        {
+            "name": "AreTheseDotnetTests",
+            "type": "pickList",
+            "label": "Is it a Dotnet Project?",
+            "defaultValue": "true",
+            "groupName": "testCreation",
+            "required": true,
+            "helpMarkDown": "Specifiy if your tests are dotnet test or non Microsoft tests e.g. Java/Cypress/JS/Python etc.",
+            "options": {
+                "true": "true",
+                "false": "false"
+            },
+            "visibleRule": "Operation = createTests"
+        },
+        {
+            "name": "testPlan",
+            "type": "string",
+            "label": "Test plan",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select a test plan containing test suites with automated test cases.",
+            "groupName": "testUpdate",
+            "visibleRule": "Operation = updateTestResults"
+        },
+        {
+            "name": "testSuite",
+            "type": "string",
+            "label": "Test suites (comma seprated)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select one or more test suites containing automated test cases. Test case work items must be associated with an automated test method. [Learn more.](https://go.microsoft.com/fwlink/?linkid=847773",
+            "groupName": "testUpdate",
+            "visibleRule": "Operation = updateTestResults"
+        },
+        {
+            "name": "testConfiguration",
+            "type": "string",
+            "label": "Test configuration",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select Test Configuration.",
+            "groupName": "testUpdate",
+            "visibleRule": "Operation = updateTestResults"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

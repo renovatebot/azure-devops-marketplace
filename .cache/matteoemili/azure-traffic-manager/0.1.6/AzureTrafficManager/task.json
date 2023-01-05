@@ -1,0 +1,98 @@
+{
+    "id": "1ee30be0-00a9-11e9-bf71-494f090c1e3a",
+    "name": "AzureTrafficManagerV0",
+    "friendlyName": "Azure Traffic Manager",
+    "description": "A task to manage Azure Traffic Manager",
+    "author": "Matteo Emili",
+    "helpMarkDown": "This task can automate priority-based Endpoints in Azure Traffic Manager",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "runsOn": [
+      "Agent",
+      "DeploymentGroup"
+    ],
+    "demands": [
+      "azureps"
+    ],
+    "version": {
+      "Major": "0",
+      "Minor": "1",
+      "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "AzureTrafficManagerV0 $(message)",
+    "groups": [
+        {
+            "name": "output",
+            "displayName": "Output",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Target Azure Resource Manager subscription"
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "string",
+            "label": "Resource Group Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Resource Group where Azure Traffic Manager is deployed"
+          },
+          {
+            "name": "ProfileName",
+            "type": "string",
+            "label": "Profile Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Traffic Manager Profile Name"
+          },
+          {
+            "name": "EndpointName",
+            "type": "string",
+            "label": "Endpoint Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Traffic Manager Endpoint Name"
+          },
+          {
+            "name": "MotionValue",
+            "type": "integer",
+            "label": "Motion Value",
+            "defaultValue": "1",
+            "required": false,
+            "helpMarkDown": "Priority value to use in Promotion and Demotion operations"
+          },
+          {
+            "name": "EndpointOperations",
+            "type": "picklist",
+            "label": "Choose your Endpoint operation",
+            "options": {
+              "Enable": "Enable",
+              "Disable": "Disable",
+              "Promote": "Promote",
+              "Demote": "Demote"
+            },
+            "required": true,
+            "helpMarkDown": "Azure Traffic Manager Endpoint management"
+          }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "AzureTrafficManager.ps1"
+        }
+    },
+    "messages": {
+        "WebappslotsuccessfullyswappedatUrl0": "Web App slot successfully swapped at Url : {0}",
+        "Unabletoretrievewebapppublishurlforwebapp0": "Unable to retrieve Web App slot url for webapp : '{0}'."
+    }
+}

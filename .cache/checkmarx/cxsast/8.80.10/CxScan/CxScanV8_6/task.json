@@ -1,0 +1,260 @@
+{
+  "id": "5262FEE4-B921-4E23-9D22-3BCCAA562688",
+  "name": "Security static source code analysis",
+  "friendlyName": "Checkmarx CxSAST",
+  "description": "Security static source code analysis",
+  "helpMarkDown": "[Information] https://checkmarx.atlassian.net/wiki/display/KC/CxSAST+MS-VSTS+Plugin",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Checkmarx",
+  "version": {
+    "Major": 86,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.0.0",
+  "groups": [
+    {
+      "name": "serverSettings",
+      "displayName": "Checkmarx Server",
+      "isExpanded": true
+    },
+    {
+      "name": "scanSettings",
+      "displayName": "Checkmarx Scan",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Security static source code analysis",
+  "inputs": [
+    {
+      "name": "CheckmarxService",
+      "type": "connectedService:Checkmarx-Endpoint",
+      "label": "Checkmarx Endpoint",
+      "required": true,
+      "helpMarkDown": "The CX server endpoint.",
+      "groupName": "serverSettings"
+    },
+    {
+      "name": "projectName",
+      "type": "string",
+      "label": "Project Name",
+      "required": true,
+      "helpMarkDown": "Either select an existing project name or type a name to create a new scan project",
+      "groupName": "serverSettings"
+    },
+    {
+      "name": "preset",
+      "type": "pickList",
+      "label": "Preset",
+      "required": true,
+      "groupName": "serverSettings",
+      "defaultValue": "Checkmarx Default",
+      "helpMarkDown": "predefined sets of queries that you can select when Creating, Configuring and Branching Projects. Predefined presets are provided by Checkmarx and you can configure your own. You can also import and export presets (on the server).",
+      "options": {
+        "Checkmarx Default": "Checkmarx Default",
+        "All": "All",
+        "Android": "Android",
+        "Apple Secure Coding Guide": "Apple Secure Coding Guide",
+        "Default": "Default",
+        "Default 2014": "Default 2014",
+        "Empty preset": "Empty preset",
+        "Error handling": "Error handling",
+        "FISMA": "FISMA",
+        "High and Medium": "High and Medium",
+        "High and Medium and Low": "High and Medium and Low",
+        "HIPAA": "HIPAA",
+        "JSSEC": "JSSEC",
+        "MISRA_C": "MISRA_C",
+        "MISRA_CPP": "MISRA_CPP",
+        "Mobile": "Mobile",
+        "NIST": "NIST",
+        "OWASP Mobile TOP 10 - 2016": "OWASP Mobile TOP 10 - 2016",
+        "OWASP TOP 10 - 2010": "OWASP TOP 10 - 2010",
+        "OWASP TOP 10 - 2013": "OWASP TOP 10 - 2013",
+        "PCI": "PCI",
+        "SANS top 25": "SANS top 25",
+        "STIG": "STIG",
+        "WordPress": "WordPress",
+        "XS": "XS",
+        "XSS and SQLi only": "XSS and SQLi only"
+      }
+    },
+    {
+      "name": "customPreset",
+      "type": "string",
+      "label": "Custom Preset",
+      "required": false,
+      "helpMarkDown": "Custom presets are provided in cases where the desired preset is missing from the Checkmarx presets above. Leave empty in order to use a Checkmarx defined preset. In case a custom preset is selected, it will override the Checkmarx preset.",
+      "groupName": "serverSettings"
+    },
+    {
+      "name": "fullTeamName",
+      "type": "string",
+      "label": "Team",
+      "required": true,
+      "helpMarkDown": "The full team name (for example, CxServer\\SP\\Company\\Users).",
+      "groupName": "serverSettings"
+    },
+    {
+      "name": "incScan",
+      "type": "boolean",
+      "label": "Incremental Scan",
+      "required": true,
+      "defaultValue": "true",
+      "helpMarkDown": "Set true for incremental scan. If no scan was done yet, the scan will be a full scan and the following ones will be incremental.",
+      "groupName": "scanSettings"
+    },
+    {
+      "name": "folderExclusion",
+      "type": "string",
+      "label": "Folder Exclusion",
+      "required": false,
+      "defaultValue": "cvs, .svn, .hg , .git, .bzr, bin , obj,  backup, .idea",
+      "helpMarkDown": "Comma delineated list of the folders to exclude from the scan (for example: dto,target,WEB-INF)",
+      "groupName": "scanSettings"
+    },
+    {
+      "name": "fileExtension",
+      "type": "string",
+      "label": "Include/Exclude File Extensions",
+      "required": false,
+      "defaultValue": "!*.DS_Store, !*.ipr,     !*.iws,\n!*.bak,    !*.tmp,     !*.aac,      !*.aif,      !*.iff,     !*.m3u,   !*.mid,   !*.mp3,\n!*.mpa,    !*.ra,        !*.wav,      !*.wma,      !*.3g2,     !*.3gp,   !*.asf,   !*.asx,\n!*.avi,    !*.flv,       !*.mov,     !*.mp4,      !*.mpg,     !*.rm,    !*.swf,   !*.vob,\n!*.wmv,    !*.bmp,   !*.gif,       !*.jpg,      !*.png,     !*.psd,   !*.tif,   !*.swf,\n!*.jar,    !*.zip,       !*.rar,      !*.exe,      !*.dll,     !*.pdb,   !*.7z,    !*.gz,\n!*.tar.gz, !*.tar,       !*.gz,       !*.ahtm,     !*.ahtml,   !*.fhtml, !*.hdm,\n!*.hdml,   !*.hsql,      !*.ht,      !*.hta,      !*.htc,     !*.htd,   !*.war,   !*.ear,\n!*.htmls,  !*.ihtml,     !*.mht,      !*.mhtm,     !*.mhtml,   !*.ssi,   !*.stm,\n!*.stml,   !*.ttml,      !*.txn,      !*.xhtm,     !*.xhtml,   !*.class, !*.iml",
+      "helpMarkDown": "Comma separated list of include or exclude wildcard patterns. Exclude patterns start with exclamation mark \"!\" [Exclusion Example: !*.tmp, !*.html.   Inclusion Example: *.java ]",
+      "groupName": "scanSettings"
+    },
+    {
+      "name": "syncMode",
+      "type": "boolean",
+      "label": "Synchronous Mode",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "Enabling this option will cause the build step to wait for scan results, you can see the scan results inside the Checkmarx plug-in results window. If disabled, the results are only displayed inside the Checkmarx web-application",
+      "groupName": "scanSettings"
+    },
+    {
+      "name": "vulnerabilityThreshold",
+      "type": "boolean",
+      "label": "Enable SAST Vulnerability Thresholds",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "Available only if Synchronous mode is enabled. Set the maximum number of vulnerabilities of given severity before the scan fails.",
+      "groupName": "scanSettings",
+      "visibleRule": "syncMode = true"
+    },
+    {
+      "name": "high",
+      "type": "string",
+      "label": "SAST High",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the high severity vulnerabilities. The build will be marked as failed  if the number of the high severity vulnerabilities is larger than the threshold. ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true"
+    },
+    {
+      "name": "medium",
+      "type": "string",
+      "label": "SAST Medium",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the medium severity vulnerabilities. The build will be marked as failed  if the number of the medium severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true"
+    },
+    {
+      "name": "low",
+      "type": "string",
+      "label": "SAST Low",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the low severity vulnerabilities. The build will be marked as failed  if the number of the low severity vulnerabilities is larger than the threshold.  Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "vulnerabilityThreshold = true"
+    },
+    {
+      "name": "osaEnabled",
+      "type": "boolean",
+      "label": "Enable CxOSA Scan",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": " Enable the CxOSA option to initiate Open Source Analysis for this scan/job. Disabled by default.",
+      "groupName": "scanSettings"
+    },
+    {
+      "name": "osaFolderExclusions",
+      "type": "string",
+      "label": "CxOSA Folder Exclusions",
+      "required": false,
+      "helpMarkDown": "Comma separated list of the folders to exclude from OSA scan (for example: dto,target,WEB-INF)",
+      "groupName": "scanSettings",
+      "visibleRule": "osaEnabled = true"
+    },
+    {
+      "name": "osaFileExclusions",
+      "type": "string",
+      "label": "CxOSA Include/Exclude wildcard patterns",
+      "required": false,
+      "helpMarkDown": "Comma separated list of include or exclude wildcard patterns. Exclude patterns start with exclamation mark \"!\".",
+      "groupName": "scanSettings",
+      "visibleRule": "osaEnabled = true"
+    },
+    {
+      "name": "osaArchiveInclude",
+      "type": "string",
+      "label": "CxOSA Archive Extract Extensions ",
+      "required": false,
+      "defaultValue": "*.zip, *.war, *.ear, *.tgz",
+      "helpMarkDown": "Comma separated list of archive wildcard patterns to include their extracted content for the scan. eg. *.zip, *.jar, *.ear. Supported archive types are: jar, war, ear, sca, gem, whl, egg, tar, tar.gz, tgz, zip, rar. Leave blank to extract all archives.",
+      "groupName": "scanSettings",
+      "visibleRule": "osaEnabled = true"
+    },
+    {
+      "name": "osaVulnerabilityThreshold",
+      "type": "boolean",
+      "label": "Enable CxOSA Vulnerability Thresholds",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "Enable the vulnerability threshold option (only available if synchronous mode is enabled). ",
+      "groupName": "scanSettings",
+      "visibleRule": "syncMode = true"
+    },
+    {
+      "name": "osaHigh",
+      "type": "string",
+      "label": "CxOSA High",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the high severity vulnerabilities. The build will be marked as failed  if the number of the high severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "osaVulnerabilityThreshold = true"
+    },
+    {
+      "name": "osaMedium",
+      "type": "string",
+      "label": "CxOSA Medium",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the medium severity vulnerabilities. The build will be marked as failed  if the number of the medium severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "osaVulnerabilityThreshold = true"
+    },
+    {
+      "name": "osaLow",
+      "type": "string",
+      "label": "CxOSA Low",
+      "required": false,
+      "helpMarkDown": "Define a threshold for the low severity vulnerabilities. The build will be marked as failed  if the number of the low severity vulnerabilities is larger than the threshold. Threshold must be 0 or greater to set a threshold, or leave blank for no thresholds ",
+      "groupName": "scanSettings",
+      "visibleRule": "osaVulnerabilityThreshold = true"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\CxVSTS.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  },
+  "messages": {
+  }
+}

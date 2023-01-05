@@ -1,0 +1,89 @@
+{
+    "id": "b68d33d0-8397-4c24-a852-af122e8ed969",
+    "name": "RunSqlScriptsAzure",
+    "friendlyName": "Run Sql Scripts on Azure",
+    "description": "Allows you to run SQL Scripts",
+    "author": "Andrew Lackenby",
+    "category": "Utility",
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "demands": ["azureps"],
+    "minimumAgentVersion": "1.95.0",
+    "inputs": [
+        {
+            "name":"ConnectedServiceNameSelector",
+            "type":"pickList",
+            "label":"Azure Connection Type",
+            "required":false,
+            "helpMarkDown":"",
+            "defaultValue":"ConnectedServiceName",
+            "options":{
+                "ConnectedServiceName":"Azure Classic",
+                "ConnectedServiceNameARM":"Azure Resource Manager"
+            }
+        },
+        {
+            "name":"ConnectedServiceName",
+            "type":"connectedService:Azure",
+            "label":"Azure Classic Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Classic subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name":"ConnectedServiceNameARM",
+            "type":"connectedService:AzureRM",
+            "label":"Azure RM Subscription",
+            "defaultValue":"",
+            "required":true,
+            "helpMarkDown":"Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule":"ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+       {
+            "name": "pathToScripts",
+            "type": "filePath",
+            "label": "Path to SQL Scripts",
+            "required": true
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true
+        },
+         {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true
+        },
+        {
+            "name": "userName",
+            "type": "string",
+            "label": "SQL SQL Server Login ID",
+            "required": true,
+            "helpMarkDown": "Login using Azure Database."
+        },
+                {
+            "name": "userPassword",
+            "type": "string",
+            "label": "SQL Server Authentication password",
+            "required": true,
+            "helpMarkDown": "You should use a secret variable here."
+        }
+    ],
+    "instanceNameFormat": "Run Sql Scripts on $(databaseName)",
+    "execution": 
+    {
+        "AzurePowerShell": 
+        {
+            "target": "$(currentDirectory)\\RunSqlScriptsAzure.ps1",
+            "argumentFormat":"",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

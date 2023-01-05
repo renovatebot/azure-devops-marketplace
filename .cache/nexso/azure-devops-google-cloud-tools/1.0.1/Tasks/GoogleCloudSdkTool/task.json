@@ -1,0 +1,53 @@
+{
+  "id": "ebfd0a15-f57b-4710-9df7-ad06d4dcd7a6",
+  "name": "GoogleCloudSdkTool",
+  "friendlyName": "Google Cloud SDK tool installer",
+  "description": "Finds or downloads and caches the specified version spec of gcloud CLI and adds it to the PATH",
+  "helpUrl": "https://github.com/nexsolab/azure-devops-google-cloud-tools",
+  "helpMarkDown": "[Learn more about this task](https://github.com/nexsolab/azure-devops-google-cloud-tools#readme) or [see the Cloud SDK documentation](https://cloud.google.com/sdk/gcloud)",
+  "category": "Tool",
+  "runsOn": [
+      "Agent",
+      "DeploymentGroup"
+  ],
+  "author": "Gabriel Anderson",
+  "version": {
+      "Major": 0,
+      "Minor": 1,
+      "Patch": 0
+  },
+  "satisfies": [
+      "gcloud",
+      "gcp",
+      "google cloud"
+  ],
+  "demands": [],
+  "instanceNameFormat": "Use gcloud $(versionSpec)",
+  "inputs": [
+      {
+          "name": "versionSpec",
+          "type": "string",
+          "label": "Version Spec",
+          "defaultValue": "283.x",
+          "required": true,
+          "helpMarkDown": "Version Spec of version to get.  Examples: 252.x, 143.0.1, >=280.0.0"
+      },
+      {
+          "name": "checkLatest",
+          "type": "boolean",
+          "label": "Check for Latest Version",
+          "defaultValue": "false",
+          "required": false,
+          "helpMarkDown": "Always checks online for the latest available version that satisfies the version spec. This is typically false unless you have a specific scenario to always get latest. This will cause it to incur download costs when potentially not necessary, especially with the hosted build pool."
+      }
+  ],
+  "execution": {
+      "Node": {
+          "target": "gcloudcli.js",
+          "argumentFormat": ""
+      }
+  },
+  "messages": {
+      "ToolFailed": "Tool install failed: %s"
+  }
+}

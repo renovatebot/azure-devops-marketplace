@@ -1,0 +1,179 @@
+{
+    "id": "bdc51eaf-b608-42d5-8f1f-2aed6cf392ad",
+    "name": "LambdaNETCoreDeploy",
+    "friendlyName": "AWS Lambda .NET Core Deployment",
+    "description": "Build and deploy a Serverless .NET Core application or AWS Lambda function.",
+    "author": "Amazon Web Services",
+    "helpMarkDown": "Please refer to [AWS Lambda Developer Guide](https://docs.aws.amazon.com/lambda/latest/dg/)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "9",
+        "Patch": "50"
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "Deploy to Lambda: $(functionName) $(stackName)",
+    "groups": [
+        {
+            "name": "deployFunction",
+            "displayName": "Lambda Function Properties",
+            "isExpanded": true,
+            "visibleRule": "command = deployFunction"
+        },
+        {
+            "name": "deployServerless",
+            "displayName": "Serverless Application Properties",
+            "isExpanded": true,
+            "visibleRule": "command = deployServerless"
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "awsCredentials",
+            "type": "connectedService:AWS",
+            "label": "AWS Credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AWS credentials to use. If needed, click on 'Manage', and add a new Service Endpoint of type 'AWS'"
+        },
+        {
+            "name": "regionName",
+            "label": "AWS Region",
+            "type": "string",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "AWS region name, please check https://docs.aws.amazon.com/general/latest/gr/rande.html"
+        },
+        {
+            "name": "lambdaProjectPath",
+            "label": "Path to Lambda Project",
+            "type": "filepath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The relative path to the location of the Lambda project"
+        },
+        {
+            "name": "command",
+            "type": "pickList",
+            "label": "Command",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The type of deployment. \"Lambda Deploy\" performs a single Lambda function deployment. \"Serverless Deploy\" performs a deployment with AWS CloudFormation allowing multiple function deployment.",
+            "options": {
+                "deployFunction": "Lambda Deploy",
+                "deployServerless": "Serverless Deploy"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "functionName",
+            "type": "string",
+            "label": "Function Name",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployFunction",
+            "helpMarkDown": "The name of the Lambda function to invoke. You can also specify the Amazon Resource Name (ARN) of the function."
+        },
+        {
+            "name": "functionRole",
+            "type": "string",
+            "label": "Function Role",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployFunction",
+            "helpMarkDown": "The name of the AWS Identity and Access Management Role that provides access to AWS services to the deployed Lambda function."
+        },
+        {
+            "name": "functionHandler",
+            "type": "string",
+            "label": "Function Handler",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployFunction",
+            "helpMarkDown": "The function within your code that Lambda calls to begin execution. Format is &lt;assembly-name&gt;::&lt;type-name&gt;::&lt;function-name&gt;."
+        },
+        {
+            "name": "functionMemory",
+            "type": "int",
+            "label": "Function Memory (MB)",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployFunction",
+            "helpMarkDown": "Memory allocated to the Lambda function. The value must be in multiples of 64."
+        },
+        {
+            "name": "functionTimeout",
+            "type": "int",
+            "label": "Function Timout (Seconds)",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployFunction",
+            "helpMarkDown": "The function execution time at which Lambda should terminate the function."
+        },
+        {
+            "name": "stackName",
+            "type": "string",
+            "label": "Stack Name",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployServerless",
+            "helpMarkDown": "AWS CloudFormation Stack Name."
+        },
+        {
+            "name": "s3Bucket",
+            "type": "string",
+            "label": "S3 Bucket",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployServerless",
+            "helpMarkDown": "S3 bucket used to store the built project."
+        },
+        {
+            "name": "s3Prefix",
+            "type": "string",
+            "label": "S3 Prefix",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "deployServerless",
+            "helpMarkDown": "S3 object key prefix used for the objects uploaded to S3."
+        },
+        {
+            "name": "additionalArgs",
+            "label": "Additional Lambda Tools Command Line Arguments",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Additional arguments when executing the 'dotnet lambda' command"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "LambdaNETCoreDeploy.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "DeployingProjectAt": "Deploying Lambda project at %s",
+        "ReadingDefaultSettingsFile": "Reading existing aws-lambda-tools-defaults.json",
+        "ClearingProfileCredentials": "Clearing out profile %s so task credentials will be used.",
+        "StartingDotNetRestore": "Beginning dotnet restore",
+        "StartingFunctionDeployment": "Beginning Lambda Deployment",
+        "StartingServerlessDeployment": "Beginning Serverless Deployment",
+        "UnknownCommandError": "Unknown command: %s",
+        "DotNetCommandFailure": "'dotnet %s' exited with code %d",
+        "TaskCompleted": "Completed deployment of the project"
+    }
+}

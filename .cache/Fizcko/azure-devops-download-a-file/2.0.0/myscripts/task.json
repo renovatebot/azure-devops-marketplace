@@ -1,0 +1,124 @@
+{
+    "id":  "86f18ec5-94a0-48f8-91d0-3d134f14d44e",
+    "name":  "DownloadAFile",
+    "friendlyName":  "Download a File",
+    "description":  "This extension provide the ability to download a binary file.",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "Fizcko",
+    "version":  {
+                    "Major":  2,
+                    "Minor":  0,
+                    "Patch":  0
+                },
+    "instanceNameFormat":  "Download a File",
+    "groups":  [
+                   {
+                       "name":  "groupOne",
+                       "displayName":  "Settings",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "strUrl",
+                       "type":  "string",
+                       "label":  "Download URL",
+                       "defaultValue":  "http://myurl/readme.txt",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the url of the file to download (http or https).",
+                       "groupName":  "groupOne"
+                   },
+                   {
+                       "name":  "strTargetDir",
+                       "type":  "filePath",
+                       "label":  "Target path folder",
+                       "defaultValue":  "$(System.DefaultWorkingDirectory)",
+                       "required":  true,
+                       "helpMarkDown":  "Directory to save the file (Will be created if he doesn\u0027t exist).",
+                       "groupName":  "groupOne"
+                   },
+                   {
+                       "name":  "strTargetFilename",
+                       "type":  "string",
+                       "label":  "Target file name",
+                       "defaultValue":  "readme.txt",
+                       "required":  true,
+                       "helpMarkDown":  "Rename target file",
+                       "groupName":  "groupOne"
+                   },
+                   {
+                       "name":  "authType",
+                       "type":  "radio",
+                       "label":  "Authentication type",
+                       "defaultValue":  "noAuth",
+                       "required":  true,
+                       "options":  {
+                                       "noAuth":  "No Auth",
+                                       "basic":  "Basic Auth",
+                                       "bearer":  "Bearer Token"
+                                   },
+                       "helpMarkDown":  "Define authentication type",
+                       "groupName":  "groupOne"
+                   },
+                   {
+                       "name":  "basicAuthUsername",
+                       "type":  "string",
+                       "label":  "Username",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the username for the Basic Authentication.",
+                       "groupName":  "groupOne",
+                       "visibleRule":  "authType = basic"
+                   },
+                   {
+                       "name":  "basicAuthPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the password for the Basic Authentication.",
+                       "groupName":  "groupOne",
+                       "visibleRule":  "authType = basic"
+                   },
+                   {
+                       "name":  "bearerToken",
+                       "type":  "string",
+                       "label":  "Token",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the token for the Bearer Token Authentication.",
+                       "groupName":  "groupOne",
+                       "visibleRule":  "authType = bearer"
+                   },
+                   {
+                       "name":  "ignoreCertificateChecks",
+                       "type":  "boolean",
+                       "label":  "Ignore certificate checks",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "helpMarkDown":  "Ignore errors from certificate checks.",
+                       "groupName":  "groupOne"
+                   },
+                   {
+                       "name":  "catchResponse",
+                       "type":  "boolean",
+                       "label":  "Fail if response codes other than 2xx",
+                       "defaultValue":  "true",
+                       "required":  true,
+                       "helpMarkDown":  "Fail task if the HTTP response code is not 2xx.",
+                       "groupName":  "groupOne"
+                   }
+               ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "downloadFile.js",
+                                     "argumentFormat":  "",
+                                     "workingDirectory":  ""
+                                 }
+                  }
+}

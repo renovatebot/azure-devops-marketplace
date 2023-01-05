@@ -1,0 +1,87 @@
+{
+  "id": "25e3decd-0119-43cd-8819-85b4a5fdde84",
+  "name": "CloudMakerAzureDeployment",
+  "friendlyName": "Cloud Maker Azure Deployment",
+  "description": "Deploys a Cloud Maker blueprint",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "author": "Cloud Maker",
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "instanceNameFormat": "Cloud Maker Azure Deployment",
+  "inputs": [
+    {
+      "name": "Organisation",
+      "type": "connectedService:cloudmaker",
+      "label": "Organisation",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The CloudMaker service endpoint configured for your organisation"
+    },
+    {
+      "name": "PipelineId",
+      "type": "pickList",
+      "label": "Pipeline",
+      "required": true,
+      "helpMarkDown": "Select the pipeline to deploy."
+    },
+    {
+      "name": "StageId",
+      "type": "pickList",
+      "label": "Stage",
+      "required": true,
+      "helpMarkDown": "The name of the stage to deploy"
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Resource Manager connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager connection for the deployment."
+    },
+    {
+      "name": "MetadataLocation",
+      "type": "pickList",
+      "label": "Metadata location",
+      "required": true,
+      "helpMarkDown": "Location for deployment metadata.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "MetadataLocation",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureLocationsByDeploymentScope",
+      "parameters": {
+        "deploymentScope": "Management Group"
+      }
+    },
+    {
+      "target": "PipelineId",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "Solutions",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\":\"{{{name}}}\"}"
+    },
+    {
+      "target": "StageId",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "Stages",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\":\"{{{name}}}\"}",
+      "parameters": {
+        "SolutionId": "$(PipelineId)"
+      }
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "src/index.js"
+    }
+  }
+}

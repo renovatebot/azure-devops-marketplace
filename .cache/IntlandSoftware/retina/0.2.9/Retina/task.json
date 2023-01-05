@@ -1,0 +1,119 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "f59df4cb-075d-4a07-84f6-cb4903297100",
+  "name": "retina",
+  "instanceNameFormat": "Retina ",
+  "friendlyName": "Intland Retina connector",
+  "description": "Upload XUnit test results to Intland Retina",
+  "category": "Azure Pipelines",
+  "author": "Intland Software",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "groups": [
+    {
+      "name": "connection",
+      "displayName": "Retina connection",
+      "isExpanded": true
+    },
+    {
+      "name": "testconfig",
+      "displayName": "Test configuration in Retina",
+      "isExpanded": true
+    },
+    {
+      "name": "testrun",
+      "displayName": "Test run options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "test_xml_folder",
+      "type": "string",
+      "label": "Test XML folder path",
+      "defaultValue": ".",
+      "required": true,
+      "helpMarkDown": "UNIX-style path relative to the project's root. If not specified, uploads all test xml files in project. Search for xml files is recursive."
+    },
+    {
+      "name": "test_run_name",
+      "type": "string",
+      "label": "Test run name",
+      "defaultValue": "$(Build.DefinitionName) $(Build.Reason)",
+      "required": true,
+      "helpMarkDown": "Identifies the test run in Retina",
+      "groupName": "testrun"
+    },
+    {
+      "name": "test_run_id",
+      "type": "string",
+      "label": "Test run ID",
+      "defaultValue": "$(Build.BuildId)",
+      "required": true,
+      "helpMarkDown": "Unique ID for the test runs, default value assigns the Azure Build number.",
+      "groupName": "testrun"
+    },
+    {
+      "name": "server_url",
+      "type": "string",
+      "label": "Retina server URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Can be https://company.codebeamer.net/retina or https://company.com/retina, where Retina is running. Normally it should end with /retina.",
+      "groupName": "connection"
+    },
+    {
+      "name": "retina_user",
+      "type": "string",
+      "label": "Retina automation user",
+      "defaultValue": "$(retina_user)",
+      "required": true,
+      "helpMarkDown": "Please use a secret value by adding $(secretname), where the secret specifies the user",
+      "groupName": "connection"
+    },
+    {
+      "name": "retina_password",
+      "type": "string",
+      "label": "Retina automation password",
+      "defaultValue": "$(retina_password)",
+      "required": true,
+      "helpMarkDown": "Please use a secret value by adding $(secretname), where the secret specifies the password",
+      "groupName": "connection"
+    },
+    {
+      "name": "test_configuration_id",
+      "type": "string",
+      "label": "Test configuration ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test configration ID number from the name TestConf-<ID>",
+      "groupName": "testconfig"
+    },
+    {
+      "name": "test_case_tracker_id",
+      "type": "string",
+      "label": "Test case tracker ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test case tracker ID can be obtained by opening the desired tracker and the ID is shown in the URL.",
+      "groupName": "testconfig"
+    },
+    {
+      "name": "test_run_tracker_id",
+      "type": "string",
+      "label": "Test run tracker ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test run tracker ID number. Navigate to the desired test run tracker and obtain the ID from the URL.",
+      "groupName": "testconfig"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

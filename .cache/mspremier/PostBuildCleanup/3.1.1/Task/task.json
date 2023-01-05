@@ -1,0 +1,61 @@
+{
+    "id": "175c8a10-0ef0-11e7-936d-2100de00518d",
+    "name": "PostBuildCleanup",
+    "friendlyName": "Post Build Cleanup",
+    "description": "Cleans the build directories on the agent after the build has finished.",
+    "author": "Microsoft Premier Services",
+    "helpMarkDown": "[More information](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/PostBuildCleanup/en-US/overview.md)",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "3",
+        "Minor": "1",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "2.122.1",
+    "instanceNameFormat": "Clean Agent Directories",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "disableCertCheck",
+            "type": "boolean",
+            "label": "Disable NodeJS certificate check",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Enable this option if your Team Foundation Server is configured with a self-signed or corporate SSL certificate. [[Docs]](https://github.com/almtcger/VstsExtensions/blob/master/PostBuildCleanup/en-US/overview.md#noCertCheck)",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "enableCleanup.js",
+            "argumentFormat": ""
+        }
+    },
+    "postjobexecution": {
+        "Node": {
+            "target": "cleanup.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "NoCleanup": "The build's clean option is disabled. Nothing to clean up.",
+        "UnsupportedRepo": "Unsupported version control repository. Currently supported: Git, GitHub, TFVC",
+        "CleanupSources": "Cleaning up sources...",
+        "CleanupBinaries": "Cleaning up $(Build.BinariesDirectory)...",
+        "CleanupSourcesDir": "Cleaning up $(Build.SourcesDirectory)...",
+        "CleanupBuildDir": "Cleaning up $(Agent.BuildDirectory)...",
+        "WaitForTaskCompletion": "Waiting for previous tasks to upload information...",
+        "WaitForTaskTimeout": "Previous build steps did not finish within the maximum wait time.",
+        "DoNotDisableNodeJsCertCheck": "The current agent supports custom CA certificates through the NODE_EXTRA_CA_CERTS variable. Please use this variable instead of disabling the certificate check!"
+    }
+}

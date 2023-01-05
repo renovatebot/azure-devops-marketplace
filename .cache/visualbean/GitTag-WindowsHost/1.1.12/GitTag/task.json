@@ -1,0 +1,83 @@
+{
+	"id": "c0b4d432-e6c7-4909-87b2-d99bdb974a27",
+	"name": "GitTag",
+	"friendlyName": "Git Tag",
+	"description": "A simple task that tags a branch",
+	"author": "VisualBean",
+	"helpMarkDown": "tags the current branch with a specified tag. ### Prerequisites * Repository must be VSTS Git. * Allow scripts to access Oauth must be **Enabled** * Project Collection Build Service must have **Contribute** & **Create Tag** set to **Allow** or **Inherit Allow** for that particular repository",
+	"category": "Utility",
+	"visibility": [
+		"Build"
+	],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "1",
+		"Patch": "10"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "GitTag $(message)",
+	"inputs": [
+	{
+		"name": "workingdir",
+		"type": "string",
+		"label": "Working Directory",
+		"defaultValue": "$(build.SourcesDirectory)",
+		"required": true,
+		"helpMarkDown": "The working directory (The git root)."
+	},
+	{
+		"name":"tagUser",
+		"type": "string",
+		"label": "Tag User",
+		"defaultValue": "VSTS",
+		"required": true,
+		"helpMarkDown": "The user that tagged (Just for git history purposes)"
+	},
+	{
+		"name":"tagEmail",
+		"type": "string",
+		"label": "Tag Email",
+		"defaultValue": "noreply@example.com",
+		"required": true,
+		"helpMarkDown": "The user that taggeds email (Just for git history purposes)"
+	},
+	{
+		"name": "tag",
+		"type": "string",
+		"label": "Tag",
+		"defaultValue": "$(build.buildNumber)",
+		"required": true,
+		"helpMarkDown": "Tag to tag current branch with."
+	},
+	{
+		"name": "tagMessage",
+		"type": "string",
+		"label": "Tag Message",
+		"defaultValue": "$(build.buildNumber)",
+		"required": true,
+		"helpMarkDown": "The message to add to the tag."
+	},
+	{
+		"name": "useLightweightTags",
+		"type": "boolean",
+		"label": "Use Lightweight Tags",
+		"defaultValue": false,
+		"required": false,
+		"helpMarkDown": "If this is set, tagging will be done using lightweight tags instead of annoted tags."
+	},
+	{
+		"name": "forceTagCreation",
+		"type": "boolean",
+		"label": "Force",
+		"defaultValue": false,
+		"required": false,
+		"helpMarkDown": "If this is true, replace an existing tag with the given name (instead of failing)."
+	}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "tagging.ps1"
+		}
+	}
+}

@@ -1,0 +1,125 @@
+{
+    "id": "A8515EC8-7254-4FFD-912C-86772E2B5962",
+    "name": "replacetokens",
+    "friendlyName": "Replace Tokens",
+    "description": "Replace tokens in files",
+    "helpMarkDown": "[More Information](https://github.com/qetza/vsts-replacetokens-task#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Guillaume Rouchon",
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.92.0",
+    "groups": [
+        {
+            "name": "missing",
+            "displayName": "Missing variables",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "rootDirectory",
+            "type": "filePath",
+            "label": "Root directory",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Base directory for searching files."
+        },
+        {
+            "name": "targetFiles",
+            "type": "multiLine",
+            "label": "Target files",
+            "defaultValue": "**\\*.config",
+            "required": true,
+            "helpMarkDown": "Relative semicolon or newline-separated paths to the files to replace tokens. Wildcards can be used.<br/>Eg: `**\\*.config` for all config files in all sub folders."
+        },
+        {
+            "name": "encoding",
+            "type": "pickList",
+            "label": "Output file encoding",
+            "defaultValue": "auto",
+            "required": false,
+            "options": {
+                "auto": "auto",
+                "Ascii": "ascii",
+                "UTF7": "utf-7",
+                "UTF8": "utf-8",
+                "Unicode": "utf-16",
+                "BigEndianUnicode": "utf-16 (big endian)",
+                "UTF32": "utf-32",
+                "BigEndianUTF32": "utf-32 (big endian)"
+            },
+            "helpMarkDown": "Specify the output files encoding.<br/>The 'auto' value reuses the file encoding if a BOM is present; otherwise it will use ascii."
+        },
+        {
+            "name": "writeBOM",
+            "type": "boolean",
+            "label": "Write unicode BOM",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If checked writes an unicode Byte Order Mark (BOM).",
+            "visibleRule": "encoding != Ascii"
+        },
+        {
+            "name": "actionOnMissing",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "warn",
+            "groupName": "missing",
+            "required": true,
+            "options": {
+                "continue": "silently continue",
+                "warn": "log warning",
+                "fail": "fail"
+            },
+            "helpMarkDown": "Specify the action on a missing variable."
+        },
+        {
+            "name": "keepToken",
+            "type": "boolean",
+            "label": "Keep token",
+            "defaultValue": "false",
+            "groupName": "missing",
+            "required": true,
+            "helpMarkDown": "If checked tokens with missing variables will not be replaced by empty string."
+        },
+        {
+            "name": "tokenPrefix",
+            "type": "string",
+            "label": "Token prefix",
+            "defaultValue": "#{",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The prefix of the tokens to search in the target files."
+        },
+        {
+            "name": "tokenSuffix",
+            "type": "string",
+            "label": "Token suffix",
+            "defaultValue": "}#",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The suffix of the tokens to search in the target files."
+        }
+    ],
+    "instanceNameFormat": "Replace tokens in $(targetFiles)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\replace-tokens.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}

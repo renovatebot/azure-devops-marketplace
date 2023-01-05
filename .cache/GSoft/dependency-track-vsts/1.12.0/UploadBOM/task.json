@@ -1,0 +1,203 @@
+{
+  "id": "8703D74D-71E5-4666-AE55-B26DF77F2AD5",
+  "name": "upload-bom-dtrack-task",
+  "friendlyName": "Upload BOM to Dependency Track",
+  "description": "Upload a BOM file to Dependency Track platform.",
+  "instanceNameFormat": "Upload BOM to $(dtrackURI)",
+  "author": "Edouard Shaar",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "version": {
+    "Major": 1,
+    "Minor": 12,
+    "Patch": 0
+  },
+  "minimumAgentVersion": "2.0.0",
+  "groups": [
+    {
+      "name": "baseSettings",
+      "displayName": "Base Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "thresholds",
+      "displayName": "Threshold Options",
+      "isExpanded": false
+    },
+    {
+      "name": "sslSettings",
+      "displayName": "SSL Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "bomFilePath",
+      "label": "BOM File Path",
+      "type": "filePath",
+      "required": true,
+      "groupName": "baseSettings",
+      "helpMarkDown": "The path where the BOM file is located. (e.g. 'directory/**/bom.xml')."
+    },
+    {
+      "name": "dtrackProjId",
+      "label": "Project Id",
+      "type": "string",
+      "required": true,
+      "groupName": "baseSettings",
+      "helpMarkDown": "The guid of the project in Dependency Track"
+    },
+    {
+      "name": "dtrackAPIKey",
+      "label": "API Key",
+      "type": "string",
+      "required": true,
+      "groupName": "baseSettings",
+      "helpMarkDown": "The Dependency Track API key"
+    },
+    {
+      "name": "dtrackURI",
+      "label": "Dependency Track URI",
+      "type": "string",
+      "required": true,
+      "groupName": "baseSettings",
+      "helpMarkDown": "The URL to the Dependency Track platform"
+    },
+    {
+      "name": "thresholdAction",
+      "label": "Action on Threshold",
+      "type": "radio",
+      "defaultValue": "none",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "The result of the task if the threshold is attained.",
+      "options": {
+        "none": "No Action",
+        "warn": "Warning",
+        "error": "Error"
+      }
+    },
+    {
+      "name": "thresholdCritical",
+      "label": "Critical Vulnerability Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of critical vulnerabilities to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdHigh",
+      "label": "High Vulnerability Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of high vulnerabilities to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdMedium",
+      "label": "Medium Vulnerability Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of medium vulnerabilities to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdLow",
+      "label": "Low Vulnerability Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of low vulnerabilities to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdUnassigned",
+      "label": "Unassigned Vulnerability Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of unassigned vulnerabilities to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdpolicyViolationsFail",
+      "label": "Fail Policy Violation Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of failed policy violations to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdpolicyViolationsWarn",
+      "label": "Warn Policy Violation Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of warn policy violations to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdpolicyViolationsInfo",
+      "label": "Info Policy Violation Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of info policy violations to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "thresholdpolicyViolationsTotal",
+      "label": "Total Policy Violation Count",
+      "type": "string",
+      "defaultValue": "-1",
+      "required": false,
+      "groupName": "thresholds",
+      "helpMarkDown": "Maximum number of Total policy violations to tolerate.\nA value of -1 disables this threshold."
+    },
+    {
+      "name": "caFilePath",
+      "label": "Trusted CA certificate",
+      "type": "filePath",
+      "required": false,
+      "groupName": "sslSettings",
+      "helpMarkDown": "File path to PEM encoded CA certificate. This setting is used when Dependency Track is using a self-signed certificate or an internal CA provider for it's TLS configuration."
+    }
+  ],
+  "messages": {
+    "FileNotFound": "File path is not a file: %s",
+    "UnableToReadBom": "Unable to read bom file: %s",
+    "ReadingBom": "Reading BOM from location: %s",
+    "UnableToReadCA": "Unable to read certificate file: %s",
+    "ReadingCA": "Reading certificate from location: %s",
+    "BOMUploadStarting": "Starting BOM upload to Dependency Track at url: %s",
+    "BOMUploadFailed": "Uploading the BOM to Dependency Track Failed: %s",
+    "BOMUploadSucceed": "Uploading the BOM succeeded! Token: %s",
+    "TaskSucceed": "Finished task execution successfully!",
+    "TaskFailed": "Finished task execution with error - %s",
+    "ThresholdInNotAnInteger": "%s threshold needs to be an integer value.",
+    "VulnCountThresholdSurpassed": "%s vulnerability count threshold surpassed.",
+    "RetrievingMetrics": "Waitting for metrics to refresh.",
+    "ProcessingBOM": "Waitting for Dependency Track to finish processing the BOM.",
+    "Polling": "Polling Dependency Track for update.",
+    "LastBOMImport": "Last date of BOM import: %s",
+    "LastMetricUpdate": "Last date of Metrics update: %s",
+    "VulnCount": "Current Vulnerability Count:\nCritical: %s\nHigh:%s\nMedium: %s\nLow: %s\nUnassigned: %s\nSuppressed: %s",
+    "Critical": "Critical",
+    "High": "High",
+    "Medium": "Medium",
+    "Low": "Low",
+    "Unassigned": "Unassigned",
+    "PolicyViolationCount": "Current Policy Violation Count:\nFail: %s\nWarn:%s\nInfo: %s\nTotal: %s"
+  },
+  "execution": {
+    "Node10": {
+      "target": "task.js"
+    }
+  }
+}

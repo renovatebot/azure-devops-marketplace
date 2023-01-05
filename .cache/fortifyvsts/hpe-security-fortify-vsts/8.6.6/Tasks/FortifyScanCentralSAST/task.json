@@ -1,0 +1,427 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "55a97a52-a238-46af-9de9-e4245ab45e72",
+    "name": "FortifyScanCentralSAST",
+    "friendlyName": "Fortify ScanCentral SAST Assessment",
+    "description": "Installs ScanCentral client and performs a static analysis using ScanCentral",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Micro Focus",
+    "version": {
+        "Major": 7,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "minimumAgentVersion": "2.144.0",
+    "groups": [
+        {
+            "name":"serverInfo",
+            "displayName":"Server Information",
+            "isExpanded":true
+        },
+        {
+            "name":"translation",
+            "displayName":"Translation Options",
+            "isExpanded":true
+        },
+        {
+            "name":"scan",
+            "displayName":"Scan Options",
+            "isExpanded":false
+        },
+        {
+            "name":"advanced",
+            "displayName":"Advanced Options",
+            "isExpanded":false
+        }
+    ],
+    "instanceNameFormat": "$(friendlyName)",
+    "inputs": [
+        {
+            "name": "scanCentralCtrlUrl",
+            "type": "string",
+            "label": "ScanCentral Controller URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the controller URL.",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "scanCentralClientToken",
+            "type": "string",
+            "label": "ScanCentral client authentication token",
+            "defaultValue": "$(ScanCentral.ClientToken)",
+            "required": true,
+            "helpMarkDown": "Define ScanCentral client authentication token as a variable.",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "sscUrl",
+            "type": "string",
+            "label": "SSC URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the SSC URL.",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "sscCiToken",
+            "type": "string",
+            "label": "SSC continuous integration token",
+            "defaultValue": "$(ScanCentral.SscCiToken)",
+            "required": true,
+            "helpMarkDown": "Define authentication token of type CIToken as a variable.",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "uploadToSSC",
+            "type": "boolean",
+            "label": "Upload results to SSC",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Upload the FPR to SSC upon completion.",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "applicationIdentifierType",
+            "type": "radio",
+            "label": "Specify SSC application",
+            "defaultValue": "byName",
+            "required": false,
+            "options": {
+                "byName": "Use application name and version",
+                "byId": "Use application version ID"
+            },
+            "visibleRule": "uploadToSSC = true",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "applicationName",
+            "type": "string",
+            "label": "SSC application name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the SSC application name.",
+            "visibleRule": "uploadToSSC = true && applicationIdentifierType = byName",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "applicationVersion",
+            "type": "string",
+            "label": "SSC application version",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the SSC application version name.",
+            "visibleRule": "uploadToSSC = true && applicationIdentifierType = byName",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "applicationVersionId",
+            "type": "string",
+            "label": "SSC application version ID",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the SSC application version ID.",
+            "visibleRule": "uploadToSSC = true && applicationIdentifierType = byId",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "buildFailureCriteria",
+            "type": "string",
+            "label": "Build failure criteria",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify a search query to trigger a build failure. For example, the search query '[fortify priority order]:critical' causes the build to fail if any critical issues exist in the analysis results.",
+            "visibleRule": "uploadToSSC = true",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "taskResultForBuildFailureCriteria",
+            "type": "pickList",
+            "label": "Task result when build failure criteria is met",
+            "defaultValue": "WARN",
+            "required": false,
+            "helpMarkDown": "Select the task result when the build failure criteria is met.",
+            "options": {
+                "WARN": "WARN",
+                "FAIL": "FAIL"
+            },
+            "visibleRule": "uploadToSSC = true",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "timeoutForPollingArtifactState",
+            "type": "int",
+            "label": "Polling timeout",
+            "required": false,
+            "helpMarkDown": "Specify how long (in minutes) to poll Fortify Software Security Center to check if FPR processing is complete. The valid values are 0 to 10080. A timeout value of 0 causes the polling to continue until FPR processing finishes or stops due to errors.",
+            "visibleRule": "uploadToSSC = true",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "intervalForPollingArtifactState",
+            "type": "int",
+            "label": "Polling interval",
+            "defaultValue": "1",
+            "required": false,
+            "helpMarkDown": "Specify how frequently (in minutes) to poll the Fortify Software Security Center server to determine if the FPR processing is complete. The valid values are 1 to 60.",
+            "visibleRule": "uploadToSSC = true",
+            "groupName": "serverInfo"
+        },
+        {
+            "name": "buildTool",
+            "type": "pickList",
+            "label": "Build tool",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the build tool name used for the project.",
+            "options": {
+                "gradle": "gradle",
+                "mvn": "maven",
+                "msbuild": "msbuild",
+                "none": "none"
+            },
+            "groupName": "translation"
+        },
+        {
+            "name": "buildCommand",
+            "type": "string",
+            "label": "Build command",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify custom build tasks/targets to use in preparing the project for packaging. If not specified, the default build commands are used.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = gradle || buildTool = mvn || buildTool = msbuild"
+        },
+        {
+            "name": "buildFile",
+            "type": "filePath",
+            "label": "Build file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the build file if not using a default name such as build.gradle or pom.xml.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = gradle || buildTool = mvn || buildTool = msbuild"
+        },
+        {
+            "name": "skipBuild",
+            "type": "boolean",
+            "label": "Skip build",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Skips the build invocation that prepares generated sources and libraries before collecting the project information. This setting is ignored if the selected build tool is msbuild and the ScanCentral SAST version is 21.1.2 or later.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = gradle || buildTool = mvn || buildTool = msbuild"
+        },
+        {
+            "name": "excludeDisabledProjects",
+            "type": "boolean",
+            "label": "Exclude disabled projects",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Exclude disabled MSBuild projects. This setting is ignored if the ScanCentral SAST version is 21.1.2 or later.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = msbuild"
+        },
+        {
+            "name": "includeTest",
+            "type": "boolean",
+            "label": "Include test",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Include test source set (Gradle) or test scope (Maven) in the scan (for Java projects only).",
+            "groupName": "translation",
+            "visibleRule": "buildTool = gradle || buildTool = mvn"
+        },
+        {
+            "name": "includeNodeModules",
+            "type": "boolean",
+            "label": "Include node_modules dependencies",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Include node_modules dependencies in the package.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "pythonVersion",
+            "type": "pickList",
+            "label": "Python version",
+            "defaultValue": "n/a",
+            "required": false,
+            "helpMarkDown": "Specify the Python version to automatically find the installed Python. Allowed values: 2 or 3.",
+            "options": {
+                "n/a": "(Python version)",
+                "2": "2",
+                "3": "3"
+            },
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "pythonRequirementsFile",
+            "type": "filePath",
+            "label": "Python requirements file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the Python project requirements file to install and collect dependencies.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "pythonVirtualEnvironment",
+            "type": "filePath",
+            "label": "Python virtual environment",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the Python virtual environment location.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "phpVersion",
+            "type": "string",
+            "label": "PHP version",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the PHP version.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "translateApexProject",
+            "type": "boolean",
+            "label": "Translate Apex project",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Specify whether the target project is Apex.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "translateSQLProject",
+            "type": "boolean",
+            "label": "Translate SQL project",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Specify whether the target project is SQL.",
+            "groupName": "translation",
+            "visibleRule": "buildTool = none"
+        },
+        {
+            "name": "sqlType",
+            "type": "pickList",
+            "label": "SQL type",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify SQL language type.",
+            "options": {
+                "PL/SQL": "PL/SQL",
+                "TSQL": "T-SQL"
+            },
+            "groupName": "translation",
+            "visibleRule": "buildTool = none && translateSQLProject = true"
+        },
+        {
+            "name": "filter",
+            "type": "filePath",
+            "label": "Filter file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the filter file to use during the scan.",
+            "groupName": "scan"
+        },
+        {
+            "name": "projectTemplate",
+            "type": "filePath",
+            "label": "Issue template",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the issue template file to include.",
+            "groupName": "scan"
+        },
+        {
+            "name": "rules",
+            "type": "filePath",
+            "label": "Custom Rulepacks",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify custom rules files (*.xml or *.bin) separated by spaces or a directory that contains custom rules.",
+            "groupName": "scan"
+        },
+        {
+            "name": "email",
+            "type": "string",
+            "label": "Notification email",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify an email address for job status notifications.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "sensorPool",
+            "type": "string",
+            "label": "Sensor pool UUID",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the UUID for the sensor pool to use for the scan request.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "block",
+            "type": "boolean",
+            "label": "Wait for scan to finish",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Wait for the job to complete and download the result.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "outputFile",
+            "type": "filePath",
+            "label": "Results file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the name for a local FPR file.",
+            "groupName": "advanced",
+            "visibleRule": "block = true"
+        },
+        {
+            "name": "logFile",
+            "type": "filePath",
+            "label": "Log file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the name for a local log file.",
+            "groupName": "advanced",
+            "visibleRule": "block = true"
+        },
+        {
+            "name": "overwrite",
+            "type": "boolean",
+            "label": "Overwrite",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Overwrite existing FPR or log file with new data.",
+            "groupName": "advanced",
+            "visibleRule": "block = true"
+        },
+        {
+            "name": "quiet",
+            "type": "boolean",
+            "label": "Quiet",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Prevent the printing of stdout from the build execution.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

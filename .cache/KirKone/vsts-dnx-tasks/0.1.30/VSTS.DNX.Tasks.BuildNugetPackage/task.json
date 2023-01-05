@@ -1,0 +1,103 @@
+{
+    "id": "03943746-C0F7-4ACA-92EB-5F20EB9C130F",
+    "name": "DNX.Tasks.BuildNugetPackage",
+    "friendlyName": "DNX Tasks Build Nuget Package",
+    "description": "Build a Nuget package with dotnet cli.",
+    "helpMarkDown": "Version: 0.1.30",
+    "category": "Build",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "visibility": [
+        "Build"
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.95.4",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ProjectName",
+            "label": "Project Name",
+            "type": "string",
+            "defaultValue": "",
+            "helpMarkdown": "Name of the Projects to build. <br> You can provide a list by seperating the entrys with SPACE. <br>Make sure to wrap entrys with spaces in double quotes. <br>Eg: \"My Sample.Web\" Sample.Api",
+            "required": false
+        },
+        {
+            "name": "BuildConfiguration",
+            "label": "Build Configuration",
+            "type": "pickList",
+            "defaultValue": "",
+            "helpMarkdown": "The build configuration to use. Default is \"Release",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "Release": "Release",
+                "Debug": "Debug"
+            }
+        },
+        {
+            "name": "OutputFolder",
+            "label": "Output Folder",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\Pack",
+            "helpMarkdown": "Where to put the pack output.",
+            "required": false
+        },
+        {
+            "name": "PreRelease",
+            "type": "boolean",
+            "label": "Pre Release",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If this is true, the nuget package will build as prerelease with VERSIONNUMBER-pre-BUILDNUMBER",
+            "groupName": "advanced"
+        },
+        {
+            "name": "WorkingFolder",
+            "type": "filePath",
+            "label": "Working Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkDown": "Current working directory when script is run.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SourceFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "\\src",
+            "required": false,
+            "helpMarkDown": "Folder where your project directories are. <br>Default is: \\src",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SkipDotNetInstall",
+            "type": "boolean",
+            "label": "Skip DotNet CLI Install",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Check this If you do not want to install dotnet cli or dotnet cli is already present.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Build Nuget Package: $(ProjectName)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\BuildNugetPackage.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(WorkingFolder)"
+        }
+    }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "068f63f0-5ede-11e6-8db4-638929154cf3",
+  "name": "DisableAgent",
+  "friendlyName": "Disable Agent",
+  "description": "Disable the running Agent on build failure. This may be used to debug issues on host when build fails",
+  "author": "megoels",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "groups": [
+    {
+      "name": "system",
+      "displayName": "System Settings",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "DisableAgent $(message)",
+  "inputs": [
+    {
+      "name": "customAuth",
+      "type": "boolean",
+      "label": "Custom Auth (Endpoint)",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Access the build api via custom Endpoint. Set it to false for bearer token authorization via System.AccessToken variable."
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "Service Endpoint",
+      "required": false,
+      "helpMarkDown": "The server generic endpoint, set the key -Password/Token Key- field to your API key.",
+      "visibleRule": "customAuth = true"
+    },
+    {
+      "name": "http_proxy",
+      "type": "string",
+      "label": "HTTP Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here",
+      "required": false,
+      "groupName": "system"
+    },
+    {
+      "name": "https_proxy",
+      "type": "string",
+      "label": "HTTPS Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here",
+      "required": false,
+      "groupName": "system"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "disableAgent.js",
+      "argumentFormat": ""
+    }
+  }
+}

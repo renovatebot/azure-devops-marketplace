@@ -1,0 +1,84 @@
+{
+    "id": "5C63DAEF-D7F0-40CC-85D0-3B5F09D3E0EC",
+    "name": "AzureWebPowerShellSwap",
+    "friendlyName": "Azure Web App Swap",
+    "description": "Swap slots on a Microsoft Azure Web App using Azure PowerShell",
+    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613750)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Jonathan Lobaugh",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "demands": [
+        "azureps"
+    ],
+    "minimumAgentVersion": "1.90.0",
+    "inputs": [{
+        "name": "ConnectedServiceName",
+        "type": "connectedService:Azure:Certificate,UsernamePassword",
+        "label": "Azure Subscription",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Azure subscription to target for deployment."
+    }, {
+        "name": "WebSiteLocation",
+        "type": "pickList",
+        "label": "Web App Location",
+        "defaultValue": "South Central US",
+        "required": true,
+        "helpMarkDown": "Select a location for website.",
+        "properties": {
+            "EditableOptions": "True"
+        }
+    }, {
+        "name": "WebSiteName",
+        "type": "pickList",
+        "label": "Web App Name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Enter the website name or Select from the list.<br>Note: Only the websites associated with Default App Service plan for the selected region are listed.",
+        "properties": {
+            "EditableOptions": "True"
+        }
+    }, {
+        "name": "OriginSlot",
+        "type": "string",
+        "label": "Origin Slot",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Origin Slot"
+    }, {
+        "name": "DestinationSlot",
+        "type": "string",
+        "label": "Destination Slot",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Destination Slot"
+    }],
+    "dataSourceBindings": [{
+        "target": "WebSiteLocation",
+        "endpointId": "$(ConnectedServiceName)",
+        "dataSourceName": "AzureWebsiteLocations"
+    }, {
+        "target": "WebSiteName",
+        "endpointId": "$(ConnectedServiceName)",
+        "dataSourceName": "AzureWebSiteNames",
+        "parameters": {
+            "WebSiteLocation": "$(WebSiteLocation)"
+        }
+    }],
+    "instanceNameFormat": "Azure Swap: $(WebSiteName)",
+    "execution": {
+        "AzurePowerShell": {
+            "target": "$(currentDirectory)\\Swap-AzureWebDeployment.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

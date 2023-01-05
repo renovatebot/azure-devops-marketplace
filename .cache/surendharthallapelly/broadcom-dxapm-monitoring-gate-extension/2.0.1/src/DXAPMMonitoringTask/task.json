@@ -1,0 +1,70 @@
+{
+    "id": "5763ff8a-d72d-489e-9ac2-5060131600de",
+    "name": "BroadcomDXAPM",
+    "friendlyName": "Query DX APM Tenant Alert Status",
+    "description": "Query DX APM Tenant Alert Status to check for caution or danger thresholds",
+    "author": "Broadcom",
+    "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/azure-monitor",
+    "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?linkid=870240)",
+    "category": "Utility",
+    "releaseNotes": "Query DX APM Tenant Alert Status to check for caution or danger thresholds",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server",
+        "ServerGate"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "instanceNameFormat": "Query Broadcom DX APM Tenant Alert Status",
+    "inputs": [
+        {
+            "name": "connectedServiceBroadcomDXAPM",
+            "type": "connectedService:BroadcomDXAPM",
+            "label": "Broadcom DX APM Tenant Connection",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Select a Broadcom DX APM service connection"
+        },
+        {
+            "name": "alertPath",
+            "type": "string",
+            "label": "Alert Path",
+            "required": true,
+            "helpMarkDown": "Navigate to DX APM Metric tree and select the alert metric path of interest"
+        },
+        {
+            "name": "severityThreshold",
+            "type": "pickList",
+            "label": "Severity threshold",
+            "required": true,
+            "defaultValue": "danger",
+            "options": {
+                "danger": "Danger",
+                "caution": "Caution"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "helpMarkDown": "State of the Alert status at which the task is failed."
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+            "Execute": {
+                "EndpointId": "$(connectedServiceBroadcomDXAPM)",
+                "EndpointUrl": "$(endpoint.url)",
+                "Method": "POST",
+				"Headers": "{\"Content-Type\":\"application/json\"}",
+                "Body": "{\r\n\"querySpecifier\":{\r\n\"op\":\"SPEC\",\r\n\"sourceNameSpecifier\":{\r\n\"op\":\"EXACT\",\r\n\"names\" : \r\n[\"SuperDomain|Custom Metric Host (Virtual)|Custom Metric Process (Virtual)|Custom Metric Agent (Virtual)\"]\r\n},\r\n\"attributeNameSpecifier\":{\r\n\"op\":\"OR\",\r\n\"specifiers\":[\r\n{\r\n\"op\":\"EXACT\",\r\n\"names\" : \r\n[\"$(alertPath)\"]\r\n}\r\n]\r\n}\r\n},\r\n\"queryRange\":{\r\n\"rangeSize\":15,\r\n\"frequency\":15\r\n},\r\n\"clampSize\":1\r\n}",
+                "WaitForCompletion": "false",
+                "Expression": "not(or(and(eq('$(severityThreshold)', 'Caution'), in(jsonpath('$.metrics[0].values[0][2]')[0],3,2)), and(eq('$(severityThreshold)', 'Danger'), eq(jsonpath('$.metrics[0].values[0][2]')[0],3))))"
+            }
+        }
+    }
+}

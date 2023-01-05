@@ -1,0 +1,82 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "244c579f-62b4-4290-a037-2655ed3bebc9",
+    "name": "AabConvertToUniversalApk",
+    "friendlyName": "Android App Bundle converter to universal Apk",
+    "description": "Generate an universal Apk from your Android App Bundle",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Damien Aicheh",
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "inputs": [
+        {
+            "name": "aabFilePath",
+            "type": "filePath",
+            "label": "Android App Bundle path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Relative path from the repo root to the Aab you want to transform"
+        },
+        {
+            "name": "keystoreFilePath",
+            "type": "filePath",
+            "label": "Keystore file path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the keystore file that was uploaded to `Secure Files` to be used to sign the APK."
+        },
+        {
+            "name": "keystorePassword",
+            "type": "string",
+            "label": "Keystore password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the password for the provided keystore file. Remember to store the password in secure variables."
+        },
+        {
+            "name": "keystoreAlias",
+            "type": "string",
+            "label": "Keystore alias",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the alias of the keystore"
+        },
+        {
+            "name": "keystoreAliasPassword",
+            "type": "string",
+            "label": "Keystore alias password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the password for the alias and keystore file."
+        },
+        {
+            "name": "outputFolder",
+            "type": "string",
+            "label": "The folder where the universal apk will be send.",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkDown": "The output folder"
+        },
+        {
+            "name": "bundletoolJarPath",
+            "type": "string",
+            "label": "Custom bundeletool jar path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a custom bundletool jar path if you need and don't use the InstallBundletool task."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "aab-convert-to-universal-apk.js"
+        }
+    }
+}

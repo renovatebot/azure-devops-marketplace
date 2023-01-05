@@ -1,0 +1,95 @@
+{
+  "id": "6102F8A8-06A6-4918-9D2E-C02E1B659D50",
+  "name": "AzSKARMTemplateChecker",
+  "friendlyName": "AzSK ARM Template Checker",
+  "description": "Scan ARM templates for security issues using AzSK.",
+  "helpMarkDown": "[More Information](http://aka.ms/azskossdocs)",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Microsoft Corporation",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "demands": [
+    "azureps"
+  ],
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "AzSK_ARMTemplateChecker $(message)",
+  "inputs": [
+    {
+      "name": "ARMTemplateFilePath",
+      "type": "filePath",
+      "label": "ARM template file path or folder path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File or folder path of the ARM template(s) to be evaluated."
+    },
+    {
+      "name": "ARMTemplateParameterFilePath",
+      "type": "filePath",
+      "label": "Parameter file path or folder path",
+      "defaultValue": "   ",
+      "required": false,
+      "helpMarkDown": "File or folder path of the parameter file(s)."
+    },
+    {
+      "name": "Recurse",
+      "type": "boolean",
+      "label": "Recurse",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Switch to 'recursively' scan all ARM templates inside the specified folder."
+    },
+    {
+      "name": "SkipControlsFromFile",
+      "type": "filePath",
+      "label": "Skip Controls From File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to file containing list of controls to skip."
+    },
+    {
+      "name": "ExcludeFiles",
+      "type": "string",
+      "label": "Exclude Files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of JSON files to be excluded from scan."
+    },
+    {
+      "name": "DisableAutoUpdate",
+      "type": "boolean",
+      "label": "Do not auto-update AzSK",
+      "defaultValue": "false",
+      "helpMarkDown": "Switch to toggle auto update of AzSK and required AzureRM modules on the build server. Keep this un-checked for Hosted agents.",
+      "required": false
+    },
+    {
+      "name": "UseAdvanceOrgFeature",
+      "type": "boolean",
+      "label": " Use Org Baseline(s)",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Check this if you are using custom org policy features such as baseline controls scan etc."
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription connection required to access Azure resources from the pipeline",
+      "visibleRule": "UseAdvanceOrgFeature=true"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "ARMTemplateCheckerRuntime.ps1"
+    }
+  }
+}

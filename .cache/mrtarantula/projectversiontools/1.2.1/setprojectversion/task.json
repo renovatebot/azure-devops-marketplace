@@ -1,0 +1,79 @@
+{
+    "id": "fa3b16f0-c365-4d62-a025-da231f2e7a39",
+    "name": "setprojectversion",
+    "friendlyName": "Update Application Version",
+    "description": "Update a project's Application Version and/or Minimum Required Version.",
+    "helpMarkDown": "[More Information](https://github.com/MrTarantula/ProjectVersionTools)",
+    "category": "Utility",
+    "visibility": ["Build"],
+    "author": "Ryan Tauriainen",
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "demands": [],
+    "inputs": [{
+            "name": "path",
+            "type": "filePath",
+            "label": "Path to .csproj or .vbproj",
+            "required": true
+        },
+        {
+            "name": "versionOptions",
+            "type": "pickList",
+            "label": "Set Application Version",
+            "options": {
+                "no": "Do not update Application Version",
+                "fromFile": "Revision only. Use Major.Minor.Build supplied in project file.",
+                "explicit": "Custom Application Version"
+            },
+            "defaultValue": "no",
+            "helpMarkDown": "Selecting `Revision only` will use the Major.Minor.Build (e.g. **1.2.3**) supplied in your project file, and only add the revision number supplied below."
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Application Version",
+            "required": true,
+            "helpMarkDown": "Application Version must be of the format Major.Minor.Build.Revision, e.g. **1.2.3.4**. Variables can be used.",
+            "defaultValue": "1.0.0.$(Build.BuildID)",
+            "visibleRule": "versionOptions = explicit"
+        },
+        {
+            "name": "revision",
+            "type": "string",
+            "label": "Revision",
+            "required": true,
+            "helpMarkDown": "The revision number to set. This can be a variable.",
+            "defaultValue": "$(Build.BuildID)",
+            "visibleRule": "versionOptions = fromFile"
+        },
+        {
+            "name": "minimumOptions",
+            "type": "pickList",
+            "label": "Set Minimum Required Version",
+            "options": {
+                "no": "Do not update Minimum Required Version",
+                "same": "Same as Application Version",
+                "custom": "Custom Minimum Required Version"
+            },
+            "defaultValue": "no",
+            "helpMarkDown": "Minimum Required Version can be automatically set to the same version as the Application Version, or a custom number. Variables can be used."
+        },
+        {
+            "name": "minimumversion",
+            "type": "string",
+            "label": "Minimum Required Version",
+            "helpMarkDown": "The Minimum Required Version must be of the format Major.Minor.Build.Revision, e.g. **1.2.3.4**. Variables can be used.",
+            "visibleRule": "minimumOptions = custom",
+            "required": true
+        }
+    ],
+    "instanceNameFormat": "Set Application Version in $(path)",
+    "execution": {
+        "Node": {
+            "target": "setprojectversion.js"
+        }
+    }
+}

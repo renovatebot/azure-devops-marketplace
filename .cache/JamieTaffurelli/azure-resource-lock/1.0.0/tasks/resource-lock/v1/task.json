@@ -1,0 +1,100 @@
+{
+  "id": "43e18da9-1eab-447d-a0e7-70bfa9066848",
+  "name": "azure-resource-lock",
+  "friendlyName": "Azure Resource Lock",
+  "description": "Locks or Unlocks a specified Resource or Resource Group",
+  "helpMarkDown": "[More information]https://github.com/JamieTaffurelli/azure-devops-extensions/blob/master/resource-lock/README.md",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent", "MachineGroup"],
+  "author": "JamieTaffurelli",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "$(Action) Resources",
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "aliases": ["azureSubscription"],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to authenticate as",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+      }
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "Lock",
+      "required": true,
+      "options": {
+        "Lock": "Lock",
+        "Unlock": "Unlock"
+      },
+      "helpMarkDown": "Select whether to lock or unlock resources"
+    },
+    {
+      "name": "LockLevel",
+      "type": "pickList",
+      "label": "Lock Level",
+      "defaultValue": "ReadOnly",
+      "required": true,
+      "options": {
+        "ReadOnly": "ReadOnly",
+        "CanNotDelete": "CanNotDelete"
+      },
+      "helpMarkDown": "Select the type of lock to apply",
+      "visibleRule": "Action = Lock"
+    },
+    {
+      "name": "LockName",
+      "type": "string",
+      "label": "Lock Name",
+      "required": false,
+      "helpMarkDown": "Specify the name of the lock to create or delete. If left blank for Unlock it will search for all locks at that scope"
+    },
+    {
+      "name": "ResourceGroupName",
+      "type": "string",
+      "label": "Resource Group Name",
+      "required": true,
+      "helpMarkDown": "Resource Group to action"
+    },
+    {
+      "name": "ResourceType",
+      "type": "string",
+      "label": "Resource Type",
+      "required": false,
+      "helpMarkDown": "The type of Resource to search for locks for (e.g Microsoft.Network/virtualNetworks)"
+    },
+    {
+      "name": "ResourceName",
+      "type": "string",
+      "label": "Resource Name",
+      "required": false,
+      "helpMarkDown": "Resource Name to action"
+    },
+    {
+      "name": "Skip",
+      "type": "boolean",
+      "label": "Skip Existing Locks",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If a lock is found with the same name then lock creation will be skipped",
+      "visibleRule": "Action = Lock"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "resource-lock.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

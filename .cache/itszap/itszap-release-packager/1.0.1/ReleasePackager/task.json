@@ -1,0 +1,46 @@
+{
+  "id": "3efc5a90-d2d9-11e5-870b-fddad3389520",
+  "name": "ReleasePackager",
+  "friendlyName": "Release Packager",
+  "description": "Create release package with dependencies management as in Nuget",
+  "author": "Riwut Libinuko (cakriwut@gmail.com)",
+  "helpMarkDown": "[More Information](https://github.com/ItsZap/vso-agent/blob/master/Tasks/ReleasePackager/Readme.md)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [ ],
+  "version": {
+    "Major": "0",
+    "Minor": "2",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Release Packager $(solution)",
+  "inputs": [
+    {
+      "name": "mainNuspec",
+      "type": "filePath",
+      "label": "Path/Pattern to main nuspec",
+      "defaultValue": "$(solution).nuspec",
+      "required": true,
+      "helpMarkDown": "Path main release nuspec file. The main nuspec file name will determine the partial nuspec. For example, if project.nuspec is the main nuspec, then other.project.nuspec, next.project.nuspec are example of partial nuspec. Those partial nuspec will be merge during the compilation."
+    },
+    {
+      "name": "versionByBuild",
+      "type": "boolean",
+      "label": "Use Build number to version the package",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Will use the build number to version Release package. Under General set the build format to be '$(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ReleasePackager.ps1",
+      "argumentFormat": "",
+      "workingDirectory": ""
+    }
+  }
+}

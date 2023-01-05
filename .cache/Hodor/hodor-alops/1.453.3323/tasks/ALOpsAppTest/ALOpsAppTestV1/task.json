@@ -1,0 +1,234 @@
+{
+    "id":  "05bf385f-26f1-474d-a993-49930a16de43",
+    "name":  "ALOpsAppTest",
+    "friendlyName":  "ALOps App Test",
+    "description":  "Run AL-TestSuite for Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Run Business Central Test-Suite and collect results.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Test",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "tenant",
+                       "type":  "string",
+                       "label":  "Tenant",
+                       "defaultValue":  "default",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Tenant. $(tenant) $(tenant) $(tenant)"
+                   },
+                   {
+                       "name":  "companyname",
+                       "type":  "string",
+                       "label":  "Company",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Company. $(companyname) $(companyname) $(companyname)"
+                   },
+                   {
+                       "name":  "profile",
+                       "type":  "string",
+                       "label":  "Profile",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Profile. $(profile) $(profile) $(profile)"
+                   },
+                   {
+                       "name":  "bc_username",
+                       "type":  "string",
+                       "label":  "BC Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC Username for ServiceTier connection. $(bc_username) $(bc_username) $(bc_username)"
+                   },
+                   {
+                       "name":  "bc_password",
+                       "type":  "string",
+                       "label":  "BC Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC User Password for ServiceTier connection. $(bc_password) $(bc_password) $(bc_password)"
+                   },
+                   {
+                       "name":  "bc_authentication",
+                       "type":  "pickList",
+                       "label":  "BC Authentication",
+                       "options":  {
+                                       "Windows":  "Windows",
+                                       "UserName":  "UserName",
+                                       "NavUserPassword":  "NavUserPassword",
+                                       "AAD":  "AAD",
+                                       "ExchangeIdentity":  "ExchangeIdentity",
+                                       "TaskScheduler":  "TaskScheduler",
+                                       "None":  "None"
+                                   },
+                       "defaultValue":  "NavUserPassword",
+                       "helpMarkDown":  "BC Authentication type of the ServiceTier. $(bc_authentication) $(bc_authentication) $(bc_authentication)"
+                   },
+                   {
+                       "name":  "bc_webclient_url",
+                       "type":  "string",
+                       "label":  "BC Webclient Url",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC WebClient Endpoint. $(bc_webclient_url) $(bc_webclient_url) $(bc_webclient_url)"
+                   },
+                   {
+                       "name":  "testfilter",
+                       "type":  "string",
+                       "label":  "Test CU Filter",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Filter codeunits to include in Test-Suite. $(testfilter) $(testfilter) $(testfilter)"
+                   },
+                   {
+                       "name":  "disabledtests",
+                       "type":  "string",
+                       "label":  "Disabled Tests File",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Disabled Tests File. $(disabledtests) $(disabledtests) $(disabledtests)"
+                   },
+                   {
+                       "name":  "show_available_tests",
+                       "type":  "boolean",
+                       "label":  "Show Tests",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Show all available tests. $(show_available_tests) $(show_available_tests) $(show_available_tests)"
+                   },
+                   {
+                       "name":  "import_testtoolkit",
+                       "type":  "boolean",
+                       "label":  "Import TestToolKit",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Import TestToolKit FOB. $(import_testtoolkit) $(import_testtoolkit) $(import_testtoolkit)"
+                   },
+                   {
+                       "name":  "import_action",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "TestSuite import Action",
+                       "defaultValue":  "Overwrite",
+                       "options":  {
+                                       "Default":  "Default",
+                                       "Overwrite":  "Overwrite",
+                                       "Skip":  "Skip"
+                                   },
+                       "helpMarkDown":  "Import Action for importing Test-Suite FOB files. $(import_action) $(import_action) $(import_action)"
+                   },
+                   {
+                       "name":  "testpage",
+                       "type":  "string",
+                       "label":  "Test Page",
+                       "defaultValue":  "130409",
+                       "required":  false,
+                       "helpMarkDown":  "Set the PageId used for testing. $(testpage) $(testpage) $(testpage)"
+                   },
+                   {
+                       "name":  "testsuite",
+                       "type":  "string",
+                       "label":  "Test Suite",
+                       "defaultValue":  "DEFAULT",
+                       "required":  false,
+                       "helpMarkDown":  "Set target Test Suite to activate. $(testsuite) $(testsuite) $(testsuite)"
+                   },
+                   {
+                       "name":  "extensionid",
+                       "type":  "string",
+                       "label":  "Extension ID",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set Extension ID. $(extensionid) $(extensionid) $(extensionid)"
+                   },
+                   {
+                       "name":  "installaltesttool",
+                       "type":  "boolean",
+                       "label":  "Install AL TestTool",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Install the AL TestTool for v15. $(installaltesttool) $(installaltesttool) $(installaltesttool)"
+                   },
+                   {
+                       "name":  "failed_test_action",
+                       "type":  "pickList",
+                       "label":  "Action Failed Test",
+                       "defaultValue":  "Warning",
+                       "options":  {
+                                       "Ignore":  "Ignore",
+                                       "Warning":  "Warning",
+                                       "Error":  "Error"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Action to take when a Test failed. $(failed_test_action) $(failed_test_action) $(failed_test_action)"
+                   },
+                   {
+                       "name":  "override_finsql_path",
+                       "type":  "string",
+                       "label":  "Override FinSql Path",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overrule automatic detection of FinSql with fixed value. $(override_finsql_path) $(override_finsql_path) $(override_finsql_path)"
+                   },
+                   {
+                       "name":  "resultfilename",
+                       "type":  "string",
+                       "label":  "Result Filename",
+                       "defaultValue":  "TestResults.xml",
+                       "required":  false,
+                       "helpMarkDown":  "Set filename for the Result XML. $(resultfilename) $(resultfilename) $(resultfilename)"
+                   },
+                   {
+                       "name":  "testrunnercodeunitid",
+                       "type":  "string",
+                       "label":  "TestRunner Codeunit Id",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set the Codeunit Id for the test-runner to use. $(testrunnercodeunitid) $(testrunnercodeunitid) $(testrunnercodeunitid)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "efdae145-8619-4445-9cc9-9499302f11b0.ps1"
+                                      }
+                  }
+}

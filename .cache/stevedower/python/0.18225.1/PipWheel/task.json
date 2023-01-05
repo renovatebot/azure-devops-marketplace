@@ -1,0 +1,77 @@
+{
+    "id": "AF64316E-74FD-42F1-A0BD-2D7F72404AA6",
+    "name": "PipWheel",
+    "friendlyName": "Build Python wheels with pip",
+    "description": "Creates wheels using pip from all installed copies of Python.",
+    "helpMarkDown": "The *Build Python wheels with pip* task uses the `pip wheel` command to compile wheels. This may be passed either the source directory to build, or the names and versions of packages that have already been published on the [Python Package Index](https://pypi.org). It will ensure that `pip`, `wheel`, `setuptools` and `cython` are installed before running.\n\nAs the Python packaging ecosystem moves forward, the `pip wheel` command is likely to be more reliable than using `setup.py`.",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "pip wheel $(packages)",
+    "inputs": [
+        {
+            "name": "packages",
+            "type": "string",
+            "label": "Packages",
+            "defaultValue": "",
+            "groupName": "packages",
+            "helpMarkDown": "Packages to build into wheels. By default, builds from sources directory. Used as an argument to `pip wheel`."
+        },
+        {
+            "name": "outputdir",
+            "type": "string",
+            "label": "Output Folder",
+            "defaultValue": "",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where wheels will written. By default, `$(Build.BinariesDirectory)\\dist` is used.  The `PipWheel.dist` output variable is set to this folder."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "pip setuptools wheel cython",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to building wheels. Prefix with `--upgrade` to ensure you have the latest version."
+        }
+    ],
+     "outputVariables": [
+        {
+            "name": "dist",
+            "description": "The directory distribution files were written to."
+        }
+    ],
+   "execution": {
+        "PowerShell3": {
+            "target": "PipWheel.ps1"
+        }
+    }
+}

@@ -1,0 +1,103 @@
+{
+  "id": "061e2368-c555-429c-92fc-2525547d21f6",
+  "name": "cboroson-KeyVault-Replication",
+  "friendlyName": "Replicate secrets between Azure Key Vaults",
+  "description": "Replicate secrets between Azure Key Vaults",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/KeyVault-Replication)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 12
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "SourceKeyVaultName",
+      "type": "pickList",
+      "label": "Source Key Vault",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the name of an existing Azure Key Vault."
+    },
+    {
+      "name": "TargetKeyVaultName",
+      "type": "pickList",
+      "label": "Target Key Vault",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the name of an existing Azure Key Vault."
+    },
+    {
+      "name": "secretOption",
+      "type": "radio",
+      "label": "Secret retrieval option",
+      "defaultValue": "",
+      "required": true,
+      "options": {
+        "OneWay": "One-way replication",
+        "TwoWay": "Two-way replication"
+      },
+      "helpMarkDown": "Note that two-way replication disables automatic deletion of missing secrets.  Administrators will need to manually delete secrets from source and target Key Vaults to ensure consistency."
+    },
+    {
+      "name": "ReplicateDeletion",
+      "type": "boolean",
+      "label": "Replicate Deletion",
+      "defaultValue": "True",
+      "required": true,
+      "visibleRule": "secretOption = OneWay",
+      "helpMarkDown": "Selecting this option will delete any secrets from the target Key Vault that are not present in the source Key Vault.  This option is only valid for one-way replication."
+    },
+    {
+      "name": "DryRun",
+      "type": "boolean",
+      "label": "Dry Run",
+      "defaultValue": "True",
+      "required": true,
+      "helpMarkDown": "Selecting this option will only display proposed changes.  No changes will be made to the Key Vault secrets."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "SourceKeyVaultName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureKeyVaults"
+    },
+    {
+      "target": "TargetKeyVaultName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureKeyVaults"
+    }
+  ],
+  "instanceNameFormat": "Replicate Secrets: $(SourceKeyVaultName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\KeyVault-Replication.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+	"id": "A8820970-DC99-45AE-BBED-84E0630A4CDA",
+	"name": "DataStarApplyLabel",
+	"friendlyName": "DataStar Apply Label",
+	"description": "Applies a label to the items contained in the deployment file",
+	"helpMarkDown": "[More Information](https://datastar.software/content/azuredevops/ApplyLabel/)",
+	"category": "DataStar",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Absolute Technology Limited",
+	"version": {
+	  "Major": 2,
+	  "Minor": 0,
+	  "Patch": 5
+	},
+	"releaseNotes": "To help with traceability the source files contained in the deployment file are labeled.",
+	"groups": [
+	{
+		"name": "advanced",
+		"displayName": "Advanced Options",
+		"isExpanded": false
+	}
+  ],
+  "inputs": [
+	{
+	  "name": "ManifestPath",
+	  "type": "string",
+	  "label": "Manifest Path",
+	  "required": true,
+	  "helpMarkDown": "The $ prefixed version control path to the file or folder containing the manifest files."
+	},
+    {
+      "name": "LabelName",
+      "type": "string",
+      "label": "Label Name",
+      "required": true,
+      "helpMarkDown": "The name of the label - typically a string including the build id."
+    },
+	{
+	  "name": "LabelComment",
+	  "type": "string",
+	  "label": "Label Comment",
+	  "required": true,
+	  "helpMarkDown": "The comment to apply to the label."
+	},
+	{
+	  "name": "LabelScope",
+	  "type": "string",
+	  "label": "Label Path Scope",
+	  "required": true,
+	  "helpMarkDown": "The path scope of the label. This is typically set to the $ prefixed version control path for the team / project folder."
+	},
+	{
+	  "name": "FailOnStderr",
+	  "type": "boolean",
+	  "label": "Fail on Standard Error",
+	  "defaultValue": "false",
+	  "required": false,
+	  "helpMarkDown": "If this is true, this task will fail if any errors are written to the StandardError stream.",
+	  "groupName": "advanced"
+	},
+	{
+	  "name": "RepositoryUri",
+	  "type": "string",
+	  "label": "TFS Repository Uri",
+	  "defaultValue": "",
+	  "groupName": "advanced",
+	  "required": false,
+	  "helpMarkDown": "The TFS Server Url (defaults to the BUILD_REPOSITORY_URI)"
+	},
+	{
+	  "name": "BearerToken",
+	  "type": "string",
+	  "label": "Bearer Token",
+	  "groupName": "advanced",
+	  "required": false,
+	  "helpMarkDown": "Optional security token if not using default credentials"
+	},
+	{
+	  "name": "Username",
+	  "type": "string",
+	  "label": "Username",
+	  "defaultValue": "",
+	  "groupName": "advanced",
+	  "required": false,
+	  "helpMarkDown": "Optional username if not using default credentials"
+	},
+	{
+	  "name": "Password",
+	  "type": "string",
+	  "label": "Password",
+	  "defaultValue": "",
+	  "groupName": "advanced",
+	  "required": false,
+	  "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+	},
+	{
+            "name": "UseProxyServer",
+            "type": "boolean",
+            "label": "Use Proxy Server",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Use a proxy server, if the Url is not specified it will try to determine the proxy server automatically.",
+            "groupName": "advanced"
+        },
+		{
+            "name": "ProxyUri",
+            "type": "string",
+            "label": "Proxy Uri",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "The Proxy Server Url"
+        },
+		{
+            "name": "ProxyUsername",
+            "type": "string",
+            "label": "Proxy Username",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional username if not using default credentials"
+        },
+        {
+            "name": "ProxyPassword",
+            "type": "string",
+            "label": "ProxyPassword",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+        }
+  ],
+	"instanceNameFormat": "Apply Label",
+	"execution": {
+		"PowerShell3": {
+			"target": "powershell.ps1",
+			"platforms": [
+				"windows"
+			]
+		}
+	},
+	"messages": {}
+}

@@ -1,0 +1,105 @@
+{
+  "id": "36a823f2-7f20-4324-b96e-24cd2ab4d495",
+  "name": "DownloadExtractFile",
+  "friendlyName": "Download and Extract File",
+  "description": "Used to download and extract a file from the web",
+  "author": "automagically",
+  "helpMarkDown": "Used to download and extract a file",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [ ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "groups": [
+    {
+      "name": "Credentials",
+      "displayName": "Credentials",
+      "isExpanded": true
+    },
+    {
+      "name": "ExtractArchive",
+      "displayName": "Extract",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "FileUrl",
+      "type": "string",
+      "label": "File URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "URL of the file to be downloaded."
+    },
+    {
+      "name": "DestinationFolder",
+      "type": "string",
+      "label": "Destination folder",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true,
+      "helpMarkDown": "Destination folder path"
+    },
+    {
+      "name": "requireAuthentication",
+      "type": "boolean",
+      "label": "Authentication required",
+      "defaultValue": "false",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Is the download URL require authentication?"
+    },
+    {
+      "name": "Username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Username",
+      "visibleRule": "requireAuthentication = true"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "Credentials",
+      "helpMarkDown": "Password",
+      "visibleRule": "requireAuthentication = true"
+    },
+{
+      "name": "requireExtraction",
+      "type": "boolean",
+      "label": "Extract the downloaded file",
+      "defaultValue": "false",
+      "required": true,
+      "groupname": "ExtractArchive",
+      "helpMarkDown": "Does the downloaded file need to be extracted?"
+    },
+    {
+      "name": "ExtractedArchivePath",
+      "type": "string",
+      "label": "Destination path",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "ExtractArchive",
+      "helpMarkDown": "Destination path for the archive extraction",
+      "visibleRule": "requireExtraction = true"
+    }
+    ],
+  "instanceNameFormat": "Download and extract a file",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DownloadExtractFile.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

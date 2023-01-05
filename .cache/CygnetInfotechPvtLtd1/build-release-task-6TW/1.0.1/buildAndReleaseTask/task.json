@@ -1,0 +1,265 @@
+{
+    "id": "34761037-6539-683a-bfa1-a310d82016b8",
+    "name": "TWExtension22",
+    "friendlyName": "Testingwhiz Plugin22",
+    "description": "build/release task to Run UI test with Testingwhiz",
+    "helpMarkDown": "Version: 2.0.0 [More information] : (https://www.testing-whiz.com/integrations)",
+    "category": "Utility",
+    "author": "Cygnet Infotech",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "TestingWhiz Plugin22",
+    "groups": [
+        {
+            "name": "rbtsettings",
+            "displayName": "RBT Enabled Execution",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "serverURL",
+            "type": "string",
+            "label": "Server URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "URL of the TestingWhiz Automation server in the format http://host:port/."
+        },
+        {
+            "name": "agentType",
+            "type": "pickList",
+            "label": "Agent Type",
+            "defaultValue": "self",
+            "options": {
+                "self": "Self Hosted",
+                "microsoftHosted": "Microsoft Hosted"
+            },
+            "required": false,
+            "helpMarkDown": "Select where to deploy your test execution from the following drop-down."
+        },
+        {
+            "name": "licenseKey",
+            "type": "string",
+            "label": "License Key",
+            "defaultValue": "",
+            "visibleRule": "agentType = microsoftHosted",
+            "required": true,
+            "helpMarkDown": "Please provide a valid floating license key, in the following text box."
+        },
+        {
+            "name": "baseURL",
+            "type": "string",
+            "label": "Base URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "TestingWhiz BASEURL should starts with http://www... or https://www... ."
+        },
+        {
+            "name": "targetType",
+            "type": "pickList",
+            "label": "Script Source",
+            "defaultValue": "filePath",
+            "options": {
+                "filePath": "filePath",
+                "folderPath": "folderPath"
+            },
+            "required": false,
+            "helpMarkDown": "Target script source: File Path or Folder Path."
+        },
+        {
+            "name": "filePath",
+            "type": "filePath",
+            "label": "Script Path",
+            "visibleRule": "targetType = filePath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the TestingWhiz automation script file."
+        },
+        {
+            "name": "folderPath",
+            "type": "filePath",
+            "label": "Folder Path",
+            "visibleRule": "targetType = folderPath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the TestingWhiz automation script Folder."
+        },
+        {
+            "name": "testObject",
+            "type": "string",
+            "label": "Test Object",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter testcase name to run only that testcase"
+        },
+        {
+            "name": "reportDploy",
+            "type": "filePath",
+            "label": "Report Deploy",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path for to save the TestingWhiz Report."
+        },
+        {
+            "name": "browser",
+            "type": "pickList",
+            "label": "Browser",
+            "visibleRule": "agentType = self",
+            "defaultValue": "googleChrome",
+            "options": {
+                "googleChrome": "Google Chrome",
+                "mozillaFirefox": "Mozilla Firefox",
+                "internetExplorer": "Internet Explorer",
+                "headlessExecution": "PhantomJS",
+                "edge": "Edge",
+                "edgeChromimum": "Edge Chromium",
+                "chromeHeadless": "Chrome (Headless)",
+                "mozillaHeadless": "FireFox (Headless)"
+            },
+            "required": false,
+            "helpMarkDown": "Select the browser you wish to run the script on."
+        },
+        {
+            "name": "browsermicrosofthosted",
+            "type": "pickList",
+            "label": "Browser",
+            "visibleRule": "agentType = microsoftHosted",
+            "defaultValue": "googleChrome",
+            "options": {
+                "googleChrome": "Google Chrome",
+                "mozillaFirefox": "Mozilla Firefox",
+                "edgeChromimum": "Edge Chromium",
+                "chromeHeadless": "Chrome (Headless)",
+                "mozillaHeadless": "FireFox (Headless)"
+            },
+            "required": false,
+            "helpMarkDown": "Select the browser you wish to run the script on."
+        },
+        {
+            "name": "stepExecutionInterval",
+            "type": "number",
+            "label": "Step Execution Interval",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Interval between steps in milliseconds(to avoid errors if your site is slow)."
+        },
+        {
+            "name": "reportInterval",
+            "type": "number",
+            "label": "Report Interval",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Minimum time taken by any case of this script when executed in TestingWhiz tool. Value should be in milliseconds."
+        },
+        {
+            "name": "passFailPer",
+            "type": "number",
+            "label": "Pass '%'",
+            "defaultValue": 0,
+            "required": false,
+            "helpMarkDown": "Approved Passing Percentage for task to be succeed"
+        },
+        {
+            "name": "captureFailureScreenshot",
+            "type": "boolean",
+            "label": "Capture Failure Screenshot",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "It will capture screenshot of failed Test Step."
+        },
+        {
+            "name": "captureConditionFailureScreenshot",
+            "type": "boolean",
+            "label": "Capture Condition Failure Screenshot",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "It will capture screenshot when conditional test step returns false."
+        },
+        {
+            "name": "mailReport",
+            "type": "boolean",
+            "label": "Mail Report ?",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Send generated report to the mail. Note:- Please use output variable available in Output variable section in this plugin. If Output Variable section is not visible then use ${mailReportPath} to send report to mail."
+        },
+        {
+            "name": "rbtPriorityHigh",
+            "type": "boolean",
+            "label": "High",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes High prioritize test cases"
+        },
+        {
+            "name": "rbtPriorityMedium",
+            "type": "boolean",
+            "label": "Medium",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes Medium mrioritize test cases"
+        },
+        {
+            "name": "rbtPriorityLow",
+            "type": "boolean",
+            "label": "Low",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes Low prioritize test cases"
+        },
+        {
+            "name": "project",
+            "type": "pickList",
+            "label": "Project",
+            "defaultValue": "NA",
+            "options": {
+                "b7d0489d-d7ee-414d-be4d-8bc8cd3cd1c1": "reg 4",
+                "97b8ac19-d57f-4d14-87dc-2642e7f9f6c0": "21-06",
+                "1a932d39-8510-4206-9e3d-6b2cf32d0838": "S1",
+                "e24e62c2-49da-493f-a9a6-4eeaf17109f0": "p1",
+                "cbdbd91d-fc12-4a7a-b515-8f9686ffa1eb": "Automation",
+                "04f28169-e85e-4205-86ef-88eb3557ab0b": "reg 8",
+                "199ac4a9-58f1-42da-9c3e-fc2349f3e595": "reg azure mitesh 2",
+                "4d20d185-69cb-4411-8290-51850ca25f52": "reg 5",
+                "017d9c8c-4954-4039-b353-5a1172bc3f27": "Azure_New_Nov",
+                "9325316d-c7ab-4f47-aff0-8dee3e105490": "reg azur mitesh 3",
+                "98e57cc9-84e6-49bb-87ca-0e32b941acf8": "reg 9",
+                "0def7aba-6ef4-4b13-8e68-8c7ee4f561d5": "TW",
+                "30daacac-1830-4ce3-8a2f-ce6dbec2e4b0": "P2",
+                "c8d3d882-000e-43dc-9a0c-985a6ff9f4bf": "reg 6",
+                "b6d0cb80-c6bc-4cbb-9130-a829ea74fdf4": "reg 7",
+                "2cb7d87e-5b63-4caf-ac2b-17fc87fe67bd": "NewProject14Nov",
+                "1cd6c1e8-2ca2-46cc-b980-fa58b597b54e": "regression- azure",
+                "25c0fc17-52ee-4a87-b077-de78fa4a96a9": "reg-mitesh 1"
+            },
+            "required": false,
+            "helpMarkDown": "Select the project."
+        },
+        {
+            "name": "plans",
+            "type": "pickList",
+            "label": "Project",
+            "defaultValue": "NA",
+            "options": {},
+            "required": false,
+            "helpMarkDown": "Select the project."
+        }
+    ],
+    "OutputVariables": [
+        {
+            "name": "reportDeployPath",
+            "description": "storing generated report file path."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

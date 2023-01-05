@@ -1,0 +1,67 @@
+{
+  "id": "10403308-4cac-4f89-ad9b-a09f88df3a75",
+  "name": "ObfuscateAssembly",
+  "friendlyName": "Innofactor DevOps: Obfuscate Assembly",
+  "description": "Replaces assembly with its obfuscated version",
+  "author": "Innofactor Sweden",
+  "helpMarkDown": "This task will replace provided assembly with its obfuscated copy",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "9",
+    "Minor": "0",
+    "Patch": "7"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "instanceNameFormat": "Obfuscate Assembly",
+  "inputs": [
+    {
+      "name": "assembly",
+      "type": "filePath",
+      "label": "Assembly",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to assembly file to obfuscate"
+    },
+    {
+      "name": "level",
+      "type": "pickList",
+      "label": "Obfuscation",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Level of assembly obfuscation from very light and not noticable to extreme. Obfuscation can came for a cost of size and preformance. Please consider use `Recommended` settings",
+      "options": {
+        "0": "Recommended — Minimal possible size with reasonably well scrambled code",
+        "1": "Minimum — Symbols rename without scrambling the code",
+        "2": "Normal — Symbols rename plus code scrambling",
+        "3": "Aggresive — Makes source code decoding completely impossible",
+        "4": "Maximum — Adds memory dump protection"
+      }
+    },
+    {
+      "name": "key",
+      "type": "filePath",
+      "label": "Sign assembly with strong key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to key file to sign assembly",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "script.ps1"
+    }
+  }
+}

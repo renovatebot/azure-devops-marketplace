@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "625a9b3b-3f5f-41c0-bb25-591be2940e8b",
+  "name": "CopyToGoogleStorage",
+  "friendlyName": "Copy To Google Bucket",
+  "description": "Copy To Google Bucket",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Global Freight Solutions Ltd",
+  "version": {
+    "Major": 15,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "instanceNameFormat": "Copy $(foldername) into $(bucket)",
+  "groups": [{
+    "displayName": "Advanced",
+    "isExpanded": false,
+    "name": "advanced"
+  }],
+  "inputs": [
+    {
+      "name": "paths",
+      "type": "multiLine",
+      "label": "Paths",
+      "defaultValue": "docs/**",
+      "required": true,
+      "helpMarkDown": "File paths to upload, supports multiple lines of match patterns."
+    },
+    {
+      "name": "bucket",
+      "type": "string",
+      "label": "Bucket Name",
+      "required": true,
+      "helpMarkDown": "Name of the bucket to which files are to be uploaded."
+    },
+    {
+      "name": "keyfile",
+      "type": "secureFile",
+      "label": "Keyfile",
+      "required": true,
+      "helpMarkDown": "Secure file containing the JSON GCP keyfile credentials needed to write to the requested bucket."
+    },
+    {
+      "name": "destinationDirectory",
+      "type": "string",
+      "label": "Destination Directory",
+      "required": false,
+      "helpMarkDown": "Optional directory in the bucket where you want the files to be uploaded, if not provided files are uploaded to the root of the bucket.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "clear",
+      "type": "boolean",
+      "label": "Clear Destination",
+      "defaultValue": false,
+      "helpMarkDown": "Optionally clear the entire destination directory if specified. If there is no destination directory specified the entire bucket will be cleared of all files.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

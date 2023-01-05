@@ -1,0 +1,108 @@
+{
+  "id": "12345679-2D03-4A9D-91D9-C917B0EEE738",
+  "name": "AX2012ModelGetModelManifest",
+  "friendlyName": "AX 2012 Model - Get Model manifest",
+  "description": "Exports a model manifest from an AX 2012 model store",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-models-ax-2012/ax-2012-model-get-model-manifest)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "manifestSource",
+      "displayName": "Source",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "manifestFileName",
+      "type": "filePath",
+      "label": "Manifest file path (*.txt, .xml)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to save the model manifest file.",
+      "groupName": ""
+    },
+    {
+      "name": "outputType",
+      "type": "pickList",
+      "label": "Output type",
+      "defaultValue": "xml",
+      "required": true,
+      "helpMarkDown": "What should the output format be?",
+      "groupName": "",
+      "options": {
+        "xml": "XML",
+        "plain": "Plain"
+      }
+    },
+    {
+      "name": "sourceType",
+      "type": "pickList",
+      "label": "Source type",
+      "defaultValue": "database",
+      "required": true,
+      "helpMarkDown": "What should the source type be?",
+      "groupName": "manifestSource",
+      "options": {
+        "database": "Database",
+        "file": "File"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "visibleRule": "sourceType = database",
+      "groupName": "manifestSource"
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the model.",
+      "visibleRule": "sourceType = database",
+      "groupName": "manifestSource"
+    },
+    {
+      "name": "modelFileName",
+      "type": "filePath",
+      "label": "Model file path (.axmodel)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the ax model file.",
+      "visibleRule": "sourceType = file",
+      "groupName": "manifestSource"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Model - Get Model manifest: $(manifestFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

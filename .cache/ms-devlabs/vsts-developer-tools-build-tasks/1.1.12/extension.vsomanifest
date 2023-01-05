@@ -1,0 +1,188 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.gallery_manage"
+    ],
+    "content": {
+        "details": {
+            "path": "overview.md"
+        },
+        "license": {
+            "path": "license.txt"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Microsoft/vsts-extension-build-release-tasks"
+    },
+    "contributions": [
+        {
+            "id": "package-extension-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTasks/PackageExtension"
+            }
+        },
+        {
+            "id": "publish-extension-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTasks/PublishExtension"
+            }
+        },
+        {
+            "id": "install-extension-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTasks/InstallExtension"
+            }
+        },
+        {
+            "id": "extension-version-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTasks/ExtensionVersion"
+            }
+        },
+        {
+            "id": "share-extension-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTasks/ShareExtension"
+            }
+        },
+        {
+            "id": "vsts-marketplace-endpoint-type",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "VstsMarketplacePublishing",
+                "displayName": "VSTS Marketplace",
+                "url": {
+                    "displayName": "Marketplace URL",
+                    "value": "https://marketplace.visualstudio.com"
+                },
+                "helpMarkDown": "Required permissions: <ul><li><b>Publish</b>: All Accounts, Marketplace Publish</li><li><b>Share</b>: All Accounts, Marketplace Publish</li><li><b>Install</b>: All Accounts or a Specific Account, Extensions (read and manage)</li><li><b>Query Version</b>: All Accounts, Marketplace</li></ul><br/><a href='https://www.visualstudio.com/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate'>More information</a>.",
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                },
+                                "values": {
+                                    "inputId": "username",
+                                    "isDisabled": true,
+                                    "defaultValue": ""
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Personal access token",
+                                "description": "Team Services personal access token. Requires at least the Marketplace (publish) scope.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "tfs-marketplace-endpoint-type",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "TFSMarketplacePublishing",
+                "displayName": "TFS Local Gallery",
+                "helpMarkDown": "Required permissions: <ul><li><b>Publish</b>: Marketplace Publish</li><li><b>Share</b>: Marketplace Publish</li><li><b>Install</b>: Extensions (read and manage)</li><li><b>Query Version</b>: Marketplace</li></ul><br/><a href='https://www.visualstudio.com/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate'>More information</a>.",
+                "url": {
+                    "displayName": "TFS Server Url",
+                    "description": "The TFS Server Url, e.g. `https://servername.domain.local/tfs`."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "Personal Access Token, supported on TFS 2017 and higher.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username, supported on TFS 2015 update 2 and higher when configured for Basic Authentication.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}

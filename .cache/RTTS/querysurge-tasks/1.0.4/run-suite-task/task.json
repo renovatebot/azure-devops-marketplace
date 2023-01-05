@@ -1,0 +1,141 @@
+{
+	"$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+	"id": "88b7dcbe-e822-48fb-9ea8-661d9484b06e",
+	"name": "querysurge-run-suite-task",
+	"friendlyName": "QuerySurge Run Test Suite",
+	"description": "Runs a Test Suite in a Scenario and optionally waits for completion",
+	"helpUrl": "https://querysurge.zendesk.com/hc/en-us/articles/360056713972",
+	"category": "Azure Pipelines",
+	"author": "RTTS",
+	"version": {
+		"Major": 1,
+        "Minor": 0,
+        "Patch": 4
+	},
+	"instanceNameFormat": "Run Test Suite # $(suiteId)",
+	"minimumAgentVersion": "2.144.0",
+	"execution": {
+		"Node10": {
+			"target": "out/run-suite-task/run-suite.js"
+		}
+	},
+	"groups": [
+		{
+			"name": "server",
+			"displayName": "QuerySurge Server/Login Details",
+			"isExpanded": true
+		},
+		{
+			"name": "execution",
+			"displayName": "Execution Options",
+			"isExpanded": true
+		}
+	],
+	"inputs": [
+		{
+			"name": "host",
+			"type": "string",
+			"label": "QuerySurge hostname",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Hostname/FQDN/IP address of QuerySurge server (ex. qs.mycorp.com)"
+		},
+		{
+			"name": "port",
+			"type": "int",
+			"groupName": "server",
+			"label": "QuerySurge port",
+			"required": true,
+			"helpMarkDown": "HTTP Port of QuerySurge server (ex. 80, 8080, 443, 8443)"
+		},
+		{
+			"name": "useHttps",
+			"type": "boolean",
+			"label": "Use HTTPS",
+			"groupName": "server",
+			"required": false,
+			"helpMarkDown": "Whether to connect to the QuerySurge server via HTTPS (TLS/SSL). May require deployment of organizational CA certificates."
+		},
+		{
+			"name": "user",
+			"type": "identities",
+			"label": "QuerySurge username",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Username of QuerySurge user"
+		},
+		{
+			"name": "password",
+			"type": "identities",
+			"label": "QuerySurge password",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Password of QuerySurge user"
+		},
+		{
+			"name": "projectId",
+			"type": "int",
+			"label": "Project ID #",
+			"groupName": "execution",
+			"required": true,
+			"helpMarkDown": "ID # of Project (found in Global Administration -> Projects)"
+		},
+		{
+			"name": "suiteId",
+			"type": "int",
+			"label": "Test Suite ID #",
+			"groupName": "execution",
+			"required": true,
+			"helpMarkDown": "ID # of Test Suite to run (found in Scheduling Dashboard)"
+		},
+		{
+			"name": "scenarioName",
+			"type": "string",
+			"label": "Scenario Name",
+			"groupName": "execution",
+			"required": true,
+			"helpMarkDown": "Name of scenario (to identify scenario in the Run Dashboard)"
+		},
+		{
+			"name": "appendTime",
+			"type": "boolean",
+			"label": "Append Time",
+			"groupName": "execution",
+			"required": true,
+			"defaultValue": "true",
+			"helpMarkDown": "Whether the current date/time will be appended to the scenario name (time is local to the QuerySurge app server)."
+		},
+		{
+			"name": "pollingEnabled",
+			"type": "boolean",
+			"label": "Poll until scenario Completion",
+			"groupName": "execution",
+			"required": true,
+			"defaultValue": "true",
+			"helpMarkDown": "If true, wait until the scenario completes execution, and pass/fail the task based on the option selected for __Scenario outcome action__. If false, the task will only schedule the scenario."
+		},
+		{
+			"name": "scenarioOutcomeAction",
+			"type": "pickList",
+			"label": "Scenario outcome action",
+			"defaultValue": "issues",
+			"groupName": "execution",
+			"required": false,
+			"helpMarkDown": "Whether to affect pipeline execution based on QuerySurge scenario outcome. Only applicable if __Poll until scenario Completion__ is enabled. Available options: \n* __Succeed with issues on failed/warning/error/killed outcome__: Report \"Succeeded with issues\" when scenario does not pass\n* __Fail on failed/warning/error/killed outcome__: Report task failure when scenario has QueryPairs with failures/warnings or scenario is killed\n* __Fail on error/killed outcome__: Report task failure when scenario has QueryPairs/Staging Queries with errors or scenario is killed\n* __Task always succeeds__: Pipeline execution not affected by scenario outcome (however, errors connecting to QuerySurge or starting scenario execution will still cause task failure)",
+			"options": {
+				"issues": "(Default) Succeed with issues on failed/warning/error/killed outcome",
+				"failOnFail": "Fail on failed/warning/error/killed outcome",
+				"failOnError": "Fail task on error/killed outcome",
+				"alwaysSucceed": "Task always succeeds"
+			}
+		},
+		{
+			"name": "timeoutSecs",
+			"type": "int",
+			"label": "Timeout (in seconds)",
+			"groupName": "execution",
+			"required": false,
+			"helpMarkDown": "Timeout for scenario execution in seconds. If execution exceeds the timeout, the task will fail. Minimum of 10 seconds; set to 0 or leave blank to disable (i.e. wait indefinitely, up to the pipeline timeout)."
+		}
+	]
+}

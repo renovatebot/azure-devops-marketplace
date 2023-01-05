@@ -1,0 +1,210 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b4abddb7-39f8-4847-97a5-45ecffd250cb",
+    "name": "loadiumIntegration",
+    "friendlyName": "Loadium Integration",
+    "description": "Loadium Integration for Jmeter, Gatling, Webdriver and Http Tests",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "Loadium",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "instanceNameFormat": "Loadium",
+    "inputs": [
+        {
+            "name": "access_key",
+            "type": "string",
+            "label": "Access Key ",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Access Key for Loadium"
+        },
+        {
+            "name": "secret_key",
+            "type": "string",
+            "label": "Secret Key ",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Secret Key for Loadium"
+        },
+        {
+            "name": "createTest",
+            "type": "boolean",
+            "defaultValue": "false",
+            "label": "Create new performance test"
+        },
+        {
+            "name": "test_key",
+            "type": "string",
+            "label": "Test Key ",
+            "defaultValue": "Test key from saved test on Loadium",
+            "required": true,
+            "helpMarkDown": "Test Key for Loadium",
+            "visibleRule": "createTest = false"
+        },
+        {
+            "name": "test_name",
+            "type": "string",
+            "label": "Test Name",
+            "defaultValue": "My New Test",
+            "required": true,
+            "helpMarkDown": "Test Name",
+            "visibleRule": "createTest = true"
+        },
+        {
+            "name": "testType",
+            "type": "radio",
+            "label": "Test Type",
+            "required": true,
+            "defaultValue": "JMX",
+            "helpMarkDown": "Select test type",
+            "visibleRule": "createTest = true",
+            "options": {
+                "JMX": "JMeter",
+                "GATLING": "Gatling"
+            }
+        },
+        {
+            "name": "jmeter_version",
+            "type": "radio",
+            "label": "Jmeter Version",
+            "required": true,
+            "defaultValue": "5.0",
+            "helpMarkDown": "Jmeter verions",
+            "visibleRule": "createTest = true && testType = JMX",
+            "options": {
+                "5.0": "5.0",
+                "4.0": "4.0",
+                "3.3": "3.3"
+            }
+        },
+        {
+            "name": "gatling_version",
+            "type": "radio",
+            "label": "Gatling Version",
+            "required": true,
+            "defaultValue": "3.5.1",
+            "helpMarkDown": "Gatling verions",
+            "visibleRule": "createTest = true && testType = Gatling",
+            "options": {
+                "3.5.1": "3.5.1",
+                "2.3": "2.3"
+            }
+        },
+        {
+            "name": "region",
+            "type": "pickList",
+            "label": "Region",
+            "required": true,
+            "defaultValue": "eu-west-1",
+            "helpMarkDown": "regions",
+            "visibleRule": "createTest = true",
+            "options": {
+                "eu-west-1": "EU (Ireland)",
+                "us-east-2": "US East (Ohio)",
+                "us-east-1": "US East (N. Virginia)",
+                "us-west-1": "US West (N. California)",
+                "us-west-2": "US West (Oregon)",
+                "ca-central-1": "Canada (Central)",
+                "eu-central-1": "EU (Frankfurt)",
+                "eu-west-2": "EU (London)",
+                "ap-northeast-1": "Asia Pacific (Tokyo)",
+                "ap-northeast-2": "Asia Pacific (Seoul)",
+                "ap-southeast-1": "Asia Pacific (Singapore)",
+                "ap-southeast-2": "Asia Pacific (Sydney)",
+                "ap-south-1": "Asia Pacific (Mumbai)",
+                "sa-east-1": "South America (São Paulo)",
+                "eu-west-3": "EU (Paris)"
+            }
+        },
+        {
+            "name": "file_path",
+            "type": "filePath",
+            "label": "Scenario File Path ",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/REPLACE_WITH_FILE_NAME",
+            "required": true,
+            "helpMarkDown": "File path for test scenario. Path Example: '$(System.DefaultWorkingDirectory)/dummy.jmx'",
+            "visibleRule": "createTest = true"
+        },
+        {
+            "name": "additionalFile",
+            "type": "boolean",
+            "label": "Upload additional file",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Upload additional files which used in the scenario",
+            "visibleRule": "createTest = true"
+        },
+        {
+            "name": "csv_file_path",
+            "type": "filePath",
+            "label": "Additional File Path ",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/REPLACE_WITH_FILE_NAME",
+            "required": false,
+            "helpMarkDown": "Upload your CSV, TXT, XML.. additional files. Path Example: '$(System.DefaultWorkingDirectory)/dummy.csv'",
+            "visibleRule": "createTest = true && additionalFile = true"
+        },
+        {
+            "name": "split",
+            "type": "boolean",
+            "label": "Split CSV",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Split CSV file by Engine Count",
+            "visibleRule": "createTest = true && additionalFile = true"
+        },
+        {
+            "name": "engine",
+            "type": "string",
+            "label": "Engine Count",
+            "defaultValue": "1",
+            "required": true,
+            "helpMarkDown": "Engine Count",
+            "visibleRule": "createTest = true"
+        },
+        {
+            "name": "thread",
+            "type": "string",
+            "label": "Thread Count",
+            "defaultValue": "20",
+            "required": true,
+            "helpMarkDown": "Vurtual User (Thread) Count",
+            "visibleRule": "createTest = true && testType = JMX"
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "label": "Duration",
+            "defaultValue": "2",
+            "required": true,
+            "helpMarkDown": "Test Duration",
+            "visibleRule": "createTest = true"
+        },
+        {
+            "name": "iteration",
+            "type": "string",
+            "label": "Iteration",
+            "defaultValue": "-1",
+            "required": true,
+            "helpMarkDown": "Thread iteration. ('-1' = unlimited )",
+            "visibleRule": "createTest = true && testType = JMX"
+        },
+        {
+            "name": "rampup",
+            "type": "string",
+            "label": "Rampup",
+            "defaultValue": "10",
+            "required": true,
+            "helpMarkDown": "Rampup",
+            "visibleRule": "createTest = true && testType = JMX"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

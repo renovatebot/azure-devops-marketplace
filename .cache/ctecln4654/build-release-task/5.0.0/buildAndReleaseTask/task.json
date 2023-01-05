@@ -1,0 +1,102 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "39557776-6628-4049-ae0b-35f6e48e57dc",
+    "name": "AzurePOC",
+    "friendlyName": "cteciTracktask",
+    "description": "iTracktaskfriendlydescription",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "ln4654",
+	"version": {
+		"Major": 5,
+		"Minor": 13,
+		"Patch": 0
+	},
+	"instanceNameFormat": "TAF-MAVEN $(mavenPOMFile)",
+	"groups": [
+        {
+            "name": "junitTestResults",
+            "displayName": "JUnit Test Results",
+            "isExpanded": true
+        },
+        {
+            "name": "codeCoverage",
+            "displayName": "Code Coverage",
+            "isExpanded": true
+        }
+    ],
+	"inputs": [
+        {
+            "name": "isDockerExecution",
+            "type": "boolean",
+            "label": "DOCKER Execution ?",
+            "required": true,
+            "defaultValue": "false",
+            "helpMarkDown": "Select this option to run your build/test inside docker."
+        },
+        {
+            "name": "mavenPOMFile",
+            "aliases": [
+                "mavenPomFile"
+            ],
+            "type": "filePath",
+            "label": "Maven POM file",
+            "defaultValue": "pom.xml",
+            "required": true,
+            "helpMarkDown": "Relative path from the repository root to the Maven POM file."
+        },
+        {
+            "name": "goals",
+            "type": "string",
+            "label": "Goal(s)",
+            "defaultValue": "package",
+            "required": false
+        },
+        {
+            "name": "options",
+            "type": "string",
+            "label": "Options",
+            "defaultValue": "",
+            "required": false
+        },
+        {
+            "name": "publishJUnitResults",
+            "type": "boolean",
+            "label": "Publish to Azure Pipelines",
+            "required": true,
+            "defaultValue": "true",
+            "groupName": "junitTestResults",
+            "helpMarkDown": "Select this option to publish JUnit test results produced by the Maven build to Azure Pipelines. Each test results file matching `Test Results Files` will be published as a test run in Azure Pipelines."
+        },
+        {
+            "name": "testResultsFiles",
+            "type": "filePath",
+            "label": "Test results files",
+            "defaultValue": "**/TEST-*.xml",
+            "required": true,
+            "groupName": "junitTestResults",
+            "helpMarkDown": "Specify the path and pattern of test results files to publish. Wildcards can be used ([more information](https://go.microsoft.com/fwlink/?linkid=856077)). For example, `**/TEST-*.xml` for all XML files whose name starts with `TEST-`. If no root path is specified, files are matched beneath the default working directory, the value of which is available in the variable: $(System.DefaultWorkingDirectory).  For example, a value of '**/TEST-*.xml' will actually result in matching files from '$(System.DefaultWorkingDirectory)/**/TEST-*.xml'.",
+            "visibleRule": "publishJUnitResults = true"
+        },
+        {
+            "name": "testRunTitle",
+            "type": "string",
+            "label": "Test run title",
+            "defaultValue": "TEST",
+            "required": true,
+            "groupName": "junitTestResults",
+            "helpMarkDown": "Provide a name for the test run. (UNIT_TEST / SMOKE_TEST / IST_TEST)",
+            "visibleRule": "publishJUnitResults = true"
+        }],
+	"execution": {
+		"Node10": {
+			"target": "maven.js"
+        }
+    }, 
+    "postjobexecution": {
+        "Node10": {
+            "target": "postmaven.js",
+            "argumentFormat": ""                  
+        }
+    }
+}

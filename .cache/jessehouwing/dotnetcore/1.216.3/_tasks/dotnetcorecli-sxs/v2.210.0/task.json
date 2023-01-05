@@ -1,0 +1,578 @@
+{
+  "inputs": [
+    {
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "defaultValue": "build",
+      "name": "command",
+      "options": {
+        "build": "build",
+        "restore": "restore",
+        "test": "test",
+        "custom": "custom",
+        "run": "run",
+        "publish": "publish",
+        "pack": "pack",
+        "push": "nuget push"
+      },
+      "required": true,
+      "type": "pickList",
+      "label": "Command",
+      "helpMarkDown": "The dotnet command to run. Select 'Custom' to add arguments or use a command not listed here."
+    },
+    {
+      "name": "publishWebProjects",
+      "required": true,
+      "defaultValue": "true",
+      "type": "boolean",
+      "visibleRule": "command = publish",
+      "helpMarkDown": "If true, the task will try to find the web projects in the repository and run the publish command on them. Web projects are identified by presence of either a web.config file or wwwroot folder in the directory.",
+      "label": "Publish web projects"
+    },
+    {
+      "name": "projects",
+      "required": false,
+      "defaultValue": "",
+      "type": "multiLine",
+      "visibleRule": "command = build || command = restore || command = run || command = test || command = custom || publishWebProjects = false",
+      "helpMarkDown": "The path to the csproj file(s) to use. You can use wildcards (e.g. **/*.csproj for all .csproj files in all subfolders). **This field follows glob pattern, and is run against root of the repository at all times irrespective of Working Directory.**",
+      "label": "Path to project(s)"
+    },
+    {
+      "visibleRule": "command = custom",
+      "name": "custom",
+      "required": true,
+      "defaultValue": "",
+      "type": "string",
+      "helpMarkDown": "The command to pass to dotnet.exe for execution.",
+      "label": "Custom command"
+    },
+    {
+      "name": "arguments",
+      "required": false,
+      "defaultValue": "",
+      "type": "string",
+      "visibleRule": "command = build || command = publish || command = run || command = test || command = custom",
+      "helpMarkDown": "Arguments to the selected command. For example, build configuration, output folder, runtime. The arguments depend on the command selected.",
+      "label": "Arguments"
+    },
+    {
+      "name": "restoreArguments",
+      "required": false,
+      "defaultValue": "",
+      "type": "string",
+      "visibleRule": "command = restore",
+      "helpMarkDown": "Write the additional arguments to be passed to **restore** command.",
+      "label": "Arguments"
+    },
+    {
+      "name": "publishTestResults",
+      "required": false,
+      "defaultValue": "true",
+      "type": "boolean",
+      "visibleRule": "command = test",
+      "helpMarkDown": "Enabling this option will generate a test results TRX file in `$(Agent.TempDirectory)` and results will be published to the server. <br>This option appends `--logger trx --results-directory $(Agent.TempDirectory)` to the command line arguments. <br><br>Code coverage can be collected by adding `--collect \"Code coverage\"` option to the command line arguments. This is currently only available on the Windows platform.",
+      "label": "Publish test results and code coverage"
+    },
+    {
+      "name": "testRunTitle",
+      "required": false,
+      "defaultValue": "",
+      "type": "string",
+      "visibleRule": "command = test",
+      "helpMarkDown": "Provide a name for the test run.",
+      "label": "Test run title"
+    },
+    {
+      "name": "zipAfterPublish",
+      "required": false,
+      "defaultValue": "true",
+      "type": "boolean",
+      "visibleRule": "command = publish",
+      "helpMarkDown": "If true, folder created by the publish command will be zipped.",
+      "label": "Zip published projects"
+    },
+    {
+      "name": "modifyOutputPath",
+      "required": false,
+      "defaultValue": "true",
+      "type": "boolean",
+      "visibleRule": "command = publish",
+      "helpMarkDown": "If true, folders created by the publish command will have project's folder name prefixed to their folder names when output path is specified explicitly in arguments. This is useful if you want to publish multiple projects to the same folder.",
+      "label": "Add project's folder name to publish path"
+    },
+    {
+      "defaultValue": "select",
+      "type": "radio",
+      "helpMarkDown": "You can either select a feed from Azure Artifacts and/or NuGet.org here, or commit a nuget.config file to your source code repository and set its path here.",
+      "options": {
+        "config": "Feeds in my NuGet.config",
+        "select": "Feed(s) I select here"
+      },
+      "groupName": "restoreAuth",
+      "name": "selectOrConfig",
+      "label": "Feeds to use",
+      "required": "true",
+      "aliases": [
+        "feedsToUse"
+      ]
+    },
+    {
+      "defaultValue": "",
+      "type": "pickList",
+      "helpMarkDown": "Include the selected feed in the generated NuGet.config. You must have Azure Artifacts installed and licensed to select a feed here.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "groupName": "restoreAuth",
+      "name": "feedRestore",
+      "visibleRule": "selectOrConfig = select",
+      "label": "Use packages from this Azure Artifacts feed",
+      "required": "false",
+      "aliases": [
+        "vstsFeed"
+      ]
+    },
+    {
+      "visibleRule": "selectOrConfig = select",
+      "defaultValue": "true",
+      "name": "includeNuGetOrg",
+      "required": "false",
+      "groupName": "restoreAuth",
+      "type": "boolean",
+      "label": "Use packages from NuGet.org",
+      "helpMarkDown": "Include NuGet.org in the generated NuGet.config."
+    },
+    {
+      "visibleRule": "selectOrConfig = config",
+      "defaultValue": "",
+      "name": "nugetConfigPath",
+      "required": "false",
+      "groupName": "restoreAuth",
+      "type": "filePath",
+      "label": "Path to NuGet.config",
+      "helpMarkDown": "The NuGet.config in your repository that specifies the feeds from which to restore packages."
+    },
+    {
+      "type": "connectedService:ExternalNuGetFeed",
+      "helpMarkDown": "Credentials to use for external registries located in the selected NuGet.config. For feeds in this organization/collection, leave this blank; the build’s credentials are used automatically.",
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "EditableOptions": "False"
+      },
+      "groupName": "restoreAuth",
+      "name": "externalEndpoints",
+      "visibleRule": "selectOrConfig = config",
+      "label": "Credentials for feeds outside this organization/collection",
+      "required": false,
+      "aliases": [
+        "externalFeedCredentials"
+      ]
+    },
+    {
+      "name": "noCache",
+      "required": "false",
+      "defaultValue": "false",
+      "type": "boolean",
+      "helpMarkDown": "Prevents NuGet from using packages from local machine caches.",
+      "groupName": "restoreAdvanced",
+      "label": "Disable local cache"
+    },
+    {
+      "defaultValue": "",
+      "name": "packagesDirectory",
+      "aliases": [
+        "restoreDirectory"
+      ],
+      "required": "false",
+      "groupName": "restoreAdvanced",
+      "type": "string",
+      "label": "Destination directory",
+      "helpMarkDown": "Specifies the folder in which packages are installed. If no folder is specified, packages are restored into the default NuGet package cache."
+    },
+    {
+      "defaultValue": "Detailed",
+      "name": "verbosityRestore",
+      "options": {
+        "Normal": "Normal",
+        "Minimal": "Minimal",
+        "-": "-",
+        "Diagnostic": "Diagnostic",
+        "Detailed": "Detailed",
+        "Quiet": "Quiet"
+      },
+      "required": "false",
+      "groupName": "restoreAdvanced",
+      "type": "pickList",
+      "label": "Verbosity",
+      "helpMarkDown": "Specifies the amount of detail displayed in the output."
+    },
+    {
+      "visibleRule": "command = push",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)/*.nupkg",
+      "name": "searchPatternPush",
+      "aliases": [
+        "packagesToPush"
+      ],
+      "required": true,
+      "type": "filePath",
+      "label": "Path to NuGet package(s) to publish",
+      "helpMarkDown": "The pattern to match or path to nupkg files to be uploaded. Multiple patterns can be separated by a semicolon."
+    },
+    {
+      "name": "nuGetFeedType",
+      "required": true,
+      "defaultValue": "internal",
+      "type": "radio",
+      "visibleRule": "command = push",
+      "options": {
+        "internal": "This organization/collection",
+        "external": "External NuGet server (including other organizations/collections)"
+      },
+      "label": "Target feed location"
+    },
+    {
+      "defaultValue": "",
+      "type": "pickList",
+      "helpMarkDown": "Select a feed hosted in this organization. You must have Azure Artifacts installed and licensed to select a feed here.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "name": "feedPublish",
+      "visibleRule": "command = push && nuGetFeedType = internal",
+      "label": "Target feed",
+      "required": true,
+      "aliases": [
+        "publishVstsFeed"
+      ]
+    },
+    {
+      "name": "publishPackageMetadata",
+      "visibleRule": "command = push && nuGetFeedType = internal",
+      "defaultValue": true,
+      "type": "boolean",
+      "helpMarkDown": "Associate this build/release pipeline’s metadata (run #, source code information) with the package",
+      "groupName": "pushAdvanced",
+      "label": "Publish pipeline metadata"
+    },
+    {
+      "name": "externalEndpoint",
+      "required": true,
+      "visibleRule": "command = push && nuGetFeedType = external",
+      "aliases": [
+        "publishFeedCredentials"
+      ],
+      "type": "connectedService:ExternalNuGetFeed",
+      "helpMarkDown": "The NuGet service connection that contains the external NuGet server’s credentials.",
+      "label": "NuGet server"
+    },
+    {
+      "visibleRule": "command = pack",
+      "defaultValue": "**/*.csproj",
+      "name": "searchPatternPack",
+      "aliases": [
+        "packagesToPack"
+      ],
+      "required": true,
+      "type": "filePath",
+      "label": "Path to csproj or nuspec file(s) to pack",
+      "helpMarkDown": "Pattern to search for csproj or nuspec files to pack.\n\nYou can separate multiple patterns with a semicolon, and you can make a pattern negative by prefixing it with '!'. Example: `**/*.csproj;!**/*.Tests.csproj`"
+    },
+    {
+      "visibleRule": "command = pack",
+      "defaultValue": "$(BuildConfiguration)",
+      "name": "configurationToPack",
+      "aliases": [
+        "configuration"
+      ],
+      "required": false,
+      "type": "string",
+      "label": "Configuration to Package",
+      "helpMarkDown": "When using a csproj file this specifies the configuration to package"
+    },
+    {
+      "visibleRule": "command = pack",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "name": "outputDir",
+      "aliases": [
+        "packDirectory"
+      ],
+      "required": false,
+      "type": "filePath",
+      "label": "Package Folder",
+      "helpMarkDown": "Folder where packages will be created. If empty, packages will be created alongside the csproj file."
+    },
+    {
+      "visibleRule": "command = pack",
+      "name": "nobuild",
+      "required": false,
+      "defaultValue": "false",
+      "type": "boolean",
+      "helpMarkDown": "Don't build the project before packing. Corresponds to the --no-build command line parameter.",
+      "label": "Do not build"
+    },
+    {
+      "visibleRule": "command = pack",
+      "name": "includesymbols",
+      "required": false,
+      "defaultValue": "false",
+      "type": "boolean",
+      "helpMarkDown": "Additionally creates symbol NuGet packages. Corresponds to the --include-symbols command line parameter.",
+      "label": "Include Symbols"
+    },
+    {
+      "visibleRule": "command = pack",
+      "name": "includesource",
+      "required": false,
+      "defaultValue": "false",
+      "type": "boolean",
+      "helpMarkDown": "Includes source code in the package. Corresponds to the --include-source command line parameter.",
+      "label": "Include Source"
+    },
+    {
+      "defaultValue": "off",
+      "name": "versioningScheme",
+      "options": {
+        "byBuildNumber": "Use the build number",
+        "byPrereleaseNumber": "Use the date and time",
+        "off": "Off",
+        "byEnvVar": "Use an environment variable"
+      },
+      "required": true,
+      "groupName": "packOptions",
+      "type": "pickList",
+      "label": "Automatic package versioning",
+      "helpMarkDown": "Cannot be used with include referenced projects. If you choose 'Use the date and time', this will generate a [SemVer](http://semver.org/spec/v1.0.0.html)-compliant version formatted as `X.Y.Z-ci-datetime` where you choose X, Y, and Z.\n\nIf you choose 'Use an environment variable', you must select an environment variable and ensure it contains the version number you want to use.\n\nIf you choose 'Use the build number', this will use the build number to version your package. **Note:** Under Options set the build number format to be '[$(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)](https://go.microsoft.com/fwlink/?LinkID=627416)'."
+    },
+    {
+      "visibleRule": "versioningScheme = byEnvVar",
+      "defaultValue": "",
+      "name": "versionEnvVar",
+      "required": true,
+      "groupName": "packOptions",
+      "type": "string",
+      "label": "Environment variable",
+      "helpMarkDown": "Enter the variable name without $, $env, or %."
+    },
+    {
+      "defaultValue": "1",
+      "type": "string",
+      "helpMarkDown": "The 'X' in version [X.Y.Z](http://semver.org/spec/v1.0.0.html)",
+      "groupName": "packOptions",
+      "name": "requestedMajorVersion",
+      "visibleRule": "versioningScheme = byPrereleaseNumber",
+      "label": "Major",
+      "required": true,
+      "aliases": [
+        "majorVersion"
+      ]
+    },
+    {
+      "defaultValue": "0",
+      "type": "string",
+      "helpMarkDown": "The 'Y' in version [X.Y.Z](http://semver.org/spec/v1.0.0.html)",
+      "groupName": "packOptions",
+      "name": "requestedMinorVersion",
+      "visibleRule": "versioningScheme = byPrereleaseNumber",
+      "label": "Minor",
+      "required": true,
+      "aliases": [
+        "minorVersion"
+      ]
+    },
+    {
+      "defaultValue": "0",
+      "type": "string",
+      "helpMarkDown": "The 'Z' in version [X.Y.Z](http://semver.org/spec/v1.0.0.html)",
+      "groupName": "packOptions",
+      "name": "requestedPatchVersion",
+      "visibleRule": "versioningScheme = byPrereleaseNumber",
+      "label": "Patch",
+      "required": true,
+      "aliases": [
+        "patchVersion"
+      ]
+    },
+    {
+      "name": "buildProperties",
+      "required": false,
+      "defaultValue": "",
+      "type": "string",
+      "helpMarkDown": "Specifies a list of token = value pairs, separated by semicolons, where each occurrence of $token$ in the .nuspec file will be replaced with the given value. Values can be strings in quotation marks.",
+      "groupName": "packAdvanced",
+      "label": "Additional build properties"
+    },
+    {
+      "defaultValue": "Detailed",
+      "name": "verbosityPack",
+      "options": {
+        "Normal": "Normal",
+        "Minimal": "Minimal",
+        "-": "-",
+        "Diagnostic": "Diagnostic",
+        "Detailed": "Detailed",
+        "Quiet": "Quiet"
+      },
+      "required": "false",
+      "groupName": "packAdvanced",
+      "type": "pickList",
+      "label": "Verbosity",
+      "helpMarkDown": "Specifies the amount of detail displayed in the output."
+    },
+    {
+      "name": "workingDirectory",
+      "required": "false",
+      "visibleRule": "command != restore && command != push && command != pack",
+      "type": "filePath",
+      "helpMarkDown": "Current working directory where the script is run. Empty is the root of the repo (build) or artifacts (release), which is $(System.DefaultWorkingDirectory). The project search pattern is **NOT** relative to working directory.",
+      "groupName": "generalAdvanced",
+      "label": "Working directory"
+    }
+  ],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "execution": {
+    "Node10": {
+      "target": "dotnetcore.js",
+      "argumentFormat": ""
+    }
+  },
+  "friendlyName": ".NET Core (Side-by-side)",
+  "dataSourceBindings": [
+    {
+      "resultTemplate": "{ \"Value\" : \"{{#if project}}{{{project.id}}}\\/{{/if}}{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+      "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds?includeUrls=False",
+      "resultSelector": "jsonpath:$.value[*]",
+      "endpointId": "tfs:feed",
+      "target": "feedRestore"
+    },
+    {
+      "resultTemplate": "{ \"Value\" : \"{{#if project}}{{{project.id}}}\\/{{/if}}{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+      "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds?includeUrls=False",
+      "resultSelector": "jsonpath:$.value[*]",
+      "endpointId": "tfs:feed",
+      "target": "feedPublish"
+    }
+  ],
+  "id": "6171c853-a612-5699-bfed-56aefa97d158",
+  "demands": [],
+  "groups": [
+    {
+      "isExpanded": true,
+      "visibleRule": "command = restore",
+      "displayName": "Feeds and authentication",
+      "name": "restoreAuth"
+    },
+    {
+      "isExpanded": false,
+      "visibleRule": "command = restore",
+      "displayName": "Advanced",
+      "name": "restoreAdvanced"
+    },
+    {
+      "isExpanded": true,
+      "visibleRule": "command = push",
+      "displayName": "Destination feed and authentication",
+      "name": "pushAuth"
+    },
+    {
+      "isExpanded": false,
+      "visibleRule": "command = push",
+      "displayName": "Advanced",
+      "name": "pushAdvanced"
+    },
+    {
+      "isExpanded": false,
+      "visibleRule": "command = pack",
+      "displayName": "Pack options",
+      "name": "packOptions"
+    },
+    {
+      "isExpanded": false,
+      "visibleRule": "command = pack",
+      "displayName": "Advanced",
+      "name": "packAdvanced"
+    },
+    {
+      "isExpanded": false,
+      "visibleRule": "command != pack && command != push && command != restore",
+      "displayName": "Advanced",
+      "name": "generalAdvanced"
+    }
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "author": "Microsoft Corporation",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?linkid=832194) or [see the .NET Core documentation](https://docs.microsoft.com/dotnet/core/)",
+  "version": {
+    "Major": 2,
+    "Patch": 0,
+    "Minor": 210
+  },
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/build/dotnet-core-cli",
+  "minimumAgentVersion": "2.115.0",
+  "name": "DotNetCoreCLI-sxs",
+  "description": "Build, test, package, or publish a dotnet application, or run a custom dotnet command",
+  "category": "Build",
+  "instanceNameFormat": "dotnet $(command)",
+  "messages": {
+    "Warning_AutomaticallyVersionReferencedProjects": "The automatic package versioning and include referenced projects options do not work together. Referenced projects will not inherit the custom version provided by the automatic versioning settings.",
+    "Warning_SessionCreationFailed": "Could not create provenance session: %s",
+    "dotnetCommandFailed": "Dotnet command failed with non-zero exit code on the following projects : %s",
+    "noProjectFilesFound": "Project file(s) matching the specified pattern were not found.",
+    "PackagesInstalledSuccessfully": "Packages were restored successfully",
+    "zipFailed": "Zip failed with error: %s",
+    "NGCommon_AreaNotFoundInSps": "Unable to locate the '%s' [%s] area. The service containing that area may not be available in your region.",
+    "NGCommon_NoSourcesFoundInConfig": "No package sources were found in the NuGet.config file at %s",
+    "NGCommon_DetectedNuGetExtensionsPath": "Detected NuGet extensions loader path (NUGET_EXTENSIONS_PATH environment variable): %s",
+    "Info_MatchingUrlWasFoundSettingAuth": "Using authentication information for the following URI: ",
+    "NGCommon_UnableToFindTool": "Unable to find tool %s",
+    "Error_PushNotARegularFile": "%s is not a file. Check the 'Path/Pattern to nupkg' property of the task.",
+    "NGCommon_DetectedNuGetVersion": "Detected NuGet version %s / %s",
+    "Info_ResolvedToolFromCache": "Resolved from tool cache: %s",
+    "Error_NoVersionWasFoundWhichMatches": "No version was found which matches the input %s",
+    "NGCommon_NuGetConfigIsInvalid": "The NuGet.config at %s is invalid.",
+    "Info_UsingToolPath": "Using tool path: %s",
+    "Error_PackageFailure": "An error occurred while trying to pack the files.",
+    "NGCommon_SpsNotFound": "Unable to find the '%s' [%s] area. There may be a problem with your Team Foundation Server installation.",
+    "NGCommon_RemovingSources": "Preparing to set credentials in NuGet.config",
+    "DeprecatedDotnet2_2_And_3_0": "Info: .NET Core SDK/runtime 2.2 and 3.0 are now End of Life(EOL) and have been removed from all hosted agents. If you're using these SDK/runtimes on hosted agents, kindly upgrade to newer versions which are not EOL, or else use UseDotNet task to install the required version.",
+    "Net5Update": "Info: Azure Pipelines hosted agents have been updated and now contain .Net 5.x SDK/Runtime along with the older .Net Core version which are currently lts. Unless you have locked down a SDK version for your project(s), 5.x SDK might be picked up which might have breaking behavior as compared to previous versions. You can learn more about the breaking changes here: https://docs.microsoft.com/en-us/dotnet/core/tools/ and https://docs.microsoft.com/en-us/dotnet/core/compatibility/ . To learn about more such changes and troubleshoot, refer here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#troubleshooting",
+    "PackagesFailedToInstall": "Packages failed to restore",
+    "Info_NoPackagesMatchedTheSearchPattern": "No packages matched the search pattern.",
+    "NGCommon_AddingSources": "Setting credentials in NuGet.config",
+    "NGCommon_IgnoringNuGetExtensionsPath": "Detected NuGet extensions loader path (NUGET_EXTENSIONS_PATH environment variable). Extensions are ignored when using the built-in NuGet client",
+    "Warning_UpdatingNuGetVersion": "Updating version of NuGet.exe to %s from %s. Behavior changes or breaking changes might occur as NuGet updates to a new version. If this is not desired, deselect the 'Check for Latest Version' option in the task.",
+    "BuildIdentityPermissionsHint": "For internal feeds, make sure the build service identity '%s' [%s] has access to the feed.",
+    "UnknownFeedType": "Unknown feed type '%s'",
+    "Error_NoVersionFoundInBuildNumber": "Could not find version number data in the following environment variable: BUILD_BUILDNUMBER. The value of the variable should contain a substring with the following formats: X.Y.Z or X.Y.Z.A where A, X, Y, and Z are positive integers.",
+    "Info_NoFilesMatchedTheSearchPattern": "No files matched the search pattern.",
+    "Error_ApiKeyNotSupported": "DotNetCore currently does not support using an encrypted Api Key.",
+    "Error_AutomaticallyVersionReleases": "Autoversion: Getting version number from build option is not supported in releases",
+    "Error_NoSourceSpecifiedForPush": "No source was specified for push",
+    "PackagesPublishedSuccessfully": "Packages were published successfully",
+    "Net5NugetVersionCompat": ".NET 5 has some compatibility issues with older Nuget versions(<=5.7), so if you are using an older Nuget version(and not dotnet cli) to restore, then the dotnet cli commands (e.g. dotnet build) which rely on such restored packages might fail. To mitigate such error, you can either: (1) - Use dotnet cli to restore, (2) - Use Nuget version 5.8 to restore, (3) - Use global.json using an older sdk version(<=3) to build",
+    "Error_ExpectedConfigurationElement": "Invalid xml. Expected element named 'configuration'.",
+    "CouldNotSetCodePaging": "Could not set the code paging of due to following error: %s",
+    "Error_NuGetToolInstallerFailer": "Tool install failed: %s",
+    "NGCommon_NuGetConfigIsPackagesConfig": "Expected a NuGet.config file at %s, but its contents appear to be a packages.config. Check the settings for the %s task and confirm you selected NuGet.config rather than packages.config.",
+    "Info_UsingVersion": "Using version: %s",
+    "Info_SavingTempConfig": "Saving NuGet.config to a temporary config file.",
+    "PackagesFailedToPublish": "Packages failed to publish",
+    "Error_NoMatchingFilesFoundForPattern": "No matching files were found with search pattern: %s",
+    "Error_NoUrlWasFoundWhichMatches": "No download URL was found for %s",
+    "Info_AvailableVersions": "The available versions are: %s",
+    "noPublishFolderFoundToZip": "A publish folder could not be found to zip for project file: %s.",
+    "Warning_MoreThanOneVersionInBuildNumber": "Found more than one instance of version data in BUILD_BUILDNUMBER.Assuming first instance is version.",
+    "Info_ExpectBehaviorChangeWhenUsingVersionQuery": "You are using a query match on the version string. Behavior changes or breaking changes might occur as NuGet updates to a new version.",
+    "Error_NoValueFoundForEnvVar": "No value was found for the provided environment variable.",
+    "Info_AttemptingToPackFile": "Attempting to pack file: ",
+    "noWebProjectFound": "No web project was found in the repository. Web projects are identified by presence of either a web.config file, wwwroot folder in the directory, or by the usage of Microsoft.Net.Web.Sdk in your project file. You can set Publish web projects property to false (publishWebProjects: false in yml) if your project doesn't follow this convention or if you want to publish projects other than web projects.",
+    "Error_CommandNotRecognized": "The command %s was not recognized.",
+    "NGCommon_UnabletoDetectNuGetVersion": "Unknown NuGet version selected."
+  }
+}

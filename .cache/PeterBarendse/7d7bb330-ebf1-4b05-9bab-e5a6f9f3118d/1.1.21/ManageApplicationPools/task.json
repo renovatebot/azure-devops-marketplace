@@ -1,0 +1,98 @@
+{
+  "id": "4fd838c2-67ae-4e33-bf05-63e826cdebc4",
+  "name": "ManageApplicationPools",
+  "friendlyName": "Manage application pools.",
+  "instanceNameFormat": "$(Action) application pool: $(ApplicationPoolName)",
+  "description": "Stop, Start, Restart or Remove application pools.",
+  "helpMarkDown": "Stop, Start, Restart or Remove application pools. <br>**Upon removing an application pool, all websites associated with this pool will also be deleted!**",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Peter Barendse",
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 2,
+    "Patch": 2
+  },
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+    {
+      "name": "MachineNames",
+      "type": "string",
+      "label": "Server(s)",
+      "required": true,
+      "helpMarkDown": "Provide a comma separated list of machine IP addresses or FQDNs.<br>Eg: dbserver.fabrikam.com,192.168.12.34<br>Or provide output variable of other tasks. Eg: $(variableName)"
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Admin Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Administrator login for the target machines."
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for administrator login for the target machines. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "CheckCA",
+      "type": "boolean",
+      "label": "Skip CA check",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol.",
+      "visibleRule": "UseSSL = true"
+    },
+    {
+      "name": "ApplicationPoolName",
+      "type": "string",
+      "label": "Application pool name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide a comma seperated list of application pools.<br>Eg: webapp01,webapp02"
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action to perform",
+      "defaultValue": "Stop",
+      "options": {
+        "Stop": "Stop",
+        "Start": "Start",
+        "Restart": "Restart",
+        "Remove": "Remove"
+      },
+      "required": true,
+      "helpMarkDown": "Stop, start, restart or remove the application pool. <br>**Note: Upon removing an application pool, all websites associated with this pool will also be deleted!**"
+    },
+    {
+      "name": "Killswitch",
+      "type": "boolean",
+      "label": "No application pool, stop?",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Stop in case the application pool is not found. Leaving the box unchecked will generate a warning, but the script will continue."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ManageApplicationPool.ps1"
+    }
+  }
+}

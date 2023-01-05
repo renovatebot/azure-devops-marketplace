@@ -1,0 +1,103 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EB8",
+    "name": "JavaTestBridgeForTestPlan",
+    "friendlyName": "Test Plan association for Java tests",
+    "description": "Associate Java tests results to Test Plan items",
+    "helpMarkDown": "This task allows you to associate Java method tests to Test Plan work items, it creates a dynamic .NET library that can be used to read the Java test result during a Test Plan execution. This task must be executed after a Maven build and expects the test results to be in the form TEST-ClassName.MethodName.xml. You need to provide a JSON that maps each java test with a test plan workitem (ID)",
+    "author": "Gianluca Bertelli",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 10
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "Test Plan association",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+         {
+            "name": "testResultPath",
+            "type": "filePath",
+            "label": "Java test results folder",
+            "defaultValue": "target/surefire-reports",
+            "required": true,
+            "helpMarkDown": "The folder that contains the tests results (the test result files must be in the form **TEST-ClassName.MethodName.xml**)"
+         },
+         {
+            "name": "outputFolder",
+            "type": "filePath",
+            "label": "Output folder",
+            "defaultValue": "target",
+            "required": true,
+            "helpMarkDown": "Target folder where to save the created DLL. The DLL must be discoverable by the test agent."
+        },
+        {
+            "name": "inputType",
+            "type": "pickList",
+            "label": "Input type",
+            "defaultValue": "file",
+            "required": true,
+            "helpMarkDown": "How to pass the JSON mapping",
+            "options": {
+                "file": "file",
+                "string": "string"
+            }
+        },
+        {
+            "name": "jsonMapping",
+            "type": "string",
+            "visibleRule": "inputType = string",
+            "label": "JSON test mapping",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The JSON string that map each Java test with a Test Item ID. Properties for each item: **className**, **methodName**, **workItemID**. The string must be escaped like: *[{\\\"className\\\": \\\"HelloWorldJava.Demo.HelloWorldJunitTest\\\",\\\"methodName\\\": \\\"testUI\\\",\\\"workItemID\\\": 216}]*"
+        },
+        {
+            "name": "jsonMappingFile",
+            "type": "filePath",
+            "visibleRule": "inputType = file",
+            "label": "JSON test mapping file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The file that contains the JSON mapping.  Properties for each item: **className**, **methodName**, **workItemID**"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Alternate credentials username"
+        },
+           {
+            "name": "password",
+            "type": "string",
+            "label": "password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Alternate credentials password"
+        } 
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "run.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+
+}

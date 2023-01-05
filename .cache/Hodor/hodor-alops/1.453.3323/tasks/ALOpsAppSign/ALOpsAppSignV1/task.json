@@ -1,0 +1,103 @@
+{
+    "id":  "9f152d4d-9616-47f8-a0a8-fc1a8c88afbe",
+    "name":  "ALOpsAppSign",
+    "friendlyName":  "ALOps App Sign",
+    "description":  "CodeSign an AL Extension for Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Codesign Business Central extension with .pfx.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Sign",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "batchsigncompiledapps",
+                       "type":  "boolean",
+                       "label":  "Batch Sign Apps",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Batch Sign Apps taged by ALOpsAppCompile task. $(batchsigncompiledapps) $(batchsigncompiledapps) $(batchsigncompiledapps)"
+                   },
+                   {
+                       "name":  "artifact_path",
+                       "type":  "string",
+                       "label":  "Path to publish",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Path for storing App Artifact. $(artifact_path) $(artifact_path) $(artifact_path)"
+                   },
+                   {
+                       "name":  "nav_artifact_app_filter",
+                       "type":  "string",
+                       "label":  "App filter",
+                       "required":  false,
+                       "defaultValue":  "*.app",
+                       "helpMarkDown":  "Path of the App to Codesign. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory). $(nav_artifact_app_filter) $(nav_artifact_app_filter) $(nav_artifact_app_filter)"
+                   },
+                   {
+                       "name":  "pfx_path",
+                       "type":  "filePath",
+                       "label":  "PFX Path",
+                       "required":  true,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Path or Url of the PFX file. $(pfx_path) $(pfx_path) $(pfx_path)"
+                   },
+                   {
+                       "name":  "timestamp_uri",
+                       "type":  "string",
+                       "label":  "Timestamp Uri",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Uri of the timestamp service used during signing. $(timestamp_uri) $(timestamp_uri) $(timestamp_uri)"
+                   },
+                   {
+                       "name":  "publish_artifact",
+                       "type":  "boolean",
+                       "label":  "Publish Artifact",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated App Artifact to DevOps. $(publish_artifact) $(publish_artifact) $(publish_artifact)"
+                   },
+                   {
+                       "name":  "pfx_password",
+                       "type":  "string",
+                       "label":  "PFX Password",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Password for the PFX File. Recommended to use Azure-KeyVault secrets. $(pfx_password) $(pfx_password) $(pfx_password)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "41b8667c-af84-4f8d-8b9b-b0795341f41b.ps1"
+                                      }
+                  }
+}

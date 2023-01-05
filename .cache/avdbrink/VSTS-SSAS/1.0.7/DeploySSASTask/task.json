@@ -1,0 +1,217 @@
+﻿{
+    "id": "2920A185-2ADE-4CC2-903E-6AE1FA3B7CEE",
+    "name": "DeploySsas",
+    "friendlyName": "SSAS Deploy",
+    "description": "Deploy SQL Server Analysis Services Project .xmla file using Invoke-ASCmd",
+    "helpMarkDown": "",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "avdbrink",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 7
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+      {
+        "name": "options",
+        "displayName": "Deployment options",
+        "isExpanded": true
+      }
+    ],
+    "inputs": [
+        {
+            "name": "AsDBFilePath",
+            "type": "filePath",
+            "label": "Path to .asdatabase file",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "ServerName",
+            "type": "string",
+            "label": "Name of the SSAS Server",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+            "label": "Name of the SSAS database",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+			"name": "TransactionalDeployment",
+			"type": "boolean",
+			"label": "Transactional deployment",
+			"defaultValue": "false",
+			"helpMarkDown": "Should the deployment be transactional",
+			"groupName":  "options"
+        },
+        {
+			"name": "PartitionDeployment",
+			"type": "pickList",
+			"label": "Partition deployment",
+			"defaultValue": "DeployPartitions",
+			"required": true,
+			"options": {
+				"DeployPartitions": "Deploy partitions",
+				"RetainPartitions":  "Retain partitions"
+			},
+			"helpMarkDown": "Deploy partitions: Any existing partition will be replaced\nRetain partitions: Partitions for new measure groups will be deployed, but partitions for existing measure groups will be unaffected",
+			"groupName":  "options"
+        },
+        {
+			"name": "RoleDeployment",
+			"type": "pickList",
+			"label": "Role deployment",
+			"defaultValue": "RetainRoles",
+			"required": true,
+			"options": {
+				"DeployRolesAndMembers": "Deploy roles and members",
+				"DeployRolesRetainMembers": "Deploy roles and retain members",
+				"RetainRoles":  "Retain roles and members"
+			},
+			"helpMarkDown": "Deploy roles and members: Any existing roles and members will be replaced\nDeploy roles and retain members: Roles will be deployed along with their members for new roles. Members for existing roles will be retained.\nRetain roles and members: The roles ands members will not be deployed",
+			"groupName":  "options"
+        },
+        {
+			"name": "ProcessingOption",
+			"type": "pickList",
+			"label": "Processing option",
+			"defaultValue": "DoNotProcess",
+			"options": {
+				"Default": "Default processing",
+				"Full": "Full processing",
+				"DoNotProcess": "None"
+			},
+			"required": true,
+			"helpMarkDown":  "NOTE: deploying a model with Compatibility mode 2016 and processing option set to Default or Full will generate an invalid deployment (json) file. Select None if you want compatibility level 1200 or higher.",
+			"groupName":  "options"
+        },
+        {
+			"name": "ConfigurationSettingsDeployment",
+			"type": "boolean",
+			"label": "Retain configuration settings for existing objects",
+			"defaultValue": "true",
+			"helpMarkDown": "",
+			"groupName":  "options"
+        },
+        {
+			"name": "OptimizationSettingsDeployment",
+			"type": "boolean",
+			"label": "Retain optimization settings for existing objects",
+			"defaultValue": "true",
+			"helpMarkDown": "",
+			"groupName":  "options"
+        },
+        {
+			"name": "ImpersonationInformation",
+			"type": "pickList",
+			"label": "Select an impersonation option",
+			"defaultValue": "UseTheServiceAccount",
+			"options": {
+				"None": "Do not change anything",
+				"UseASpecificWindowsUser": "Use a specfic Windows user and password",
+				"UseTheServiceAccount": "Use the service account",
+				"UseTheCredentialsOfTheCurrentUser": "Use the credentials of the current user",
+				"Inherit": "Inherit"
+			},
+			"required": true,
+			"helpMarkDown":  "Select an impersonation option:\n'Do not change anything' will skip the impersonation of the database.\n'Use a specfic Windows user and password' will show input field to specify the username and password (this is the recommended impersonation)\n'Use the service account' changes the impersonation to use the service account (not recommended)\n'Use the credentials of the current user' uses the credentials of the user connecting to the database (not recommended)",
+			"groupName":  "options"
+        },
+        {
+            "name": "ServiceAccountName",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+			"visibleRule": "ImpersonationInformation=UseASpecificWindowsUser",
+            "required": true,
+			"groupName": "options"
+        },
+        {
+            "name": "ServiceAccountPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+			"visibleRule": "ImpersonationInformation=UseASpecificWindowsUser",
+            "required": true,
+			"groupName": "options",
+			"helpMarkDown": "Use a secret variable for the password, values here are stored unsecure."
+        },
+		{
+			"name": "WriteBackTableCreation",
+			"type": "pickList",
+			"label": "Writeback Table Options",
+			"defaultValue": "UseExisting",
+			"required": true,
+			"options": {
+			  "Create": "Create",
+			  "CreateAlways": "Create always",
+			  "UseExisting": "Use existing"
+			},
+			"helpMarkDown": "Create: Create a new writeback table, if one does not exist. If a writeback table already exists, an error occurs.\nCreateAlways: Create a new writeback table, overwriting any existing writeback table.\nUse Existing: Use the existing writeback table, if one already exists. If one does not exist, an error occurs.\n",
+			"groupName": "options"
+		},    
+		{
+			"name": "mgmtVersion",
+			"type": "pickList",
+			"label": "Management Studio Version",
+			"defaultValue": "auto",
+			"required": false,
+			"options": {
+			  "auto": "(Auto detect)",
+			  "2012": "2012",
+			  "2014": "2014",
+			  "2016": "2016",
+              "2017": "2017",
+              "custom": "Custom deployment wizard location"
+            },
+            "helpMarkDown": "Select Management Studio version on TFS Agent machines. Appropriate version of SQL Management Studio must be installed on agent! ",
+            "groupName": "options"
+        },
+        {
+            "name": "customMGMTVersion",
+            "type": "string",
+            "label": "Custom Analysis Services Deployment executable path",
+            "defaultValue": "C:\\Program Files (x86)\\Microsoft SQL Server\\140\\Tools\\Binn\\ManagementStudio\\Microsoft.AnalysisServices.Deployment.exe",
+			"visibleRule": "mgmtVersion=custom",
+            "required": true,
+			"groupName": "options"
+        }
+    ],
+    "instanceNameFormat": "Deploy SSAS $(DatabaseName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\DeploySSASTask.ps1"
+        }
+    },
+    "messages": {
+        "StartingTask": "Starting DeploySSASTask",
+        "ConnectionString0": "SQL Connection String: {0}",
+        "Server0AccessDenied": "Cannot access server: {0}",
+        "AsDBFile0AccessDenied": "Cannot access asdatabase file path: {0}",
+        "AsDBFile0": "Asdatabase file path: {0}",
+        "CreatingXmlFromAsDatabase": "Creating .xmla file from .asdatabase...",
+        "DeployingDatabase0": "Deploying database {0} ...",
+		"ProcessingDatabase0": "Processing the database with processing option {0} ...",
+        "Database0DeploySuccess": "{0} database has been deployed successfully",
+        "ErrorDuringDeployment":  "Error(s) occurred while deploying database! See above error codes for details",
+        "ErrorDuringProcessing":  "Error(s) occurred while processing database! See above error codes for details",
+        "InternalError0": "Task_InternalError {0}",
+        "EndingTask": "Ending DeploySSASTask",
+        "CompilerNotFound": "No compiler could be found! Do you have SQL Server Management Studio installed on your agent?",
+        "DeploymentExecutable0": "Deployment executable version: {0}"
+    }
+}

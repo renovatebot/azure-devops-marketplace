@@ -1,0 +1,93 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "2c5bd39c-2af6-4ed8-a3c5-bb722edac6d2",
+    "name": "release-notes",
+    "friendlyName": "Release Notes Generator",
+    "description": "Generates release notes by collecting commit messages between git tag and current commit",
+    "helpMarkDown": "https://github.com/kharkevich/ado-semantic-release",
+    "category": "Utility",
+    "author": "Alexander Kharkevich",
+    "version": {
+        "Major": 1,
+        "Minor": 4,
+        "Patch": 1
+    },
+    "instanceNameFormat": "ReleaseNotes",
+    "inputs": [
+        {
+            "name": "releaseNotesFrom",
+            "type": "string",
+            "label": "Generate release notes from",
+            "required": false,
+            "helpMarkDown": "The tag or sha commit to start from. If not specified, the latest tag or the first commit will be used."
+        },
+        {
+            "name": "releaseNotesTo",
+            "type": "string",
+            "label": "Generate release notes to",
+            "required": false,
+            "helpMarkDown": "The tag or sha commit to end with. If not specified, the current commit (HEAD) will be used."
+        },
+        {
+            "name": "releaseNotesPath",
+            "type": "string",
+            "label": "Location of release notes file",
+            "required": false,
+            "helpMarkDown": "The path to the release notes file. If not specified, the release notes will be generated in the current directory with RELEASE_NOTES.md as a default name."
+        },
+        {
+            "name": "releaseNotesTemplatePath",
+            "type": "string",
+            "label": "Location of release notes template",
+            "required": false,
+            "helpMarkDown": "The path to the release notes template. If not specified, embedded template (template.md.hbs) will used."
+        },
+        {
+            "name": "setVersionToGitTag",
+            "type": "string",
+            "label": "Set version to git tag",
+            "required": false,
+            "helpMarkDown": "Set release version to git tag. If not specified, the version will not be set."
+        },
+        {
+            "name": "gitTagPrefix",
+            "type": "string",
+            "label": "Git tag prefix",
+            "required": false,
+            "helpMarkDown": "The prefix of the git tag. Will be omitted if not specified."
+        },
+        {
+            "name": "gitTagSuffix",
+            "type": "string",
+            "label": "Git tag suffix",
+            "required": false,
+            "helpMarkDown": "The suffix of the git tag. Will be omitted if not specified."
+        },
+        {
+            "name": "hideSubprocessOutput",
+            "type": "boolean",
+            "label": "Hide subprocess output",
+            "required": false,
+            "helpMarkDown": "Hide subprocess output. Default true"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working directory",
+            "required": false,
+            "helpMarkDown": "Specify the working directory"
+        },
+        {
+            "name": "normalizeMergeCommit",
+            "type": "boolean",
+            "label": "Normalize commit messages (remove 'Merged PR 1234:' from commit message)",
+            "required": false,
+            "helpMarkDown": "Normalize commit messages. Default false"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

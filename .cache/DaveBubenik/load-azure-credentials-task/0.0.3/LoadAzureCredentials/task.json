@@ -1,0 +1,52 @@
+{
+    "id": "8bac6a77-5fff-498a-8771-4c18225430d3",
+    "name": "LoadAzureCredentials",
+    "friendlyName": "Load Azure Credentials",
+    "description": "Task for loading Azure Credentials into the pipeline. This is needed to dynamically supply subscription ids to Azure management steps.",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "DaveBubenik",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+	"runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.102.0",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription"
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "ConnectedServiceNameIdentifier",
+            "description": "The special string that Azure DevOps pipelines use to reference the service."
+        }
+    ],
+	"execution": {
+        "Node": {
+            "target": "loadazurecredentials.js"
+        }
+    },
+	"instanceNameFormat": "Load Azure Credentials",
+    "messages": {
+        "SpecifiedAzureRmEndpointIsInvalid": "Specified AzureRM service connection is invalid: %s"
+    }    
+}

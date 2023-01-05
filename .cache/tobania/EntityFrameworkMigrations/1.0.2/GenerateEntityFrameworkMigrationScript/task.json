@@ -1,0 +1,152 @@
+{
+  "id": "3c2d170e-f21d-43f6-8d4a-c317ddaeefd4",
+  "name": "GenerateEntityFrameworkMigrationScript",
+  "friendlyName": "Generate migration SQL script",
+  "description": "Generate a SQL script which can apply migrations to a database",
+  "author": "Tobania",
+  "helpMarkDown": "Generate a SQL script file which can apply migrations to a database. The output is the same as the 'Update-Database -Script -SourceMigration 0' command.",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Generate migration SQL script",
+  "groups": [
+    {
+      "name": "configuration",
+      "displayName": "Configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "output",
+      "displayName": "Output",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Project",
+      "type": "filePath",
+      "label": "Project",
+      "required": true,
+      "helpMarkDown": "The project which contains the migrations."
+    },
+    {
+      "name": "BuildConfiguration",
+      "type": "string",
+      "label": "Build Configuration",
+      "required": true,
+      "helpMarkDown": "The build configuration being used.",
+      "defaultValue": "$(BuildConfiguration)"
+    },
+    {
+      "name": "AssemblyName",
+      "type": "string",
+      "label": "Assembly Type",
+      "required": true,
+      "helpMarkDown": "The name of the assembly type, without the .dll suffix"
+    },
+    {
+      "name": "MigrationsConfigurationTypeName",
+      "type": "string",
+      "label": "Migrations configuration type name",
+      "required": false,
+      "helpMarkDown": "If the selected project contains multipe DbContexts, please provide the type name of the configuration to use."
+    },
+    {
+      "name": "configurationTypeSelector",
+      "type": "radio",
+      "label": "Use configuration",
+      "required": true,
+      "groupName": "configuration",
+      "defaultValue": "configurationFile",
+      "helpMarkDown": "Choose how you want to specify your database connection: either through an existing config file or manually entering the connection string",
+      "options": {
+        "configurationFile": "Configuration file",
+        "manual": "Manual"
+      }
+    },
+    {
+      "name": "ConfigurationFile",
+      "type": "filePath",
+      "label": "Configuration file",
+      "required": false,
+      "groupName": "configuration",
+      "helpMarkDown": "The configuration file to use (e.g. Web.config or App.config). If ommitted, we will attempt to find a Web.config or App.config at the same level as the project file.",
+      "visibleRule": "configurationTypeSelector = configurationFile"
+    },
+    {
+      "name": "ConnectionStringName",
+      "type": "string",
+      "label": "Connection string name",
+      "required": false,
+      "groupName": "configuration",
+      "helpMarkDown": "The name of the connection string to use. If ommitted, a connection string must be provided",
+      "visibleRule": "configurationTypeSelector = configurationFile"
+    },
+    {
+      "name": "ConnectionString",
+      "type": "string",
+      "label": "Connection string",
+      "required": false,
+      "groupName": "configuration",
+      "helpMarkDown": "The connection string to use. If ommitted, a connection string name must be provided.",
+      "visibleRule": "configurationTypeSelector = manual"
+    },
+    {
+      "name": "ConnectionStringProviderName",
+      "type": "string",
+      "label": "Connection string provider name",
+      "required": false,
+      "defaultValue": "System.Data.SqlClient",
+      "groupName": "configuration",
+      "helpMarkDown": "The provider name to use in conjuction with the provided connection string.",
+      "visibleRule": "configurationTypeSelector = manual"
+    },
+    {
+      "name": "OutputDirectory",
+      "type": "filePath",
+      "label": "Output directory",
+      "required": true,
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "groupName": "output",
+      "helpMarkDown": "The folder in which to place the generated SQL script. Make sure that this is somewhere inside your build artifact folder. The file created in the output directory will be called migrations.sql"
+    },
+    {
+      "name": "OutputFile",
+      "type": "string",
+      "label": "Output file",
+      "required": true,
+      "defaultValue": "migrations.sql",
+      "groupName": "output",
+      "helpMarkDown": "The name of the file as which to save the generated migrations"
+    },
+    {
+      "name": "UseVerbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable verbose logging"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\GenerateEntityFrameworkMigrationScript.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

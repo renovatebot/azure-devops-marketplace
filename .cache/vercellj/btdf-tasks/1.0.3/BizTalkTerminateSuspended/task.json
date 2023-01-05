@@ -1,0 +1,44 @@
+{
+  "id": "cc49f507-f95f-4385-8d25-6df0402be452",
+  "name": "BizTalkTerminateSuspended",
+  "friendlyName": "Terminate Suspended",
+  "description": "Terminates suspended service instances and optionally saves the relevant messages and metadata",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Terminate Suspended",
+  "inputs": [
+    {
+      "name": "SaveMessages",
+      "type": "boolean",
+      "label": "Save",
+      "defaultValue": "true",
+      "helpMarkDown": "Enable/disable saving messages and metadata associated with suspended instances (disabling is not recommended for Production environments)."
+    },
+    {
+      "name": "Destination",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "C:\\Windows\\Temp\\bts_msgs_{0:yyyyMMdd}",
+      "required": false,
+      "helpMarkDown": "Path to the directory where suspended messages and metadata will be saved."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Remove-BizTalkSuspended.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

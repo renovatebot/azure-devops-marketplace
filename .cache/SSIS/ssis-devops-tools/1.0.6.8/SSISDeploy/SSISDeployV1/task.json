@@ -1,0 +1,143 @@
+{
+    "id":  "06D2A35B-20BD-4F63-B331-B89EB168517B",
+    "name":  "SSISDeploy",
+    "friendlyName":  "SSIS Deploy",
+    "description":  "Deploy single or multiple ispac files to on-premise SSIS catalog and Azure-SSIS IR, or SSISDeploymentManifest files and their associated files to on-premise or Azure file share.",
+    "helpMarkDown":  "https://aka.ms/AA6pzmk (Check out SSIS Catalog Configuration task if you want to configure folders, projects and environments in SSIS catalog.)",
+    "category":  "Deploy",
+    "author":  "Microsoft Corporation",
+    "version":  {
+                    "Major":  1,
+                    "Minor":  5,
+                    "Patch":  15
+                },
+    "minimumAgentVersion":  "2.144.0",
+    "instanceNameFormat":  "Deploy SSIS",
+    "inputs":  [
+                   {
+                       "name":  "sourcePath",
+                       "type":  "filePath",
+                       "label":  "Source path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Path of the source ISPAC or SSISDeploymentManifest files you want to deploy. This path could be a folder path or a file path."
+                   },
+                   {
+                       "name":  "projectPassword",
+                       "type":  "string",
+                       "label":  "Project password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Password to decrypt the ISPAC or DTSX files. This argument is only valid when the protection level is EncryptSensitiveWithPassword or EncryptAllWithPassword."
+                   },
+                   {
+                       "name":  "destinationType",
+                       "type":  "pickList",
+                       "label":  "Destination type",
+                       "required":  true,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Type of the destination.",
+                       "options":  {
+                                       "file":  "File System",
+                                       "ssisdb":  "SSISDB"
+                                   }
+                   },
+                   {
+                       "name":  "destinationServer",
+                       "type":  "string",
+                       "label":  "Destination server",
+                       "required":  true,
+                       "helpMarkDown":  "Name of destination SQL Server.",
+                       "visibleRule":  "destinationType = ssisdb"
+                   },
+                   {
+                       "name":  "destinationPath",
+                       "type":  "string",
+                       "label":  "Destination path",
+                       "required":  true,
+                       "helpMarkDown":  "Path of the destination folder where the source file will be deployed to. For example: \n 1) /SSISDB/\\\u003cfolderName\\\u003e/[\\\u003cprojectName\\\u003e] \n 2) \\\\\\\\\\\u003cmachineName\\\u003e\\\\\\\u003cshareFolderName\\\u003e\\\\\\\u003coptionalSubFolderName\\\u003e"
+                   },
+                   {
+                       "name":  "authType",
+                       "type":  "pickList",
+                       "label":  "Authentication type",
+                       "required":  true,
+                       "options":  {
+                                       "win":  "Windows Authentication",
+                                       "sql":  "SQL Server Authentication",
+                                       "adPwd":  "Active Directory - Password",
+                                       "adInt":  "Active Directory - Integrated"
+                                   },
+                       "helpMarkDown":  "Authentication type to connect to destination SQL Server.",
+                       "visibleRule":  "destinationType = ssisdb"
+                   },
+                   {
+                       "name":  "domainName",
+                       "type":  "string",
+                       "label":  "Domain name",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Domain name to access the specified file system.",
+                       "visibleRule":  "destinationType = file"
+                   },
+                   {
+                       "name":  "username",
+                       "type":  "string",
+                       "label":  "Username",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Username to access the specified file system or SSISDB.",
+                       "visibleRule":  "destinationType=file || authType=sql || authType=adPwd"
+                   },
+                   {
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Password to access the specified file system or SSISDB.",
+                       "visibleRule":  "destinationType=file || authType=sql || authType=adPwd"
+                   },
+                   {
+                       "name":  "connectionStringSuffix",
+                       "type":  "string",
+                       "label":  "Connection string suffix",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Suffix of the connection string which is used to connect to the SSIS catalog.",
+                       "visibleRule":  "destinationType=ssisdb"
+                   },
+                   {
+                       "name":  "whetherOverwrite",
+                       "type":  "pickList",
+                       "label":  "Overwrite existing projects or SSISDeploymentManifest files of same names",
+                       "required":  true,
+                       "defaultValue":  "yes",
+                       "options":  {
+                                       "yes":  "Yes",
+                                       "no":  "No"
+                                   },
+                       "helpMarkDown":  "Specify whether overwrite the existing projects or SSISDeploymentManifest files of same names. If \u0027No\u0027, this task will skip deploying those projects or files."
+                   },
+                   {
+                       "name":  "whetherContinue",
+                       "type":  "pickList",
+                       "label":  "Continue deployment when error occurs",
+                       "required":  true,
+                       "defaultValue":  "no",
+                       "options":  {
+                                       "yes":  "Yes",
+                                       "no":  "No"
+                                   },
+                       "helpMarkDown":  "Specify whether continue deployment for remaining projects or files when an error occurs. If \u0027No\u0027, this task will fail and stop immediately."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "main.ps1",
+                                          "platforms":  [
+                                                            "windows"
+                                                        ]
+                                      }
+                  }
+}

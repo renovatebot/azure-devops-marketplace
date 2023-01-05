@@ -1,0 +1,69 @@
+{
+    "id": "3ee2ae20-3a18-11e9-b1ef-03cbb694ee92",
+    "name": "c",
+    "friendlyName": "Get Universal Package Latest Version",
+    "description": "Gets the latests version of the requested universal package",
+    "author": "Phil Peters",
+    "helpMarkDown": "",
+    "category": "Azure Artifacts",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Get latest version for $(PackageName)",
+    "inputs": [
+        {
+            "name": "feedGet",
+            "aliases": [
+                "getVSTSFeed"
+            ],
+            "type": "pickList",
+            "label": "Target feed",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select a feed hosted in this account. You must have Package Management installed and licensed to select a feed here.",
+            "properties":{
+                "EditableOptions":"True"
+            }
+        },
+        {
+            "name": "PackageName",
+            "type": "picklist",
+            "label": "Package Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of Your Package",
+            "properties":{
+                "EditableOptions":"True"
+            }
+        }
+    ],
+    "datasourcebindings": [
+        {
+            "target": "feedGet",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "PackageName",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds/$(feedGet)/packages?includeUrls=false&protocolType=UPack",
+            "resultSelector": "jsonpath:$.value[?(@.protocolType=='UPack')]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "sample.ps1"
+        }
+    }
+}

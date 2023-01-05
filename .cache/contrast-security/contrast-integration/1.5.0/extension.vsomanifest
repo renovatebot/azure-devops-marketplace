@@ -1,0 +1,103 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Contrast connections",
+            "type": "ms.vss-endpoint.endpoint-types",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "contrast",
+                "displayName": "Contrast Server Connection",
+                "url": {
+                    "displayName": "Contrast URL",
+                    "helpText": "This should be the address to your TeamServer (https://{{hostname}}) from which vulnerability data should be retrieved."
+                },
+                "dataSources": [
+                    {
+                        "name": "Applications",
+                        "endpointUrl": "{{endpoint.url}}"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "orgId",
+                        "name": "Organization UUID",
+                        "description": "This is located in the API section in your Organization Settings.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.apitoken }}"
+                            },
+                            {
+                                "name": "API-Key",
+                                "value": "{{endpoint.apikey}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Your Contrast Username.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apitoken",
+                                "name": "Service key",
+                                "description": "This is located at the bottom of your profile settings.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apikey",
+                                "name": "API Key",
+                                "description": "This is located in the API section in your Organization Settings.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "verify-application",
+            "description": "Checks vulnerability configured conditions for the specified app.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "verify-application"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

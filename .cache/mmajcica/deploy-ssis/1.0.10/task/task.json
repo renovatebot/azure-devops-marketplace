@@ -1,0 +1,150 @@
+{
+  "id": "2ac2b060-978b-11e7-84a3-f5c70df70787",
+  "name": "DeployIsPacs",
+  "friendlyName": "Deploy ISPACs (SQL SSIS)",
+  "description": "Deploy your ISPACs to SQL SSIS Server",
+  "author": "Mario Majcica",
+  "groups": [
+    {
+      "displayName": "Server",
+      "isExpanded": true,
+      "name": "server"
+    },
+    {
+      "displayName": "SSIS",
+      "isExpanded": true,
+      "name": "SSIS"
+    },
+    {
+      "displayName": "Environment variables",
+      "isExpanded": false,
+      "name": "variables"
+    }
+  ],
+  "helpMarkDown": "Deploy SSIS ISPACs on your server together with environment variables.",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "3",
+    "Minor": "2",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Deploy ISPACs from $(ispacFilePath)",
+  "inputs": [
+    {
+      "name": "ispacFilePath",
+      "type": "filePath",
+      "label": "ISPAC file(s)",
+      "defaultValue": "**/*.ispac",
+      "required": true,
+      "helpMarkDown": "Location of the ISPAC file or on a UNC path like, \\\\\\\\BudgetIT\\Web\\Deploy\\FabrikamDB.ispac. The UNC path should be accessible to the machine's administrator account. Environment variables are also supported, like $env:windir, $env:systemroot, $env:windir\\FabrikamFibre\\DB. Wildcards can be used. For example, `**/*.ispac` for ISPAC file present in all sub folders."
+    },
+    {
+      "groupName": "server",
+      "name": "ServerName",
+      "type": "string",
+      "label": "Server Name",
+      "required": true,
+      "helpMarkDown": "Provide the SQL Server name like, machinename\\FabriakmSQL,1433 or localhost or .\\SQL2012R2. Specifying localhost will connect to the Default SQL Server instance on the machine."
+    },
+    {
+      "groupName": "server",
+      "name": "AuthScheme",
+      "type": "pickList",
+      "label": "Authentication",
+      "required": true,
+      "defaultValue": "windowsAuthentication",
+      "options": {
+        "windowsAuthentication": "Windows Authentication",
+        "sqlServerAuthentication": "SQL Server Authentication"
+      },
+      "helpMarkDown": "Select the authentication mode for connecting to the SQL Server. In Windows authentication mode, build service account, is used to connect to the SQL Server. In SQL Server Authentication mode, the SQL login and Password have to be provided in the parameters below."
+    },
+    {
+      "groupName": "server",
+      "name": "SqlUsername",
+      "type": "string",
+      "label": "SQL User name",
+      "required": true,
+      "defaultValue": "",
+      "visibleRule": "AuthScheme = sqlServerAuthentication",
+      "helpMarkDown": "Provide the SQL login to connect to the SQL Server. The option is only available if SQL Server Authentication mode has been selected."
+    },
+    {
+      "groupName": "server",
+      "name": "InitialCatalog",
+      "type": "string",
+      "label": "SSISDB Catalog Name",
+      "required": false,
+      "defaultValue": "master",
+      "helpMarkDown": "SSIS catalog for Integration Services."
+    },
+    {
+      "groupName": "server",
+      "name": "SqlPassword",
+      "type": "string",
+      "label": "SQL Password",
+      "required": true,
+      "defaultValue": "",
+      "visibleRule": "AuthScheme = sqlServerAuthentication",
+      "helpMarkDown": "Provide the Password of the SQL login. The option is only available if SQL Server Authentication mode has been selected."
+    },
+    {
+      "groupName": "SSIS",
+      "name": "sharedCatalog",
+      "type": "boolean",
+      "label": "Shared Catalog",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "If catalog is shared, it will not be dropped during the deployment."
+    },
+    {
+      "groupName": "SSIS",
+      "name": "dropProject",
+      "type": "boolean",
+      "visibleRule": "sharedCatalog = true",
+      "label": "Drop project before deploy",
+      "required": false,
+      "defaultValue": "true",
+      "helpMarkDown": "If selected, before deploying your SSIS package, the corresponding project on the server will be dropped."
+    },
+    {
+      "groupName": "SSIS",
+      "name": "catalogPassword",
+      "type": "string",
+      "label": "Catalog Password",
+      "visibleRule": "sharedCatalog = false",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Catalog password protects the database master key that is used for encrypting the catalog data. Save the password in a secure location. It is recommended that you also back up the database master key."
+    },
+    {
+      "groupName": "SSIS",
+      "name": "folderName",
+      "type": "string",
+      "label": "SSIS folder Name",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Folder in the SSIS Package Store."
+    },
+    {
+      "groupName": "variables",
+      "name": "environmentsFilePath",
+      "type": "filePath",
+      "label": "Environments configuration file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the configuration file."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "task.ps1"
+    }
+  }
+}

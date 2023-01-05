@@ -1,0 +1,127 @@
+{
+    "id": "047393e1-82e4-4d24-8275-237409bb378f",
+    "name": "publishbcappdocker",
+    "friendlyName": "Business Central - Publish App to Container",
+    "description": "Publish App to Dynamics 365 Business Central container",
+    "helpMarkDown": "Will take all the apps in folder and try to publish them to the container",
+    "category": "Utility",
+    "author": "Kine",
+    "version": {
+        "Major": 7,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "groups": [
+        {
+            "name": "envgroup",
+            "displayName": "Environment"
+        }
+    ],
+    "instanceNameFormat": "Publish Apps to container $(containername)",
+    "inputs": [
+        {
+            "name": "HostName",
+            "type": "string",
+            "label": "Container Host Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the host for the container (if not local for the agent)",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "ContainerName",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the container",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "Tenant",
+            "type": "string",
+            "label": "Tenant",
+            "defaultValue": "default",
+            "required": false,
+            "helpMarkDown": "Name of the tenant",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "SourceFolder",
+            "type": "filePath",
+            "label": "Source Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The source folder with the apps to install."
+        },
+        {
+            "name": "SyncMode",
+            "type": "pickList",
+            "label": "Sync Mode",
+            "defaultValue": "Add",
+            "required": false,
+            "helpMarkDown": "Sync mode for the app",
+            "options": {
+                "Add": "Add",
+                "Clean": "Clean",
+                "Development": "Development",
+                "ForceSync": "Force sync"
+              }
+        },
+        {
+            "name": "Scope",
+            "type": "pickList",
+            "label": "Scope",
+            "defaultValue": "Tenant",
+            "required": false,
+            "helpMarkDown": "Scope to publish the app too.",
+            "options": {
+                "Global": "Global",
+                "Tenant": "Tenant"
+              }
+        },
+        {
+            "name": "SkipVerify",
+            "type": "boolean",
+            "label": "Skip Verify",
+            "defaultValue": "fale",
+            "required": false,
+            "helpMarkDown": "Set if app is not signed and you want to skip signature verification",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "UseDevEndpoint",
+            "type": "boolean",
+            "label": "Use Dev Endpoint",
+            "defaultValue": "false",
+            "helpMarkDown": "If true, publishing will use dev endpoint to do the job, like when publishing from VS Code."
+        },
+        {
+            "name": "AppDownloadScript",
+            "type": "multiLine",
+            "label": "Missing app download script",
+            "defaultValue": "",
+            "helpMarkDown": "This script will be used to download missing dependencies. Use parameters name, publisher, version and path inside the script."
+        },
+        {
+            "name": "IncludeAppFiles",
+            "type":"boolean",
+            "label": "Include App files into dependencies",
+            "defaultValue":"false",
+            "helpMarkDown":"If true, dependencies from app files will be installed automatically even when app.json files exists"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "publishdockertask.ps1",
+            "platform": [
+                "windows"
+            ]
+
+        }
+    }
+}

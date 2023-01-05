@@ -1,0 +1,81 @@
+{
+    "id": "86236b36-7609-411f-82ab-17bbf29c3ab9",
+    "name": "PowerShell Script Analyzer",
+    "friendlyName": "Execute PowerShell Script Analyzer rules",
+    "description": "Execute PowerShell Script Analyzer rules",
+    "helpMarkDown": "[More Information](https://dev.azure.com/poshbuild/_git/ExecutePSScriptAnalyzer?path=%2FExecutePSScriptAnalyzer.Extension%2Freadme.md&version=GBmaster)",
+    "category": "Package",
+    "author": "Tore Groneng - @ToreGroneng",
+    "version": {
+      "Major": 1,
+      "Minor": 0,
+      "Patch": 30
+    },
+    "demands": [
+      "cmd"
+    ],
+    "groups":[],
+    "minimumAgentVersion": "1.83.0",
+    "OutputVariables": [{
+      "name" : "AnalyzerResults",
+      "description" : "The output from Invoke-ScriptAnalyzer cmdlet"
+    }],
+    "inputs": [
+      {
+        "name": "PsFolder",
+        "type": "filePath",
+        "label": "Path to test",
+        "defaultValue": "$(currentDirectory)",
+        "required": true,
+        "helpMarkDown": "The path to the folder containing the ps1 or psm1 files to validate"
+      },
+      {
+        "name": "IncludeRules",
+        "type": "string",
+        "label": "Rules to include",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Pass a comma separated list of rulenames to include. Example: PSAvoidUsingCmdletAliases,PSAvoidUsingWriteHost"
+      },
+      {
+        "name": "ExcludeRules",
+        "type": "string",
+        "label": "Rules to exclude",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Pass a comma separated list of rulenames to exclude. Example: PSAvoidUsingCmdletAliases,PSAvoidUsingWriteHost"
+      },
+      {
+        "name": "CustomRulePath",
+        "type": "filePath",
+        "label": "CustomRule Path",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Path to custom rules"
+      },
+      {
+        "name": "Severity",
+        "type": "string",
+        "label": "Severity",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Selects rule violations with the specified severity. Valid values are Error, Warning, Information"
+      },
+      {
+        "name": "FailOnError",
+        "type": "boolean",
+        "label": "Fail build on violations",
+        "defaultValue": "true",
+        "required": true,
+        "helpMarkDown": "Check to break build on violations"
+      }
+    ],
+    "instanceNameFormat": "Execute PsScriptAnalyzer $(solution)",
+    "execution": {
+      "PowerShell": {
+        "target": "$(currentDirectory)\\ExecutePSScriptAnalyzer.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+    }
+}

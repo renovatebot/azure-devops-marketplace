@@ -1,0 +1,162 @@
+{
+    "id": "4fed55de-530f-4436-afc6-63e137c5378d",
+    "name": "AzureSqlBacpacDeploy",
+    "friendlyName": "Azure SQL bacpac deploy",
+    "description": "Deploy bacpac saved on an Azure storage account to an existing SQL database server.",
+	"author": "Frédérick Ries",
+    "version": {
+        "Major": 0,
+        "Minor": 5,
+        "Patch": 3
+    },
+    "helpMarkDown": "",
+    "category": "Deploy",
+	"visibility": [
+        "Release"
+    ],
+	"runsOn": [
+        "Agent"
+    ],
+	"demands": [ "azureps" ],
+	"minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "Database",
+            "displayName": "Database",
+            "isExpanded": true
+        },
+		{
+            "name": "RestoreFile",
+            "displayName": "Restore file",
+            "isExpanded": true
+        },
+		{
+            "name": "CreationOptions",
+            "displayName": "Creation options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+		{
+			"name": "ConnectedServiceNameSelector",
+			"type": "pickList",
+			"label": "Azure connection type",
+			"required": false,
+			"helpMarkDown": "",
+			"defaultValue": "ConnectedServiceNameARM",
+			"options": {
+				"ConnectedServiceNameARM": "Azure Resource Manager"
+			}
+		},
+		{
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+			"defaultValue": "",
+            "required": true,
+            "label": "Azure subscription",
+            "helpMarkDown": "Target Azure Resource Manager subscription for deploying bacpac",
+        },
+        {
+            "name": "ResourceGroup",
+            "type": "string",
+			"defaultValue": "",
+            "required": true,
+            "label": "Resource group",
+            "helpMarkDown": "The name of the resource group containing the SQL sever.",
+			"groupName": "Database",
+        },
+		{
+            "name": "SqlServer",
+            "type": "string",
+			"defaultValue": "",
+			"required": true,
+            "label": "SQL Server",
+            "helpMarkDown": "The name of the SQL server that contains the database.",
+			"groupName": "Database",
+        },
+		{
+            "name": "SqlUsername",
+            "type": "string",
+			"defaultValue": "",
+			"required": true,
+            "label": "Admin login",
+            "helpMarkDown": "Specify the Azure SQL Server administrator login.",
+			"groupName": "Database",
+        },
+        {
+            "name": "SqlPassword",
+            "type": "string",
+			"defaultValue": "",
+            "required": true,
+			"label": "Admin password",
+            "helpMarkDown": "Password for the Azure SQL Server administrator.<br>It can accept variable defined in Build/Release Definitions as '$(passwordVariable)'.<br>You may mark the variable type as 'secret' to secure it.",
+			"groupName": "Database",
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+			"defaultValue": "",
+			"required": true,
+            "label": "Database name",
+            "helpMarkDown": "The name of the database you want to restore.",
+			"groupName": "Database",
+        },
+        {
+            "name": "StorageKeyType",
+			"type": "pickList",
+			"defaultValue": "StorageAccessKey",
+			"required": true,
+            "label": "Storage key type",
+			"helpMarkDown": "Key type of your storage account for accessing to the bacpac file.",
+			"options": {
+				"StorageAccessKey": "Storage access key",
+                "SharedAccessKey": "Shared access key"
+            },
+			"groupName": "RestoreFile"
+		},
+        {
+            "name": "StorageKey",
+			"type": "string",
+			"defaultValue": "",
+			"required": true,
+            "label": "Storage key",
+			"helpMarkDown": "The key of your storage account where the bacpac file is stored.",
+			"groupName": "RestoreFile"
+		},
+        {
+            "name": "BacpacFile",
+			"type": "string",
+			"defaultValue": "",
+			"required": true,
+            "label": "Storage key type",
+			"helpMarkDown": "The path to the bacpac file you want to be restored.",
+			"groupName": "RestoreFile"
+		},
+        {
+            "name": "Edition",
+			"type": "string",
+			"defaultValue": "Standard",
+			"required": false,
+            "label": "Edition",
+			"helpMarkDown": "Edition of the database you want to create.",
+			"groupName": "CreationOptions"
+		},
+        {
+            "name": "ServiceObjective",
+			"type": "string",
+			"defaultValue": "S0",
+			"required": false,
+            "label": "Service objective",
+			"helpMarkDown": "The service level of the database you want to create.",
+			"groupName": "CreationOptions"
+		}
+    ],
+	"instanceNameFormat": "Restore bacpac file to database",
+	"execution": {
+		"AzurePowerShell": {
+			"target": "$(currentDirectory)\\main.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

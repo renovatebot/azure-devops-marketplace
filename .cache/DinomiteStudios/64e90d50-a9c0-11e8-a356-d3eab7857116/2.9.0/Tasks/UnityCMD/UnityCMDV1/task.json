@@ -1,0 +1,79 @@
+{
+  "id": "f357416a-9646-4cd6-9d96-e2f2a9574ce6",
+  "name": "UnityCMDTask",
+  "friendlyName": "Unity CMD",
+  "description": "Execute a Unity editor via command line.",
+  "helpMarkDown": "Use this task for full control over the arguments passed to the Untiy command line. With this task you are free to implement any custom behaviour needed. [More Information](https://unitydevops.com/docs/unity-cmd-task).",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Dinomite Studios",
+  "version": {
+    "Major": "1",
+    "Minor": "2",
+    "Patch": "0"
+  },
+  "releaseNotes": "[Full Changelog](https://github.com/Dinomite-Studios/unity-azure-pipelines-tasks/blob/master/Tasks/UnityCMD/UnityCMDV1/CHANGELOG.md)",
+  "minimumAgentVersion": "2.144.0",
+  "instanceNameFormat": "Unity CMD $(buildTarget)",
+  "inputs": [
+    {
+      "name": "unityEditorsPathMode",
+      "type": "pickList",
+      "label": "Unity editors location",
+      "defaultValue": "unityHub",
+      "helpMarkDown": "Define where to look for Unity installations on the agent.",
+      "options": {
+        "unityHub": "Unity Hub default installation path",
+        "environmentVariable": "Use UNITYHUB_EDITORS_FOLDER_LOCATION environment variable on agent",
+        "specify": "Specify path"
+      }
+    },
+    {
+      "name": "customUnityEditorsPath",
+      "type": "string",
+      "label": "Editors folder location",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "unityEditorsPathMode == specify",
+      "helpMarkDown": "Specify where to look for Unity Editor versions on the agent."
+    },
+    {
+      "name": "unityProjectPath",
+      "type": "filePath",
+      "label": "Unity project path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "(Optional) Enter the directory path to the Unity project. If no value is entered, the root of the repository will be used."
+    },
+    {
+      "name": "cmdArgs",
+      "type": "string",
+      "label": "Command line arguments",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Specify command line arguments. The task will set `-batchmode`, `-projectPath`, `-buildTarget` and `-logfile` for you. See the [documentation](https://docs.unity3d.com/Manual/CommandLineArguments.html) for more info."
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "logsOutputPath",
+      "description": "Path to the Unity editor log files generated."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "unity-cmd.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "executeSuccess": "The Unity process completed successfully",
+    "executeFailed": "The Unity process failed with exit code",
+    "warningAlphaBetaVersion": "You are using a Unity Alpha/Beta version. It may not be supported by the extension!",
+    "projectPathInfo": "Determining Unity editor version for project at",
+    "successGetUnityEditorVersion": "Success, Unity editor version found",
+    "failGetUnityEditorVersion": "Fail, Unity editor version not found"
+  }
+}

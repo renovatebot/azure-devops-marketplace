@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "d423f795-60f4-4c52-8b15-943232a1abf2",
+  "name": "setup-graalvm",
+  "friendlyName": "Setup GraalVM",
+  "description": "Fetches and installs specified version of GraalVM, for use in subsequent steps.",
+  "helpMarkDown": "Fetches and installs [GraalVM](https://github.com/oracle/graal), and makes it available for use in subsequent steps.",
+  "category": "Azure Pipelines",
+  "author": "Duchessa Team",
+  "version": {
+    "Major": 0,
+    "Minor": 13,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Use GraalVM $(graalVersion) for Java $(javaVersion)",
+  "groups": [
+    {
+      "name": "components",
+      "displayName": "Additional Components"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "graalVersion",
+      "type": "string",
+      "label": "GraalVM Version",
+      "defaultValue": "21.0.0.2",
+      "required": true,
+      "helpMarkDown": "Version number of [GraalVM Community Edition](https://github.com/graalvm/graalvm-ce-builds/releases) to be installed."
+    },
+    {
+      "name": "javaVersion",
+      "type": "pickList",
+      "label": "Java Version",
+      "defaultValue": "11",
+      "options": {
+        "11": "Java 11",
+        "8": "Java 8"
+      },
+      "helpMarkDown": "Version number of targeted [Java Platform](https://www.oracle.com/java/technologies/java-se-glance.html) specification. Limited to Java versions supported by the [GraalVM Project](https://www.graalvm.org/)."
+    },
+    {
+      "name": "nativeImage",
+      "type": "boolean",
+      "label": "Native Image",
+      "defaultValue": true,
+      "helpMarkDown": "Defines whether the GraalVM Native Image component is installed. Default's to 'true'.",
+      "groupName": "components"
+    },
+    {
+      "name": "llvmToolchain",
+      "type": "boolean",
+      "label": "LLVM Toolchain",
+      "defaultValue": false,
+      "helpMarkDown": "Defines whether the GraalVM LLVM toolchain component is installed. Default's to 'false'.",
+      "groupName": "components"
+    },
+    {
+      "name": "prefixNodeExecutables",
+      "type": "boolean",
+      "label": "Prefix Node Executables",
+      "defaultValue": true,
+      "helpMarkDown": "Defines whether GraalVM provided `npm`, `npx`, and `node` commands should be prepended with `graalvm-` to allow concurrent usage with existing NodeJS installation. Default's to 'true'."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

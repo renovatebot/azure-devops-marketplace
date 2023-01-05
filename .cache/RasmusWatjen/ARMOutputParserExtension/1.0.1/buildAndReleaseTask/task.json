@@ -1,0 +1,60 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "fef154ee-9117-45b4-bc80-3156ba8809c4",
+    "name": "ARMOutputParserExtension",
+    "friendlyName": "Azure Resource Manager deployment output parser",
+    "description": "Convert ARM template deployment output to Azure DevOps pipeline variables version 1.0.0",
+    "helpMarkDown": "[More Information](http://bit.ly/2AVFVVn)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Rasmus Wätjen",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "demands": [ "PowerShell" ],
+    "instanceNameFormat": "Parse ARM Deployment Outputs into variables",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "armOutput",
+            "type": "string",
+            "label": "ARM Deployment Output",
+            "defaultValue": "$(DeploymentOutput)",
+            "required": true,
+            "helpMarkDown": "Enter the variable (with $() around it) used in the \"Deployment Outputs\" field in the Azure Resource Group Deployment task."
+        },
+        {
+            "name": "variablePrefix",
+            "type": "string",
+            "label": "Prefix all ARM output names with",
+            "required": false,
+            "defaultValue": "arm_",
+            "helpMarkDown": "ARM template outputs will be prefixed with this string"
+        },
+        {
+            "name": "excludedOutputs",
+            "type": "string",
+            "label": "Comma separated list of outputs to exclude",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "These ARM output names will not be converted to pipeline variables"
+        }
+    ],
+    "dataSourceBindings": [ ],
+    "execution": {
+        "PowerShell3": {
+            "target": "ConvertArmOutput.ps1"
+        }
+    }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "7b8f8f37-f89c-4594-9f52-114ab791e464",
+  "name": "ReplaceTokens",
+  "friendlyName": "Replace Tokens",
+  "description": "Build/Release task for replacing tokens in specific files. Perfectly if you want to have full control of the replace process.",
+  "author": "Jean-Pierre Broeders",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "26"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Replace Tokens $(message)",
+  "inputs": [
+    {
+      "name": "sourcePath",
+      "type": "filePath",
+      "label": "Source Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the file(s) containing tokens. Leave empty to use the sources directory. NOTE: this is case sensitive for non-Windows systems. This should be a path containing the file, not the file itself."
+    },
+    {
+      "name": "targetFilePattern",
+      "type": "string",
+      "label": "Target File Pattern",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File pattern to find in source path. Supports minimatch. NOTE: this is case sensitive for non-Windows systems."
+    },
+    {
+      "name": "tokenRegex",
+      "type": "string",
+      "label": "Token Regex",
+      "defaultValue": "__(\\w+)__",
+      "required": true,
+      "helpMarkDown": "Regex to use for token replacement. Must include a group match."
+    },
+    {
+      "name": "replaceTokenList",
+      "type": "multiLine",
+      "label": "Tokens to Replace",
+      "defaultValue": "",
+      "helpMarkDown": "For tokens need to be replaced with the value of a build/release variable, variable from a variable group of variable comming from Azure keyvault. The should be 1 key/value pair per row, which can be specified using the following format: key1:$(value1)"
+    },
+    {
+      "name": "throwExceptionifNotMapped",
+      "type": "boolean",
+      "label": "Throw exception if not mapped/replaced?",
+      "helpMarkDown": "Throw exception if there is a token which is not mapped/replaced"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "cag-replacetokens.js",
+      "argumentFormat": ""
+    }
+  }
+}

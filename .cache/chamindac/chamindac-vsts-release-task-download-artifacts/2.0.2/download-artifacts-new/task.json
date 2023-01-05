@@ -1,0 +1,49 @@
+﻿{
+  "id": "22805355-0fa1-421d-893a-f40ebc51a4de",
+  "name": "download-artifacts-new",
+  "friendlyName": "Download Artifacts (New)",
+  "description": "Download build artifacts with filtering by artifact name, when you have more than one artifact, or download sub folders or files, without downloading the entire artifact folder.",
+  "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=chamindac.chamindac-vsts-release-task-download-artifacts)",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "author": "Chaminda Chandrasekara",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+
+  ],
+  "inputs": [
+    {
+      "name": "artifactNames",
+      "type": "string",
+      "label": "Build Artifact Names",
+      "defaultValue": "*",
+      "required": false,
+      "helpMarkDown": "Artifact Names/Paths to Download separated by ;. Example asterisk (default) as artifact names allow all artifacts download. Multiple artifacts can be specified with pattern ArtifactSourceAlias1\\Drop1;ArtifactSourceAlias2\\Drop2. Artifact name with subpath allows to download sub item of a given artifact. Multiple can be specified with pattern ArtifactSourceAlias1\\Drop1\\MyWebProj;ArtifactSourceAlias1\\Drop1\\ReleaseNote.html;ArtifactSourceAlias2\\Drop2;ArtifactSourceAlias3\\Drop3\\MyWebProj2 . Wild cards in paths are NOT SUPPORTED. Asterisk value as default supported to specify all artifacts."
+    },
+    {
+      "name": "artifactDestinationFolder",
+      "type": "string",
+      "label": "Artifacts Destination",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": false,
+      "helpMarkDown": "Absolute path of the destination folder on the local machine, or a UNC Share like c:\\fabrikamfiber or \\\\\\\\fabrikamshare\\fabrikamfiber. If not supplied default value $(System.DefaultWorkingDirectory)\\$(Build.DefinitionName) will be applied automatically"
+    }
+  ],
+  "instanceNameFormat": "Download Artifacts (New)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DownloadArtifacts.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

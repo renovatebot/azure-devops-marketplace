@@ -1,0 +1,127 @@
+{
+    "id": "1c3396d6-5af6-4ccc-8169-199ec6541d23",
+    "name": "GitHubRelease",
+    "friendlyName": "Create GitHub Release",
+    "description": "Create a GitHub release",
+    "helpMarkDown": "Create a GitHub Release v1.2.0 [More Information](https://github.com/mikaelkrief/GitHub-Tools-vsts-extensions/wiki/Create-GitHub-release)",
+    "releaseNotes": "1.0 Add first version, 1.1 enable to upload any file type as release asset, 1.3 use the TLS 1.2 protocol ",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Mikael Krief",
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 0
+    },
+    "demands": [],
+    "inputs": [
+        {
+            "name": "githubEndpoint",
+            "type": "connectedService:github",
+            "label": "GitHub Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the service endpoint for your GitHub connection. To create one, click the Manage link and create a new service endpoint."
+        },
+        {
+            "name": "repositoryName",
+            "type": "pickList",
+            "label": "Repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the GitHub repository",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "tag",
+            "type": "string",
+            "label": "Tag",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Tag to release, default value $(Build.BuildNumber) for release current build"
+        },
+        {
+            "name": "branch",
+            "type": "string",
+            "label": "Branch",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The branch to release"
+        },
+        {
+            "name": "releaseName",
+            "type": "string",
+            "label": "Release name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Release name"
+        },
+        {
+            "name": "usecommitmessage",
+            "type": "boolean",
+            "label": "Use commit message as release note",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Use commit message as release note"
+        },
+        {
+            "name": "releasenote",
+            "type": "multiLine",
+            "label": "Release note",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Release note",
+            "visibleRule": "usecommitmessage = false",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            }
+        },
+        {
+            "name": "ziptoupload",
+            "type": "filePath",
+            "label": "File to upload as asset",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The file to upload as artifacts to the release."
+        },
+        {
+            "name": "isdraft",
+            "type": "boolean",
+            "label": "Is draft release ?",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Is draft"
+        },
+        {
+            "name": "isprerelease",
+            "type": "boolean",
+            "label": "Is Pre Release ?",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Is pre release"
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "repositoryName",
+            "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/repositories?serviceEndpointId=$(githubEndpoint)",
+            "selector": "jsonpath:$.value[*].id",
+            "keySelector": "jsonpath:$.value[*].id",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "instanceNameFormat": "Create GitHub Release",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\GitHubRelease.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

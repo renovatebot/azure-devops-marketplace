@@ -1,0 +1,57 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/vsts-task-lib/master/tasks.schema.json",
+  "id": "82489b45-20d4-44ee-b380-f7a58837bb88",
+  "name": "semver-bump",
+  "friendlyName": "Semver version bump",
+  "description": "Bumps (increments) semantic version",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Dmitry Gurovich",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "instanceNameFormat": "Semver bump $(IncrementLevel) $(VersionVariable)",
+  "inputs": [
+    {
+      "name": "VersionVariable",
+      "type": "string",
+      "label": "Version variable name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of variable which holds version value"
+    },
+    {
+      "name": "IncrementLevel",
+      "type": "pickList",
+      "label": "Increment level",
+      "defaultValue": "patch",
+      "options": {
+        "major": "major",
+        "minor": "minor",
+        "patch": "patch",
+        "premajor": "premajor",
+        "preminor": "preminor",
+        "prepatch": "prepatch",
+        "prerelease": "prerelease"
+      },
+      "required": true,
+      "helpMarkDown": "Increment a version by the specified level. Level can be one of: major, minor, patch, premajor, preminor, prepatch, or prerelease. Default level is 'patch'."
+    },
+    {
+      "name": "PreId",
+      "type": "string",
+      "label": "pre id",
+      "defaultValue": "rc",
+      "required": false,
+      "helpMarkDown": "Identifier to be used to prefix premajor, preminor, prepatch or prerelease version increments.",
+      "visibleRule": "IncrementLevel = premajor || IncrementLevel = preminor || IncrementLevel = prepatch || IncrementLevel = prerelease"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "dist/index.js"
+    }
+  }
+}

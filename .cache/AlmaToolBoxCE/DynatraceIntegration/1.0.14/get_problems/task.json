@@ -1,0 +1,82 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EC1",
+    "name": "DynatraceIntegrationGetProblems",
+    "friendlyName": "Dynatrace Integration Get Problems by Tag",
+    "description": "Integration with Dynatrace server to retrieve problems by tag",
+    "helpMarkDown": "Integration with Dynatrace server to retrieve problems by tag",
+    "author": "Almatoolbox",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 47
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "Dynatrace Integration Get Problems",
+    "groups": [],
+    "inputs": [
+		{
+		  "name": "DynatraceService",
+		  "type": "connectedService:dynatraceendpoint",
+		  "label": "dynatraceendpoint service/server end point",
+		  "defaultValue": "",
+		  "required": true,
+		  "helpMarkDown": "Insert the Dynatrace endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Dynatrace connection'"
+		},
+		{
+            "name": "apimethod",
+            "type": "string",
+            "label": "Dynatrace apimethod",
+            "defaultValue": "problem/feed",
+            "required": true,
+            "helpMarkDown": "Dynatrace apimethod"
+        },
+		{
+            "name": "timeRange",
+            "type": "string",
+            "label": "Dynatrace timeRange",
+            "defaultValue": "3days",
+            "required": true,
+            "helpMarkDown": "Dynatrace timeRange"
+        },
+		{
+            "name": "tag",
+            "type": "string",
+            "label": "Dynatrace tag",
+            "required": true,
+            "helpMarkDown": "Dynatrace tag"
+        },
+		{
+            "name": "countWarning",
+            "type": "string",
+            "label": "problem warning count",
+            "defaultValue": "0",
+            "required": true,
+            "helpMarkDown": "Number of problems that generate warning"
+        },
+		{
+            "name": "countError",
+            "type": "string",
+            "label": "problem error count",
+            "defaultValue": "0",
+            "required": true,
+            "helpMarkDown": "Number of problems that make the task fail"
+        }
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "getproblems.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+
+}

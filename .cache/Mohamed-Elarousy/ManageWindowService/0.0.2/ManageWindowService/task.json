@@ -1,0 +1,111 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "9b6a0743-078f-48b0-901e-f35c5c1ecb81",
+    "name": "ManageWindowService",
+    "friendlyName": "Manage Window Service",
+    "description": "Manage Window Service",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Mohamed Elarousy",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": " Manage Window Service For :$(Action) $(ServiceName)",
+    "groups": [
+        
+    ],
+    "inputs": [{
+        "name": "Action",
+        "type": "pickList",
+        "label": "Action To Be Performed",
+        "required": true,
+        "defaultValue": "Create",
+        "helpMarkDown": "Select an action to manage window service.",
+        "options": {
+            "Create": "Create Or Ubdate",
+            "Delete": "Delete",
+            "Start": "Start",
+            "Stop": "Stop",
+            "Restart": "Restart"
+        }
+    },
+    {
+        "name": "ServiceName",
+        "type": "string",
+        "label": "Service Name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Name of the service to be created or update."
+
+    },
+    {
+        "name": "BinPath",
+        "type": "string",
+        "label": "Service Bin Path",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Path to executable",
+        "visibleRule": "Action = Create "
+    },
+    {
+        "name": "User",
+        "type": "string",
+        "label": "Log on Account",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Account for service",
+        "visibleRule": "Action = Create "
+    },
+    {
+        "name": "Password",
+        "type": "string",
+        "label": "Log on Account Password",
+        "defaultValue": "$(_Password)",
+        "required": false,
+        "helpMarkDown": "Password for service,Please Add Password in Release Variable",
+        "visibleRule": "Action = Create "
+    },
+    {
+        "name": "StartMode",
+        "type": "pickList",
+        "label": "StartMode",
+        "defaultValue": "automatic",
+        "required": false,
+        "helpMarkDown": "Mode of Service",
+        "visibleRule": "Action = Create ",
+        "options": {
+            "automatic": "automatic",
+            "manual": "manual",
+            "disabled": "disabled"
+        }
+    },
+    {
+        "name": "DisplayName",
+        "type": "string",
+        "label": "Service DisplayName",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "DisplayName For Service",
+        "visibleRule": "Action = Create "
+    },
+    {
+        "name": "Description",
+        "type": "string",
+        "label": "Service Description",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Description For Service",
+        "visibleRule": "Action = Create "
+    }
+],
+    "execution": {
+        
+        "PowerShell3": {
+            "target": "main.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

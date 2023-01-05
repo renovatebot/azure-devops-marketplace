@@ -1,0 +1,82 @@
+{
+    "id": "05bf385f-26f1-474d-a993-49930a16de43",
+    "name": "ALOpsAppTest",
+    "friendlyName": "ALOps App Test",
+    "description": "ALOps App Test",
+    "author": "Hodor",
+    "helpMarkDown": "This extension assists in automating DynamicsNAV App builds",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "420",
+        "Patch": "10"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "ALOps App Test",
+    "inputs": [
+        {
+            "name": "usedocker",
+            "type": "boolean",
+            "label": "In Docker",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Run command in Docker container."
+        },
+        {
+            "name": "nav_serverinstance",
+            "type": "string",
+            "label": "Server Instance",
+            "defaultValue": "BC140",
+            "required": true,
+            "helpMarkDown": "NAV Server Instance used for symbols and compiling the app.",
+            "visibleRule": "usedocker = false"
+        },
+        {
+            "name": "testfilter",
+            "type": "string",
+            "label": "Test CU Filter",
+            "defaultValue": "<=130000|>160000",
+            "required": false,
+            "helpMarkDown": "NAV Server Instance used for symbols and compiling the app."
+        },
+        {
+            "name": "fixed_tag",
+            "type": "string",
+            "label": "Fixed Container Tag",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows recycling of containers.",
+            "visibleRule": "usedocker = true"
+        },
+        {
+            "name": "show_available_tests",
+            "type": "boolean",
+            "label": "Show Tests",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Run command in Docker container."
+        },
+        {
+            "name": "import_action",
+            "type": "pickList",
+            "required": false,
+            "label": "TestSuite import Action",
+            "defaultValue": "Overwrite",
+            "options": {
+                "Default": "Default",
+                "Overwrite": "Overwrite",
+                "Skip": "Skip"
+            }
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "Run-NAVMgtAppTest.ps1"
+        }
+    }
+}

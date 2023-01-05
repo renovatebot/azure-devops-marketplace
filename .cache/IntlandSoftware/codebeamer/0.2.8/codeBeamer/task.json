@@ -1,0 +1,120 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "b1c46470-e40b-48b4-aac2-e769c992617f",
+  "name": "codeBeamer",
+  "friendlyName": "codeBeamer ALM Connector",
+  "description": "Upload XUnit test results to codeBeamer ALM",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "author": "Intland Software",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "instanceNameFormat": "codeBeamer ",
+  "groups": [
+    {
+      "name": "connection",
+      "displayName": "codeBeamer connection",
+      "isExpanded": true
+    },
+    {
+      "name": "testconfig",
+      "displayName": "Test configuration in codeBeamer",
+      "isExpanded": true
+    },
+    {
+      "name": "testrun",
+      "displayName": "Test run options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "test_xml_folder",
+      "type": "string",
+      "label": "Test XML folder path",
+      "defaultValue": ".",
+      "required": true,
+      "helpMarkDown": "UNIX-style path relative to the project's root. If not specified, uploads all test xml files in project. Search for xml files is recursive."
+    },
+    {
+      "name": "test_run_name",
+      "type": "string",
+      "label": "Test run name",
+      "defaultValue": "$(Build.DefinitionName) $(Build.Reason)",
+      "required": true,
+      "helpMarkDown": "Identifies the test run in codeBeamer",
+      "groupName": "testrun"
+    },
+    {
+      "name": "test_run_id",
+      "type": "string",
+      "label": "Test run ID",
+      "defaultValue": "$(Build.BuildId)",
+      "required": true,
+      "helpMarkDown": "Unique ID for the test runs, default value assigns the Azure Build number.",
+      "groupName": "testrun"
+    },
+    {
+      "name": "server_url",
+      "type": "string",
+      "label": "codeBeamer server URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Can be https://company.codebeamer.net or https://company.com/codebeamer or https://company.com/cb, where the codeBeamer root is running.",
+      "groupName": "connection"
+    },
+    {
+      "name": "cb_user",
+      "type": "string",
+      "label": "codeBeamer automation user",
+      "defaultValue": "$(cb_user)",
+      "required": true,
+      "helpMarkDown": "Please use a secret value by adding $(secretname), where the secret specifies the user",
+      "groupName": "connection"
+    },
+    {
+      "name": "cb_password",
+      "type": "string",
+      "label": "codeBeamer automation password",
+      "defaultValue": "$(cb_password)",
+      "required": true,
+      "helpMarkDown": "Please use a secret value by adding $(secretname), where the secret specifies the password",
+      "groupName": "connection"
+    },
+    {
+      "name": "test_configuration_id",
+      "type": "string",
+      "label": "Test configuration ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test configration ID number from the name TestConf-<ID>",
+      "groupName": "testconfig"
+    },
+    {
+      "name": "test_case_tracker_id",
+      "type": "string",
+      "label": "Test case tracker ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test case tracker ID can be obtained by opening the desired tracker and the ID is shown in the URL.",
+      "groupName": "testconfig"
+    },
+    {
+      "name": "test_run_tracker_id",
+      "type": "string",
+      "label": "Test run tracker ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Test run tracker ID number. Navigate to the desired test run tracker and obtain the ID from the URL.",
+      "groupName": "testconfig"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "31f040e5-e040-4336-878a-59a493389784",
+  "name": "InlineAzurePowershell",
+  "friendlyName": "Run Inline Azure Powershell",
+  "description": "Run a PowerShell from a textbox within an Azure environment",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [ "Build", "Release" ],
+  "author": "Peter Groenewegen - Xpirit",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "demands": [ "azureps" ],
+  "minimumAgentVersion": "1.95.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceName",
+      "options": {
+        "ConnectedServiceName": "Azure Classic",
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Classic Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "Script",
+      "type": "multiLine",
+      "label": "Script to run",
+      "defaultValue": "Write-Output 'Hello world'",
+      "required": true,
+      "helpMarkDown": "Write all your thoughts in powershell in this textbox to run it in Azure Powershell"
+    }
+  ],
+  "instanceNameFormat": "InlineAzurePowershell",
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\InlineAzurePowershell.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(Build.SourcesDirectory)"
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "B7DCA1F3-958E-4CB4-9EE9-94A4039099ED",
+  "name": "EBGToolInstaller",
+  "friendlyName": "EBG DevOps Tool Installer",
+  "description": "Configures the tools/dependencies required by all of the tasks",
+  "author": "Joshua Campbell",
+  "helpMarkDown": "This task must be added at least once before other tasks in each agent phase for all other tasks to work.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "powershell"
+  ],
+  "satisfies": [
+    "ebgtools"
+  ],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "EBG DevOps Tool Installer",
+  "groups": [
+    {
+      "name": "nugetFeed",
+      "displayName": "Nuget.org Feed",
+      "isExpanded": true
+    },
+    {
+      "name": "tools",
+      "displayName": "Tool Versions (Use to override versions of specific tools)",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "nugetFeed",
+      "type": "pickList",
+      "label": "Nuget Package Feed",
+      "defaultValue": "official",
+      "required": true,
+      "options": {
+        "official": "Official Nuget",
+        "custom": "Custom Feed"
+      },
+      "helpMarkDown": "",
+      "groupName": "nugetFeed"
+    },
+    {
+      "name": "nugetSource",
+      "type": "string",
+      "label": "Nuget Feed Source",
+      "defaultValue": "https://api.nuget.org/v3/index.json",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "nugetFeed",
+      "visibleRule": "nugetFeed = custom"
+    },
+    {
+      "name": "nugetUsername",
+      "type": "string",
+      "label": "Nuget Feed Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "groupName": "nugetFeed",
+      "visibleRule": "nugetFeed = custom"
+    },
+    {
+      "name": "nugetPassword",
+      "type": "string",
+      "label": "Nuget Feed Password/APIKey",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "",
+      "groupName": "nugetFeed",
+      "visibleRule": "nugetFeed = custom"
+    },
+    {
+      "name": "nugetUseProxy",
+      "type": "boolean",
+      "label": "Use Agent Proxy for Nuget Feed",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Set to true to use agent proxy (if configured) to connect to the nuget feed",
+      "groupName": "nugetFeed"
+    },
+    {
+      "name": "ebgApiVersion",
+      "type": "string",
+      "label": "DLaB.Xrm.EarlyBoundGenerator.Api - Version (Nuget)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify a version to override the default version: [1.2021.6.14](https://www.nuget.org/packages/DLaB.Xrm.EarlyBoundGenerator.Api/1.2021.6.14) Type latest to use the latest version available",
+      "groupName": "tools"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "EBGToolInstaller.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

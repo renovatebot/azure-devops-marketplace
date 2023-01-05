@@ -1,0 +1,60 @@
+{
+    "id": "b81ae43d-3362-47ea-8ad6-8b8a4fbeb310",
+    "name": "vsts-chef-task-linting",
+    "friendlyName": "Cookbook Linting (Chef)",
+    "description": "Perform linting tasks on the cookbook",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/cookbook-linting)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Cookbook Lint: $(lintAction)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "lintAction",
+            "type": "pickList",
+            "label": "Lint Action",
+            "defaultValue": "",
+            "required": true,
+            "options": {
+                "chefspec": "ChefSpec",
+                "foodcritic": "Foodcritic",
+                "chefstyle": "Chef Style"
+            },
+            "helpMarkDown": "Select the Linting Action that should be performed"
+        },
+        {
+            "name": "lintActionCommand",
+            "type": "string",
+            "label": "Lint Action Rake Task",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkdown": "Specify the Rake task that should be run for this action. This overrides the default action.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "lintActionFolder",
+            "type": "string",
+            "label": "Lint Action Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkdown": "Folder in which the Lint command should be run. This where your Rakefile is.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "linting.js"
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "id": "ead167ff-f0e0-47c1-84dd-ea323adaa50c",
+    "name": "AzureStorageUpload",
+    "friendlyName": "Azure Storage Upload",
+    "description": "Build task to upload a file to Azure storage",
+    "helpMarkDown": "[More Information](https://docs.microsoft.com/en-us/azure/storage/storage-use-azcopy)",
+    "category": "Utility",
+    "visibility":[
+        "Build"
+				],
+    "author": "Marcus Felling",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "minimumAgentVersion": "1.91.0",
+    "inputs": [
+        {
+            "name": "Source",
+            "type": "string",
+            "label": "Source",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory where the uploaded file resides"
+        },
+		{
+            "name": "Pattern",
+            "type": "string",
+            "label": "File",
+            "defaultValue": "abc.txt",
+            "required": true,
+            "helpMarkDown": "Name of file"
+        },
+        {
+            "name": "Dest",
+            "type": "string",
+            "label": "Destination",
+            "defaultValue": "https://myaccount.file.core.windows.net/myfileshare/",
+            "required": true,
+            "helpMarkDown": "URL of Azure Fileshare or Blob storage"
+        },
+        {
+            "name": "DestKey",
+            "type": "string",
+            "label": "Key",
+            "defaultValue": "$(SecretKey)",
+            "required": true,
+            "helpMarkDown": "Key to the specified storage location. I recommend using a secret build variable: https://www.visualstudio.com/en-us/docs/build/define/variables#secret-variables"
+        },
+        {
+            "name": "AdditionalOptions",
+            "type": "string",
+            "label": "Additional Options",
+            "required": false,
+            "helpMarkDown": "Add additional options for azcopy like /SetContentType"
+	}
+    ],
+    "instanceNameFormat":  "Upload file Azure Storage",
+	"execution":  {
+					  "PowerShell3":  {
+										  "target":  "$(currentDirectory)\\AzureStorageUpload.ps1"
+									  }
+                  },
+    "messages": {
+        "Upload": "Upload Complete",
+    }
+}

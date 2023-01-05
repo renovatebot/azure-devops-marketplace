@@ -1,0 +1,159 @@
+{
+  "id": "69a85a38-f912-4fe6-98de-d97f8afa2f80",
+  "name": "config-map",
+  "friendlyName": "Update ConfigMap",
+  "description": "Applies environment properties to specified OpenShift ConfigMap.",
+  "author": "Red Hat",
+  "helpMarkDown": "See [getting started](https://github.com/redhat-developer/openshift-vsts/blob/master/docs/getting-started.md)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "preview": true,
+  "demands": [],
+  "groups": [
+    {
+      "name": "openshiftCluster",
+      "displayName": "OpenShift Cluster",
+      "isExpanded": true
+    },
+    {
+      "name": "commands",
+      "displayName": "Commands",
+      "isExpanded": true
+    }
+  ],
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 13
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "config-map $(message)",
+  "inputs": [
+    {
+      "name": "connectionType",
+      "type": "pickList",
+      "label": "Service connection type",
+      "defaultValue": "OpenShift Connection Service",
+      "required": true,
+      "options": {
+        "OpenShift Connection Service": "OpenShift Connection Service",
+        "Runtime Configuration": "Set Up Configuration on Runtime"
+      },
+      "groupName": "openshiftCluster",
+      "helpMarkDown": "Select a service connection type."
+    },
+    {
+      "name": "openshiftService",
+      "type": "connectedService:openshift",
+      "label": "OpenShift service connection",
+      "groupName": "openshiftCluster",
+      "helpMarkDown": "Select OpenShift service connection to use.",      
+      "required": true,
+      "visibleRule": "connectionType = OpenShift Connection Service"
+    },
+    {
+      "name": "configurationType",
+      "type": "radio",
+      "label": "Configuration type",
+      "defaultValue": "file",
+      "groupName": "openshiftCluster",
+      "helpMarkDown": "Type of configuration for oc command. It can be a file path or an inline script.",
+      "options": {
+          "file": "File Path",
+          "inline": "Inline Configuration"
+      },
+      "visibleRule": "connectionType = Runtime Configuration"
+    },
+    {
+      "name": "configurationPath",
+      "type": "filePath",
+      "label": "File Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Filename, directory, or URL to the kubeconfig file that will be used with the commands.",
+      "groupName": "openshiftCluster",
+      "visibleRule": "configurationType = file"
+    },
+    {
+      "name": "inlineConfig",
+      "type": "multiLine",
+      "properties": {
+        "resizable": "true",
+        "rows": "10",
+        "maxLength": "5000"
+      },
+      "required": true,
+      "defaultValue": "",
+      "label": "Inline configuration",
+      "helpMarkDown": "Inline kubeconfig for oc command",
+      "groupName": "openshiftCluster",
+      "visibleRule": "configurationType = inline"
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version of oc",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "commands",
+      "helpMarkDown": "Select the oc version to use e.g. 'v3.10.0' (leave blank for latest). You can also specify a direct URL to a oc release bundle."
+    },
+    {
+      "name": "configMapName",
+      "type": "string",
+      "label": "Name of the ConfigMap",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "commands",
+      "helpMarkDown": "Name of the ConfigMap to which to apply the properties."
+    },
+    {
+      "name": "namespace",
+      "type": "string",
+      "label": "Namespace of ConfigMap",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "commands",
+      "helpMarkDown": "Specify the namespace of the ConfigName. If none is specified the current namespace is used."
+    },
+    {
+      "name": "properties",
+      "type": "multiLine",
+      "label": "ConfigMap properties",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "To view the ConfigMap parameters in a grid, click on “…” next to the textbox.",
+      "groupName": "commands",
+      "properties": {
+        "editorExtension": "ms.vss-services-azure.parameters-grid"
+      }
+    },
+    {
+      "name": "uselocalOc",
+      "type": "boolean",
+      "label": "Use local oc executable",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "commands",
+      "helpMarkDown": "Check if oc is already installed in the machine and use that if available"
+    },
+    {
+      "name": "proxy",
+      "type": "string",
+      "label": "Use proxy to download oc executable",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "commands",
+      "helpMarkDown": "make use of a proxy to download oc executable"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "lib/config-map-task.js",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

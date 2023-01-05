@@ -1,0 +1,110 @@
+{
+  "id": "90e84900-118a-11e6-8919-41eac3c3d2e7",
+  "name": "DnvmInstall",
+  "friendlyName": "DNVM Install",
+  "description": "Installs a version of the .NET Execution Environment (DNX).",
+  "author": "André Marques de Araújo",
+  "helpMarkDown": "[More Information](https://github.com/aspnet/dnvm)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "dnvm install $(versionNuPkgOrAlias) -r $(runtime) -a $(architecture)",
+  "groups": [
+    {
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "versionNuPkgOrAlias",
+      "type": "string",
+      "label": "Version or package",
+      "defaultValue": "latest",
+      "required": true,
+      "helpMarkDown": "The version to install or the path to a '.nupkg' file to install. If the version cannot be found, the latest available version will be used instead."
+    },
+    {
+      "name": "runtime",
+      "type": "pickList",
+      "label": "Runtime",
+      "defaultValue": "clr",
+      "required": true,
+      "helpMarkDown": "The runtime flavor to install (default: CLR).",
+      "options": {
+        "clr": "CLR",
+        "coreclr": "Core CLR",
+        "mono": "Mono"
+      }
+    },
+    {
+      "name": "architecture",
+      "type": "pickList",
+      "label": "Architecture",
+      "defaultValue": "x86",
+      "required": true,
+      "helpMarkDown": "The processor architecture of the runtime to install (default: x86).",
+      "options": {
+        "x86": "x86",
+        "x64": "x64",
+        "arm": "ARM"
+      }
+    },
+    {
+      "name": "alias",
+      "type": "string",
+      "label": "Alias",
+      "defaultValue": "default",
+      "required": false,
+      "helpMarkDown": "Set an alias to the installed runtime."
+    },
+    {
+      "name": "os",
+      "type": "pickList",
+      "label": "OS",
+      "defaultValue": "win",
+      "required": true,
+      "helpMarkDown": "The operating system that the runtime targets (default: Windows).",
+      "options": {
+        "win": "Windows",
+        "osx": "OSX",
+        "darwin": "Darwin",
+        "linux": "Linux"
+      },
+      "groupName": "advanced"
+    },
+    {
+        "name": "skipNativeImages",
+        "type": "boolean",
+        "label": "Skip generation of native images",
+        "required": false,
+        "helpMarkDown": "Skip generation of native images native for runtime libraries on Desktop CLR.",
+        "groupName": "advanced"
+    },
+    {
+      "name": "setupVersionManager",
+      "type": "boolean",
+      "label": "Setup version manager",
+      "required": false,
+      "helpMarkDown": "Install the .NET Version Manager into the user profile directory.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DnvmInstall.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

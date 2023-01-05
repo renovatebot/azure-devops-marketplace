@@ -1,0 +1,78 @@
+{
+    "id":  "5dd8a76a-ba46-4d2d-994c-3f038f45eecc",
+    "name":  "SignPathDownloadSignedArtifact",
+    "friendlyName":  "SignPath: Download Signed Artifact",
+    "description":  "Download a signed artifact from SignPath. If the signing request is not yet processed, this task will wait until the signing request has been completed.",
+    "helpMarkDown":  "",
+    "category":  "Signing",
+    "author":  "SignPath GmbH",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  2,
+                    "Patch":  1
+                },
+    "instanceNameFormat":  "SignPath DownloadSignedArtifact $(signingRequestId)",
+    "groups":  [
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "organizationId",
+                       "type":  "string",
+                       "label":  "Organization ID",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Your SignPath organization ID. If you don\u0027t know it, log into SignPath and go to the organization details page."
+                   },
+                   {
+                       "name":  "signingRequestId",
+                       "type":  "string",
+                       "label":  "Signing request ID",
+                       "defaultValue":  "$(SigningRequestId)",
+                       "required":  true,
+                       "helpMarkDown":  "The signing request ID. You obtain it from the SignPathSubmitSigningRequest task."
+                   },
+                   {
+                       "name":  "outputArtifactPath",
+                       "type":  "filePath",
+                       "label":  "Output artifact path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The path for the signed artifact returned by SignPath."
+                   },
+                   {
+                       "name":  "allowOverwriting",
+                       "type":  "boolean",
+                       "label":  "Overwrite output artifact if file exists",
+                       "defaultValue":  "false",
+                       "required":  true,
+                       "helpMarkDown":  "If the output artifact path already exists, should it be overwritten?"
+                   },
+                   {
+                       "name":  "ciUserToken",
+                       "type":  "string",
+                       "label":  "CI user token",
+                       "defaultValue":  "$(CIUserToken)",
+                       "required":  true,
+                       "helpMarkDown":  "The CI user\u0027s access token. Do NOT save it inside your YAML build definition, use a password variable to obtain the value!"
+                   },
+                   {
+                       "name":  "apiUrl",
+                       "type":  "string",
+                       "label":  "API URL",
+                       "defaultValue":  "https://app.signpath.io/api/",
+                       "required":  true,
+                       "groupName":  "advanced",
+                       "helpMarkDown":  "The URL of your SignPath instance or the SignPath cloud instance URL."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "SignPathDownloadSignedArtifactTask.ps1"
+                                      }
+                  }
+}

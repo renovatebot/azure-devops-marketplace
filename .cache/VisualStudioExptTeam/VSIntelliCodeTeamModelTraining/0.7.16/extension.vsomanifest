@@ -1,0 +1,82 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "intellicode-endpoint-type",
+            "description": "Service connection type for Visual Studio IntelliCode connections",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Task"
+            }
+        },
+        {
+            "id": "intellicode-service-endpoint",
+            "description": "IntelliCode",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "intellicode3-scheme",
+                "displayName": "IntelliCode",
+                "url": {
+                    "isVisible": "false",
+                    "value": "https://dev.azure.com/prod.intellicode.vsengsaas/"
+                },
+                "dataSources": [
+                    {
+                        "name": "AccessToken",
+                        "endpointUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                        "requestVerb": "Post",
+                        "requestContent": "grant_type=authorization_code&code={{{AuthorizationCode}}}&redirect_uri=https%3A%2F%2Fapp.vssps.visualstudio.com%2Foauth2%2Freceive&client_id=efa03cf6-622b-49ff-90ee-936f15c700d6&scope=offline_access%20api%3A%2F%2Fefa03cf6-622b-49ff-90ee-936f15c700d6%2Fmodel.train",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RefreshToken",
+                        "endpointUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+                        "requestVerb": "Post",
+                        "requestContent": "client_id=efa03cf6-622b-49ff-90ee-936f15c700d6&grant_type=refresh_token&refresh_token={{{RefreshToken}}}&scope=offline_access%20api%3A%2F%2Fefa03cf6-622b-49ff-90ee-936f15c700d6%2Fmodel.train",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "displayName": "OAuth2",
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-oauth2",
+                        "requiresOAuth2Configuration": false,
+                        "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize?response_type=code&client_id=efa03cf6-622b-49ff-90ee-936f15c700d6&redirect_uri=https%3A%2F%2Fapp.vssps.visualstudio.com%2Foauth2%2Freceive&response_mode=query&scope=offline_access%20api%3A%2F%2Fefa03cf6-622b-49ff-90ee-936f15c700d6%2Fmodel.train&prompt=login",
+                        "dataSourceBindings": [
+                            {
+                                "target": "AccessToken",
+                                "dataSourceName": "AccessToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"Error\" : \"{{{error}}}\", \"Error_Description\" : \"{{{error_description}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"Scope\" : \"{{{scope}}}\"}"
+                            },
+                            {
+                                "target": "RefreshToken",
+                                "dataSourceName": "RefreshToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"Error\" : \"{{{error}}}\", \"Error_Description\" : \"{{{error_description}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"Scope\" : \"{{{scope}}}\"}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

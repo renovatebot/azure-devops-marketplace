@@ -1,0 +1,197 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "2ed34943-e39d-4289-bd57-686fae0f69d7",
+  "name": "ARMDeploymentInsights",
+  "friendlyName": "ARM Deployment Insights",
+  "description": "Preview the effects of your deployments.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Authority Partners",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "instanceNameFormat": "Echo $(samplestring)",
+  "groups": [
+    {
+      "name": "azure",
+      "displayName": "Azure",
+      "isExpanded": true
+    },
+    {
+      "name": "template",
+      "displayName": "Template",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "deploymentName",
+      "type": "string",
+      "label": "Deployment Name",
+      "required": true,
+      "helpMarkDown": "Name of the deployment to be displayed in the build results tab. Deployment Name also serves as a deployment identifier and must be unique."
+    },
+    {
+      "name": "deploymentScope",
+      "type": "pickList",
+      "label": "Deployment Scope",
+      "defaultValue": "Resource Group",
+      "required": true,
+      "helpMarkDown": "Deployment scope of the deployment.",
+      "groupName": "azure",
+      "options": {
+        "Subscription": "Subscription",
+        "Resource Group": "Resource Group"
+      }
+    },
+    {
+      "name": "armServiceConnection",
+      "type": "connectedService:AzureRM",
+      "label": "ARM Service Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager Service Connection with access to the selected deployment scope.",
+      "groupName": "azure",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel >= deploymentScope"
+      }
+    },
+    {
+      "name": "subscription",
+      "aliases": [
+        "subscriptionId"
+      ],
+      "type": "pickList",
+      "label": "Subscription",
+      "required": true,
+      "groupName": "azure",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "resourceGroup",
+      "aliases": [
+        "resourceGroupName"
+      ],
+      "type": "pickList",
+      "label": "Resource Group",
+      "required": true,
+      "groupName": "azure",
+      "visibleRule": "deploymentScope = Resource Group",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "location",
+      "type": "pickList",
+      "label": "Location",
+      "required": true,
+      "helpMarkDown": "Location to store deployment metadata.",
+      "groupName": "azure",
+      "visibleRule": "deploymentScope != Resource Group",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "templateLocation",
+      "type": "pickList",
+      "label": "Template Location",
+      "defaultValue": "File",
+      "required": true,
+      "groupName": "template",
+      "options": {
+        "File": "File",
+        "URI": "URI"
+      }
+    },
+    {
+      "name": "templateFile",
+      "type": "filePath",
+      "label": "Template",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Local path or a pattern pointing to the Azure Resource Manager template.",
+      "groupName": "template",
+      "visibleRule": "templateLocation = File"
+    },
+    {
+      "name": "templateParametersFile",
+      "type": "filePath",
+      "label": "Template Parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Local path or a pattern pointing to the parameters file of the Azure Resource Manager template.",
+      "groupName": "template",
+      "visibleRule": "templateLocation = File"
+    },
+    {
+      "name": "templateUri",
+      "type": "string",
+      "label": "Template URI",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The URI to the Azure Resource Manager template.",
+      "groupName": "template",
+      "visibleRule": "templateLocation = URI"
+    },
+    {
+      "name": "templateParametersUri",
+      "type": "string",
+      "label": "Template Parameters URI",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The URI to the parameters file of the Azure Resource Manager template.",
+      "groupName": "template",
+      "visibleRule": "templateLocation = URI"
+    },
+    {
+      "name": "additionalWhatIfArguments",
+      "type": "multiLine",
+      "label": "Additional What-If Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments for What-If operation.<br/>Use this [this](https://docs.microsoft.com/en-us/cli/azure/deployment/sub?view=azure-cli-latest#az-deployment-sub-what-if) as a reference for Subscription deployment scope.<br/>Use this [this](https://docs.microsoft.com/en-us/cli/azure/deployment/group?view=azure-cli-latest#az-deployment-group-what-if) as a reference for Resource Group deployment scope.<br/>**Important: Some arguments can not be overriden (--no-pretty-print, --no-prompt, --result-format=FullResourcePayloads).**",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "subscription",
+      "endpointId": "$(armServiceConnection)",
+      "dataSourceName": "AzureSubscriptions",
+      "resultTemplate": "{ \"Value\" : \"{{{subscriptionId}}}\", \"DisplayValue\" : \"{{{displayName}}} ({{{subscriptionId}}})\" }"
+    },
+    {
+      "target": "resourceGroup",
+      "endpointId": "$(armServiceConnection)",
+      "dataSourceName": "AzureResourceGroupsByExplicitSubscription",
+      "parameters": {
+        "subscriptionId": "$(subscription)"
+      }
+    },
+    {
+      "target": "location",
+      "endpointId": "$(armServiceConnection)",
+      "dataSourceName": "AzureLocationsByDeploymentScope",
+      "parameters": {
+        "subscriptionId": "$(subscription)",
+        "deploymentScope": "$(deploymentScope)"
+      }
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

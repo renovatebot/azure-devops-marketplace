@@ -1,0 +1,144 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "472B73F0-49A0-4FF3-B4DA-2951343494A6",
+  "name": "WorksoftExecutionManager",
+  "friendlyName": "Worksoft Execution Manager",
+  "description": "Perform automation of Certify Process(es) within Worksoft Execution Manager",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "author": "worksoft",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 38
+  },
+  "instanceNameFormat": "Execution $(BookmarkName)",
+  "inputs": [
+    {
+      "name":"executiontype",
+      "type":"pickList",
+      "label":"Execution Type",
+      "defaultValue": "bookmark",
+      "required": true,
+      "options":{
+        "bookmark": "Execute a Bookmark",
+        "request": "Execute a Pre-Defined Request",
+        "processes": "Execute List of Processes",
+        "processesext": "Execute List of Processes (only E/M 10.1.10+)"
+      },
+      "helpMarkDown": "Do you want to execute a Bookmark, run a list of processes, or a pre-defined request within Execution Manager?"
+    },
+    {
+      "name": "bookmarkname",
+      "type": "string",
+      "label": "Bookmark Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Bookmark Name (specified in Management Studio)",
+      "visibleRule": "executiontype = bookmark"
+    },
+    {
+      "name": "requestname",
+      "type": "string",
+      "label": "Pre-Defined Request Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Pre-Defined Execution Manager Request Name",
+      "visibleRule": "executiontype = request"
+    },
+    {
+      "name": "certifydatabase",
+      "type": "string",
+      "label": "Certify Database Alias",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Certify database alias name specified in Management Studio",
+      "visibleRule": "executiontype = processes || executiontype = processesext"
+    },
+    {
+      "name": "certifyproject",
+      "type": "string",
+      "label": "Certify Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Certify Project Name",
+      "visibleRule": "executiontype = processes || executiontype = processesext"
+    },
+    {
+      "name": "processlist",
+      "type": "string",
+      "label": "Process Name(s)",
+      "defaultValue": "[\"folder1\\\\folder1a\\\\process1\",\"folder2\\\\process2\"]",
+      "required": true,
+      "helpMarkDown": "Process(es) complete with folder paths i.e. [\"folder1\\\\folder1a\\\\process1\",\"folder2\\\\process2\"].",
+      "visibleRule": "executiontype = processes"
+    },
+    {
+      "name": "processlistextended",
+      "type": "string",
+      "label": "Process Name(s)",
+      "defaultValue": "[{\n\"ProcessPath\": \"Folder1\\\\Folder2\\\\Process1\",\n\"Layout\": \"optional\",\n\"RecordSet\": \"optional\",\n\"RecordSetMode\": \"optional\",\n\"SpecificResourceName\": \"optional\",\n\"ResultAttributes\": [{\"Name\": \"version\",\"Value\": \"123\"}],\n\"ResourceDataRequirements\": [{\"Name\": \"operating system\",\"Value\": \"Windows 2016\"}],\n\"CertifyParameters\": [{\"Name\": \"capturescreenon\",\"Value\": \"CaptureAllSteps\"}]},\n{\"ProcessPath\": \"Folder1\\\\Process2\",\"SpecificResourceName\": \"optional\",\"ResultAttributes\": [],\"ResourceRequirements\": [],\"CertifyParms\": []}]",
+      "required": true,
+      "helpMarkDown": "Process(es) complete with folder paths (if using yaml then the key is processlistextended:) i.e. [{\n\"ProcessPath\": \"Folder1\\\\Folder2\\\\Process1\",\n\"Layout\": \"optional\",\n\"RecordSet\": \"optional\",\n\"RecordSetMode\": \"optional\",\n\"SpecificResourceName\": \"optional\",\n\"ResultAttributes\": [{\"Name\": \"version\",\"Value\": \"123\"}],\n\"ResourceDataRequirements\": [{\"Name\": \"operating system\",\"Value\": \"Windows 2016\"}],\n\"CertifyParameters\": [{\"Name\": \"capturescreenon\",\"Value\": \"CaptureAllSteps\"}]},\n{\"ProcessPath\": \"Folder1\\\\Process2\",\"SpecificResourceName\": \"optional\",\"ResultAttributes\": [],\"ResourceRequirements\": [],\"CertifyParms\": []}].",
+      "visibleRule": "executiontype = processesext"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "label": "Email Address",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Email Address for authentication in Execution Manager (user account must belong to only a single tenant)"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for authentication in Execution Manager; Please utilize secrets within the Azure Key Vault.  The syntax to reference a variable will look like $(variableName)"
+    },
+    {
+      "name": "executionmanagerhostname",
+      "type": "string",
+      "label": "Execution Manager Host Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Execution Manager Base Url (i.e. https://servername)"
+    },
+    {
+      "name": "resultattributeparameters",
+      "type": "string",
+      "label": "Result Attribute Values",
+      "defaultValue": "{attributeName1}{value1}{attributeName2}{value2}",
+      "required": false,
+      "helpMarkDown": "Values of result attributes to set for execution.  Each result attribute must exist in the Certify database. The syntax for use is {attributeName1}{value1}{attributeName2}{value2}",
+      "visibleRule": "executiontype = processes || executiontype = bookmark || executiontype = request"
+    },
+    {
+      "name": "resultfolder",
+      "type": "string",
+      "label": "Certify Result Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Target Result Folder for execution within Certify.  If it does not exist, it will be created during execution."
+    }
+  ],
+  "OutputVariables": [{
+    "name":"overallstatus",
+    "description":"Overall status as a whole for all Certify Processes executed"
+  },
+  {
+    "name":"overallexecutionstatus",
+    "description":"Overall execution status as a whole for all Certify Processes executed"
+  },
+  {
+    "name":"executionjson",
+    "description": "Json describing all the details for each Certify Process"
+  }],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

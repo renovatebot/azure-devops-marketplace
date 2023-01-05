@@ -1,0 +1,86 @@
+{
+  "id": "f71cf7ec-cc2e-4d4c-b93d-e21e142ae2cf",
+  "name": "azure container registry",
+  "friendlyName": "Pull images from ACR",
+  "description": "Pull docker imaes from azure container registry",
+  "author": "Siddharth Kalai",
+  "helpMarkDown": "",
+  "preview": false,  
+  "category": "Utility",
+  "visibility": [
+    "Build",
+	"Release",
+	"Tool"
+  ],
+  "demands": [
+  "azureps"
+  ],
+  "version": {
+    "Major": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Pull docker imaes from $(message)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"
+
+    },
+	{
+      "name": "ResourceGroupName",
+      "label": "ResourceGroupName",
+      "type": "pickList",
+      "required": true,
+      "helpMarkDown": "Select resource group which contains the ACR",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "Azurecontainerregistry",
+      "label": "Azurecontainerregistry",
+      "type": "string",
+      "required": false,
+      "helpMarkDown": "Select the ACR which has the docker images",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+	{
+      "name": "dockerimages",
+      "type": "multiline",
+      "label": "dockerimages",
+      "required": false,
+      "helpMarkDown": "Provide the docker image names. One image per line",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl":"{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.ContainerRegistry/registries?api-version=2017-10-01",
+	  "resultSelector":"jsonpath:$.value[*]",
+	  "resultTemplate":"{{{ #extractResource id resourcegroups}}}"
+    },
+    {
+      "name": "Azurecontainerregistry",
+      "target": "Azurecontainerregistry",
+      "endpointId": "$(ConnectedServiceNameARM)",
+	  "endpointUrl":"{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.ContainerRegistry/registries?api-version=2017-10-01",
+      "resultSelector":"jsonpath:$.value[*]",
+	  "resultTemplate":"{{{name}}}"
+	  }  
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "ACR.ps1"
+    }
+  }
+}

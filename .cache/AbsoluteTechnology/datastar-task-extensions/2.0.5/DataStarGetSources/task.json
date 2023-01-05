@@ -1,0 +1,138 @@
+{
+    "id": "86AD225E-D75D-4606-B59C-80A6BEBEA796",
+    "name": "DataStarGetSources",
+    "friendlyName": "DataStar Get Sources",
+    "description": "Gets the source files specified in the manifest file and writes them to disk so that they can be used as part of the build.",
+	"helpMarkDown": "[More Information](https://datastar.software/content/azuredevops/GetSources/)",
+    "category": "DataStar",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Absolute Technology Limited",
+    "version": {
+      "Major": 2,
+      "Minor": 0,
+      "Patch": 5
+    },
+	"releaseNotes": "The task writes the files specified in the manifest to disk so that they can be used as part of the build",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+       {
+			"name": "ManifestPath",
+			"type": "string",
+			"label": "Manifest Path",
+			"required": true,
+			"helpMarkDown": "The $ prefixed version control path to the file or folder containing the manifest files."
+		},
+		{
+			"name": "SourcePath",
+			"type": "string",
+			"label": "Source Path",
+			"required": true,
+			"helpMarkDown": "The target directory for the source files."
+		},
+        {
+            "name": "FailOnStderr",
+            "type": "boolean",
+            "label": "Fail on Standard Error",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, this task will fail if any errors are written to the StandardError stream.",
+            "groupName": "advanced"
+        },
+		{
+            "name": "CleanSourceDirectory",
+            "type": "boolean",
+            "label": "Clean Source Directory",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, this task will delete existing files from the source directory.",
+            "groupName": "advanced"
+        },
+		{
+			"name": "RepositoryUri",
+			"type": "string",
+			"label": "TFS Repository Uri",
+			"groupName": "advanced",
+			"required": false,
+			"helpMarkDown": "The TFS Server Url (defaults to the BUILD_REPOSITORY_URI)"
+		},
+	    {
+		    "name": "BearerToken",
+		    "type": "string",
+		    "label": "Bearer Token",
+		    "groupName": "advanced",
+		    "required": false,
+		    "helpMarkDown": "Optional security token if not using default credentials"
+	    },
+		{
+			"name": "Username",
+			"type": "string",
+			"label": "Username",
+			"groupName": "advanced",
+			"required": false,
+			"helpMarkDown": "Optional username if not using default credentials"
+		},
+		{
+			"name": "Password",
+			"type": "string",
+			"label": "Password",
+			"groupName": "advanced",
+			"required": false,
+			"helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+        },
+		{
+            "name": "UseProxyServer",
+            "type": "boolean",
+            "label": "Use Proxy Server",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Use a proxy server, if the Url is not specified it will try to determine the proxy server automatically.",
+            "groupName": "advanced"
+        },
+		{
+            "name": "ProxyUri",
+            "type": "string",
+            "label": "Proxy Uri",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "The Proxy Server Url"
+        },
+		{
+            "name": "ProxyUsername",
+            "type": "string",
+            "label": "Proxy Username",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional username if not using default credentials"
+        },
+        {
+            "name": "ProxyPassword",
+            "type": "string",
+            "label": "ProxyPassword",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+        }
+	],
+    "instanceNameFormat": "Get Sources",
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    },
+    "messages": {
+    }
+}

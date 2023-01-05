@@ -1,0 +1,149 @@
+{
+    "$schema": "https://github.com/Microsoft/vsts-task-lib/blob/master/tasks.schema.json",
+    "id": "193d7989-3d59-4b36-ad4f-162fcd59b3e5",
+    "name": "PnPPowerShell",
+    "friendlyName": "Run PnP PowerShell",
+    "description": "Can use PowerShell cmdlets inline or with a referenced script.",
+    "author": "Sebastian Schütze",
+    "helpMarkDown": "This task helps you to execute inline PowerShell or a referenced file with the already loaded PnP PowerShell module. <br/><br/>[More Information](https://docs.microsoft.com/en-us/powershell/sharepoint/sharepoint-pnp/sharepoint-pnp-cmdlets?view=sharepoint-ps)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "demands": [
+        "PowerShell"
+    ],
+    "version": {
+        "Major": "3",
+        "Minor": "0",
+        "Patch": "4"
+    },
+    "preview": false,
+    "minimumAgentVersion": "2.115.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "PnP PowerShell $(FileOrInline) to $(SharePointVersion)",
+    "inputs": [
+        {
+            "name": "SharePointVersion",
+            "type": "radio",
+            "label": "SharePoint Version",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SharePoint version to witch the PnP xml should be deployed to.",
+            "options": {
+                "SpOnline": "SharePoint Online",
+                "Sp2016": "SharePoint 2016",
+                "Sp2013": "SharePoint 2013"
+            }
+        },
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "sharepointConntection"
+            ],
+            "type": "connectedService:sharepoint-site",
+            "label": "SharePoint Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the SharePoint connection to SharePoint for the deployment. Create a new service connection to the SharePoint site where you want to connect to."
+        },
+        {
+            "name": "FileOrInline",
+            "type": "pickList",
+            "label": "Type",
+            "defaultValue": "File",
+            "required": true,
+            "helpMarkDown": "Type of the script: File Path or Inline Xml.",
+            "options": {
+                "File": "File Path",
+                "Inline": "Inline PowerShell"
+            }
+        },
+        {
+            "name": "PnPPowerShellInline",
+            "type": "multiLine",
+            "label": "Inline PnP PowerShell",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Allows you to specify PowerShell containing PnP PowerShell cmdlets. <br/><br/>Check the [official documentation](https://docs.microsoft.com/en-us/powershell/sharepoint/sharepoint-pnp/sharepoint-pnp-cmdlets?view=sharepoint-ps) for command that can be used.",
+            "visibleRule": "FileOrInline = Inline",
+            "properties": {
+                "resizable": "true",
+                "rows": "10"
+            }
+        },
+        {
+            "name": "PnPPowerShellFilePath",
+            "type": "filePath",
+            "label": "PnP PowerShell Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the PowerShell file containing the script to execute.",
+            "visibleRule": "FileOrInline = File"
+        },
+        {
+            "name": "PsArguments",
+            "type": "singleline",
+            "label": "Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Arguments passed to the PowerShell script. Either ordinal parameters or named parameters.",
+            "visibleRule": "FileOrInline = File"
+        },
+        {
+            "name": "errorActionPreference",
+            "type": "pickList",
+            "label": "ErrorActionPreference",
+            "required": false,
+            "defaultValue": "stop",
+            "options": {
+                "stop": "Stop",
+                "continue": "Continue",
+                "silentlyContinue": "SilentlyContinue"
+            },
+            "helpMarkDown": "Prepends the line `$ErrorActionPreference='VALUE'` at the top of your script."
+        },
+        {
+            "name": "RequiredVersion",
+            "type": "string",
+            "label": "Required Version",
+            "defaultValue": "latest",
+            "required": true,
+            "helpMarkDown": "Set the version that should be loaded. Use 'latest' to always load the newest version. Check github for the released versions: https://github.com/SharePoint/PnP-PowerShell/releases",
+            "groupName": "advanced"
+        },
+        {
+            "name": "failOnStderr",
+            "type": "boolean",
+            "label": "Fail on Standard Error",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "If this is true, this task will fail if any errors are written to the error pipeline, or if any data is written to the Standard Error stream. Otherwise the task will rely on the exit code to determine failure.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working Directory",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Working directory where the script is run.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "StartScript.ps1"
+        }
+    }
+}

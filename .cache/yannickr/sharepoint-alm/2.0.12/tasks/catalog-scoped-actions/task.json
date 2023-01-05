@@ -1,0 +1,121 @@
+{
+    "id": "9e7e19af-f07d-4ccf-863a-74d2c93fa926",
+    "name": "SharePointALMCatalogScoped",
+    "friendlyName": "SharePoint ALM: Catalog Scoped Actions",
+    "description": "ALM actions in scope of the SharePoint Tenant or Site App Catalog.",
+    "helpMarkDown": "",
+    "category": "Deploy",
+    "author": "Yannick Reekmans",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 12
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.99.0",
+    "inputs": [
+        {
+            "name": "spSiteConnection",
+            "type": "connectedService:sharepoint-online-site",
+            "label": "Connection to the SharePoint Site",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the service connection to the SharePoint Site."
+        },
+        {
+            "name": "useTenantCatalog",
+            "type": "boolean",
+            "label": "Use Tenant App Catalog",
+            "defaultValue": true,
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "If checked, use the Tenant App Catalog otherwise use the Site Collection App Catalog"
+        },
+        {
+            "name": "action",
+            "type": "pickList",
+            "label": "Action",
+            "required": false,
+            "helpMarkDown": "Action to be performed on the Solution Package",
+            "defaultValue": "Add",
+            "options": {
+                "Add": "Add Solution Package",
+                "Deploy": "Deploy Solution Package",
+                "Retract": "Retract Solution Package",
+                "Remove": "Remove Solution Package"
+            }
+        },
+        {
+            "name": "appFilePath",
+            "type": "filePath",
+            "label": "Path to the SharePoint solution package",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Path to the SharePoint solution package that needs to be added to the SharePoint App Catalog.",
+            "visibleRule": "action = Add"
+        },
+        {
+            "name": "overwriteExisting",
+            "type": "boolean",
+            "label": "Overwrite package if exists",
+            "defaultValue": true,
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Whether or not an existing package with the same name will be overwritten.",
+            "visibleRule": "action = Add"
+        },
+        {
+            "name": "packageIdOut",
+            "type": "string",
+            "label": "PackageId output variable",
+            "defaultValue": "AppPackageId",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "",
+            "visibleRule": "action = Add"
+        },
+        {
+            "name": "packageIdIn",
+            "type": "string",
+            "label": "Id of the package in the SharePoint App Catalog",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Id of the package in the SharePoint App Catalog.",
+            "visibleRule": "action != Add"
+        },
+        {
+            "name": "skipFeatureDeployment",
+            "type": "boolean",
+            "label": "Tenant-wide deployment of the Solution Package",
+            "defaultValue": true,
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Tenant-wide deployment of the Solution Package.",
+            "visibleRule": "action = Deploy"
+        }
+    ],
+    "instanceNameFormat": "SharePoint ALM: $(action) Solution Package",
+    "execution": {
+        "Node": {
+            "target": "catalog-scoped-actions/catalog-scoped-actions.js",
+            "argumentFormat": ""
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "id":  "52bfefe1-05de-43b3-84ac-17cbb7ded64c",
+    "name":  "ALOpsAppClean",
+    "friendlyName":  "ALOps App Cleaner",
+    "description":  "Remove AL Extensions from Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Remove all extensions from Business Central service tier.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Cleaner",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_computername",
+                       "type":  "string",
+                       "label":  "Computer Name",
+                       "defaultValue":  "localhost",
+                       "required":  true,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Target Business Central Server running service tier. $(nav_computername) $(nav_computername) $(nav_computername)"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)"
+                   },
+                   {
+                       "name":  "sync_mode",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "Sync Mode",
+                       "defaultValue":  "Add",
+                       "options":  {
+                                       "Add":  "Add",
+                                       "Clean":  "Clean",
+                                       "Development":  "Development",
+                                       "forceSync":  "forceSync"
+                                   },
+                       "helpMarkDown":  "Mode for synchronizing Business Central extensions. $(sync_mode) $(sync_mode) $(sync_mode)"
+                   },
+                   {
+                       "name":  "includemicrosoftapps",
+                       "type":  "boolean",
+                       "label":  "Include Microsoft Apps",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Include Microsoft Apps. $(includemicrosoftapps) $(includemicrosoftapps) $(includemicrosoftapps)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "0ef4aa32-a9d7-4125-98f2-f96fac7b2992.ps1"
+                                      }
+                  }
+}

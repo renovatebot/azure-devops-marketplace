@@ -1,0 +1,68 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "8f70bff0-34b9-11ec-8d3d-0242ac130003",
+    "name": "BitbucketUpdateCommitBuildStatus",
+    "friendlyName": "BitbucketUpdateCommitBuildStatus",
+    "description": "Update build status on a commit",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "pablotoledo",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Bitbucket Update Build Status $(commitresult)",
+    "inputs": [
+        {
+            "name": "instance",
+            "type": "string",
+            "label": "Bitbucket Instance URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "https://server:port/"
+        },
+        {
+            "name": "userbb",
+            "type": "string",
+            "label": "User",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "user"
+        },
+        {
+            "name": "passwordbb",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "password or token"
+        },
+        {
+            "name": "commitresult",
+            "type": "pickList",
+            "label": "string",
+            "defaultValue": "INPROGRESS",
+            "required": true,
+            "helpMarkDown": "Specify the build message to specify at the commit message",
+            "options": { 
+                "INPROGRESS": "INPROGRESS",
+                "SUCCESSFUL": "SUCCESSFUL",
+                "FAILED": "FAILED"
+            }
+        },
+        {
+            "name": "commitid",
+            "type": "string",
+            "label": "Target",
+            "defaultValue": "$(Build.SourceVersion)",
+            "required": true,
+            "helpMarkDown": "Specify the commit SHA. E.g. `48b11d8d6e92a22e3e9563a3f643699c16fd6e27`. You can also use a variable here. E.g. `$(myCommitSHA)`."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

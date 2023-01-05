@@ -1,0 +1,177 @@
+{
+  "id": "28C0A6D8-B0D0-407F-ADFE-8C901142A6D0",
+  "name": "MSCRMCheckSolution",
+  "friendlyName": "Check Solution",
+  "description": "Uses PowerApps Checker API to validate your solution against a list of known issues",
+  "author": "Wael Hamze",
+  "helpMarkDown": "More information on PowerApps Checker can be found [here](https://docs.microsoft.com/en-us/powerapps/maker/common-data-service/use-powerapps-checker)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 7
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Check Solution",
+  "inputs": [
+    {
+      "name": "solutionFile",
+      "type": "filePath",
+      "label": "Solution(s) File",
+      "defaultValue": "$(System.DefaultWorkingDirectory)/<BuildName>/<ArtifactName>/<SolutionFile>.zip",
+      "required": false,
+      "helpMarkDown": "The absolute path to the solution(s) zip file on the agent machine"
+    },
+    {
+      "name": "resultsVariableName",
+      "type": "string",
+      "label": "Results Variable Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the pipeline variable to be populated with the path to the checker results file"
+    },
+    {
+      "name": "tenantId",
+      "type": "string",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The azure tenant id. Must have at least one instance"
+    },
+    {
+      "name": "applicationId",
+      "type": "string",
+      "label": "Application Id",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The id of a valid azure active directory app registration. No permissions required."
+    },
+    {
+      "name": "applicationSecret",
+      "type": "string",
+      "label": "Application Secret",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The application secret used for connection."
+    },
+    {
+      "name": "ruleType",
+      "type": "pickList",
+      "label": "Rule Type",
+      "defaultValue": "RuleSet",
+      "options": {
+        "RuleSet": "Standard Rule Set",
+        "Rules": "Specific Rules"
+      },
+      "required": true,
+      "helpMarkDown": "Select whether you want to check your solution against standard rulesets or you want to provide specific rules."
+    },
+    {
+      "name": "ruleset",
+      "type": "pickList",
+      "label": "Ruleset",
+      "defaultValue": "Solution Checker",
+      "options": {
+        "Solution Checker": "Solution Checker",
+        "AppSource Certification": "AppSource Certification"
+      },
+      "required": true,
+      "helpMarkDown": "The ruleset to use for checking the solution",
+      "visibleRule": "ruleType = RuleSet"
+    },
+    {
+      "name": "ruleCodes",
+      "type": "multiLine",
+      "label": "Rule Codes (json array)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The rules to use for checking. FORMAT e.g.: ['il-specify-column','meta-remove-inactive']",
+      "visibleRule": "ruleType = Rules"
+    },
+    {
+      "name": "excludedFiles",
+      "type": "multiLine",
+      "label": "Excluded File/Patterns (json array)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The files or patterns to be excluded. FORMAT e.g.: ['form.js','*plugins*']"
+    },
+    {
+      "name": "ruleLevelOverrides",
+      "type": "multiLine",
+      "label": "Rule Level Overrides (json array)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Use this to treat violations of a rule as a higher or lower severity level. FORMAT e.g.: [['meta-avoid-silverlight','High'],['il-specify-column','Low']]"
+    },
+    {
+      "name": "geography",
+      "type": "pickList",
+      "label": "Geography",
+      "defaultValue": "Europe",
+      "options": {
+        "PreviewUnitedStates": "Preview United States",
+        "UnitedStates": "United States",
+        "Europe": "Europe",
+        "Asia": "Asia",
+        "Australia": "Australia",
+        "Japan": "Japan",
+        "India": "India",
+        "Canada": "Canada",
+        "SouthAmerica": "South America",
+        "UnitedKingdom": "United Kingdom",
+        "France": "France"
+      },
+      "required": true,
+      "helpMarkDown": "The region where the scan will be executed"
+    },
+    {
+      "name": "localeName",
+      "type": "string",
+      "label": "Locale Name",
+      "defaultValue": "en",
+      "required": false,
+      "helpMarkDown": "Specifies the language code that determines how the results are listed, such as es, for Spanish. The languages that are supported are included in the validation set of the parameter. Accepted values: bg, ca, cs, da, de, el, en, es, et, eu, fi, fr, gl, hi, hr, hu, id, it, ja, kk, ko, lt, lv, ms, nb, nl, pl, pt-BR, pt-pt, ro, ru, sk, sl, sr-Cyrl-RS, sr-Latn-RS, sv, th, tr, uk, vi, zh-HANS, zh-HANT"
+    },
+    {
+      "name": "maxStatusChecks",
+      "type": "string",
+      "label": "Max Status Checks",
+      "defaultValue": "20",
+      "required": false,
+      "helpMarkDown": "Maximum number of times in which status calls are made to the service. The default number is 20, which in most cases is sufficient. If the threshold is exceeded, then a timeout exception is thrown."
+    },
+    {
+      "name": "secondsBetweenChecks",
+      "type": "string",
+      "label": "Seconds Between Checks",
+      "defaultValue": "15",
+      "required": false,
+      "helpMarkDown": "The number of seconds between status checks. The default is 15 seconds."
+    },
+    {
+      "name": "maxConnectionTimeOutMinutes",
+      "type": "string",
+      "label": "Max Connection Time Out Minutes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Maximum number in minutes to wait before quitting a web based operation."
+    }
+  ],
+  "OutputVariables": [
+    {
+      "name": "SOLUTION_CHECK_RESULT_FILE",
+      "description": "The absolute path to solution check result file on the agent server"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMCheckSolution.ps1"
+    }
+  }
+}

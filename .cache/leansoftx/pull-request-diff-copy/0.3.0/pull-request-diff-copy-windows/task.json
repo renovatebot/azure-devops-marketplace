@@ -1,0 +1,59 @@
+{
+    "id": "5dccc353-567a-4531-a7be-c2d6ee86b4c8",
+    "name": "Pull Request Diff Copy",
+    "friendlyName": "Pull Request Diff Copy",
+    "description": "Copy all changes in a Pull Request into a Diff folder",
+    "helpMarkDown": "Copy all changes in a Pull Request into a Diff folder. This task must trigge by git pull request, [set target branch policy at first](https://docs.microsoft.com/zh-cn/vsts/git/branch-policies?view=vsts#require-the-pull-request-to-build)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "LEANSOFT",
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 0
+    },
+   "minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "Pull Request Diff Copy $(message)",
+	"inputs": [
+		{
+				"name": "destination",
+				"type": "string",
+				"label": "Destination",
+				"defaultValue": "$(Build.ArtifactStagingDirectory)\\diff",
+				"required": true,
+				"helpMarkDown": "The directory where files should be placed, a subfolder named [Content] will be placed to contain the files. And [diff.txt] will be created in the root."
+		},
+		{
+			"name": "contentGeneration",
+			"type": "boolean",
+			"label": "File List Generation",
+			"defaultValue": true,
+			"required": true,
+			"helpMarkDown": "Controls if we are going to generate the content folder with all diffed files."
+		},	
+		{
+			"name": "flatten",
+			"type": "boolean",
+			"label": "Flatten",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Flatten directory structure (all files to same directory)"
+		},
+		{
+			"name": "utf8withBOM",
+			"type": "boolean",
+			"label": "UTF-8 with BOM",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Include BOM with UTF-8 encoding for diff.txt file. [diff.txt] will always be written in UTF-8."
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "get-changes-files.ps1"
+		}
+	}
+}

@@ -1,0 +1,128 @@
+{
+    "id": "a8b696ba-d31e-402f-9815-69a7de733e12",
+    "name": "SqlBackup",
+    "friendlyName": "Backup SQL Database",
+    "description": "Backup a SQL Server database",
+    "author": "Andrew Lackenby",
+    "category": "Utility",
+    "version": {
+        "Major": "2",
+        "Minor": "1",
+        "Patch": "6"
+    },
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+                {
+            "name": "backupType",
+            "type": "pickList",
+            "label": "Backup Type",
+            "defaultValue": "Full",
+            "required": true,
+            "options": {
+            "Full": "Full backup",
+            "Log": "Transaction Log backup",
+            "Differential": "Differential backup"
+            },
+            "helpMarkDown": "Specify the backup type you want to perform."
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true,
+            "helpMarkDown": "Enter the server name as ServerName or ServerName\\Instance"
+        },
+         {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true,
+            "helpMarkDown": "Specify the name of the database you want to backup. If database name includes spaces, enclose it in square brackets []"
+        },
+        {
+            "name": "backupFile",
+            "type": "string",
+            "label": "Backup file name",
+            "required": true,
+            "helpMarkDown": "Specify the file name (including full path) of the backup file."
+        },
+        {
+            "name": "withInit",
+            "type": "boolean",
+            "label": "Overwrite backup file",
+            "defaultValue":"true",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Controls whether the backup operation appends to or overwrites the existing backup sets on the backup media"
+        },
+        {
+            "name": "copyOnly",
+            "type": "boolean",
+            "label": "Copy-only backup",
+            "defaultValue":"false",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Create an independent backup without effecting the sequence of existing SQL backups. COPY_ONLY has no effect when specified with the DIFFERENTIAL option."
+        },
+        {
+            "name": "checkIfDatabaseExists",
+            "type": "boolean",
+            "label": "Check if database exists",
+            "defaultValue":"false",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Add a check to only attempt to backup if the database exists."
+        },
+        {
+            "name": "userName",
+            "type": "string",
+            "label": "SQL Server Login",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Login using SQL Authentication. Otherwise uses the login the build agent service runs under"
+        },
+        {
+            "name": "userPassword",
+            "type": "string",
+            "label": "SQL Server Authentication password",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Password for SQL Authenication. You should use a secret variable here."
+        },
+		{
+            "name": "queryTimeout",
+            "type": "string",
+            "label": "Query timeout in seconds",
+			"defaultValue": "30",
+            "required": true,
+            "groupName": "advanced"
+        },
+        {
+            "name": "backupCompression",
+            "type": "pickList",
+            "label": "Backup Compression",
+            "defaultValue": "Default",
+            "required": true,
+            "options": {
+            "Default": "User the default server setting",
+            "Compress": "Compress backup",
+            "NoCompress": "Do not compress backup"
+            },
+            "groupName": "advanced",
+            "helpMarkDown": "Set backup compression if your server supports it"
+        }
+		
+    ],
+    "instanceNameFormat": "Run Sql Backup of $(databaseName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "SqlBackup.ps1"}
+    }
+}

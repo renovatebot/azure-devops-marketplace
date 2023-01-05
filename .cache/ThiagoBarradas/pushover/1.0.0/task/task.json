@@ -1,0 +1,112 @@
+{
+    "id": "ff7f3415-0819-4108-b90c-d0255f37b7d2",
+    "name": "notification",
+    "friendlyName": "Pushover Notification",
+    "description": "Send a push notification to user or group with Pushover ",
+    "helpMarkDown": "[More Information](https://github.com/ThiagoBarradas/pushover-vss-ext)",
+    "author": "Thiago Barradas",
+    "preview": false,
+    "showEnvironmentVariables": true,
+    "instanceNameFormat" : "Pushover Notification",
+    "category": "Utility",
+    "version": {
+      "Major": 1,
+      "Minor": 0,
+      "Patch": 0
+    },
+    "inputs": [
+      {
+        "name": "token",
+        "type": "string",
+        "label": "Token",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Your pushover application API token"
+      },
+      {
+        "name": "user",
+        "type": "string",
+        "label": "User/Group Key",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The user/group key (not e-mail address) of your user (or you), viewable when logged into our dashboard (often referred to as USER_KEY in our documentation and code examples)"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "label": "Title",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Your message's title"
+      },
+      {
+        "name": "message",
+        "type": "multiLine",
+        "label": "Message",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Your message content"
+      },
+      {
+        "name": "priority",
+        "type": "pickList",
+        "label": "Priority",
+        "defaultValue": "priority1",
+        "required": true,
+        "options": {
+            "priority-2": "No Notification (-2)",
+            "priority-1": "Quiet Notification (-1)",
+            "priority1": "High Priority (1)",
+            "priority2": "Requires Confirmation (2)"
+        },
+        "helpMarkDown": "Choice `No Notification (-2)` to generate no notification/alert, `Quiet Notification (-1)` to always send as a quiet notification, `High Priority (1)` to display as high-priority and bypass the user's quiet hours, or `Requires Confirmation (2)` to also require confirmation from the user"
+      },
+      {
+        "name": "expire",
+        "type": "string",
+        "label": "Expire in Seconds",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The expire parameter specifies how many seconds your notification will continue to be retried for (every retry seconds). If the notification has not been acknowledged in expire seconds, it will be marked as expired and will stop being sent to the user. Note that the notification is still shown to the user after it is expired, but it will not prompt the user for acknowledgement. This parameter must have a maximum value of at most 10800 seconds (3 hours)",
+        "visibleRule": "priority == priority2"
+      },
+      {
+        "name": "retry",
+        "type": "string",
+        "label": "Retry in Seconds",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The expire parameter specifies how many seconds your notification will continue to be retried for (every retry seconds). If the notification has not been acknowledged in expire seconds, it will be marked as expired and will stop being sent to the user. Note that the notification is still shown to the user after it is expired, but it will not prompt the user for acknowledgement. This parameter must have a maximum value of at most 10800 seconds (3 hours)",
+        "visibleRule": "priority == priority2"
+      },
+      {
+        "name": "device",
+        "type": "string",
+        "label": "Device",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Your user's device name to send the message directly to that device, rather than all of the user's devices (multiple devices may be separated by a comma)"
+      },
+      {
+        "name": "url",
+        "type": "string",
+        "label": "Link URL",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "A [supplementary URL](https://pushover.net/api#urls) to show with your message"
+      },
+      {
+        "name": "url_title",
+        "type": "string",
+        "label": "URL Title",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "A title for your supplementary URL, otherwise just the URL is shown"
+      }
+    ],
+    "execution": {
+      "Node": {
+        "target": "index.js"
+      }
+    }
+  }

@@ -1,0 +1,87 @@
+{
+    "id": "20810FDA-9C24-482A-A00C-6FCC16B30FD0",
+    "name": "publishPlaystore",
+    "friendlyName": "Publish to Google Play Store",
+    "description": "Publish your APK to Google Play Store (Alpha, Beta, Production or Rollout)",
+    "helpMarkDown": "[More Information](https://github.com/azchohfi/vsts-task-publish-playstore)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Alexandre Chohfi",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+        {
+            "name": "jsonFile",
+            "type": "filePath",
+            "label": "JSON File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the JSON file of a Service Account created at [Google Developers Console](https://console.developers.google.com/apis/credentials)"
+        },
+		{
+            "name": "apkPath",
+            "type": "string",
+            "label": "APK File",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Relative path from repo root of the APK file."
+        },
+		{
+            "name": "packageName",
+            "type": "string",
+            "label": "Package Name",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Package name for this application. The unique identifier used by your Android application ('package' property of 'AndroidManifest.xml')."
+        },
+        {
+            "name": "locale",
+            "type": "string",
+            "label": "Locale",
+            "defaultValue": "en-US",
+            "required": true,
+            "helpMarkDown": "Enter any two-letter ISO-639 language code along with any two-letter ISO 3166 country code in the format [language]_[country], such as en_US."
+        },
+        {
+            "name": "message",
+            "type": "string",
+            "label": "Update Message",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Message used on the 'Recent Changes' field of your update on Google Play."
+        },
+		{
+            "name": "track",
+            "type": "pickList",
+            "label": "Track",
+            "defaultValue": "alpha",
+            "required": true,
+            "options": {
+				"alpha": "Alpha",
+				"beta" : "Beta",
+				"production": "Production",
+				"rollout": "Rollout"
+            },
+            "helpMarkDown": "Google Play's track that your APK will be published."
+        }
+    ],
+    "instanceNameFormat": "Publish $(app) to Google Play Store",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\publish.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

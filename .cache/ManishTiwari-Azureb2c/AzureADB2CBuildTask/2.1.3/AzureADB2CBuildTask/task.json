@@ -1,0 +1,52 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "28564eb8-f250-4cd6-b9db-d0d71e050fa3",
+  "name": "B2CBuildTask",
+  "friendlyName": "Build AD(B2C) Policies",
+  "description": "Build AD B2C Custom Policies",
+  "author": "Manish Tiwari",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "visibility": [
+    "Build"
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "AzureB2cCustomPolicies $(message)",
+  "inputs": [
+    {
+      "name": "directoryPath",
+      "type": "string",
+      "label": "Policy Directory Path",
+      "required": true,
+      "defaultValue": "$(Build.Repository.LocalPath)\\Policies",
+      "helpMarkDown": "Please enter path for b2c policies"
+    },
+    {
+      "name": "json",
+      "type": "multiLine",
+      "label": "JSON Values",
+      "defaultValue": "{ <string key> : <strign value>}",
+      "required": true,
+      "helpMarkDown": "JSON values in key value format"
+    },
+    {
+      "name": "artifactPublishPath",
+      "type": "string",
+      "label": "Artifact Publish Path",
+      "defaultValue": " $(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Please Do not edit this"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "AzureADB2CBuildTask.ps1"
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "91361d90-c303-43ee-bf3f-31ba27e0c7f0",
+  "name": "GitHubAppCreateRelease",
+  "friendlyName": "Create Release (GitHub App)",
+  "description": "Create a release as a GitHub App (bot).",
+  "helpUrl": "https://docs.github.com/en/rest/releases/releases#create-a-release",
+  "author": "tdashworth",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "GitHub App: Create Release",
+  "inputs": [
+    {
+      "name": "privateKey",
+      "type": "secureFile",
+      "label": "Private Key File",
+      "required": true,
+      "helpMarkDown": "The a private key for the GitHub App to act as."
+    },
+    {
+      "name": "appId",
+      "type": "int",
+      "label": "App Id",
+      "required": true,
+      "helpMarkDown": "The id of the GitHub App to act as."
+    },
+    {
+      "name": "repo",
+      "type": "string",
+      "label": "Repository",
+      "defaultValue": "$(Build.Repository.Name)",
+      "required": true,
+      "helpMarkDown": "The repository name. The app must be installed against that repository."
+    },
+    {
+      "name": "tagName",
+      "type": "string",
+      "label": "Tag",
+      "required": true,
+      "helpMarkDown": "The name of the tag."
+    },
+    {
+      "name": "targetCommitish",
+      "type": "string",
+      "label": "Target Commitish",
+      "required": false,
+      "helpMarkDown": "Specifies the commitish value that determines where the Git tag is created from. Can be any branch or commit SHA. Unused if the Git tag already exists. Default: the repository's default branch (usually `master`)."
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "label": "Name",
+      "required": false,
+      "helpMarkDown": "The name of the release."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "label": "Body",
+      "required": false,
+      "helpMarkDown": "Text describing the contents of the tag."
+    },
+    {
+      "name": "draft",
+      "type": "boolean",
+      "label": "Draft",
+      "required": false,
+      "helpMarkDown": "`true` to create a draft (unpublished) release, `false` to create a published one."
+    },
+    {
+      "name": "prerelease",
+      "type": "string",
+      "label": "Prerelease",
+      "required": false,
+      "helpMarkDown": "`true` to identify the release as a prerelease. `false` to identify the release as a full release."
+    },
+    {
+      "name": "discussionCategoryName",
+      "type": "string",
+      "label": "Discussion Category Name",
+      "required": false,
+      "helpMarkDown": "If specified, a discussion of the specified category is created and linked to the release. The value must be a category that already exists in the repository. For more information, see [\"Managing categories for discussions in your repository\"](https://docs.github.com/en/discussions/managing-discussions-for-your-community/managing-categories-for-discussions)."
+    },
+    {
+      "name": "generateReleaseNotes",
+      "type": "string",
+      "label": "Generate Release Notes",
+      "required": false,
+      "helpMarkDown": "Whether to automatically generate the name and body for this release. If `name` is specified, the specified name will be used; otherwise, a name will be automatically generated. If `body` is specified, the body will be pre-pended to the automatically generated notes."
+    },
+    {
+      "name": "assets",
+      "type": "filePath",
+      "label": "Assets",
+      "required": false,
+      "helpMarkDown": "Folder containing assets to upload or a single file."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

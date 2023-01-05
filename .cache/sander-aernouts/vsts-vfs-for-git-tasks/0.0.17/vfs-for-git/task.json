@@ -1,0 +1,67 @@
+{
+   "id": "08303e1c-e498-484c-a908-708604ddaefa",
+   "name": "vfs-for-git",
+   "friendlyName": "VFS for git",
+   "description": "Interact with VFS for git",
+   "helpMarkDown": "[More Information](https://url.to/yourmarkdown)",
+   "category": "Utility",
+   "visibility": ["Build","Release"],
+   "author": "",
+   "version": {
+      "Major": 0,
+      "Minor": 0,
+      "Patch": 10
+   },
+   "demands": [],
+   "inputs": [
+        {
+            "name": "projectId",
+            "type": "picklist",
+            "label": "Project",
+            "defaultValue": "",
+            "properties": {
+                "EditableOptions": "True",
+                "DisableManageLink": "True"
+            },
+            "required": true
+        },
+        {
+            "name": "gitRepositoryId",
+            "type": "picklist",
+            "label": "Repository",
+            "defaultValue": "","properties": {
+                "EditableOptions": "True",
+                "DisableManageLink": "True"
+            }            ,
+            "required": true
+        }
+        
+   ],
+   "dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "projectId",
+            "endpointUrl": "{{endpoint.url}}/_apis/projects?$skip={{skip}}&$top=1000",
+            "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+            "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+            "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+            "initialContextTemplate": "{\"skip\": \"0\"}"
+          },
+          {
+            "endpointId": "tfs:teamfoundation",
+            "target": "gitRepositoryId",
+            "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/git/repositories",
+            "resultSelector": "jsonpath:$.value[*]",
+            "parameters": {
+                "project": "$(projectId)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      }
+
+    ],
+   "instanceNameFormat": "vfs-for-git",
+   "execution":
+    {"Node":{"target":"vfs-for-git.js"}}
+   
+}

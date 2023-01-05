@@ -1,0 +1,123 @@
+{
+  "id": "12345679-D5B0-4B4B-8E2D-BAE866FD5D85",
+  "name": "AXServerAOSAction",
+  "friendlyName": "AX Server - AOS service action",
+  "description": "Does start, stop or restart an AOS service of AX",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-server-ax-2009-2012/ax-server-aos-service-action)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 18
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "start",
+      "required": true,
+      "options": {
+        "start": "Start",
+        "stop": "Stop",
+        "restart": "Restart"
+      },
+      "helpMarkDown": "Select the action, either start, stop or restart the aos service.",
+      "groupName": ""
+    },
+    {
+      "name": "destination",
+      "type": "pickList",
+      "label": "Destination",
+      "defaultValue": "local",
+      "required": true,
+      "options": {
+        "local": "Local computer",
+        "remote": "Remote computer"
+      },
+      "helpMarkDown": "Should the service action run on local or remote computer?",
+      "groupName": ""
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to of the server configuration file.",
+      "visibleRule": "destination = local",
+      "groupName": ""
+    },
+    {
+      "name": "computerNames",
+      "type": "string",
+      "label": "Computer name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The computer name(s) to run the service action. (comma-separated)",
+      "visibleRule": "destination = remote",
+      "groupName": ""
+    },
+    {
+      "name": "serviceNames",
+      "type": "string",
+      "label": "Service name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The service name(s) to perform the service action. (comma-separated)",
+      "visibleRule": "destination = remote",
+      "groupName": ""
+    },
+    {
+      "name": "retryIfAssembliesNotWritten",
+      "type": "boolean",
+      "label": "Retry (if assemblies not written)",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Retries the action if the assemblies not written to IL folder. (Caution: All assemblies need to be deleted before the service action runs)",
+      "visibleRule": "action != stop",
+      "groupName": ""
+    },
+    {
+      "name": "folderShares",
+      "type": "string",
+      "label": "Folder share(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The folder share(s) to check IL assemblies has written. (comma-separated, mandatory if Retry has checked)",
+      "visibleRule": "destination = remote",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step.",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Server - AOS service action: $(action) - $(destination)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

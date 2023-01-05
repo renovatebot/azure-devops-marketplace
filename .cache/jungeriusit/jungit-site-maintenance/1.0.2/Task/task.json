@@ -1,0 +1,97 @@
+{
+	"id": "f853a3ff-dbff-4877-9a3c-faa22596861c",
+	"name": "site-maintenance-mode",
+	"friendlyName": "IIS Website - Maintenance mode",
+	"description": "Put an IIS website under maintenance or online again.",
+	"author": "Jungerius IT",
+	"helpMarkDown": "If you put an app_offline.htm file in the root of your web application, IIS will shut down the application and only serve this webpage as an result. After you rename/delete the file the site will be back online.",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": [ ],
+	"version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "2"
+	},
+	"minimumAgentVersion": "1.83.0",
+	"instanceNameFormat": "Change state of website to $(state)",
+	"inputs": [
+		{
+			"name": "computerName",
+			"type": "string",
+			"label": "Computer name",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Leave empty if you want to perform this operation on the local computer. When you want to use Remote Powershell you can fill in the desired remote computer."
+		},
+		{
+			"name": "state",
+			"type": "pickList",
+			"label": "Change to",
+			"defaultValue": "Offline",
+			"required": true,
+			"helpMarkDown": "State to put the website in",
+			"options": {
+				"Offline": "Offline",
+				"Online": "Online"
+			}
+		},
+		{
+			"name": "webRoot",
+			"type": "filePath",
+			"label": "Site root directory",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The directory where the website is running."
+		},
+		{
+			"name": "offlineFileName",
+			"type": "string",
+			"label": "Offline filename",
+			"defaultValue": "app_offline.htm",
+			"required": true,
+			"helpMarkDown": "The filename to use to take the site offline."
+		},
+		{
+			"name": "onlineFileName",
+			"type": "string",
+			"label": "Online filename",
+			"defaultValue": "app_online.htm",
+			"required": true,
+			"helpMarkDown": "The filename to use to take the site online."
+		},
+		{
+			"name": "throwFailure",
+			"type": "boolean",
+			"label": "Fail deployment on error",
+			"defaultValue": "False",
+			"required": true,
+			"helpMarkDown": "Fail the whole deployment if this operation cannot succeed"
+		},
+		{
+			"name": "delayBefore",
+			"type": "string",
+			"label": "Seconds delay before",
+			"defaultValue": "0",
+			"required": false,
+			"helpMarkDown": "Amount of seconds to wait before changing the state of the website"
+		},
+		{
+			"name": "delayAfter",
+			"type": "string",
+			"label": "Seconds delay after",
+			"defaultValue": "0",
+			"required": false,
+			"helpMarkDown": "Amount of seconds to wait after changing the state of the website"
+		}
+	],
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\changestate.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

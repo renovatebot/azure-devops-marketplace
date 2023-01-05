@@ -1,0 +1,71 @@
+{
+    "id": "{90B1B3C1-9927-4CA4-A8C2-42B8869A1F79}",
+    "name": "BackupUtility",
+    "friendlyName": "Backup Utility",
+    "description": "Folder Backup Utility",
+    "helpMarkDown": "This utility is for taking the backup of the folder and all its files and subfolders. It will help in taking the backup of website files and folders before updating them.",
+    "category": "Deploy",
+	 "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+      "Agent"
+  ],
+    "author": "mohdaslamansari",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+	"instanceNameFormat": "Backup Utility $(samplestring)",
+    "inputs": [	
+	{
+      "name": "MachineName",
+      "type": "string",
+      "label": "Machine Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the machine IP address or FQDN."
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Admin Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the administrator's login of the target machine."
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the administrator's password of the target machine. <br>The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it, and then use it here, like '$(adminPassword)'."
+    },
+        {
+            "name": "Source",
+            "type": "string",
+            "label": "Source Location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide the source location for which backup needs to be taken."
+        },
+        {
+            "name": "Destination",
+            "type": "string",
+            "label": "Destination Backup Location",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Provide the destination location where the backup needs to be placed."
+		}
+    ],
+    "execution": {
+        "PowerShell": {
+        "target": "$(currentDirectory)\\BackupUtil.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+        }
+    }

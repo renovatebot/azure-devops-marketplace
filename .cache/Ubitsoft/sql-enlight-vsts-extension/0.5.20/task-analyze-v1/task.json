@@ -1,0 +1,138 @@
+{
+  "id": "01a48c40-73c6-11e8-a3d9-478569b2fa74",
+  "name": "sqlEnlightAnalyze",
+  "friendlyName": "SQL Enlight Code Analysis",
+  "description": "A build and release task for analyzing SQL code with SQL Enlight.",
+  "author": "Ubitsoft",
+  "helpMarkDown": "[More Information](https://sqlenlight.com/sql-enlight/azure-devops/)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "DotNetFramework"
+  ],
+  "version": {
+    "Major": "0",
+    "Minor": "9",
+    "Patch": "10"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "SQL Enlight Code Analysis",
+  "groups": [
+    {
+        "name":"advanced",
+        "displayName":"Advanced",
+        "isExpanded":false
+    },
+    {
+        "name":"license",
+        "displayName":"License",
+        "isExpanded":false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "IncludeFilesPattern",
+      "type": "string",
+      "label": "Include Pattern",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Regex pattern for matching .SQL files, which to be analyzed."
+    },
+    {
+      "name": "ExcludeFilesPattern",
+      "type": "string",
+      "label": "Exclude Pattern",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Regex pattern for matching .SQL files, which to be excluded during the analysis."
+    },
+    {
+      "name": "AnalysisContext",
+      "type": "filePath",
+      "label": "Analysis Context",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional analysis context file.",
+      "groupName":"advanced"
+    },
+    {
+      "name": "ConnectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional SQL connection string, which to be used for loading analysis context.",
+      "groupName":"advanced"
+    },
+    {
+      "name": "ReportOutput",
+      "type": "string",
+      "label": "Report Output",
+      "defaultValue": "SqlEnlight_AnalysisReport.xml",
+      "required": false,
+      "helpMarkDown": "Optional file name for the generated XML report.",
+      "groupName":"advanced"
+    },
+    {
+      "name": "CustomProperties",
+      "type": "multiLine",
+      "label": "Custom Properties",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom properties, which to be provided to the generated report.",
+      "groupName":"advanced"
+    },
+    {
+      "name": "IncludeRules",
+      "type": "string",
+      "label": "Include Rules",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A comma separated list of rules, which to be enabled during the analysis."
+    },
+    {
+      "name": "ExcludeRules",
+      "type": "string",
+      "label": "Exclude Rules",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A comma separated list of rules, which to be disabled during the analysis."
+    },
+    {
+      "name": "TemplateFile",
+      "type": "filePath",
+      "label": "Analysis Template",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional analysis template file, which to be used for the analysis.",
+      "groupName":"advanced"
+    },
+    {
+      "name": "FailOnAnyViolation",
+      "type": "boolean",
+      "label": "Fail On Violation",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If enabled, the task will fail if any rule violation is found."
+    },
+    {
+        "name": "LicenseData",
+        "type": "multiLine",
+        "label": "License Data",
+        "defaultValue": "BETA_TRIAL",
+        "required": true,
+        "helpMarkDown": "License data string. The beta TRIAL license data string will allow free usage until 2020-06-01.",
+        "groupName":"license"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

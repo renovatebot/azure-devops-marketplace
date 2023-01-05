@@ -1,0 +1,96 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "524b71d5-8651-48d9-985a-73e369228b65",
+    "name": "TransformarArchivos",
+    "friendlyName": "Transformar archivos",
+    "description": "0.32.0 - Sustituye en archivos XML de configuración, los nodos que correspondan con los valores de las variables del pipeline.",
+    "helpMarkDown": "Transformar archivos: actualiza los nodos appSettings, applicationSettings, connectionStrings y endpoint, con los valores en las variables del pipeline. Además permite cambiar el DataSource de los archivos RDS y RDL para reportes. Actualmente solo soporta archivos con extensiones XML, CONFIG, RDS y RDL. [Más sobre esta tarea](https://marketplace.visualstudio.com/items?itemName=JavierCorderoLeon-1989.transformar-archivos)",
+    "category": "Utility",
+    "author": "José Javier Cordero León",
+    "version": {
+        "Major": 0,
+        "Minor": 32,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "minimumAgentVersion": "2.170.1",
+    "instanceNameFormat": "Transformar archivo - $(transformationFilePath)",
+    "groups": [
+        {
+            "name": "otherNodesAndTagsGroup",
+            "displayName": "Otros nodos y etiquetas",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "transformationFilePath",
+            "type": "filePath",
+            "label": "Archivo a transformar",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Archivo a transformar. Debe ser del tipo **.config**, **.xml**, **.rds** o **.rdl**."
+        },
+        {
+            "name": "fileType",
+            "type": "radio",
+            "label": "Tipo de archivo",
+            "required": true,
+            "defaultValue": "typeXml",
+            "helpMarkDown": "Tipo del archivo: XML, RDS o RDL.",
+            "options": {
+                "typeXml": "XML",
+                "typeRds": "RDS",
+                "typeRdl": "RDL"
+            }
+        },
+        {
+            "name": "newDataSourceRds",
+            "type": "string",
+            "label": "Nombre del Data Source",
+            "visibleRule": "fileType = typeRds",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Nombre que tendrá el Data Source para los reportes"
+        },
+        {
+            "name": "connectionStringRds",
+            "type": "string",
+            "label": "Cadena de conexión",
+            "visibleRule": "fileType = typeRds",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Cadena de conexión para el archivo RDS."
+        },
+        {
+            "name": "newDataSourceRdl",
+            "type": "string",
+            "label": "Nombre del Data Source para reportes",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "fileType = typeRdl",
+            "helpMarkDown": "Nombre del Data Source que tendrá el o los reportes."
+        },
+        {
+            "name": "otherNodesAndTags",
+            "type": "multiLine",
+            "label": "Nodos y etiquetas",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Agregue otros nodos a transformar, en formato JSON.<br><br>Para más detalles del formato, visite el siguiente [Enlace](https://marketplace.visualstudio.com/items?itemName=JavierCorderoLeon-1989.transformar-archivos)<br><br>",
+            "properties": {
+                "rows": 10,
+                "resizable": "true"
+            },
+            "groupName": "otherNodesAndTagsGroup"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "script.ps1"
+        }
+    }
+}

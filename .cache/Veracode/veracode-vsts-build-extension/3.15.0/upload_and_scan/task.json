@@ -1,0 +1,189 @@
+{
+    "id": "6292a058-d4f5-407b-b6c6-815df9ee59d6",
+    "name": "Veracode",
+    "friendlyName": "Veracode Upload and Scan",
+    "description": "Upload an application to the Veracode Platform for security testing.",
+    "helpMarkDown": "[Veracode](http://www.veracode.com)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Veracode",
+    "demands": [
+        "java"
+    ],
+    "version": {
+        "Major": 3,
+        "Minor": 15,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Upload and scan: $(filepath)",
+    "groups": [
+        {
+            "name": "ConnectionDetailsGroup",
+            "displayName": "Connection Details",
+            "isExpanded": true
+        },
+        {
+            "name": "VeracodeScanSettingsGroup",
+            "displayName": "Veracode Scan Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "AdvancedGroup",
+            "displayName": "Advanced Scan Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "VeracodeScanResultsGroup",
+            "displayName": "Veracode Scan Results",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectionDetailsSelection",
+            "type": "radio",
+            "label": "Select Connection Source",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "defaultValue": "Endpoint",
+            "helpMarkDown": "Select the connection source for connecting to Veracode or enter your Veracode API credentials.",
+            "options": {
+                "Endpoint": "Service Connection",
+                "Credentials": "Credentials"
+            }
+        },
+        {
+            "name": "AnalysisService",
+            "type": "connectedService:VeracodeAnalysisCenterEndpoint",
+            "label": "Select Service Connection",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Select a service connection or click Manage to create a service connection.",
+            "visibleRule": "ConnectionDetailsSelection = Endpoint"
+        },
+        {
+            "name": "apiId",
+            "type": "string",
+            "label": "API ID",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode API ID. For instructions on generating your API credentials, go to the Veracode Help Center and search for \"Generate Veracode API Credentials\".",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "apiKey",
+            "type": "string",
+            "label": "API Key",
+            "required": true,
+            "groupName": "ConnectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode API key. For instructions on generating your API credentials, go to the Veracode Help Center and search for \"Generate Veracode API Credentials\".",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "veracodeAppProfile",
+            "type": "string",
+            "required": true,
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Application Name",
+            "defaultValue": "$(system.teamProject)",
+            "helpMarkDown": "Enter the name of the application profile from the Veracode Platform."
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "required": true,
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Scan Name",
+            "defaultValue": "$(build.buildNumber)",
+            "helpMarkDown": "Enter the name of the new or updated scan."
+        },
+        {
+            "name": "filepath",
+            "type": "string",
+            "groupName": "VeracodeScanSettingsGroup",
+            "label": "Filepath",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": true,
+            "helpMarkDown": "Enter the filepath or folderpath of the file or directory to upload."
+        },
+        {
+            "name": "sandboxName",
+            "type": "string",
+            "label": "Sandbox Name",
+            "required": false,
+            "helpMarkDown": "If you want to perform a sandbox scan of the application, enter the name of the sandbox.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "createSandBox",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "AdvancedGroup",
+            "label": "Create Sandbox",
+            "helpMarkDown": "Select this option if you want to create a new sandbox for this application."
+        },
+        {
+            "name": "optargs",
+            "type": "string",
+            "label": "Optional Arguments",
+            "required": false,
+            "helpMarkDown": "Enter any optional arguments to pass to the Veracode API wrapper.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "createProfile",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "AdvancedGroup",
+            "label": "Create Application Profile",
+            "helpMarkDown": "Select this option if you want to create a new Veracode application profile for this application."
+        },
+        {
+            "name": "failBuildIfUploadAndScanBuildStepFails",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "AdvancedGroup",
+            "label": "Fail build if Upload and Scan build step fails",
+            "helpMarkDown": "Select this option to fail the build if the Upload and Scan build step fails. If not selected and the Upload and Scan build step fails, the build continues."
+        },
+        {
+            "name": "importResults",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "VeracodeScanResultsGroup",
+            "label": "Import Results upon Scan Completion",
+            "helpMarkDown": "Create scan summary information at the end of the scan. This option delays the build until the application scan is complete."
+        },
+        {
+            "name": "failBuildOnPolicyFail",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "VeracodeScanResultsGroup",
+            "label": "Fail build if application fails security policy",
+            "helpMarkDown": "Select this option to fail the build if the application fails its security policy. If not selected and the application fails its security policy, the build continues."
+        },
+        {
+            "name": "maximumWaitTime",
+            "type": "string",
+            "label": "Fail build if no scan results within (in minutes)",
+            "required": true,
+            "defaultValue": "360",
+            "helpMarkDown": "The minimum value is 30. The maximum value is 1440 (24 hours). This option only applies if either of the Veracode Scan Results options are selected.",
+            "groupName": "VeracodeScanResultsGroup"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "App.js",
+            "argumentFormat": ""
+        }
+    }
+}

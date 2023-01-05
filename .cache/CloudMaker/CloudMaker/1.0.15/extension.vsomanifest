@@ -1,0 +1,62 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "CloudMakerAzureDeployment",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "AzureDeployment"
+            }
+        },
+        {
+            "id": "cloudmaker-public-api-endpoint",
+            "description": "",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cloudmaker",
+                "displayName": "Cloud Maker",
+                "url": {
+                    "value": "https://api.cloudmaker.ai",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "Blueprints",
+                        "endpointUrl": "{{endpoint.url}}/v1/blueprints?published=true",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "headers": [
+                            {
+                                "name": "X-Api-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "BlueprintVersions",
+                        "endpointUrl": "{{endpoint.url}}/v1/blueprints/{{BlueprintId}}/versions?published=true",
+                        "resultSelector": "jsonpath:$.items[*].version",
+                        "headers": [
+                            {
+                                "name": "X-Api-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

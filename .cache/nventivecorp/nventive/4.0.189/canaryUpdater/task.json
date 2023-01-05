@@ -1,0 +1,213 @@
+{
+	"id": "95170664-b64e-4571-9cd4-936b3a626292",
+	"name": "nventiveCanaryUpdater",
+	"friendlyName": "Canary Updater",
+	"description": "A task to update a Canary build.",
+	"helpMarkDown": "[nventive](http://www.nventive.com/)",
+	"category": "Build",
+	"author": "nventive",
+	"version": {
+		"Major": 4,
+		"Minor": 0,
+		"Patch": 189
+	},
+	"visibility": [
+		"Build"
+	],
+	"demands": [
+		"DotNetCore",
+		"nuget"
+	],
+	"instanceNameFormat": "Canary Update",
+	"groups": [
+		{
+			"name": "git",
+			"displayName": "Git options",
+			"isExpanded": true
+		},
+		{
+			"name": "log",
+			"displayName": "Log Options",
+			"isExpanded": true
+		},
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "nugetFeed",
+			"type": "pickList",
+			"label": "Source Feed",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The NuGet feed from which to update the packages",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "useNuGetOrg",
+			"type": "boolean",
+			"label": "Use packages from NuGet.org",
+			"defaultValue": true,
+			"required": true,
+			"helpMarkDown": "Indicates whether packages from NuGet.org should be updated",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "mergeBranch",
+			"type": "boolean",
+			"label": "Merge with working branch",
+			"groupName": "git",
+			"defaultValue": true,
+			"required": true,
+			"helpMarkDown": "Merge the code with the given working branch.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "targetBranch",
+			"type": "string",
+			"label": "Target Branch",
+			"groupName": "git",
+			"defaultValue": "origin/master",
+			"required": false,
+			"visibleRule": "mergeBranch = true",
+			"helpMarkDown": "The branch to merge changes from.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "pushBranch",
+			"type": "boolean",
+			"label": "Push updated branch",
+			"groupName": "git",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Push the updated branch to the repository. The build service must be given the right to contribute and create branches in the repository.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "gitUserName",
+			"type": "string",
+			"label": "Git user name",
+			"groupName": "git",
+			"required": false,
+			"visibleRule": "pushBranch = true",
+			"helpMarkDown": "The email for Git to use when executing operations.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "gitUserEmail",
+			"type": "string",
+			"label": "Git user email",
+			"groupName": "git",
+			"required": false,
+			"visibleRule": "pushBranch = true",
+			"helpMarkDown": "The name for Git to use when executing operations.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "summaryFile",
+			"type": "filePath",
+			"label": "Summary file",
+			"groupName": "log",
+			"defaultValue": null,
+			"required": false,
+			"helpMarkDown": "Path to a file where to write the package update and git merge summary",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "nugetVersion",
+			"type": "string",
+			"label": "Target Versions",
+			"groupName": "advanced",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "The versions to update packages to; use comma-separated values; defaults to the name of the branch + stable",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "allowDowngrade",
+			"type": "boolean",
+			"label": "Allow downgrade",
+			"groupName": "advanced",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": "Indicates whether the packages can be downgraded if the matching version is lower",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "packageAuthor",
+			"type": "string",
+			"label": "Package author",
+			"groupName": "advanced",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Filters the packages to update to the ones from a specific author; only applies to NuGet.org packages",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "ignorePackages",
+			"type": "string",
+			"label": "Ignore Packages",
+			"groupName": "advanced",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Indicates which packages (separated by ';') to exclude from the update",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		},
+		{
+			"name": "updatePackages",
+			"type": "string",
+			"label": "Update Packages",
+			"groupName": "advanced",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Indicates which packages (separated by ';') to update. If null, all found pacakges will be updated.",
+			"properties": {
+				"DisableManageLink": "True"
+			}
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "nugetFeed",
+			"endpointId": "tfs:feed",
+			"endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+			"resultSelector": "jsonpath:$.value[*]",
+			"resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+		}
+	],
+	"sourceDefinitions": [
+	],
+	"execution": 
+	{
+		"Node": {
+			"target": "task.js"
+		}
+	}
+}

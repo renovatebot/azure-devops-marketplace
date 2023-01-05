@@ -1,0 +1,113 @@
+{
+    "id": "0e0f3bf7-d96c-45d6-aa76-f9afb71fb77e",
+    "name": "codesigning",
+    "friendlyName": "Code Signing",
+    "description": "Codesign assemblies and applications",
+    "author": "Stefan Kert",
+    "helpMarkDown": "v2.2.0 - [More Information](https://github.com/StefanKert/azuredevops-codesigning-task#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "2.116.0",
+    "instanceNameFormat": "Code Signing $(filePath)",
+    "inputs": [
+        {
+            "name": "secureFileId",
+            "type": "secureFile",
+            "label": "Secure File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the certificate that was uploaded to `Secure Files` to be used to sign the given files."
+        },
+        {
+            "name": "signCertPassword",
+            "type": "string",
+            "label": "Secure File Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the password for the provided certificate. Use a new variable with its lock enabled on the Variables tab to encrypt this value."
+        },
+        {
+            "name": "files",
+            "type": "filePath",
+            "label": "File(s) to sign",
+            "defaultValue": "**/*.dll",
+            "required": true,
+            "helpMarkDown": "Relative path from the repo root to the file(s) you want to sign. You can use wildcards to specify multiple files ([more information](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/file-matching-patterns?view=azure-devops)). For example, **/bin/*.dll for all .DLL files in the 'bin' subfolder"
+        },
+        {
+            "name": "timeServer",
+            "type": "string",
+            "label": "Timestamp Server Url",
+            "defaultValue": "http://timestamp.digicert.com",
+            "required": true,
+            "helpMarkDown": "Absolute Url of the timestamp server to use."
+        },
+        {
+            "name": "hashingAlgorithm",
+            "type": "string",
+            "label": "Hashing Algorithm",
+            "defaultValue": "SHA256",
+            "required": true,
+            "helpMarkDown": "The file digest algorithm to use for creating file signatures (i.e. SHA256 or SHA1)."
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "label": "Add a description for the file being signed",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "UAC will display this description when installing the signed file"
+        },
+        {
+            "name": "signToolLocationMethod",
+            "type": "radio",
+            "label": "Select signtool.exe location",
+            "required": false,
+            "defaultValue": "builtin",
+            "options": {
+                "builtin": "Built-in signtool",
+                "location": "Specific location",
+                "latest": "Latest version installed"
+            }
+        },
+        {
+            "name": "signToolLocation",
+            "type": "string",
+            "label": "Path to signtool.exe",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Optionally supply the path to singtool.",
+            "visibleRule": "signToolLocationMethod = location"
+        }
+    ],
+    "prejobexecution": {
+        "Node": {
+            "target": "precodesigning.js",
+            "argumentFormat": ""
+        }
+    },
+    "execution": {
+        "Node": {
+            "target": "codesigning.js"
+        }
+    },
+    "postjobexecution": {
+        "Node": {
+            "target": "postcodesigning.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "NoMatchingFiles": "No matching files were found with search pattern: %s",
+        "DeleteSecureFileFailed": "Failed to delete secure file downloaded from the server: %s"
+    }
+}

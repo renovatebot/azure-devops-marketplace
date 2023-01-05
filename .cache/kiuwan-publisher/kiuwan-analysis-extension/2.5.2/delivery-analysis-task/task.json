@@ -1,0 +1,280 @@
+{
+    "id": "4e6e25e3-c0b5-4986-8714-5c751945c15f",
+    "name": "kiuwan-delivery-analysis-task",
+    "friendlyName": "Kiuwan Delivery Analysis",
+    "description": "Run a Kiuwan delivery Kiuwan analysis on the source code extracted by the build configuration. This task uses the proxy defined in the TFS/Azure Agent (if any).",
+    "helpMarkDown": "WARNING: To use this build task you need to have valid credentials to a Kiuwan account.",
+    "category": "Build",
+    "author": "Kiuwan",
+    "version": {
+        "Major": 2,
+        "Minor": 5,
+        "Patch": 2
+    },
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "Kiuwan delivery analysis",
+    "groups": [
+        {
+            "name": "security",
+            "displayName": "Security analysis performance",
+            "isExpanded": true
+        },
+        {
+            "name": "database",
+            "displayName": "Database code analysis ",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced analysis settings",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "kiuwanConnection",
+            "type": "connectedService:Kiuwan",
+            "label": "Kiuwan Service",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Kiuwan service connection"
+        },
+        {
+            "name": "projectnameselector",
+            "type": "radio",
+            "label": "What do you want to use as Kiuwan application name?",
+            "defaultValue": "default",
+            "required": true,
+            "options": {
+                "default": "$(System.TeamProject)",
+                "kiuwanapp": "Kiuwan application from list",
+                "appname": "Define a custom name"
+            },
+            "helpMarkDown": "You can use System.TeamProject variable, pick an aexisting application from a list or set a new application name."
+        },
+        {
+            "name": "kiuwanappname",
+            "type": "pickList",
+            "label": "Available Kiuwan applications",
+            "required": false,
+            "visibleRule": "projectnameselector = kiuwanapp",
+            "helpMarkDown": "Select an existing application in Kiuwan to associate results to."
+        },
+        {
+            "name": "customappname",
+            "type": "string",
+            "label": "Kiuwan application name",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "projectnameselector = appname",
+            "helpMarkDown": "Custom application name in Kiuwan to associate results to. It will be cautomatically created if it doesn't exist in your account."
+        },
+        {
+            "name": "changerequest",
+            "type": "string",
+            "label": "Change request name",
+            "defaultValue": "$(Build.SourceBranchName)",
+            "required": false,
+            "helpMarkDown": "The Change Request name that the change we are analyzing belongs to.<br />Think of the change request as the project management object specifying the change requirements.<br />The CR concept does not belong the life cycle itself is a management concept."
+        },
+        {
+            "name": "overridedeliverylabel",
+            "type": "boolean",
+            "label": "Override delivery label?",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "By default, delivery label is a combination fo different Azude DevOps/TFS variables taking into account the repositoy type and the build triggers.<br /> Check this to specify your custom label."
+        },
+        {
+            "name": "deliverylabel",
+            "type": "string",
+            "label": "Delivery label",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "overridedeliverylabel == true",
+            "helpMarkDown": "Custom label that uniquely identifies this delivery analysis.<br />You can use Azure DevOps/TFS variables."
+        },
+        {
+            "name": "analysisscope",
+            "type": "radio",
+            "label": "Anlysis Scope",
+            "defaultValue": "completeDelivery",
+            "required": true,
+            "helpMarkDown": "Kiuwan analysis scope.<br />Complete application including changes (i.e. a developement branch)<br />Analyze just the changes, like a change set, or pull request<br /> You have to make sure you checkout the appropriate code in the previous stage for each case.",
+            "options": {
+                "completeDelivery": "Complete application",
+                "partialDelivery": "Only changes"
+            }
+        },
+        {
+            "name": "alternativesourcedir",
+            "type": "string",
+            "label": "Alternative source directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "visibleRule": "analysisscope = partialDelivery",
+            "helpMarkDown": "Specify an alternative source code directory with the application changes only.<br />This directory could have been created by a previous custom task that extracts those changes from the repository.<br />You can use variables well known variable like $(Build.SourcesDirectory) to define it."
+        },
+        {
+            "name": "failonnofiles",
+            "type": "boolean",
+            "label": "Fail when no files to analyze?",
+            "defaultValue": true,
+            "required": true,
+            "visibleRule": "analysisscope = partialDelivery",
+            "helpMarkDown": "Should the task fail if the Kiuwan can't find any files to analyze?"
+        },
+		{
+            "name": "includeinsight",
+            "type": "boolean",
+            "label": "Include Insights analysis?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Insights is the Kiuwan SCA product<br />This anaysis will give you the risk exposure to open source libraries used in your application<br />Applies only to Kiuwan accounts with the Insights module."
+        },
+        {
+            "name": "failonaudit",
+            "type": "boolean",
+            "label": "Fail on Kiuwan audit fail?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Should the task fail if the Kiuwan audit fails?"
+        },
+        {
+            "name": "uploadsnippets",
+            "type": "boolean",
+            "label": "Upload code fragments as part of the results?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Upload the code found in the line of code where vulnerabilities and defects are. Only one single line out of context"
+        },
+        {
+            "name": "uploadfiles",
+            "type": "boolean",
+            "label": "Upload analyzed source code files?",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "WARNING: This options requires that Kiuwan support enables this option in your account. With the option enabled, setting it to true will upload the files with defects to Kiuwan to browse defects and vulnerabilities within the whole source code context in the Kiuwan. If the option is not enabled in the Kiuwan account this check has no effect."
+        },
+        {
+            "name": "skipclones",
+            "type": "boolean",
+            "label": "Skip duplication of code analysis?",
+            "defaultValue": false,
+            "required": true,
+            "groupName": "security",
+            "helpMarkDown": "Skipping the duplicated code analysis is recommended for code security analysis only.<br />For Kiuwan accounts with the Code Analysis module we recommend to leave this unchecked."
+        },
+        {
+            "name": "crstatus",
+            "type": "radio",
+            "label": "Change request status",
+            "defaultValue": "inprogress",
+            "required": false,
+            "helpMarkDown": "Status of this change request. Could be in progress or resolved",
+            "options": {
+                "inprogress": "In progress",
+                "resolved": "Resolved"
+            }
+        },
+        {
+            "name": "overridedotkiuwan",
+            "type": "boolean",
+            "label": "Override .kiuwan file?",
+            "defaultValue": false,
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Check if you want to overrirde the values of the encoding and include/exclude patterns from the .kiuwan file in the application with the values set here.<br />If there is no .kiuwan file in your project these settings will always apply."
+        },
+        {
+            "name": "encoding",
+            "type": "string",
+            "label": "Source code encoding",
+            "defaultValue": "UTF-8",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Encoding to use to parse the source code files. UTF-8 should work in most cases, but for example if you know that your code has latin characters use ISO-8859-1"
+        },
+        {
+            "name": "includepatterns",
+            "type": "string",
+            "label": "Include patterns",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separated list of ant like patterns of the files to include in the analysis"
+        },
+        {
+            "name": "excludepatterns",
+            "type": "string",
+            "label": "Exclude patterns",
+            "defaultValue": "**/src/test/**,**/__MACOSX/**,**/*.min.js,**/*.Designer.vb,**/*.designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*.designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h,**/node_modules/**,**/bower_components/**,**/target/**,**/bin/**,**/obj/**,**/dist/**,**/lib/**,**/bootstrap*.js,**/jquery*.js,**/umd/**,**/esm/**,**/fontawesome/**,**/respond*.js,**/toastr*.js,spcontext.js",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separatedlist of ant like patterns to exclude specific files from the analysis"
+        },
+        {
+            "name": "memory",
+            "type": "string",
+            "label": "Maximum memory for the analysis (MB)",
+            "defaultValue": "1024",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Maximum memory to allocate to run the analysis in MB. The default value of of 1024, is usually enough for big application you can increase it."
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Analysis timeout (min)",
+            "defaultValue": "60",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Maximum time to run the analysis. If reached, the analysis will end and fail. Usually the default is enough, change it only in the case of very big applications (more than 1 MLoC)."
+        },
+        {
+            "name": "dbanalysis",
+            "type": "boolean",
+            "label": "Is there database code included in your application?",
+            "defaultValue": false,
+            "required": true,
+            "groupName": "database",
+            "helpMarkDown": "Check this if you have stored procedures code in your repository to analyze."
+        },
+        {
+            "name": "dbtechnology",
+            "type": "pickList",
+            "label": "Database technology used in the application",
+            "defaultValue": "none",
+            "required": true,
+            "groupName": "database",
+            "visibleRule": "dbanalysis == true",
+            "options": {
+                "none": "None",
+                "plsql": "Oracle PL/SQL",
+                "transactsql": "Microsoft/Sybase Transact SQL",
+                "informix": "Informix stored procedures"
+            },
+            "helpMarkDown": "Please, select the type of stored procedures you use in your application. We support Oracle PL/SQL, Microsoft SQLServer TransactSQL, Sybase Transact and Informix stored procedures."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "kiuwanappname",
+            "endpointId": "$(kiuwanConnection)",
+            "dataSourceName": "ListApplications"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "run-kla-delivery.ps1"
+        },
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

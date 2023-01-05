@@ -1,0 +1,226 @@
+{
+    "id":  "cdbb4478-e23e-4bfa-8f7a-1adde1799aca",
+    "name":  "ALOpsOpenAPI",
+    "friendlyName":  "ALOps OpenAPI",
+    "description":  "Generate OpenAPI descriptions from Business Central API\u0027s",
+    "author":  "Hodor",
+    "helpMarkDown":  "Generate OpenAPI descriptions from Business Central API\u0027s.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps OpenAPI",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "api_endpoint",
+                       "type":  "string",
+                       "label":  "API Endpoint",
+                       "defaultValue":  "https://api.businesscentral.dynamics.com/v2.0/$(azure_tenant_id)/Sandbox/api",
+                       "required":  true,
+                       "helpMarkDown":  "Set API Endpoint. (protocol://host:port/serverinstance/api) $(api_endpoint) $(api_endpoint) $(api_endpoint)"
+                   },
+                   {
+                       "name":  "authentication",
+                       "type":  "pickList",
+                       "label":  "API Authentication",
+                       "defaultValue":  "oauth",
+                       "options":  {
+                                       "basic":  "Basic",
+                                       "oauth":  "OAuth",
+                                       "windows":  "Windows Default Credentials",
+                                       "usernamepassword":  "Username/Password"
+                                   },
+                       "required":  true,
+                       "helpMarkDown":  "Set authentication Method to use. Default [Windows]. $(authentication) $(authentication) $(authentication)"
+                   },
+                   {
+                       "name":  "azure_tenant_id",
+                       "type":  "string",
+                       "label":  "Tenant Id",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure Tenant Id. Only required for BC SaaS $(azure_tenant_id) $(azure_tenant_id) $(azure_tenant_id)",
+                       "visibleRule":  "authentication=basic || authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_id",
+                       "type":  "string",
+                       "label":  "Client Id",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Id. $(azure_app_client_id) $(azure_app_client_id) $(azure_app_client_id)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_secret",
+                       "type":  "string",
+                       "label":  "Client Secret",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Secret. $(azure_app_client_secret) $(azure_app_client_secret) $(azure_app_client_secret)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_certificate",
+                       "type":  "string",
+                       "label":  "Client Certificate",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Certificate. $(azure_app_client_certificate) $(azure_app_client_certificate) $(azure_app_client_certificate)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_certificate_password",
+                       "type":  "string",
+                       "label":  "Client Certificate Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Certificate Password. $(azure_app_client_certificate_password) $(azure_app_client_certificate_password) $(azure_app_client_certificate_password)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "username",
+                       "type":  "string",
+                       "label":  "Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Username. Leave empty for Service-2-Service authentication. $(username) $(username) $(username)",
+                       "visibleRule":  "authentication=basic || authentication=oauth || authentication=usernamepassword"
+                   },
+                   {
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central User Password. Leave empty for Service-2-Service authentication. $(password) $(password) $(password)",
+                       "visibleRule":  "authentication=basic || authentication=oauth || authentication=usernamepassword"
+                   },
+                   {
+                       "name":  "publish_artifacts",
+                       "type":  "boolean",
+                       "label":  "Publish results as Artifacts",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish results as Artifacts. $(publish_artifacts) $(publish_artifacts) $(publish_artifacts)"
+                   },
+                   {
+                       "name":  "discover",
+                       "type":  "boolean",
+                       "label":  "Discover API",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Discover available API routes. $(discover) $(discover) $(discover)"
+                   },
+                   {
+                       "name":  "api_routes",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "API Routes",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify API Routes to convert. Multiline or \u0027|\u0027 seperated. $(api_routes) $(api_routes) $(api_routes)",
+                       "visibleRule":  "discover = false"
+                   },
+                   {
+                       "name":  "api_exclude_routes",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "API Exclude Routes",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify API Routes to exclude from discovery. Multiline or \u0027|\u0027 seperated. $(api_exclude_routes) $(api_exclude_routes) $(api_exclude_routes)",
+                       "visibleRule":  "discover = true"
+                   },
+                   {
+                       "name":  "inspect_paths",
+                       "type":  "boolean",
+                       "label":  "Inspect Paths",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Print all available Paths per Route. $(inspect_paths) $(inspect_paths) $(inspect_paths)"
+                   },
+                   {
+                       "name":  "api_servers",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "API Servers",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify available servers for OpenAPI. Multiline or \u0027|\u0027 seperated. $(api_servers) $(api_servers) $(api_servers)"
+                   },
+                   {
+                       "name":  "export_edmx",
+                       "type":  "boolean",
+                       "label":  "Export EDMX",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Export original API EDMX. $(export_edmx) $(export_edmx) $(export_edmx)"
+                   },
+                   {
+                       "name":  "export_yaml",
+                       "type":  "boolean",
+                       "label":  "Export YAML",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Export API in YAML format. $(export_yaml) $(export_yaml) $(export_yaml)"
+                   },
+                   {
+                       "name":  "export_json",
+                       "type":  "boolean",
+                       "label":  "Export JSON",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Export API in JSON format. $(export_json) $(export_json) $(export_json)"
+                   },
+                   {
+                       "name":  "exclude_company_paths",
+                       "type":  "boolean",
+                       "label":  "Exclude Company Paths",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Exclude Company Paths. $(exclude_company_paths) $(exclude_company_paths) $(exclude_company_paths)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "88b465fd-bea5-4b84-b763-51054845d955.ps1"
+                                      }
+                  }
+}

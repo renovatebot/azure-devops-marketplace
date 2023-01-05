@@ -1,0 +1,184 @@
+{
+    "id": "6e743613-d4b8-48d2-8ee3-1b8ec3ab00fe",
+    "name": "ApplicationSecurity",
+    "friendlyName": "Application Security Testing for VSTS by HCL Technologies",
+    "description": "Perform static and open source security tests for your applications built with VSTS",
+    "author": "HCLTechnologies",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+      "Build"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0",
+      "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Application Security Test",
+    "groups": [
+      {
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": false 
+      }
+    ],
+    "inputs": [
+      {
+        "name": "AppSecTestService",
+        "type": "connectedService:Application Security Test",
+        "label": "Credentials",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the credentials to use for running a scan. Add credentials using the Application Security Test Service."
+      },
+      {
+        "name": "applications",
+        "type": "pickList",
+        "label": "Application",
+        "required": true,
+        "helpMarkDown": "The application that this scan will be associated with. If the list is empty ensure that you have a valid selection in the Credentials field.",
+        "properties": {
+          "EditableOptions": "True"
+        }
+      },
+      {
+        "name": "scanname",
+        "type": "string",
+        "label": "Scan Name",
+        "required": false,
+        "helpMarkDown": "An optional name for the scan. This name is used to differentiate results on the Build page."
+      },
+      {
+        "name": "scanloc",
+        "type": "filepath",
+        "label": "Repository Subdirectory To Scan",
+        "required": false,
+        "helpMarkDown": "Limits the scan to a subdirectory of the repository. Leave this field blank to scan the entire repository."
+      },
+      {
+        "name":"email",
+        "type":"boolean",
+        "label":"Email Notification",
+        "required":false,
+        "defaultValue":false,
+        "helpMarkDown":"Send the user an email when analysis is complete.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "FailBuildConfiguration",
+        "type": "boolean",
+        "label": "Fail Build Configuration",
+        "required": false,
+        "groupName": "advanced",
+        "helpMarkDown":"Configure the conditions that will cause the build to fail based on the results of the security scan."
+      },
+      {
+        "name": "FailBuildChoice",
+        "type": "radio",
+        "label": "Choose One:",
+        "required": false,
+        "defaultValue": "noncomplaint",
+        "options": {
+          "conditionset": "When following conditions are met:",
+          "noncomplaint": "For noncompliance with application policies"
+        },
+        "visibleRule": "FailBuildConfiguration=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build either based on a set of conditions or if one or more issues are found which are non compliant with respect to the selected application's policies."
+      },
+      {
+        "name": "buildfailTotal",
+        "type": "boolean",
+        "label": "Total",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the total number of security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionTotal",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,      
+        "visibleRule": "buildfailTotal=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Threshold value to fail the build for total count of issues"
+      },
+      {
+        "name": "buildfailHigh",
+        "type": "boolean",
+        "label": "High",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of High severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionHigh",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,      
+        "visibleRule": "buildfailHigh=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Threshold value to fail the build for high count of issues"
+      },
+      {
+        "name": "buildfailMedium",
+        "type": "boolean",
+        "label": "Medium",
+        "required": false,        
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Medium severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionMedium",
+        "type": "string",
+        "label": "Security Issues greater than:",
+        "defaultValue": "",
+        "required": true,      
+        "visibleRule": "buildfailMedium=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Threshold value to fail the build for medium count of issues"
+      },
+      {
+        "name": "buildfailLow",
+        "type": "boolean",
+        "label": "Low",
+        "required": false,
+        "visibleRule": "FailBuildChoice=conditionset",
+        "groupName": "advanced",
+        "helpMarkDown":"Fail the build if the number of Low severity security issues is greater than the specified value."
+      },
+      {
+        "name": "buildfailconditionLow",
+        "type": "string",
+        "label": "Security Issues is greater than:",
+        "defaultValue": "",
+        "required": true,      
+        "visibleRule": "buildfailLow=true",
+        "groupName": "advanced",
+        "helpMarkDown":"Threshold value to fail the build for low count of issues"
+      }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "applications",
+        "endpointId": "$(AppSecTestService)",
+        "endpointURL":"{{endpoint.url}}/api/V2/Apps/",
+        "resultselector":"jsonpath:$.[*]",
+        "resultTemplate":"{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{Name}}\" }"
+      }
+    ],
+     "execution": {
+      "Node": {
+        "target": "dist/scan.js",
+		"workingDirectory": "$(currentDirectory)",
+        "argumentFormat": ""
+      }
+    }
+  }

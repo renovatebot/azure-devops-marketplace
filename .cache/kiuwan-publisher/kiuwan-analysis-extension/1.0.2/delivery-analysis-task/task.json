@@ -1,0 +1,74 @@
+{
+    "id": "4e6e25e3-c0b5-4986-8714-5c751945c15f",
+    "name": "kiuwan-delivery-analysis-task",
+    "friendlyName": "Kiuwan Delivery Analysis",
+    "description": "Run a Kiuwan delivery Kiuwan analysis on the source code extracted by the build configuration.",
+    "helpMarkDown": "WARNING: Make sure you define the Kiuwan credentials variables in the build definition KiuwanUser and KiuwanPasswd. Otherwise the analysis will fail.",
+    "category": "Utility",
+    "author": "Javier Salado",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+    ],
+    "demands": [
+        "KIUWAN_HOME"
+    ],
+    "instanceNameFormat": "Kiuwan delivery analysis",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "analysislabel",
+            "type": "string",
+            "label": "Analysis label",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A label to identify this analysis. Typically it should be the application version or the build number"
+        },
+        {
+            "name": "encoding",
+            "type": "string",
+            "label": "Source code encoding",
+            "defaultValue": "UTF-8",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Encoding to use to parse the source code files. UTF-8 should work in most cases, but for example if you know that your code has latin characters use ISO-8859-1"
+        },
+        {
+            "name": "includepatterns",
+            "type": "string",
+            "label": "Include patterns",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separated list of ant like patterns of the files to include in the analysis"
+        },
+        {
+            "name": "excludepatterns",
+            "type": "string",
+            "label": "Exclude patterns",
+            "defaultValue": "**/KiuwanLocalAnalyzer/**,**/*.min.js,**/*.Designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.Designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h include.patterns=**/**",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separatedlist of ant like patterns to exclude specific files from the analysis"
+        },
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "run-kla-delivery.ps1"
+        }
+    }
+}

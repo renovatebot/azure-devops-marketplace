@@ -1,0 +1,92 @@
+{
+    "id": "E49FA2E6-90E8-4747-9F9B-AD15AECC0F05",
+    "name": "DNX.Tasks.SlotSwap",
+    "friendlyName": "DNX Tasks Azure SlotSwap",
+    "description": "Swap a slot in Azure web site deployment slots.",
+    "helpMarkDown": "Version: 0.1.30",
+    "category": "Deploy",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "azureps"
+    ],
+    "minimumAgentVersion": "1.95.4",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure",
+            "label": "Azure Classic Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to configure before running PowerShell"
+        },
+        {
+            "name": "WebSiteLocation",
+            "type": "pickList",
+            "label": "Web App Location",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select a region for deployment. Possible options are **East US**, **East US 2**, **Central US**, **South Central US**, **West US**, **North Europe**, **West Europe** and others.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "WebSiteName",
+            "type": "pickList",
+            "label": "Web App Name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "defaultValue": "",
+            "helpMarkdown": "Slotname from where to swap.",
+            "label": "From",
+            "name": "From",
+            "required": true,
+            "type": "string"
+        },
+        {
+            "defaultValue": "",
+            "helpMarkdown": "Slotname where to swap to.",
+            "label": "To",
+            "name": "To",
+            "required": true,
+            "type": "string"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebSiteName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureWebSiteNames",
+            "parameters": {
+                "WebSiteLocation": "$(WebSiteLocation)"
+            }
+        },
+        {
+            "target": "WebSiteLocation",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureLocations"
+        }
+    ],
+    "instanceNameFormat": "DNX Tasks SlotSwap: $(WebSiteName)",
+    "execution": {
+        "AzurePowerShell": {
+            "target": "$(currentDirectory)\\SwapDepoymentSlots.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

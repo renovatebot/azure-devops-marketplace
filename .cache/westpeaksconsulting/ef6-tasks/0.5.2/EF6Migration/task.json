@@ -1,0 +1,236 @@
+{
+	"id": "8EC9B35A-1CDA-445D-9757-0757E3B87D99",
+	"name": "EF6Migration",
+	"friendlyName": "Entity Framework 6 Database Migration",
+	"description": "Execute an Entity Framework 6 database migration",
+	"helpMarkDown": "[More Information](http://westpeaksconsulting.azurewebsites.net)",
+	"category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"runsOn": [
+		"Agent"
+	],
+	"author": "West Peaks Consulting",
+	"version": {
+		"Major": 2,
+		"Minor": 0,
+		"Patch": 2
+	},
+	"demands": [
+		"sqlpackage"
+	],
+	"minimumAgentVersion": "1.103.0",
+	"groups": [
+		{
+			"name": "target",
+			"displayName": "SQL DB Details",
+			"isExpanded": true
+		},
+		{
+			"name": "taskDetails",
+			"displayName": "Data Model Assembly",
+			"isExpanded": true
+		},
+		{
+			"name": "firewall",
+			"displayName": "Firewall",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "ConnectedServiceNameSelector",
+			"type": "pickList",
+			"label": "Azure Connection Type",
+			"required": false,
+			"helpMarkDown": "",
+			"defaultValue": "ConnectedServiceName",
+			"options": {
+				"ConnectedServiceName": "Azure Classic",
+				"ConnectedServiceNameARM": "Azure Resource Manager"
+			}
+		},
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:Azure",
+			"label": "Azure Classic Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Target Azure Classic subscription for deploying SQL files",
+			"visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+		},
+		{
+			"name": "ConnectedServiceNameARM",
+			"type": "connectedService:AzureRM",
+			"label": "Azure RM Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Target Azure Resource Manager subscription for deploying SQL files",
+			"visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+		},
+		{
+			"name": "ServerName",
+			"type": "string",
+			"label": "Azure SQL Server Name",
+			"required": true,
+			"groupName": "target",
+			"defaultValue": "",
+			"helpMarkDown": "Azure SQL Server name, like Fabrikam.database.windows.net,1433 or Fabrikam.database.windows.net."
+		},
+		{
+			"name": "DatabaseName",
+			"type": "string",
+			"label": "Database Name",
+			"required": true,
+			"groupName": "target",
+			"defaultValue": "",
+			"helpMarkDown": "Name of the Azure SQL Database, where the files will be deployed."
+		},
+		{
+			"name": "SqlUsername",
+			"type": "string",
+			"label": "Server Admin Login",
+			"required": false,
+			"groupName": "target",
+			"defaultValue": "",
+			"helpMarkDown": "Specify the Azure SQL Server administrator login."
+		},
+		{
+			"name": "SqlPassword",
+			"type": "string",
+			"label": "Password",
+			"required": false,
+			"groupName": "target",
+			"defaultValue": "",
+			"helpMarkDown": "Password for the Azure SQL Server administrator.<br>It can accept variable defined in Build/Release Definitions as '$(passwordVariable)'.<br>You may mark the variable type as 'secret' to secure it."
+		},
+		{
+			"name": "TaskNameSelector",
+			"type": "pickList",
+			"label": "Type",
+			"required": false,
+			"helpMarkDown": "",
+			"groupName": "taskDetails",
+			"defaultValue": "AssemblyMigrationTask",
+			"options": {
+				"AssemblyMigrationTask": "Execute Migration From Assembly File"
+			}
+		},
+		{
+			"name": "MigrationAssemblyFile",
+			"type": "filePath",
+			"label": "Migration Assembly File",
+			"required": true,
+			"groupName": "taskDetails",
+			"defaultValue": "",
+			"helpMarkDown": "Location of the .dll assembly file on the automation agent or on a UNC path accessible to the automation agent like, \\\\\\\\BudgetIT\\Web\\Deploy\\FabrikamDataModel.dll. Predefined system variables like, $(agent.releaseDirectory) can also be used here. This assembly ** MUST ** contain your data model classes AND your Configuration class, if you're using one (which you really should be).",
+			"visibleRule": "TaskNameSelector = AssemblyMigrationTask"
+		},
+		{
+			"name": "MigrateExeFile",
+			"type": "filePath",
+			"label": "migrate.exe File",
+			"required": false,
+			"groupName": "taskDetails",
+			"defaultValue": "",
+			"helpMarkDown": "Path to the migrate.exe file (provided in the Entity Framework nuget package) on the automation agent or on a UNC share. Predefined system variables like, $(agent.buildDirectory) or $(agent.releaseDirectory) can also be used here. The 'migrate.exe' file ** MUST ** be in the same directory as the assembly containing your data model classes AND Configuration class (if you're using one, which you should).",
+			"visibleRule": "TaskNameSelector = AssemblyMigrationTask"
+		},
+		{
+			"name": "AdditionalArguments",
+			"type": "string",
+			"label": "Additional migrate.exe Arguments",
+			"required": false,
+			"groupName": "taskDetails",
+			"defaultValue": "",
+			"helpMarkDown": "Additional migrate.exe arguments that will be applied when deploying the Entity Framework migration.",
+			"visibleRule": "TaskNameSelector = AssemblyMigrationTask"
+		},
+		{
+			"name": "EntityFrameworkConfigurationClass",
+			"type": "string",
+			"label": "Configuration class",
+			"required": true,
+			"groupName": "taskDetails",
+			"defaultValue": "Configuration",
+			"helpMarkDown": "The short class name of the System.Data.Entity.Migrations.DbMigrationsConfiguration<T> descendant used to configure your Entity Framework migration options. e.g. If your fully qualified Configuration class name is AcmeSoftwareProducts.MyProduct.MyDbConfiguration, the value in this field should be 'MyDbConfiguration'.",
+			"visibleRule": "TaskNameSelector = AssemblyMigrationTask"
+		},
+		{
+			"name": "ConnectionStringName",
+			"type": "string",
+			"label": "Connection String Name",
+			"required": true,
+			"groupName": "taskDetails",
+			"defaultValue": "DefaultConnection",
+			"helpMarkDown": "The name of the connection string used by Entity Framework to connect to your database. Must match the name of the connection string used by your Data Model (DbContext descendant).",
+			"visibleRule": "TaskNameSelector = AssemblyMigrationTask"
+		},
+		{
+			"name": "IpDetectionMethod",
+			"type": "pickList",
+			"label": "Specify Firewall Rules Using",
+			"required": true,
+			"groupName": "firewall",
+			"defaultValue": "IPAddressRange",
+			"helpMarkDown": "For the task to run, the IP Address of the automation agent has to be added to the 'Allowed IP Addresses' in the Azure SQL Server's Firewall. Provide the IP Address range of the automation agents, or select to auto-detect in case of hosted automation agent."
+		},
+		{
+			"name": "StartIpAddress",
+			"type": "string",
+			"label": "Start IP Address",
+			"required": true,
+			"groupName": "firewall",
+			"defaultValue": "",
+			"visibleRule": "IpDetectionMethod = IPAddressRange",
+			"helpMarkDown": "The starting IP Address of the automation agent machine pool like 196.21.30.50."
+		},
+		{
+			"name": "EndIpAddress",
+			"type": "string",
+			"label": "End IP Address",
+			"required": true,
+			"groupName": "firewall",
+			"defaultValue": "",
+			"visibleRule": "IpDetectionMethod = IPAddressRange",
+			"helpMarkDown": "The ending IP Address of the automation agent machine pool like 196.21.30.65."
+		},
+		{
+			"name": "DeleteFirewallRule",
+			"type": "boolean",
+			"label": "Delete Rule After Task Ends",
+			"required": false,
+			"groupName": "firewall",
+			"defaultValue": "true",
+			"helpMarkDown": "If selected, then after the task ends, the IP Addresses specified here are deleted from the 'Allowed IP Addresses' list of the Azure SQL Server's Firewall."
+		}
+	],
+	"sourceDefinitions": [
+		{
+			"target": "IpDetectionMethod",
+			"endpoint": "/_apis/vslabs/ipAddress/ipDetectionMethods",
+			"selector": "jsonpath:$.value[*]",
+			"authKey": "tfs:DevTestLabs"
+		}
+	],
+	"instanceNameFormat": "Deploy Entity Framework 6 Migration : $(TaskNameSelector)",
+	"execution": {
+		"PowerShell3": {
+			"target": "EF6Migration.ps1"
+		}
+	},
+	"messages": {
+		"SAD_InvalidServerAddress": "Either IPAddress mentioned is not a valid IPv4 address or Sql database server: '{0}' does not exist.",
+		"SAD_ServerNotFound": "Sql Database Server: '{0}' not found.",
+		"SAD_InvalidIPv4Address": "IPAddress mentioned is not a valid IPv4 address.",
+		"SAD_FoundMoreFiles": "Found more than one file to deploy with search pattern {0}. There can be only one.",
+		"SAD_NoFilesMatch": "No files were found to deploy with search pattern {0}",
+		"SAD_InvalidDacpacFile": "Invalid Dacpac file '{0}' provided",
+		"SAD_InvalidSqlFile": "Invalid Sql file '{0}' provided",
+		"SAD_NoPassword": "No password specified for the SQL User: '{0}",
+		"SAD_InvalidPublishProfile": "Invalid Publish Profile '{0}' provided",
+		"SAD_InvalidServerNameFormat": "Server name '{0}' is not in the right format. Use FQDN format like '{1}"
+	}
+}

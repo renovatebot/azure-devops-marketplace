@@ -1,0 +1,865 @@
+{
+    "id": "7bc5c778-e949-4435-b156-b00c4ede3e35",
+    "name": "SCVMM",
+    "friendlyName": "SCVMM",
+    "description": "Manage Virtual Machines with SCVMM",
+    "helpMarkDown": "[More Information](http://go.microsoft.com/fwlink/?LinkID=616089)",
+    "category": "Deploy",
+    "visibility": [
+    "Build",
+    "Release"
+    ],
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 1,
+        "Minor": 129,
+        "Patch": 9
+    },
+    "demands": [
+        "SCVMMAdminConsole"
+    ],
+    "minimumAgentVersion": "2.0.0",
+    "groups": [
+        {
+            "name": "NewVMsFromTemplatesOptions",
+            "displayName": "VM Template options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "NewVMsFromStoredVMsOptions",
+            "displayName": "Stored VM options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "NewVMsFromVhdsOptions",
+            "displayName": "VHD options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "OverrideVMNetworkSettings",
+            "displayName": "Override existing VM Network settings",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "NewVMsOptions",
+            "displayName": "Create VM options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "NetworkIsolationOptions",
+            "displayName": "Network Virtualization options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM"
+        },
+        {
+            "name": "BoundaryVMOptions",
+            "displayName": "Boundary Virtual Machine options",
+            "isExpanded": true,
+            "visibleRule": "Action == NewVM && NetworkIsolation == true"
+        },
+        {
+            "name": "AdvancedOptions",
+            "displayName": "Additional Options",
+            "isExpanded": false,
+            "visibleRule": "Action == NewVM"
+        }
+    ],
+    "inputs": [
+    {
+        "name": "ConnectedServiceName",
+        "type": "connectedService:SCVMM",
+        "label": "SCVMM Service Connection",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "SCVMM connection to configure before running any SCVMM operation"
+    },
+    {
+        "name": "Action",
+        "type": "pickList",
+        "label": "Action",
+        "defaultValue": "Restore",
+        "required": true,
+        "options": {            
+            "CreateChekPoint": "Create Checkpoint",
+            "DeleteChekPoint": "Delete Checkpoint",
+            "NewVM": "New Virtual Machine using Template/stored VM/VHD",
+            "Restore": "Restore Checkpoint",
+            "ExecutePS": "Run Powershell Script For SCVMM",
+            "StartVM": "Start Virtual Machine",
+            "StopVM": "Stop Virtual Machine",
+            "DeleteVM": "Delete Virtual Machine",
+            "SaveVmAsTemplate": "Save Virtual Machine as Template"
+        },
+        "helpMarkDown": "Action to be performed on the SCVMM virtual machines."
+    },
+    {
+        "name": "NewVMsFromTemplates",
+        "type": "boolean",
+        "label": "Create virtual machines from VM Templates",
+        "defaultValue": false,
+        "required": false,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "helpMarkDown": "Choose this option for creating virtual machines from VM Templates"
+    },
+    {
+        "name": "NewVmFromTemplateSourceType",
+        "type": "radio",
+        "label": "Specify VM Template using:",
+        "defaultValue": "VmTemplateName",
+        "required": false,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "helpMarkDown": "",
+        "visibleRule": "NewVMsFromTemplates == true",
+        "options": {
+            "VmTemplateName": "VM Template names",
+            "Tag": "Tag"
+        }
+    },
+    {
+        "name": "VmTemplateTag",
+        "type": "string",
+        "label": "VM Template tag",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "helpMarkDown": "",
+        "visibleRule": "NewVMsFromTemplates == true && NewVmFromTemplateSourceType == Tag"
+    },
+    {
+        "name": "NewVMsFromTemplatesVMList",
+        "type": "multiLine",
+        "label": "Virtual machine names",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "visibleRule": "NewVMsFromTemplates == true && NewVmFromTemplateSourceType == VmTemplateName",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the names of virtual machines to create. Enter only one VM per line"
+    },
+    {
+        "name": "VMTemplateSources",
+        "type": "multiLine",
+        "label": "VM template names",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "visibleRule": "NewVMsFromTemplates == true && NewVmFromTemplateSourceType == VmTemplateName",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the source VM templates in the order the virtual machine names are provided. Enter only one VM template per line."
+    },
+    {
+        "name": "computerNameFromTemplate",
+        "type": "boolean",
+        "label": "Set computer name as defined in the VM template",
+        "defaultValue": "false",
+        "required": false,
+        "groupName": "NewVMsFromTemplatesOptions",
+        "visibleRule": "NewVMsFromTemplates == true && NewVmFromTemplateSourceType == VmTemplateName",
+        "helpMarkDown": "If this option is chosen, the computer name of the VM will set as defined in the corresponding VM template. Else, the computer name is same as that of virtual machine name"
+    },
+    {
+        "name": "NewVMsFromStoredVMs",
+        "type": "boolean",
+        "label": "Create virtual machines from stored VMs",
+        "defaultValue": false,
+        "required": false,
+        "groupName": "NewVMsFromStoredVMsOptions",
+        "helpMarkDown": "Choose this option for creating virtual machines from stored VMs"
+    },
+    {
+        "name": "NewVMsFromStoredVMsVMList",
+        "type": "multiLine",
+        "label": "VM names",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromStoredVMsOptions",
+        "visibleRule": "NewVMsFromStoredVMs == true",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the  names of virtual machines to create. Enter only one VM name per line."
+    },
+    {
+
+        "name": "StoredVMSources",
+        "type": "multiLine",
+        "label": "Stored VMs",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromStoredVMsOptions",
+        "visibleRule": "NewVMsFromStoredVMs == true",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the source stored VM names in the order the virtual machine names are provided. Enter only one stored VM name per line."
+    },
+    {
+        "name": "NewVMsFromVhds",
+        "type": "boolean",
+        "label": "Create virtual machines from vhd",
+        "defaultValue": false,
+        "required": false,
+        "groupName": "NewVMsFromVhdsOptions",
+        "helpMarkDown": "Choose this option for creating virtual machines from VHD"
+    },
+    {
+        "name": "NewVMsFromVhdsVMList",
+        "type": "multiLine",
+        "label": "VM names",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromVhdsOptions",
+        "visibleRule": "NewVMsFromVhds == true",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the names of virtual machines to create. Enter only one VM name per line."
+    },
+    {
+        "name": "VhdSources",
+        "type": "multiLine",
+        "label": "Vhd's",
+        "defaultValue": "",
+        "required": true,
+        "groupName": "NewVMsFromVhdsOptions",
+        "visibleRule": "NewVMsFromVhds == true",
+        "properties": {
+            "resizable": "true"
+        },
+        "helpMarkDown": "Provide the source VHD/VHDX in the order the virtual machine names are provided. Enter only one VHD/VHDX per line."
+    },
+    {
+        "name": "CpuCount",
+        "type": "string",
+        "label": "CPU count",
+        "defaultValue": "1",
+        "required": true,
+        "groupName": "NewVMsFromVhdsOptions",
+        "visibleRule": "NewVMsFromVhds == true",
+        "helpMarkDown": "Specify the number of processor cores required for the virtual machines."
+    },
+    {
+        "name": "Memory",
+        "type": "string",
+        "label": "Memory",
+        "defaultValue": "512",
+        "required": true,
+        "groupName": "NewVMsFromVhdsOptions",
+        "visibleRule": "NewVMsFromVhds == true",
+        "helpMarkDown": "Specify the memory(in MB) required for the virtual machines."
+    },
+    {
+        "name": "ClearNetworkAdapters",
+        "type": "boolean",
+        "label": "Clear existing network adapters",
+        "defaultValue": false,
+        "required": false,
+        "groupName": "OverrideVMNetworkSettings",
+        "helpMarkDown": "Choosing this option will clear all the existing network adapters for the virtual machines created. You can add a new network adapter by providing VM network info below."
+    },
+    {
+        "name": "VMNetworkName",
+        "type": "string",
+        "label": "VM network name",
+        "defaultValue": "",
+        "required": false,
+        "groupName": "OverrideVMNetworkSettings",
+        "visibleRule": "ClearNetworkAdapters == true",
+        "helpMarkDown": "Provide the name of an existing VM network to be added to the virtual machines. Leaving this option empty will ensure virtual machines have no network adapters."
+    },
+    {
+        "name": "VMNetworkSubnetName",
+        "type": "string",
+        "label": "VM network subnet name",
+        "defaultValue": "",
+        "required": false,
+        "groupName": "OverrideVMNetworkSettings",
+        "visibleRule": "ClearNetworkAdapters == true && VMNetworkName != \"\"",
+        "helpMarkDown": "Provide the VM subnet name, if exists, for the VM network provided above."
+    },
+    {
+        "name": "VirtualMachineSourceType",
+        "type": "radio",
+        "label": "Specify Virtual Machines using:",
+        "defaultValue": "VirtualMachineName",
+        "required": false,
+        "visibleRule": "Action == DeleteVM",
+        "options": {
+            "VirtualMachineName": "VM Names",
+            "Tag": "Tag"
+        }
+    },
+    {
+        "name": "DeleteVM-VMList",
+        "type": "string",
+        "label": "VM Names",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == DeleteVM && VirtualMachineSourceType == VirtualMachineName",
+        "helpMarkDown": "Provide a comma separated list of VM Names."
+    },
+    {
+        "name": "VirtualMachineTag",
+        "type": "string",
+        "label": "Tag",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == DeleteVM && VirtualMachineSourceType == Tag",
+        "helpMarkDown": "Specify a tag for the Virtual Machine."
+    },
+    {
+        "name": "VMList",
+        "type": "string",
+        "label": "VM Names",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == CreateChekPoint || Action == DeleteChekPoint || Action == Restore || Action == StartVM || Action == StopVM || Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide a comma separated list of the VM names. For example, FabrikamWeb, FabrikamDB, FabrikamTest."
+    },
+    {
+        "name": "NewVmTemplateNames",
+        "type": "string",
+        "label": "VM Template names",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide a list of comma separated list of VM Templates."
+    },
+    {
+        "name": "EnvironmentTag",
+        "type": "string",
+        "label": "VM Template Tag",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide a value for the 'DevOpsEnvironment' custom property."
+    },
+    {
+        "name": "GuestOsProfileName",
+        "type": "string",
+        "label": "Guest OS Profile",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide the name of an OS Profile to associated with the VM Template."
+    },
+    {
+        "name": "LibraryServerName",
+        "type": "string",
+        "label": "Library Server",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide name of a Library Server to be used to store VM Template"
+    },
+    {
+        "name": "VmTemplateStoragePath",
+        "type": "string",
+        "label": "VM Template storage path",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == SaveVmAsTemplate",
+        "helpMarkDown": "Provide a valid location on library server to store the vm."
+    },
+    {
+        "name": "CheckPointName",
+        "type": "string",
+        "label": "Checkpoint Name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Check point name",
+        "visibleRule": "Action == Restore || Action == CreateChekPoint || Action == DeleteChekPoint"
+    },
+    {
+        "name": "CheckPointDescription",
+        "type": "string",
+        "label": "Description For Checkpoint",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "Action == CreateChekPoint",
+        "helpMarkDown": "Provide the Description for new checkPointName"
+    },
+    {
+        "name": "ScopeFilter",
+        "type": "pickList",
+        "label": "Select VMs From",
+        "required": false,
+        "defaultValue": "None",
+        "options": {
+            "None": "None",
+            "CloudFiltering": "Cloud",
+            "HostFiltering": "Host"
+        },
+        "visibleRule": "Action == Restore || Action == CreateChekPoint || Action == DeleteChekPoint || Action == StopVM || Action == StartVM || Action == DeleteVM || Action == SaveVmAsTemplate",
+        "helpMarkDown": "Select the filter for Virtual Machine"
+    },
+    {
+        "name": "ScopeFilterForNewVM",
+        "type": "pickList",
+        "label": "Deploy the VMs to",
+        "required": false,
+        "defaultValue": "CloudFiltering",
+        "options": {            
+            "CloudFiltering": "Cloud",
+            "HostFiltering": "Host"
+        },
+        "groupName": "NewVMsOptions",
+        "helpMarkDown": "Select the filter for VMs"
+    },
+    {
+        "name": "CloudFilter",
+        "type": "string",
+        "label": "Cloud Name",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "ScopeFilter == CloudFiltering",
+        "helpMarkDown": "Cloud name to filter the VM"
+    },
+    {
+        "name": "HostFilter",
+        "type": "string",
+        "label": "Host Name",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "ScopeFilter == HostFiltering",
+        "helpMarkDown": "Host name to filter the VM"
+    },
+    {
+        "name": "CloudFilterForNewVM",
+        "type": "string",
+        "label": "Cloud Name",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "ScopeFilterForNewVM == CloudFiltering",
+        "groupName": "NewVMsOptions",
+        "helpMarkDown": "Cloud name to filter the VM"
+    },
+    {
+        "name": "HostFilterForNewVM",
+        "type": "string",
+        "label": "Host Name",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "ScopeFilterForNewVM == HostFiltering",
+        "groupName": "NewVMsOptions",
+        "helpMarkDown": "Host name to filter the VM"
+    },
+    {
+        "name": "RemoveVMNetwork",
+        "type": "boolean",
+        "label": "Remove VMNetwork",
+        "defaultValue": true,
+        "visibleRule": "Action == DeleteVM",
+        "helpMarkDown": "If this option is selected, then any VM Network associated with the VM ( and not associated with any other VM ) will be removed."
+    },
+    {
+        "name": "VMPath",
+        "type": "string",
+        "label": "Placement path for VM",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Specify virtual machine path to be used during virtual machine placement. The path provided should be a valid placement path listed under VMPaths property for the provided Host. For example, path on the host machine - 'C:\\ProgramData\\Microsoft\\Windows\\Hyper-V'",
+        "groupName": "NewVMsOptions",
+        "visibleRule": "ScopeFilterForNewVM == HostFiltering"
+    },
+    {
+        "name": "NewVMAdditionalArgs",
+        "type": "multiLine",
+        "label": "Additional Arguments",
+        "defaultValue": "-StartVM -StartAction NeverAutoTurnOnVM -StopAction SaveVM",
+        "required": false,
+        "properties": {
+                "resizable": "true",
+                "rows" : "5",
+                "maxLength" : "500"
+            },
+        "groupName": "NewVMsOptions",
+        "helpMarkDown": "Specify the additional arguments for command to create new virtual machine using template"
+    },
+    {
+        "name": "ScriptType",
+        "type": "pickList",
+        "label": "Script Type",
+        "defaultValue": "FilePath",
+        "options": {
+            "FilePath": "Script File Path",
+            "InlineScript": "Inline Script"
+        },
+        "required": true,
+        "visibleRule": "Action == ExecutePS",
+        "helpMarkDown": "Type of script: FilePath or Inline Script"
+    },    
+    {
+        "name": "ScriptPath",
+        "type": "filePath",
+        "label": "Script Path",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "Action == ExecutePS && ScriptType == FilePath",
+        "helpMarkDown": "Path of powershell script. Should be fully qualified path or relative to the default working directory."
+    },
+    {
+        "name": "Inline",
+        "type": "multiLine",
+        "label": "Inline Script",
+        "required": false,
+        "defaultValue": "# You can write your SCVMM scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
+        "helpMarkDown": "Enter the script to execute.",
+        "visibleRule": "Action == ExecutePS && ScriptType == InlineScript",
+        "properties": {
+            "resizable": "true",
+            "rows": "10",
+            "maxLength": "500"
+        }
+    },
+    {
+        "name": "ScriptArguments",
+        "type": "string",
+        "label": "Script Arguments",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "Action == ExecutePS",
+        "helpMarkDown": "Additional parameters to pass to PowerShell. Can be either ordinal or named parameters."
+    },
+    { 
+        "name": "WorkingFolder", 
+        "type": "filePath", 
+        "label": "Working folder", 
+        "defaultValue":"", 
+        "required":false,
+        "visibleRule": "Action == ExecutePS",
+        "helpMarkDown": "Current working directory when script is run. Defaults to the folder where the script is located."
+    },
+    {
+      "name": "WaitTimeToGetOSResponse",
+      "type": "string",
+      "label": "Wait Time",
+      "defaultValue": "600",
+      "required": false,
+      "helpMarkDown": "Specify wait time in seconds for the Virtual Machine to be in ready state.",
+      "visibleRule": "Action == StartVM || Action == Restore"
+    },
+    {
+        "name": "NewVMWaitTimeToGetOSResponse",
+        "type": "string",
+        "label": "Wait Time",
+        "defaultValue": "600",
+        "required": false,
+        "helpMarkDown": "Specify wait time in seconds for the Virtual Machine to be in ready state.",
+        "groupName": "NewVMsOptions"
+    },
+    {
+        "name": "NewEnvironmentTag",
+        "type": "string",
+        "label": "New Environment Tag",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Provide an Environment Tag to tag VM.",
+        "groupName": "NewVMsOptions"
+    },
+    {
+        "name": "NetworkIsolation",
+        "type": "boolean",
+        "label": "Network Virtualization",
+        "defaultValue": "false",
+        "required": false,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Choose this option for enabling network virtualization for your virtual machines. You have to ensure prerequisites are met before enabling network virtualization [here](https://aka.ms/scvmmNetworkVirtualization)"
+    },
+    {
+        "name": "ActiveDirectoryVM",
+        "type": "boolean",
+        "label": "Add an Active Directory VM",
+        "defaultValue": "false",
+        "required": false,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Choose this option if your topology needs an active directory for your network virtualization setup. You can find more details about various topologies [here](https://aka.ms/scvmmSetupActiveDirectoryVM)",
+        "visibleRule": "NetworkIsolation == true"
+    },
+    {
+        "name": "ADVMName",
+        "type": "string",
+        "label": "Active Directory VM name",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Provide the name for the Active directory virtual machine.",
+        "visibleRule": "ActiveDirectoryVM == true"
+    },
+    {
+        "name": "ADVMStoredVMSource",
+        "type": "string",
+        "label": "Stored VM",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Provide the stored VM to be used for provisioning active directory VM",
+        "visibleRule": "ActiveDirectoryVM == true"
+    },
+    {
+        "name": "ADVMDnsIp",
+        "type": "string",
+        "label": "DNS IP",
+        "required": false,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Specify the DNS IP",
+        "visibleRule": "ActiveDirectoryVM == true"
+    },
+    {
+        "name": "ADVMDnsSuffix",
+        "type": "string",
+        "label": "DNS Suffix",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "helpMarkDown": "Specify the domain suffix",
+        "visibleRule": "ActiveDirectoryVM == true && ADVMDnsIp != \"\""
+    },
+    {
+        "name": "IsVMNetworkAlreadyCreated",
+        "type": "radio",
+        "label": "VM Network",
+        "defaultValue": "createNew",
+        "required": false,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true",
+        "options": {
+            "createNew": "Create new",
+            "useExisting": "Use existing"
+        },
+        "helpMarkDown": "Choose this option to create a new VM network or use an existing network virtualization VM network."
+    },
+    {
+        "name": "IsolatedVMNetworkName",
+        "type": "string",
+        "label": "VM Network name",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true",
+        "helpMarkDown": "Provide a name for your VM network. Ensure the VMNetwork name provided is unique and has a length less than 64 characters."
+    },
+    {
+        "name": "IsolatedVMNetworkSubnet",
+        "type": "string",
+        "label": "VM network subnet",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true && IsVMNetworkAlreadyCreated == createNew",
+        "helpMarkDown": "Provide a subnet for the VM network created. Use CIDR notation eg. 10.10.1.0/24. You can use any subnet of your choice from which the IPs are assigned to the created virtual machines. More details [here](https://aka.ms/scvmmNetworkVirtualizationSubnetRange)"
+    },
+    {
+        "name": "LogicalNetworkName",
+        "type": "string",
+        "label": "Logical Network name",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true && IsVMNetworkAlreadyCreated == createNew",
+        "helpMarkDown": "Provide an existing logical network to be used for creating the VM network. More details [here](https://aka.ms/scvmmSetupLogicalNetwork)"
+    },
+    {
+        "name": "ExistingBoundaryVmFqdn",
+        "type": "string",
+        "label": "Existing Boundary VM FQDN",
+        "required": false,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true && IsVMNetworkAlreadyCreated == useExisting",
+        "helpMarkDown": "Provide the FQDN of an existing Boundary VM. The boundary VM will be configured in order to communicate with newly deployed VM's."
+    },
+    {
+        "name": "ExistingBoundaryVmAdminUsername",
+        "type": "string",
+        "label": "Existing Boundary VM Admin username",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true && IsVMNetworkAlreadyCreated == useExisting && ExistingBoundaryVmFqdn != \"\"",
+        "helpMarkDown": "Admin username of the existing boundary vm."
+    },
+    {
+        "name": "ExistingBoundaryVmAdminPassword",
+        "type": "string",
+        "label": "Existing Boundary VM Admin password",
+        "required": true,
+        "groupName": "NetworkIsolationOptions",
+        "visibleRule": "NetworkIsolation == true && IsVMNetworkAlreadyCreated == useExisting && ExistingBoundaryVmFqdn != \"\"",
+        "helpMarkDown": "Admin password of existing boundary vm."
+    },
+    {
+        "name": "CreateBoundaryVM",
+        "type": "boolean",
+        "label": "Create boundary VM for VSTS/TFS communication",
+        "required": false,
+        "groupName": "BoundaryVMOptions",
+        "helpMarkDown": "Choose this option to create a boundary VM which can communicate with VSTS/TFS. More details [here](https://aka.ms/scvmmBoundaryVM)"
+    },
+    {
+        "name": "BoundaryVMName",
+        "type": "string",
+        "label": "TFS/VSTS boundary VM name",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide a name for the boundary virtual machine."
+    },
+    {
+        "name": "BoundaryVMTemplateName",
+        "type": "string",
+        "label": "TFS/VSTS boundary VM template",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide the source VM template name for creating the boundary VM."
+    },
+    {
+        "name": "BoundaryVMExternalVMNetworkName",
+        "type": "string",
+        "label": "External VM network for boundary VM",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide an existing external VM network to be used for communicating with TFS/VSTS."
+    },
+    {
+        "name": "BoundaryVMExternalVMNetworkSubnetName",
+        "type": "string",
+        "label": "Subnet name for external VM network",
+        "required": false,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide a VM subnet name for the external VM network if available. Leave as empty if no subnet name is required."
+    },
+    {
+        "name": "BoundaryVMAgentType",
+        "type": "radio",
+        "label": "Boundary VM agent type",
+        "defaultValue": "deploymentAgent",
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "options": {
+            "deploymentAgent": "Deployment Group agent",
+            "automationAgent": "Automation Pool agent"
+        },
+        "helpMarkDown": "Select the type of agent to configure as a boundary virtual machine"
+    },
+    {
+        "name": "BoundaryVMDeploymentGroupName",
+        "type": "string",
+        "label": "Deployment Group",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true && BoundaryVMAgentType == deploymentAgent",
+        "helpMarkDown": "Provide an existing deployment group to which the boundary VM is registered as deployment agent."
+    },
+    {
+        "name": "BoundaryVMAutomationPoolName",
+        "type": "string",
+        "label": "Pool name",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true && BoundaryVMAgentType == automationAgent",
+        "helpMarkDown": "Provide an existing deployment group to which the boundary VM is registered as deployment agent."
+    },
+    {
+        "name": "BoundaryVMAgentPAT",
+        "type": "string",
+        "label": "Personal Access Token",
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide te PAT to configure the boundary VM agent against deployment group/automation pool. This input is required for configuring agent against VSTS or if TFS is configured to use SSL. If not specified, the agent will be configured using Integrated Windows Authentication with Negotiate."
+    },
+    {
+        "name": "BoundaryVMDeploymentGroupTags",
+        "type": "string",
+        "label": "Deployment group tags",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true && BoundaryVMAgentType == deploymentAgent",
+        "helpMarkDown": "Provide a unique tag so that the boundary VM agent will be used to deploy your applications to isolated VMs in the network."
+    },
+    {
+        "name": "BoundaryVMAutomationPoolAgentName",
+        "type": "string",
+        "label": "Agent name",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true && BoundaryVMAgentType == automationAgent",
+        "helpMarkDown": "Provide a unique name for the boundary VM agent. Any existing agent with the same name in the same pool will be replaced"
+    },
+    {
+        "name": "BoundaryVMAgentPath",
+        "type": "string",
+        "label": "Agent installation path",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide an agent install path to configure deployment agent. This path should be a local path within boundary VM and agent installation files should exist in the specified path. This can be achieved by making agent install files available in boundary VM template during its creation. More details [here](https://aka.ms/scvmmBoundaryVMAgent)"
+    },
+    {
+        "name": "BoundaryVMUsername",
+        "type": "string",
+        "label": "Boundary VM administrator",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide the administrator user for the boundary VM. This user is used to connect remotely to the boundary VM and configure deployment agent."        
+    },
+    {
+        "name": "BoundaryVMPassword",
+        "type": "string",
+        "label": "Boundary VM password",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Provide the administrator password for the boundary VM. This password is used to connect remotely to the boundary VM and configure deployment agent."        
+    },
+    {
+        "name": "ConfigureAgentInInteractiveMode",
+        "type": "boolean",
+        "label": "Configure agent in interactive mode",
+        "defaultValue": "false",
+        "required": false,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "CreateBoundaryVM == true",
+        "helpMarkDown": "Choose this option to configure the agent interactively. If unchecked, agent will be configured as a service."
+    },
+    {
+        "name": "RunAgentUsername",
+        "type": "string",
+        "label": "Run agent username",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "ConfigureAgentInInteractiveMode == true",
+        "helpMarkDown": "Username of the user with which to run the agent."        
+    },
+    {
+        "name": "RunAgentPassword",
+        "type": "string",
+        "label": "Run agent password",
+        "required": true,
+        "groupName": "BoundaryVMOptions",
+        "visibleRule": "ConfigureAgentInInteractiveMode == true",
+        "helpMarkDown": "Password of the user with which to run the agent"        
+    },
+    {
+        "name": "NoDetailedLogs",
+        "type": "boolean",
+        "label": "Show minimal logs",
+        "required": false,
+        "groupName": "AdvancedOptions",
+        "helpMarkDown": "Choose this option to avoid the detailed live logs about VM provisioning."
+    }
+    ],
+    "instanceNameFormat": "SCVMM :$(Action) action",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\init.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

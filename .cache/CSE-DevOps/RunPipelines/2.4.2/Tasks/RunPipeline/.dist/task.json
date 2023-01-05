@@ -1,0 +1,322 @@
+{
+  "id": "d64d9bd6-11d8-461d-8517-56f86cbd9ed6",
+  "name": "RunPipelines",
+  "friendlyName": "Azure DevOps Run Pipelines",
+  "description": "Task to Run an Azure DevOps pipeline with variables and parameters.",
+  "author": "CSE-DevOps",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "4",
+    "Patch": "2"
+  },
+  "instanceNameFormat": "Azure DevOps Run Pipeline: $(Pipeline)",
+  "groups": [
+    {
+      "name": "PipelineDetails",
+      "displayName": "Pipeline Details",
+      "isExpanded": true
+    },
+    {
+      "name": "AdvancedConfigurations",
+      "displayName": "Advanced Configuration",
+      "isExpanded": true,
+      "visibleRule": ""
+    },
+    {
+      "name": "MonitoringOptions",
+      "displayName": "Advanced monitoring options for delegate pipelines",
+      "isExpanded": true,
+      "visibleRule": ""
+    }
+  ],
+  "inputs": [
+    {
+      "name": "connectedServiceName",
+      "aliases": [
+        "serviceConnection"
+      ],
+      "type": "connectedService:AZDOAPI",
+      "label": "Azure DevOps service connection",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Select the service connection to connect to Azure DevOps"
+    },
+    {
+      "name": "project",
+      "type": "pickList",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Select the Team Project.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "folderPath",
+      "type": "pickList",
+      "label": "Folder Path",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Select the folder path to filter pipeline definitions below based on where they are stored.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "buildDefinition",
+      "type": "pickList",
+      "label": "Build Definition",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Select the name of the Build to run.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "setBranch",
+      "type": "boolean",
+      "label": "Set Branch for the Triggered Pipelines",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "If this option is enabled, the triggered build will run with the specified source version.",
+      "groupName": "PipelineDetails"
+    },
+    {
+      "name": "Branch",
+      "type": "string",
+      "label": "Branch",
+      "required": false,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "The name of the branch. Default branch will be used if left empty.",
+      "visibleRule": "setBranch=true"
+    },
+    {
+      "name": "targetType",
+      "type": "radio",
+      "label": "Parameter Source",
+      "required": false,
+      "defaultValue": "filePath",
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Where will parameters be provided in a file from a File Path or Inline",
+      "options": {
+        "filePath": "File Path",
+        "inline": "Inline"
+      }
+    },
+    {
+      "name": "buildParametersFile",
+      "type": "filePath",
+      "label": "Parameter File Path",
+      "visibleRule": "targetType = filePath",
+      "required": true,
+      "defaultValue": "",
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Path of the Parameter File. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+    },
+    {
+      "name": "buildParameters",
+      "type": "multiLine",
+      "label": "Build Variables",
+      "visibleRule": "targetType = inline",
+      "required": true,
+      "groupName": "PipelineDetails",
+      "defaultValue": "# Add your variables here",
+      "properties": {
+        "resizable": "true",
+        "rows": "10",
+        "maxLength": "5000"
+      },
+      "helpMarkDown": "The variables passed to the pipeline must be in JSON Array format. The attached example will execute the pipleine two times using the variables supplied \n [{\"var1\":\"hello\", \"var2\":\"world\"},{\"var1\":\"hello\", \"var2\":\"world\"}] "
+    },
+    {
+      "name": "customPrefix",
+      "type": "string",
+      "label": "Custom Prefix",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "PipelineDetails",
+      "helpMarkDown": "Set a Custom Prefix for the task if you intend using it multiple times in the same executing pipeline. \n This will value will be prefixed to the Consolidated Artifacts and Summary Report \n to avoid duplication and clearly outline resource origin"
+    },
+    {
+      "name": "waitForQueuedBuildsToFinish",
+      "type": "boolean",
+      "label": "Wait till the triggered builds are finished before build continues",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "More than one build agent will be required to perform this task. If this option is enabled, the script will wait until the all the queued builds are finished. Note: This can take a while depending on your builds and the main build will not continue until all delegate builds have completed. If you only have one build agent you will end up in a deadlock situation!",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "waitRefreshTime",
+      "type": "string",
+      "label": "Build completion check polling interval (in seconds)",
+      "defaultValue": 30,
+      "required": true,
+      "visibleRule": "waitForQueuedBuildsToFinish = true",
+      "helpMarkDown": "This value defines how frequently the tasks checks if the triggered builds are completed. A lower value might have an impact on performance or the network, as the server is queried more often.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "waitTimeOut",
+      "type": "string",
+      "label": "Build Timeout in minutes",
+      "defaultValue": 120,
+      "required": true,
+      "visibleRule": "waitForQueuedBuildsToFinish = true",
+      "helpMarkDown": "This value defines how long to wait for delegate pipeline execution before timing out the calling pipeline.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "downloadBuildArtifacts",
+      "type": "boolean",
+      "label": "Download Build Artifacts",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Download the build artifacts from the triggered builds (if available) and store it on the build agent for further processing.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "artifactDropDirectory",
+      "type": "string",
+      "label": "Artifact Drop Directory",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true,
+      "visibleRule": "downloadBuildArtifacts = true",
+      "helpMarkDown": "Directory to which artifacts should be downloaded.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "storeInOutputVariable",
+      "type": "boolean",
+      "label": "Store triggered build id's in a variable",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "When enabled, the triggered build id's will be stored in a variable called TriggeredBuildIds that will be available for subsequent Tasks. In case of multiple triggered builds, the values will be separated by ','",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "failBuildIfTaskFails",
+      "type": "boolean",
+      "label": "Fail the build if the task fails",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Fails this build if one of the triggered tasks were not successful",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "allowPartiallySucceeded",
+      "type": "boolean",
+      "label": "Allow delegate pipelines to complete with warnings",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Allows delegate pipelines to complete if they return with status `partiallysucceeded`.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "tagPipelineBuilds",
+      "type": "string",
+      "label": "Tag Pipeline Builds",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Set tags for pipeline builds. For multiple tags, add comma separated values",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "retryDelay",
+      "type": "int",
+      "label": "Base delay for retries (ms)",
+      "defaultValue": 1000,
+      "required": false,
+      "helpMarkDown": "The base delay for retries on API requests.",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "retryFactor",
+      "type": "int",
+      "label": "Factor to increase retries by",
+      "defaultValue": 2,
+      "required": false,
+      "helpMarkDown": "The factor n to be used as the base in subsequent retries i, with exponential backoff delay of n^i",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "retryMaxDelay",
+      "type": "int",
+      "label": "Maximum delay between retries (ms)",
+      "defaultValue": 30000,
+      "required": false,
+      "helpMarkDown": "The maximum delay that can be reached before failing with error",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "retryMaxAttempts",
+      "type": "int",
+      "label": "Maximum number of retries",
+      "defaultValue": 10,
+      "required": false,
+      "helpMarkDown": "Maximum number of retries before failing with error",
+      "groupName": "AdvancedConfigurations"
+    },
+    {
+      "name": "retryJitter",
+      "type": "boolean",
+      "label": "Should retries use jitter",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Applies full jitter to retries with delay = rand(base delay, current delay)",
+      "groupName": "AdvancedConfigurations"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "project",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "projects",
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "folderPath",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "folderPaths",
+      "parameters": {
+        "project": "$(project)"
+      }
+    },
+    {
+      "target": "buildDefinition",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "buildDefinitions",
+      "parameters": {
+        "project": "$(project)",
+        "folderPath": "$(folderPath)"
+      },
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "AzDOCLINotAvailableErrorMsg": "The Azure DevOps CLI has not been installed.",
+    "JQNotAvailableErrorMsg": "JQ was not installed correctly",
+    "BuildParamFileInvalidMsg": "Build parameters file path is not a valid path.",
+    "ArtifactDropDirInvalidMsg": "Artifact drop directory path is not a valid path.",
+    "WaitRefreshTimeInvalidMsg": "Wait refresh time is not a valid number. Must only contain the number amount of seconds.",
+    "BuildParamInvalidMsg": "Build parameters is not a valid json object array. Example valid object: [{\"VAR1\":\"VALUE1\",\"VAR2\":\"VALUE2\"},{\"VAR1\":\"VALUE1\",\"VAR2\":\"VALUE2\"}]"
+  }
+}

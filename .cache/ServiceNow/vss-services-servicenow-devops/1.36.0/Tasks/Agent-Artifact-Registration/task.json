@@ -1,0 +1,41 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "645fcebf-b387-420e-b586-58bda1e3716e",
+    "name": "ServiceNow-DevOps-Agent-Artifact-Registration",
+    "friendlyName": "ServiceNow DevOps Agent Artifact Registration",
+    "description": "This extension needs to be added at job level to register artifact in ServiceNow instance",
+    "helpMarkDown": "",
+    "category": "Package",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 1,
+        "Minor": 36,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ServiceNow DevOps Agent Artifact Registration",
+    "showEnvironmentVariables": false,
+    "inputs": [{
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow DevOps",
+            "label": "ServiceNow endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name": "artifactsPayload",
+            "type": "multiLine",
+            "label": "Artifacts payload",
+            "required": true,
+            "helpMarkDown": "##JSON containing list of artifacts\n\n**Sample input 1:**\n\n```\n{\r\n   \"artifacts\": [\r\n      {\r\n         \"name\": \"<artifact name>\",\r\n         \"version\": \"1.$(Build.BuildId)\",\r\n         \"semanticVersion\": \"1.$(Build.BuildId).0\",\r\n         \"repositoryName\": \"<artifact repository name>\"\r\n      },\r\n      {\r\n         \"name\": \"<artifact name>\",\r\n         \"version\": \"1.$(Build.BuildId)\",\r\n         \"semanticVersion\": \"1.$(Build.BuildId).0\",\r\n         \"repositoryName\": \"<artifact repository name>\"\r\n      }\r\n   ]\r\n}"
+        }
+    ],
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "execution": {
+        "Node10": {
+            "target": "dist/index.js"
+        }
+    }
+}

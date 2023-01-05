@@ -1,0 +1,55 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e4be9ef8-2b4b-4630-b263-ee06af231b31",
+    "name": "XppCreateSourceModelPackage",
+    "friendlyName": "Create Source Model Package",
+    "description": "Task to create a model source package for Dynamics 365 for Finance and Operations",
+    "helpMarkDown": "",
+    "category": "Utility",
+	"visibility": ["Build"],
+	"demands": [],
+    "author": "Renaud Paquay",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 9
+    },
+	"minimumAgentVersion": "2.119.1",	
+	"instanceNameFormat": "Create Model Source Package",    
+    "inputs": [{
+			"name": "XppToolsPath",
+			"type": "filePath",
+			"label": "X++ Tools Path",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "On a VM this will be the bin folder in the PackagesLocalDirectory, on hosted agents this should be the path where the compiler NuGet was installed"
+		}, {
+			"name": "XppMetadataPath",
+			"type": "filePath",
+			"label": "Location of the X++ Metadata",
+			"defaultValue": "$(Build.SourcesDirectory)\\Metadata",
+			"required": true,
+			"helpMarkDown": "Location of the X++ Metadata used to generate the model files that should be packaged, or the default path for the search pattern"
+		}, {
+			"name": "XppMetadataSearch",
+			"type": "multiLine",
+			"label": "Search pattern for Models to package",
+			"defaultValue": "*",
+			"required": false,
+			"helpMarkDown": "Optional search pattern for the packages to include from the metadata location. Wildcards can be used, or a list of packages by specifying one package name per line."
+		}, {
+			"name": "SourceModelPackagePath",
+			"type": "filePath",
+			"label": "Filename and path for the source model package to create",
+			"defaultValue": "$(Build.ArtifactStagingDirectory)\\AXSource_$(Build.BuildNumber).zip",
+			"required": true,
+			"helpMarkDown": "Path including filename for the new source model package"
+		}
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "CreateSourcePackage.ps1",
+			"platforms": ["windows"]
+        }
+    }
+}

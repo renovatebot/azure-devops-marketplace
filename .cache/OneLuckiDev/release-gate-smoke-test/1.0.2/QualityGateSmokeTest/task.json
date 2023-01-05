@@ -1,0 +1,80 @@
+{
+    "id": "b139d512-ddfa-484b-ba17-9aefa3fe640e",
+    "name": "oneluckidevQGateSmokeTest",
+    "friendlyName": "Web Smoke Test",
+    "description": "Simple Web Smoke test quality Gate task",
+    "author": "Jeff Przylucki",  
+    "category": "Utility",
+    "visibility": [
+      "Release"
+    ],
+    "runsOn" :[
+        "Server",
+        "ServerGate"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0", 
+      "Patch": "0"
+    },
+    
+    "instanceNameFormat": "Web Smoke Test",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Url",
+            "required": true,
+            "helpMarkDown": "Url subject to the test. Address must begin with the appropriate protocol (http/https). "
+        },
+        {
+            "name":"headers",
+            "type":"multiLine",
+            "label":"Headers",
+            "required":"false",
+            "defaultValue": "{}",
+            "properties": {
+              "resizable": "true",
+              "rows": "10",
+              "maxLength": "2000"
+            },
+            "helpMarkDown": "Define header in JSON format. The header shall be attached with request to be sent."
+          },
+        {
+
+            "name": "method",      
+            "type": "pickList",      
+            "label": "Method",      
+            "required": "true",      
+            "defaultValue": "GET",      
+            "options": {      
+              "OPTIONS":"OPTIONS",      
+              "GET": "GET",      
+              "HEAD": "HEAD",      
+              "POST": "POST",      
+              "PUT": "PUT"
+            },      
+            "helpMarkDown": "Select the http method with which the smoke test call should be invoked with."
+          }
+    ],
+    "execution": {
+        "HttpRequest": {
+            "Execute": {
+              "EndpointUrl": "$(url)",
+              "Method": "$(method)",
+              "Body": "",
+              "Headers":"$(headers)",
+              "WaitForCompletion":"false"
+            }
+          }
+      
+    }
+  }

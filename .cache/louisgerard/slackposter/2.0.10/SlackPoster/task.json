@@ -1,0 +1,81 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+  "id": "398b1090-7cc7-11e6-b655-c7bacebec48d",
+  "name": "SlackPoster",
+  "friendlyName": "Post to Slack",
+  "description": "Post a message to Slack",
+  "author": "Louis G.",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 8
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Post to Slack $(message)",
+  "inputs": [
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Message Author",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Will be displayed in Slack as the message author."
+    },
+    {
+      "name": "Message",
+      "type": "string",
+      "label": "Message",
+      "defaultValue": "$(Build.BuildNumber) successfull",
+      "required": true,
+      "helpMarkDown": "Message to post in Slack."
+    },
+    {
+      "name": "ApiToken",
+      "type": "string",
+      "label": "Slack Api Token",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Slack Api token. Should be stored in a secure build variable."
+    },
+    {
+      "name": "Channel",
+      "type": "string",
+      "label": "Channel (or user display name)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The channel or user where to post the message. (ex. #general, #random, @johndoe)"
+    },
+    {
+      "name": "IconUrl",
+      "type": "string",
+      "label": "Icon Url",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The icon that will be displayed in front of the message. (ideally 128x128 px)"
+    },
+    {
+      "name": "NeverFails",
+      "type": "boolean",
+      "label": "Never fails",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Wether or not the task should fail if the message cannot be sent."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "SlackPoster.ps1"
+    },
+    "Node": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

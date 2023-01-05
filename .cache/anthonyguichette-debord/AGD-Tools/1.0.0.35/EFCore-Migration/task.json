@@ -1,0 +1,123 @@
+{
+    "id": "A6D28082-1111-0804-1005-000000000003",
+    "name": "AGD-EFCoreMigration",
+    "friendlyName": "EF Core Migration",
+    "description": "Generate a EF Core Migration script and update your database.",
+    "author": "Anthony Guichette-Debord",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "1",
+      "Patch": "3"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "EF Core Migration",
+    "groups": [
+      {
+        "name":"database",
+        "displayName":"Database",
+        "isExpanded":false
+      },
+      {
+        "name":"advanced",
+        "displayName":"Advanced",
+        "isExpanded":true
+      }
+    ],
+    "inputs": [
+      { 
+        "name": "usePackage",
+        "type": "boolean",
+        "label": "Use Package instead of deployed application",
+        "defaultValue": "false",
+        "required":true,
+        "helpMarkDown": ""
+      },{ 
+        "name": "package",
+        "type": "filePath",
+        "label": "Package",
+        "defaultValue": "",
+        "required":true,
+        "helpMarkDown": "ZIP Package file including the application binaries",
+        "visibleRule": "usePackage = true"
+      },{ 
+        "name": "applicationFolder",
+        "type": "string",
+        "label": "Application folder",
+        "defaultValue": "",
+        "required":true,
+        "helpMarkDown": "",
+        "visibleRule": "usePackage = false"
+      },{ 
+        "name": "startupProject",
+        "type": "string",
+        "label": "Startup Project Name",
+        "defaultValue": "",
+        "required":true,
+        "helpMarkDown": ""
+      },{ 
+        "name": "dataProject",
+        "type": "string",
+        "label": "Data Project Name",
+        "defaultValue": "",
+        "required":true,
+        "helpMarkDown": ""
+      },{ 
+        "name": "dataContext",
+        "type": "string",
+        "label": "Data Context",
+        "defaultValue": "",
+        "required":false,
+        "helpMarkDown": "(Optional) Leave empty if you have only one data context."
+      },
+      { 
+        "name": "migrationTable",
+        "type": "string",
+        "label": "EF Migration History Table",
+        "defaultValue": "__EFMigrationsHistory",
+        "required":true,
+        "helpMarkDown": "",
+        "groupName":"database"
+      },
+      { 
+        "name": "connectionString",
+        "type": "string",
+        "label": "Connection String",
+        "defaultValue": "",
+        "required":true,
+        "helpMarkDown": "",
+        "groupName":"database"
+      },
+      { 
+        "name": "updateDatabase",
+        "type": "boolean",
+        "label": "Update Database",
+        "defaultValue": "true",
+        "required":true,
+        "helpMarkDown": "Check this option if you want to update the database.",
+        "groupName":"database"
+      },
+      { 
+        "name": "scriptFolder",
+        "type": "string",
+        "label": "Target script Folder",
+        "defaultValue": "",
+        "required":false,
+        "helpMarkDown": "",
+        "groupName":"advanced"
+      }
+    ],
+    "execution": {
+      "PowerShell": {
+        "target": "$(currentDirectory)\\EFCore-Migration.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+    }
+  }

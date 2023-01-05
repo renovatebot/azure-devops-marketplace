@@ -1,0 +1,84 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "55f9e35f-fa76-44a7-80b7-087321c4ce93",
+    "name": "ApicaCheckRunner",
+    "friendlyName": "Apica ASM Check runner",
+    "description": "Run Apica ASM checks in Azure DevOps pipeline as a task",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Jan Ostgren",
+    "groups": [],
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Echo enter the basic properties",
+    "inputs": [
+        {
+            "name": "AsmApiBaseUrl",
+            "type": "string",
+            "label": "The base url for Apica Rest API",
+            "defaultValue": "https://api-wpm2.apicasystem.com/v3/",
+            "required": true,
+            "helpMarkDown": "The base URL used for the Apica ASM REST API. See API documentation in your ASM account"
+        },
+        {
+            "name": "AsmUrl",
+            "type": "string",
+            "label": "Url Apica ASM Web portal",
+            "defaultValue": "https://wpm.apicasystem.com",
+            "required": true,
+            "helpMarkDown": "Url to your instance of Apica ASM"
+        },
+        {
+            "name": "AuthTicket",
+            "type": "string",
+            "label": "Auth ticket for ASM REST API",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The auth ticket used authentication to the ASM REST API"
+        },
+        {
+            "name": "TagName",
+            "type": "string",
+            "label": "Apica ASM Check tag name",
+            "defaultValue": "CI_CD_Pipeline",
+            "required": true,
+            "helpMarkDown": "The tag name associated with ASM checks"
+        },
+        {
+            "name": "TagValue",
+            "type": "string",
+            "label": "The corresponding tag value for the tag",
+            "defaultValue": "AzurePipeline",
+            "required": true,
+            "helpMarkDown": "The corresponding tag value for the tag"
+        },
+        {
+            "name": "LowThreshold",
+            "type": "string",
+            "label": "Low threshold for percent of successful check runs",
+            "defaultValue": "100",
+            "required": false,
+            "helpMarkDown": "Low threshold for percent of successful check runs"
+        },
+        {
+            "name": "HighThreshold",
+            "type": "string",
+            "label": "High threshold for percent of successful check runs",
+            "defaultValue": "100",
+            "required": false,
+            "helpMarkDown": "High threshold (watermark) for percent of successful check runs"
+        }
+    ],
+    "messages": {
+        "BadApiURL": "Bad URL [%s] for input AsmApiBaseUrl given'",
+        "BadAsmURL": "Bad URL [%s] for input Asm Url given'"
+    },
+    "execution": {
+        "Node10": {
+            "target": "dist/task/index.js"
+        }
+    }
+}

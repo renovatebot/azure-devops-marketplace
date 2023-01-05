@@ -1,0 +1,215 @@
+{
+  "id": "3f71a0d1-a67c-4231-8012-ee71410633c1",
+  "name": "WindowsTaskScheduler",
+  "friendlyName": "Windows Task Scheduler",
+  "description": "Create and maintain scheduled tasks on Windows servers.",
+  "author": "PeterBarendse",
+  "helpMarkDown": "This extension can create and alter Windows scheduled tasks, using WinRM.",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "0",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "ServerSettings",
+      "displayName": "Server Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "BasicScheduledtaskSettings",
+      "displayName": "Scheduled task Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "ScheduledtaskTriggerSettings",
+      "displayName": "Advanced Scheduled task Settings",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Windows Task Scheduler",
+  "inputs": [
+    {
+      "name": "Servers",
+      "type": "string",
+      "label": "Server(s)",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Enter the server names. Multiple entries should be comma seperated (server.domain.loc)."
+    },
+    {
+      "name": "ServerUserName",
+      "type": "string",
+      "label": "Username",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "User needs local administrator permissions (domain\\user)"
+    },
+    {
+      "name": "ServerPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": ""
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Use HTTP or HTTPS for the WinRM connection with the machine(s)."
+    },
+    {
+      "name": "TaskName",
+      "type": "string",
+      "label": "Task Name",
+      "defaultValue": "",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Task name"
+    },
+    {
+      "name": "TaskDescription",
+      "type": "string",
+      "label": "Task Description",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Task description"
+    },
+    {
+      "name": "TaskActions",
+      "type": "multiLine",
+      "label": "Task Actions",
+      "defaultValue": "cmd.exe\n\"C:\\demo folder\\executable.exe\" [-Name Argument1 -Item Argument 2]",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "10"
+      },
+      "helpMarkDown": "Define the actions. Several can be made. One line per Action. Arguments per action must be placed around square brackets: \"C:\\folder name\\example.exe\" [-Argument1 value1 -Argument2 value2]"
+    },
+    {
+      "name": "Schedule",
+      "type": "pickList",
+      "label": "Run Schedule",
+      "defaultValue": "Daily",
+      "options": {
+        "Once": "Once",
+        "Daily": "Daily",
+        "DaysofWeek": "Weekly"
+      },
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Run the task once, daily or on selected days."
+    },
+    {
+      "name": "TriggerDays",
+      "type": "pickList",
+      "label": "Running days",
+      "defaultValue": "",
+      "options": {
+        "Monday": "Monday",
+        "Tuesday": "Tuesday",
+        "Wednesday": "Wednesday",
+        "Thursday": "Thursday",
+        "Friday": "Friday",
+        "Saturday": "Saturday",
+        "Sunday": "Sunday"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "visibleRule": "Schedule = DaysofWeek",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Define on which days the task runs."
+    },
+    {
+      "name": "TriggerTime",
+      "type": "string",
+      "label": "Start time",
+      "defaultValue": "09:00",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Define which time the task starts. HH:MM"
+    },
+    {
+      "name": "RunAsUser",
+      "type": "string",
+      "label": "Run task as",
+      "required": true,
+      "GroupName": "ScheduledtaskTriggerSettings",
+      "helpMarkDown": "Username to run the task (IE dev\\svc00001, NT Authority\\SYSTEM)."
+    },
+    {
+      "name": "RunAsPassword",
+      "type": "string",
+      "label": "Task password",
+      "required": false,
+      "GroupName": "ScheduledtaskTriggerSettings",
+      "helpMarkDown": "Password for the matching username. If you keep this field blank, the task will only run if the task user is logged in on the target machine. The field needs to be blank if the user is an NT Authority such as LOCAL SERVICE or SYSTEM."
+    },
+    {
+      "name": "AdvancedSettings",
+      "type": "boolean",
+      "label": "Repetition and Interval settings",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "ScheduledtaskTriggerSettings",
+      "helpMarkDown": "Repetition and Interval settings"
+    },
+    {
+      "name": "TriggerRepetitionInterval",
+      "type": "pickList",
+      "label": "Repeat task every:",
+      "defaultValue": "",
+      "options": {
+        "PT5M": "5 Minutes",
+        "PT10M": "10 Minutes",
+        "PT15M": "15 Minutes",
+        "PT30M": "30 Minutes",
+        "PT1H": "1 Hour"
+      },
+      "required": true,
+      "GroupName": "ScheduledtaskTriggerSettings",
+      "helpMarkDown": "Repeat task at an interval",
+      "visibleRule": "AdvancedSettings = true"
+    },
+    {
+      "name": "TriggerRepetitionDuration",
+      "type": "pickList",
+      "label": "for a duration of:",
+      "defaultValue": "",
+      "options": {
+        "": "Indefinitely",
+        "PT15M": "15 Minutes",
+        "PT30M": "30 Minutes",
+        "PT1H": "1 Hour",
+        "PT8H": "8 Hours",
+        "PT12H": "12 Hours",
+        "P1D": "1 Day"
+      },
+      "GroupName": "ScheduledtaskTriggerSettings",
+      "helpMarkDown": "The duration can only be equal or greater then the interval.",
+      "visibleRule": "AdvancedSettings = true"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ScheduledTasks.ps1"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "934e4f88-45b2-436a-849e-5be0afef70d8",
+    "name": "GsutilRunner",
+    "friendlyName": "Run a custom gsutil command",
+    "description": "Execute gsutil commands to manage buckets and objects on Google Cloud Platform (GCP)",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "laurensknoll@binx.io",
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 0
+    },
+    "instanceNameFormat": "gsutil $(command) $(arguments)",
+    "groups": [
+        {
+            "displayName": "Advanced",
+            "name": "advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "command",
+            "type": "string",
+            "label": "command",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The gsutil command to execute. For example, to execute 'gsutil cp', enter 'cp'"
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional arguments for the command. For example, to specify the files to copy add '*.txt gs://my-bucket'"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working directory",
+            "helpMarkDown": "The working directory where the command will run. When empty, the root of the repository (for builds) or artifacts (for releases) is used, which is the value of '$(System.DefaultWorkingDirectory)'.",
+            "required": false,
+            "groupName": "advanced"
+        },
+        {
+            "name": "commandOptions",
+            "type": "string",
+            "label": "Command options",
+            "helpMarkDown": "Optional command options. For example, to specify the canned acl use '-a public-read'",
+            "required": false,
+            "groupName": "advanced"
+        },
+        {
+            "name": "toolOptions",
+            "type": "string",
+            "label": "Tool options",
+            "helpMarkDown": "Optional tool options to control behavior of gsutil that apply across commands. For example, to specify a HTTP header use '-h \"Cache-Control:public,max-age=3600\"'",
+            "required": false,
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

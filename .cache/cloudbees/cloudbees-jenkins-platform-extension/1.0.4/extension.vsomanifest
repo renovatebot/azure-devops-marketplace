@@ -1,0 +1,47 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "cloudbees",
+                "name": "CloudBees",
+                "description": "CloudBees description version 5",
+                "informationUrl": "https://www.cloudbees.com/",
+                "inputDescriptors": [
+                    {
+                        "id": "jenkinsUrl",
+                        "isRequired": true,
+                        "name": "Jenkins Root Url",
+                        "description": "The Jenkins Master Root Url",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "postToCloudBees",
+                        "name": "Post event to Cloud Bees",
+                        "description": "Posts an event to CloudBees Jenkins Platform",
+                        "supportedEventTypes": [
+                            "git.push",
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{jenkinsUrl}}}/vsts-webhook",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

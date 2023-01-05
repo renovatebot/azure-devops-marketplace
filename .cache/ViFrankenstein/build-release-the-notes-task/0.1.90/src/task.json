@@ -1,0 +1,64 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "084140ea-39bd-11ed-a261-0242ac120002",
+    "name": "ReleaseTheNotes",
+    "friendlyName": "Release the Notes",
+    "description": "Creates release notes from build commits in pipeline",
+    "helpMarkDown": "[Learn more about this task](https://aka.ms/AA3aeiw)",
+    "category": "Utility",
+    "author": "CodeChavez",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 90
+    },
+    "minimumAgentVersion": "2.0.0",
+    "instanceNameFormat": "Release the Notes",
+    "inputs": [
+        {
+            "name": "ADOBaseUrl",
+            "type": "string",
+            "label": "Organization",
+            "defaultValue": "$(System.CollectionUri)",
+            "required": true,
+            "helpMarkDown": "Organization name"
+        },
+        {
+            "name": "RNRepositoryName",
+            "type":"string",
+            "label": "Repository",
+            "defaultValue": "$(Build.Repository.Name)",
+            "required": true,
+            "helpMarkDown": "Repository name"
+        },
+        {
+            "name": "RNVersion",
+            "type": "string",
+            "label": "Versioning",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Build number set by any versioning mechanism"
+        },
+        {
+            "name": "RNTitle",
+            "type": "string",
+            "label": "Release title",
+            "defaultValue": "Release Notes for $(Build.Repository.Name)",
+            "required": true,
+            "helpMarkDown": "Enter title for wiki release notes"
+        },
+        {
+            "name": "WikiDestination",
+            "label": "Wiki Desitination",
+            "type":"string",
+            "defaultValue": "Releases",
+            "required": true,
+            "helpMarkDown": "Enter the wiki destination name example. Releases"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "main.js"
+        }
+    }
+}

@@ -1,0 +1,353 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b4d11fbc-5ee3-4a40-a101-9eb3f08e0910",
+    "name": "ScribeSolutionDeployment",
+    "friendlyName": "Scribe Solution Deployment",
+    "description": "Deploy Scribe solutions",
+    "helpMarkDown": "[learn more](https://marketplace.visualstudio.com/items?itemName=ToluAdepoju.scribe-solution-deployment)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": ["Agent", "Server"],
+    "author": "Tolu Adepoju",
+    "version": {
+        "Major": 1,
+        "Minor": 2,
+        "Patch": 12
+    },
+    "groups": [
+        {
+            "name":"scribeCredentialsGroup",
+            "displayName": "Scribe Credentials",
+            "isExpanded": false
+        },{
+            "name":"createSolutionGroup",
+            "displayName": "Create or Update solution",
+            "isExpanded": true,
+            "visibleRule": "scribeAction == createSolution"
+        },{
+            "name":"scheduleSolutionGroup",
+            "displayName": "Schedule Solution",
+            "isExpanded": false,
+            "visibleRule": "scribeAction == createSolution"
+        }
+    ],
+    "instanceNameFormat": "Scribe Task - $(scribeAction)",
+    "inputs": [
+        {
+            "name": "scribeBaseurl",
+            "type": "string",
+            "label": "Scribe Base Url",
+            "defaultValue": "https://api.scribesoft.com/v1/orgs",
+            "required": true,
+            "groupName": "scribeCredentialsGroup"
+        },{
+            "name": "scribeOrganizationId",
+            "type": "string",
+            "label": "Scribe Organization Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The scribe organization id",
+            "groupName": "scribeCredentialsGroup"
+        },{
+            "name": "scribeUsername",
+            "type": "string",
+            "label": "Scribe Username",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "scribeCredentialsGroup"
+        },{
+            "name": "scribePassword",
+            "type": "string",
+            "label": "Scribe Password",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "scribeCredentialsGroup"
+        },{
+            "name": "scribeAction",
+            "type": "pickList",
+            "label": "The type of action to be performed",
+            "required": true,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "createSolution",
+            "options": {
+                "testConnection": "Test Connection",
+                "createSolution": "Create/Update Solution",
+                "deleteSolution": "Delete Solution",
+                "getConnectionEntities": "Get Entities",
+                "startSolution": "Start Solution"
+            }
+        },{
+            "name": "solutionName",
+            "type": "string",
+            "label": "Solution Name",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "scribeAction = deleteSolution || scribeAction == createSolution",
+            "properties": {
+                "maxLength" : "50"
+            }
+        },{
+            "name": "solutionDescription",
+            "type": "multiLine",
+            "label": "Description",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "maxLength" : "256",
+                "rows" : "2",
+                "resizable" : true
+            },
+            "groupName": "createSolutionGroup"
+        },{
+            "name": "solutionType",
+            "type": "pickList",
+            "label": "Solution Type",
+            "defaultValue": "replication",
+            "required": false,
+            "options": {
+                "Replication" : "Replication"
+            },
+            "groupName": "createSolutionGroup"
+        },{
+            "name": "solutionEnabled",
+            "type": "boolean",
+            "label": "Enable Solution",
+            "defaultValue": true,
+            "required": false,
+            "groupName": "createSolutionGroup"
+        },{
+            "name": "agentName",
+            "type": "string",
+            "label": "Agent Name",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "createSolutionGroup",
+            "properties": {
+                "maxLength" : "25"
+            }
+        },{
+            "name": "sourceConnectionName",
+            "type": "string",
+            "label": "Source Connection Name",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "createSolutionGroup",
+            "properties": {
+                "maxLength" : "25"
+            }
+        },{
+            "name": "targetConnectionName",
+            "type": "string",
+            "label": "Target Connection Name",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "createSolutionGroup",
+            "properties": {
+                "maxLength" : "25"
+            }
+        },{
+            "name": "entitySelectionMode",
+            "type": "pickList",
+            "label": "Entities",
+            "defaultValue": "Selected",
+            "required": false,
+            "options": {
+                "Recommended" : "Recommended",
+                "All" : "All",
+                "Selected" : "Selected"
+            },
+            "groupName": "createSolutionGroup"
+        },{
+            "name": "selectedEntities",
+            "type": "multiLine",
+            "label": "Selected Entities",
+            "defaultValue": "[\"firstEntity\", \"secondEntity\"]",
+            "required": false,
+            "visibleRule": "entitySelectionMode == Selected",
+            "properties": {
+                "maxLength" : "10000",
+                "rows" : "4",
+                "resizable" : true
+            },
+            "groupName": "createSolutionGroup",
+            "helpMarkDown": "List of Dynamics CE entities as a string array. e.g. [\"firstEntity\", \"secondEntity\", ...]. Use a pipeline $(variable) if the maximum length of 10,000 is inadequate."
+        },{
+            "name": "connectionName",
+            "type": "string",
+            "label": "Connection Name",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "scribeAction == testConnection || scribeAction == getConnectionEntities"
+        },{
+            "name": "startSolutionAfterCreateOrUpdate",
+            "type": "radio",
+            "label": "Start the solution after deployment",
+            "required": false,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "false",
+            "helpMarkDown": "Execute the solution immediately after the deployment is complete",
+            "options": {
+                "true": "yes",
+                "false" : "no"
+            },
+            "visibleRule": "scribeAction == createSolution"
+        },{
+            "name": "scheduleOption",
+            "type": "pickList",
+            "label": "Select a type of schedule",
+            "required": false,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "NoAction",
+            "options": {
+                "NoAction": "No Action",
+                "OnDemand": "On Demand",
+                "RunOnce": "Run Once",
+                "Recurring": "Recurring"
+            },
+            "helpMarkDown": "Select \"no action\" to prevent changes to the schedule of a solution.",
+            "groupName": "scheduleSolutionGroup"
+        },{
+            "name": "runOnceOptionDate",
+            "type": "string",
+            "label": "Date (MM-DD-YYYY)",
+            "required": false,
+            "defaultValue": "01-01-2020",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "(MM-DD-YYYY). e.g. 05-17-2020",
+            "visibleRule": "scheduleOption == RunOnce"
+        },{
+            "name": "runOnceOptionTime",
+            "type": "string",
+            "label": "Time (HH:MM 24hr format)",
+            "required": false,
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "(HH:MM): e.g. \"2:00\", \"21:22\". Time zone is Coordinated Universal Time (UTC)",
+            "visibleRule": "scheduleOption == RunOnce"
+        },{
+            "name": "recurringOptionDaysOption",
+            "type": "pickList",
+            "label": "Day Interval",
+            "required": false,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "daysInterval",
+            "options": {
+                "daysInterval": "Occur once every x number of days",
+                "daysOfWeek" : "Specific days of the week",
+                "daysOfMonth": "Specific days of each month"
+            },
+            "groupName": "scheduleSolutionGroup",
+            "visibleRule": "scheduleOption == recurring"
+        },{
+            "name": "recurringOptionDaysIntervalStartDate",
+            "type": "string",
+            "label": "Start Date (MM-DD-YYYY)",
+            "defaultValue": "01-01-2020",
+            "required": false,
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "(MM-DD-YYYY). e.g. \"05-17-2020\"",
+            "visibleRule": "scheduleOption == recurring && recurringOptionDaysOption == daysInterval"
+        },{
+            "name": "recurringOptionDaysInterval",
+            "type": "string",
+            "label": "Days Interval",
+            "required": false,
+            "defaultValue": "1",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Frequency in days (valid values: 1 to 366)",
+            "visibleRule": "scheduleOption == recurring && recurringOptionDaysOption == daysInterval",
+            "properties": {
+                "maxLength" : "3"
+            }
+        },{
+            "name": "recurringOptionDaysOfWeek",
+            "type": "string",
+            "label": "Days of the Week",
+            "required": false,
+            "defaultValue": "2,3,4,5,6",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Comma separated list of week days during which solution should be run. 1 represents Sunday, while 7 is Saturday. Valid values: 1 to 7. e.g. \"1,2,6,7\" ",
+            "visibleRule": "scheduleOption == recurring && recurringOptionDaysOption == daysOfWeek"
+        },{
+            "name": "recurringOptionDaysOfMonth",
+            "type": "string",
+            "label": "Days of the Month",
+            "required": false,
+            "defaultValue": "1,2,last",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Comma separated list of days during which solution should be run. Valid values: \"1 to 28\" , \"last\" e.g. \"1,2,19,20, last\".",
+            "visibleRule": "scheduleOption == recurring && recurringOptionDaysOption == daysOfMonth"
+        },{
+            "name": "recurringOptionTimeOptionTime",
+            "type": "pickList",
+            "label": "Time Interval",
+            "required": false,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "timeInterval",
+            "helpMarkDown": "Type of time interval. Hourly, By the minute, or minutes after each hour.",
+            "options": {
+                "timeInterval" : "Every x minutes(s)",
+                "timeOfDay": "Specific time of the day",
+                "hourlyMinutes": "Every hour at x minute(s) after the hour"
+            },
+            "groupName": "scheduleSolutionGroup",
+            "visibleRule": "scheduleOption == recurring"
+        },{
+            "name": "timeIntervalUnit",
+            "type": "radio",
+            "label": "Time Interval",
+            "required": false,
+            "properties": {"EditableOptions": "False"},
+            "defaultValue": "minutes",
+            "helpMarkDown": "Time interval units.",
+            "options": {
+                "minutes": "Minutes",
+                "hours" : "Hours"
+            },
+            "groupName": "scheduleSolutionGroup",
+            "visibleRule": "scheduleOption == recurring && recurringOptionTimeOptionTime == timeInterval"
+        },{
+            "name": "recurringOptionTime",
+            "type": "string",
+            "label": "Time (HH:MM 24hr format)",
+            "required": false,
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Time to run the recurring job e.g. \"2:00\", \"11:22\". Time zone is Coordinated Universal Time (UTC)",
+            "visibleRule": "scheduleOption == recurring && recurringOptionTimeOptionTime == timeOfDay "
+        },{
+            "name": "recurringOptionTimeOptionMinutesAfterTheHour",
+            "type": "string",
+            "label": "Minutes After The Hour",
+            "required": false,
+            "defaultValue": "1",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Number of minutes after the hour",
+            "visibleRule": "scheduleOption == recurring && recurringOptionTimeOptionTime == hourlyMinutes"
+        },{
+            "name": "recurringOptionTimeOptionMinutes",
+            "type": "string",
+            "label": "Minute Interval (1-59)",
+            "required": false,
+            "defaultValue": "1",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Minute intervals. 1 to 59 minutes",
+            "visibleRule": "scheduleOption == recurring && recurringOptionTimeOptionTime == timeInterval && timeIntervalUnit = minutes"
+        },{
+            "name": "recurringOptionTimeOptionHours",
+            "type": "string",
+            "label": "Hour Interval (1-23)",
+            "required": false,
+            "defaultValue": "1",
+            "groupName": "scheduleSolutionGroup",
+            "helpMarkDown": "Hour intervals. 1 to 23 hours",
+            "visibleRule": "scheduleOption == recurring && recurringOptionTimeOptionTime == timeInterval && timeIntervalUnit = hours"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

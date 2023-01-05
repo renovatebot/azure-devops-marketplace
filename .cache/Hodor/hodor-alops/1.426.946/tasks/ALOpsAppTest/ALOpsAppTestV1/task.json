@@ -1,0 +1,170 @@
+{
+    "id":  "05bf385f-26f1-474d-a993-49930a16de43",
+    "name":  "ALOpsAppTest",
+    "friendlyName":  "ALOps App Test",
+    "description":  "ALOps App Test",
+    "author":  "Hodor",
+    "helpMarkDown":  "Run Business Central Test-Suite and collect results.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  426,
+                    "Patch":  946
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Test",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "bc_username",
+                       "type":  "string",
+                       "label":  "BC Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC Username for ServiceTier connection. $(bc_username)"
+                   },
+                   {
+                       "name":  "bc_password",
+                       "type":  "string",
+                       "label":  "BC Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC User Password for ServiceTier connection. $(bc_password)"
+                   },
+                   {
+                       "name":  "bc_authentication",
+                       "type":  "pickList",
+                       "label":  "BC Authentication",
+                       "options":  {
+                                       "Windows":  "Windows",
+                                       "UserName":  "UserName",
+                                       "NavUserPassword":  "NavUserPassword",
+                                       "AccessControlService":  "AccessControlService",
+                                       "ExchangeIdentity":  "ExchangeIdentity",
+                                       "TaskScheduler":  "TaskScheduler",
+                                       "None":  "None"
+                                   },
+                       "defaultValue":  "NavUserPassword",
+                       "helpMarkDown":  "BC Authentication type of the ServiceTier. $(bc_authentication)"
+                   },
+                   {
+                       "name":  "bc_webclient_url",
+                       "type":  "string",
+                       "label":  "BC Webclient Url",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC WebClient Endpoint. $(bc_webclient_url)"
+                   },
+                   {
+                       "name":  "testfilter",
+                       "type":  "string",
+                       "label":  "Test CU Filter",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Filter codeunits to include in Test-Suite. $(testfilter)"
+                   },
+                   {
+                       "name":  "show_available_tests",
+                       "type":  "boolean",
+                       "label":  "Show Tests",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Show all available tests. $(show_available_tests)"
+                   },
+                   {
+                       "name":  "import_testtoolkit",
+                       "type":  "boolean",
+                       "label":  "Import TestToolKit",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Import TestToolKit FOB. $(import_testtoolkit)"
+                   },
+                   {
+                       "name":  "import_action",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "TestSuite import Action",
+                       "defaultValue":  "Overwrite",
+                       "options":  {
+                                       "Default":  "Default",
+                                       "Overwrite":  "Overwrite",
+                                       "Skip":  "Skip"
+                                   },
+                       "helpMarkDown":  "Import Action for importing Test-Suite FOB files. $(import_action)"
+                   },
+                   {
+                       "name":  "testpage",
+                       "type":  "string",
+                       "label":  "Test Page",
+                       "defaultValue":  "130409",
+                       "required":  false,
+                       "helpMarkDown":  "Set the PageId used for testing. $(testpage)"
+                   },
+                   {
+                       "name":  "testsuite",
+                       "type":  "string",
+                       "label":  "Test Suite",
+                       "defaultValue":  "DEFAULT",
+                       "required":  false,
+                       "helpMarkDown":  "Set target Test Suite to activate. $(testsuite)"
+                   },
+                   {
+                       "name":  "installaltesttool",
+                       "type":  "boolean",
+                       "label":  "Install AL TestTool",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Install the AL TestTool for v15. $(installaltesttool)"
+                   },
+                   {
+                       "name":  "failed_test_action",
+                       "type":  "pickList",
+                       "label":  "Action Failed Test",
+                       "defaultValue":  "Warning",
+                       "options":  {
+                                       "Ignore":  "Ignore",
+                                       "Warning":  "Warning",
+                                       "Error":  "Error"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Action to take when a Test failed. $(failed_test_action)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "07e99146-71b1-49aa-80a8-b613cf9af156.ps1"
+                                      }
+                  }
+}

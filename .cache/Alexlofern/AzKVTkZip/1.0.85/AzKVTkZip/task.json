@@ -1,0 +1,108 @@
+{
+    "id": "7640e0a8-1886-4a26-8bf0-c73c7268c3f3",
+    "name": "AzKVTkZip",
+    "friendlyName": "Azure Key Vault Tokenization File with Zip Archive Support",
+    "description": "Tool for tokenize files, inside or not of a zip archive using Azure Key Vault Secrets.",
+    "helpMarkDown": "",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "author": "Alexlofern",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 85
+    },
+    "instanceNameFormat": "Azure Key Vault Tokenization File with Zip Archive Support",
+    "groups": [
+        {
+            "name": "AzureEndpoint",
+            "displayName": "Azure Endpoint",
+            "isExpanded": true
+        },
+        {
+            "name": "Files",
+            "displayName": "Files",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
+            "groupName": "AzureEndpoint"
+        },
+        {
+            "name": "targetPath",
+            "type": "filePath",
+            "label": "Target Folder",
+            "required": true,
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "helpMarkDown": "Path of the root folder to search for. For example, $(System.DefaultWorkingDirectory)",
+            "groupName":"Files"
+        },
+        {
+            "name": "Packages",
+            "type": "string",
+            "label": "Zip archive file filter",
+            "required": false,
+            "defaultValue": "*.zip",
+            "helpMarkDown": "The archive zip files to search for. For example, somefile.zip or *.zip. Leave blank if you don't want seek inside zip archives.",
+            "groupName":"Files"
+        },
+        {
+            "name": "fileFilter",
+            "type": "string",
+            "label": "File filter",
+            "required": true,
+            "defaultValue": "*.settings",
+            "helpMarkDown": "The filter string to enumerate files. The API only supports * and ? wildcards, exemple: somefile.txt, *.settings, *.json, *.txt, etc. If you want use more of one filter, split by comma, example: '*.txt,*.jon'",
+            "groupName":"Files"
+        },
+        {
+            "name": "tokenPrefix",
+            "type": "string",
+            "label": "Token prefix",
+            "required": true,
+            "defaultValue": "__",
+            "helpMarkDown": "Token prefix.For example, '__'",
+            "groupName":"Files"
+        },
+        {
+            "name": "tokenSuffix",
+            "type": "string",
+            "label": "Token suffix",
+            "required": true,
+            "defaultValue": "__",
+            "helpMarkDown": "Token suffix.For example, '__'",
+            "groupName":"Files"
+        },
+        {
+            "name": "ReplaceWithEmpty",
+            "type": "boolean",
+            "label": "Replace with empty values",
+            "required": true,
+            "defaultValue": "False",
+            "helpMarkDown": "By default keeps the token, when checked then it will replace with empty values if token not found in Key Vault.",
+            "groupName":"Files"
+        },
+        {
+            "name": "KeyVaultName",
+            "type": "string",
+            "label": "Key Vault Name",
+            "required": true,
+            "defaultValue": "",            
+            "helpMarkDown": "Azure Key Vault name, where you search the tokens to get values",
+            "groupName":"Files"        
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "AzKVTkZip.ps1"
+        }
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "id":  "E47012ED-074C-4F77-AC9F-A6812F900AB0",
+    "name":  "VersionAssemblies",
+    "friendlyName":  "Version .NET Assemblies",
+    "description":  "Applies a version to a .NET assembly via the assemblyinfo.cs or .vb files based on the build number. Based on Microsoft sample from https://msdn.microsoft.com/Library/vs/alm/Build/overview",
+    "helpMarkDown":  "Version: 1.7.3. [More Information](https://github.com/rfennell/vNextBuild/wiki/Version-Assemblies-and-Packages-Tasks/)",
+    "category":  "Build",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "Black Marble",
+    "version":  {
+                    "Major":  1,
+                    "Minor":  7,
+                    "Patch":  3
+                },
+    "groups":  [
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "Path",
+                       "type":  "string",
+                       "label":  "Source folder",
+                       "defaultValue":  "$(Build.SourcesDirectory)",
+                       "required":  true,
+                       "helpMarkDown":  "Source folder for assemblies files, can be root as it will find all files recursively"
+                   },
+                   {
+                       "name":  "VersionNumber",
+                       "type":  "string",
+                       "label":  "Version Number",
+                       "defaultValue":  "$(Build.BuildNumber)",
+                       "required":  true,
+                       "helpMarkDown":  "Version number to apply to files, can be extraced from the build name \u0027Build HelloWorld_00.00.00000.0\u0027 format"
+                   },
+                   {
+                       "name":  "VersionRegex",
+                       "type":  "string",
+                       "label":  "Regex Filter",
+                       "defaultValue":  "\\d+\\.\\d+\\.\\d+\\.\\d+",
+                       "required":  true,
+                       "helpMarkDown":  "Regular expression filter build number from name.",
+                       "groupName":  "advanced"
+                   }
+               ],
+    "minimumAgentVersion":  "1.82.0",
+    "instanceNameFormat":  "Version Assemblies",
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\ApplyVersionToAssemblies.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}

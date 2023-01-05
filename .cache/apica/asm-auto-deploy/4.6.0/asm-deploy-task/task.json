@@ -1,0 +1,129 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "2c67a8ba-7295-4345-ae4b-1b8d666d2d82",
+    "name": "AsmAutoDeploy",
+    "friendlyName": "Apica ASM auto deployer",
+    "description": "Deploy assets to Apica ASM in a Azure DevOps pipeline as a task",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Jan Ostgren",
+    "groups": [
+       
+        {
+            "displayName": "Local Directories",
+            "name": "DIRS"
+        },
+        {
+            "displayName": "Deployment descriptor",
+            "name": "DD"
+        },
+        {
+            "displayName": "Run-time Parameters",
+            "name": "RunTime"
+        },
+        {
+            "displayName": "Repository (GIT)",
+            "name": "Repository"
+        },
+        {
+            "displayName": "Additional",
+            "name": "Additional parameters"
+        }
+    ],
+    "version": {
+        "Major": 4,
+        "Minor": 6,
+        "Patch": 0
+    },
+    "instanceNameFormat": "ASM Auto Deployer (RPA)",
+    "inputs": [
+        
+        {
+            "name": "WorkDir",
+            "type": "filePath",
+            "label": "Working directory",
+            "helpMarkDown": "Working directory for temporary files and folders. Default is the staging directory for agent",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "groupName": "DIRS"
+        },
+       
+        {
+            "name": "SourceDir",
+            "type": "filePath",
+            "label": "Source directory",
+            "helpMarkDown": "Source directory for ASM assets to deploy. Default is default repository local directory.",
+           "defaultValue": " $(Build.Repository.LocalPath)",
+            "required": true,
+            "groupName": "DIRS"
+        },
+        {
+            "name": "ZebraHome",
+            "type": "filePath",
+            "label": "Zebra Tester installation directory",
+            "helpMarkDown": "Zebra Tester installation directory on the agent. You can ignore this property by setting the environment variable ZEBRA_HOME on the agent",
+            "required": false,
+            "groupName": "DIRS"
+        },
+        {
+            "name": "DeploymentDescriptor",
+            "type": "filePath",
+            "label": "The deployment descriptor file",
+            "helpMarkDown": "The deployment descriptor file in json format.",
+            "required": true,
+            "groupName": "DD"
+        },
+        {
+            "name": "AuthTicket",
+            "type": "string",
+            "label": "Auth ticket to ASM API",
+            "helpMarkDown": "Override the value in the deployment descriptor",
+            "required": false,
+            "groupName": "DD"
+        },
+        {
+            "name": "SuccessThreshold",
+            "type": "int",
+            "label": "Success threshold in %",
+            "helpMarkDown": "Success threshold % percent. Percent of successful items deployed.",
+            "defaultValue": "80",
+            "required": true,
+            "groupName": "RunTime"
+        },
+        {
+            "name": "Run",
+            "type": "boolean",
+            "defaultValue": true,
+            "label": "Run deployed checks",
+            "helpMarkDown": "Run deployed checks",
+            "required": false,
+            "groupName": "RunTime"
+        },
+      
+        {
+            "name": "Repository",
+            "type": "string",
+            "label": "Repository URL",
+            "helpMarkDown": "The GitHub repository url. Can contain credentials. Only used if the Pipeline source repository is not used.",
+            "required": false,
+            "groupName": "Repository"
+        },
+        {
+            "name": "GitCredentials",
+            "type": "string",
+            "label": "Git credentials  in format username:password",
+            "helpMarkDown": "The credentials in Git. Password can be a security token.",
+            "required": false,
+            "groupName": "Repository"
+        }
+       
+    ],
+    "messages": {
+        "Invalid Directory": "Invalid directory [%s] for %s"
+    },
+    "execution": {
+        "Node10": {
+            "target": "dist/task/index.js"
+        }
+    }
+}

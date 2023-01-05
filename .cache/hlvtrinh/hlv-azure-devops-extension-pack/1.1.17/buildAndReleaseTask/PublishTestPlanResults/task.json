@@ -1,0 +1,132 @@
+{
+  "id": "abf4d4ad-92b1-468d-a730-f501a00150d4",
+  "name": "hlv-publish-testplan-results",
+  "friendlyName": "[DevOps] Publish Test Plan Results",
+  "description": "[DevOps] Publish Test Plan Results",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "hlvtrinh",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 15
+  },
+  "instanceNameFormat": "[DevOps] Publish Test Plan Results",
+  "groups": [
+    {
+      "name": "resultSelection",
+      "displayName": "Result location",
+      "isExpanded": true
+    },
+    {
+      "name": "testSelection",
+      "displayName": "Test selection",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced configuration",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "testPlan",
+      "type": "pickList",
+      "label": "Test plan",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select a test plan containing test suites with automated test cases.",
+      "groupName": "testSelection",
+      "properties": {
+          "DisableManageLink": "True",
+          "EditableOptions": "True"
+      }
+    },
+    {
+        "name": "testSuite",
+        "type": "pickList",
+        "label": "Test suite",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select one or more test suites containing automated test cases. Test case work items must be associated with an automated test method. [Learn more.](https://go.microsoft.com/fwlink/?linkid=847773",
+        "groupName": "testSelection",
+        "properties": {
+            "MultiSelect": "True",
+            "DisableManageLink": "True",
+            "EditableOptions": "True"
+        }
+    },
+    {
+        "name": "testConfiguration",
+        "type": "pickList",
+        "label": "Test configuration",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select Test Configuration.",
+        "groupName": "testSelection",
+        "properties": {
+            "DisableManageLink": "True",
+            "EditableOptions": "True"
+        }
+    },
+    {
+      "name": "resultFile",
+      "type": "string",
+      "label": "JUnit Result (xUnit)",
+      "defaultValue": "",
+      "required": true,
+      "groupName":"resultSelection",
+      "helpMarkDown": "junit XML Result"
+    },
+    {
+      "name": "htmlFile",
+      "type": "string",
+      "label": "HTML attachment",
+      "defaultValue": "",
+      "required": false,
+      "groupName":"resultSelection",
+      "helpMarkDown": "The HTML attachment"
+    },
+    {
+      "name": "runName",
+      "type": "string",
+      "label": "Test run name",
+      "defaultValue": "",
+      "required": false,
+      "groupName":"advanced",
+      "helpMarkDown": "The test run name"
+    }
+  ],
+  "sourceDefinitions": [
+    {
+        "target": "testPlan",
+        "endpoint": "/$(system.teamProject)/_apis/test/plans?api-version=3.0-preview.2",
+        "selector": "jsonpath:$.value[*].name",
+        "keySelector": "jsonpath:$.value[*].id",
+        "authKey": "tfs:teamfoundation"
+    },
+    {
+        "target": "testConfiguration",
+        "endpoint": "/$(system.teamProject)/_apis/test/configurations?api-version=3.0-preview.1",
+        "selector": "jsonpath:$.value[*].name",
+        "keySelector": "jsonpath:$.value[*].id",
+        "authKey": "tfs:teamfoundation"
+    },
+    {
+        "target": "testSuite",
+        "endpoint": "/$(system.teamProject)/_apis/test/plans/$(testPlan)/suites?$asTreeView=true&api-version=3.0-preview.2",
+        "selector": "jsonpath:$.value[*]",
+        "authKey": "tfs:teamfoundation"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "PublishTestPlanResults.js"
+    }
+  }
+}

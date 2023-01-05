@@ -1,0 +1,90 @@
+{
+  "id": "75b07190-a85e-11e8-8794-2d805e5c2a08",
+  "name": "loganalytics",
+  "friendlyName": "Write to Log Analytics",
+  "description": "Helps to integrate releases with Log Analytics",
+  "author": "Stephane Eyskens",
+  "helpMarkDown": "Notify Log Analytics about related release events",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Write to Log Analytics $(message)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"      
+    },
+    {
+      "name": "rg",
+      "label": "Log Analytics Resource Group",
+      "type": "pickList",
+      "required": true,
+      "helpMarkDown": "Select resource group which contains the Log Analytics workspace"
+    },
+    {
+      "name": "la",
+      "type": "pickList",
+      "label": "Log Analytics workspace",
+      "required": true,
+      "helpMarkDown": "The Log Analytics workspace to write logs to",
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name":"lt",
+      "type":"string",
+      "required":true,
+      "helpMarkDown": "Log type as it appears in Log Analytics",
+      "defaultValue": "VSTS"
+    },
+    {
+      "name": "msg",
+      "type": "multiline",
+      "properties": {
+        "resizable": "true",
+        "rows": "5"
+      },
+      "label": "Message to write",
+      "required": true,
+      "helpMarkDown": "Message to write in JSON format",
+      "defaultValue": "{\n}"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "rg",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {      
+      "target": "la",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/microsoft.operationalinsights/workspaces?api-version=2015-03-20",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{\"Value\" : \"{{{name}}}_{{{properties.customerId}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+      "parameters": {
+        "ResourceGroupName": "$(rg)"
+      }
+    }   
+    
+  ],
+  "execution": {    
+    "PowerShell3": {
+      "target": "analytics.ps1"
+    }
+  }
+}

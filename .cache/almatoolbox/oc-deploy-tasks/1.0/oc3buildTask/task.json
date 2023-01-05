@@ -1,0 +1,117 @@
+{
+  "id": "ec3ee5b0-0c54-11e6-b977-a9af239354d1",
+  "name": "oc3buildTask",
+  "friendlyName": "Openshift build starter",
+  "description": "Starts a new build in the target environment with provided parameters",
+  "author": "almatoolbox",
+  "helpMarkDown": "Starts a new build in the target environment with provided parameters",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+	
+  ],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "oc build on $(namespace)",
+  "groups": [
+        {
+            "name":"connection",
+            "displayName":"Openshift Connection",
+            "isExpanded":true
+        }
+    ],
+  "inputs": [
+	{
+      "name": "ocExe",
+      "type": "filePath",
+      "label": "Client executable",
+      "defaultValue": "C:\\Program Files\\oc-3.1.1.6-windows\\atomic-openshift\\windows\\oc.exe",
+      "required": true,
+	  "groupName":"connection",
+      "helpMarkDown": "Absolute path to the oc executable."
+    },
+	{
+      "name": "server",
+      "type": "string",
+      "label": "Target server",
+      "defaultValue": "",
+      "required": true,
+	  "groupName":"connection",
+      "helpMarkDown": "Remote url to target environment"
+    },
+	{
+      "name": "username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+	  "groupName":"connection",
+      "helpMarkDown": "Credentials to target environment"
+    },
+	{
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+	  "groupName":"connection",
+      "helpMarkDown": "Credentials to target environment"
+    },
+	{
+      "name": "clientCert",
+      "type": "filePath",
+      "label": "Client certificate",
+      "defaultValue": "",
+      "required": false,
+	  "groupName":"connection",
+      "helpMarkDown": "Absolute or relative path to client certificate"
+    },
+	{
+      "name": "skipTls",
+      "type": "boolean",
+      "label": "Skip tls verify",
+      "defaultValue": "false",
+      "required": false,
+	  "groupName":"connection",
+      "helpMarkDown": "Tells oc to insecurely skip tls verification"
+    },
+    {
+      "name": "token",
+      "type": "filePath",
+      "label": "Token",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Relative path from the repository root to the token file."
+    },
+    {
+      "name": "buildconfig",
+      "type": "string",
+      "label": "Buildconfig",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The build config to start the build from."
+    },
+    {
+      "name": "namespace",
+      "type": "string",
+      "label": "Namespace",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The namespace scope for this CLI request."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\oc.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

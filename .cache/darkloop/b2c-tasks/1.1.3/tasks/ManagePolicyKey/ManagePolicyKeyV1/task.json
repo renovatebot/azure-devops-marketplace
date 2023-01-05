@@ -1,0 +1,169 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a936562a-2105-4331-a0f9-753ae90ebd01",
+    "name": "manageb2cpolicykeyset",
+    "friendlyName": "Manage B2C policy key container",
+    "description": "Allows Trust Framework Policy Key Container Management.",
+    "helpMarkDown": "[More info](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-policy-key-container)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#manage-b2c-policy-key-container",
+    "author": "DarkLoop",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "preview": false,
+    "demands": [],
+    "minimumAgentVersion": "2.119.1",
+    "groups": [
+        {
+            "displayName": "Outputs",
+            "visibleRule": "action = Install",
+            "isExpanded": true,
+            "name": "cert-out"
+        }
+    ],
+    "inputs": [
+        {
+            "label": "Azure AD B2C Connection",
+            "type": "connectedService:darkloopaadb2c",
+            "name": "b2cTenantConnection",
+            "helpMarkDown": "Connection to the Azure AD B2C Tenant. [How to setup your service connection](https://marketplace.visualstudio.com/items?itemName=darkloop.b2c-tasks#create-a-connection-to-your-b2c-tenant).",
+            "required": true
+        },
+        {
+            "label": "Action",
+            "type": "pickList",
+            "name": "action",
+            "defaultValue": "Generate",
+            "options": {
+                "Generate": "Generate a key",
+                "Manual": "Manually set a key",
+                "Install": "Install from Key Vault (certificate)",
+                "Delete": "Delete a key container"
+            },
+            "helpMarkDown": "Action to be taken for the specified key"
+        },
+        {
+            "label": "Skip if key is already created",
+            "type": "boolean",
+            "name": "skipIfCreated",
+            "visibleRule": "action != Delete",
+            "defaultValue": "true",
+            "helpMarkDown": "If the key container is already created the key will not be added."
+        },
+        {
+            "label": "Key Container Name",
+            "type": "string",
+            "name": "containerName",
+            "required": true,
+            "helpMarkDown": "The container for the key"
+        },
+        {
+            "label": "Key type",
+            "type": "radio",
+            "name": "keyType",
+            "required": true,
+            "visibleRule": "action = Generate",
+            "options": {
+                "oct": "Secret",
+                "rsa": "RSA"
+            },
+            "defaultValue": "oct",
+            "helpMarkDown": "The type of key to be added."
+        },
+        {
+            "label": "Key value",
+            "type": "string",
+            "name": "keyValue",
+            "helpMarkDown": "The secret value for the key.",
+            "required": true,
+            "visibleRule": "action = Manual"
+        },
+        {
+            "label": "Key usage",
+            "type": "radio",
+            "name": "keyUsage",
+            "helpMarkDown": "The usage for the key",
+            "options": {
+                "sig": "Signature",
+                "enc": "Encryption"
+            },
+            "defaultValue": "sig",
+            "required": true,
+            "visibleRule": "action = Generate || action = Manual"
+        },
+        {
+            "name": "connectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "label": "Azure connection",
+            "type": "connectedService:AzureRM",
+            "helpMarkDown": "Connection to Azure subscription with access to Key Vault.",
+            "required": true,
+            "visibleRule": "action = Install"
+        },
+        {
+            "label": "Key Vault name",
+            "type": "pickList",
+            "name": "keyVaultName",
+            "defaultValue": "",
+            "visibleRule": "action = Install",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "label": "Certificate name",
+            "type": "pickList",
+            "name": "certificateName",
+            "visibleRule": "action = Install",
+            "required": true,
+            "helpMarkDown": "The name of the certificate in Key Vault",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "label": "Certificate Thumbprint Variable",
+            "type": "string",
+            "name": "certThumbprintVar",
+            "required": false,
+            "helpMarkDown": "The name of the task variable to output certificate thumbprint. This value can be used in the next steps.",
+            "groupName": "cert-out"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "keyVaultName",
+            "endpointId": "$(connectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}/subscriptions/{{endpoint.subscriptionId}}/resources?$filter=resourceType eq 'Microsoft.KeyVault/vaults'&api-version=2019-09-01",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\": \"{{{id}}}\", \"DisplayValue\": \"{{{name}}}\" }"
+        },
+        {
+            "target": "certificateName",
+            "endpointId": "$(connectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}$(keyVaultName)/secrets?api-version=2019-09-01",
+            "resultSelector": "jsonpath:$.value[?(@.properties.contentType == 'application/x-pkcs12')]",
+            "resultTemplate": "{ \"Value\": \"{{{name}}}\", \"DisplayValue\": \"{{{name}}}\" }"
+        }
+    ],
+    "instanceNameFormat": "$(action) Key: B2C_1A_$(containerName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(CurrentDirectory)\\ManagePolicyKey.ps1",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}

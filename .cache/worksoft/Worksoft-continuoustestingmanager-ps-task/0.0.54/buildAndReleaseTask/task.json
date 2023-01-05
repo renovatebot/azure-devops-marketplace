@@ -1,0 +1,156 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "1900C78F-AADB-473B-B6B4-6574CE3F499D",
+  "name": "WorksoftContinuousTestingManager",
+  "friendlyName": "Worksoft Continuous Testing Manager",
+  "description": "Perform automation of Certify Process(es) within Worksoft Continuous Testing Manager",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "author": "worksoft",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 54
+  },
+  "instanceNameFormat": "Execution $(BookmarkName)",
+  "inputs": [
+    {
+      "name":"executiontype",
+      "type":"pickList",
+      "label":"Execution Type",
+      "defaultValue": "bookmark",
+      "required": true,
+      "options":{
+        "bookmark": "Execute a Bookmark",
+        "request": "Execute a Pre-Defined Suite",
+        "processes": "Execute List of Processes"
+      },
+      "helpMarkDown": "Do you want to execute a Bookmark, run a list of processes, or a pre-defined suite within CTM?"
+    },
+    {
+      "name": "bookmarkname",
+      "type": "string",
+      "label": "Bookmark Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Bookmark Name (specified in Worksoft Portal)",
+      "visibleRule": "executiontype = bookmark"
+    },
+    {
+      "name": "requestname",
+      "type": "string",
+      "label": "Pre-Defined CTM Suite Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Pre-Defined CTM Suite Name or if chose 'bookmark' or 'processes' - a suite will be created with this name"
+    },
+    {
+      "name": "certifydatabase",
+      "type": "string",
+      "label": "Certify Database Alias",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Certify database alias name specified in Worksoft Portal",
+      "visibleRule": "executiontype = processes"
+    },
+    {
+      "name": "certifyproject",
+      "type": "string",
+      "label": "Certify Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Certify Project Name",
+      "visibleRule": "executiontype = processes"
+    },
+    {
+      "name": "processlist",
+      "type": "string",
+      "label": "Process Name(s)",
+      "defaultValue": "[{\n\"ProcessPath\": \"Folder1\\\\Folder2\\\\Process1\"\n},\n{\"ProcessPath\": \"Folder1\\\\Process2\"\n}]",
+      "required": true,
+      "helpMarkDown": "Process(es) complete with folder paths i.e. [{\n\"ProcessPath\": \"Folder1\\\\Folder2\\\\Process1\",\n\"Layout\": \"optional\",\n\"RecordSet\": \"optional\",\n\"RecordSetMode\": \"optional\",\n\"SpecificResourceName\": \"optional\",\n\"ResultAttributes\": [{\"Name\": \"version\",\"Value\": \"123\"}],\n\"ResourceDataRequirements\": [{\"Name\": \"operating system\",\"Value\": \"Windows 2016\"}],\n\"CertifyParameters\": [{\"Name\": \"capturescreenon\",\"Value\": \"CaptureAllSteps\"}]},\n{\"ProcessPath\": \"Folder1\\\\Process2\",\"SpecificResourceName\": \"optional\",\"ResultAttributes\": [],\"ResourceRequirements\": [],\"CertifyParms\": []}].",
+      "visibleRule": "executiontype = processes"
+    },    
+    {
+      "name": "email",
+      "type": "string",
+      "label": "User Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "User Name for authentication in CTM"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for authentication in CTM; Please utilize secrets within the Azure Key Vault.  The syntax to reference a variable will look like $(variableName)"
+    },
+    {
+      "name": "authhostname",
+      "type": "string",
+      "label": "Authentication Service Host Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Authentication Service Base Url (i.e. https://servername)"
+    },
+    {
+      "name": "bookmarkhostname",
+      "type": "string",
+      "label": "Bookmark Service Host Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Bookmark Service Base Url (i.e. https://servername)"
+    },
+    {
+      "name": "portalhostname",
+      "type": "string",
+      "label": "Portal Service Host Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Portal Service Base Url (i.e. https://servername)"
+    },
+    {
+      "name": "ctmhostname",
+      "type": "string",
+      "label": "CTM Host Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "CTM Base Url (i.e. https://servername)"
+    },
+    {
+      "name": "tenantid",
+      "type": "string",
+      "label": "Tenant Identifier (override)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "By default the first tenant identified with user account will be used.   Specify a different tenant to override this behavior."
+    },
+    {
+      "name": "resultfolder",
+      "type": "string",
+      "label": "Certify Result Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Target Result Folder for execution within Certify.  If it does not exist, it will be created during execution."
+    }
+  ],
+  "OutputVariables": [{
+    "name":"overallstatus",
+    "description":"Overall status as a whole for all Certify Processes executed"
+  },
+  {
+    "name":"overallexecutionstatus",
+    "description":"Overall execution status as a whole for all Certify Processes executed"
+  },
+  {
+    "name":"executionjson",
+    "description": "Json describing all the details for each Certify Process"
+  }],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

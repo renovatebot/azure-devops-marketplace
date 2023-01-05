@@ -1,0 +1,78 @@
+{
+    "id": "047393e1-82e4-4d24-8275-237409bb378f",
+    "name": "publishbcappdocker",
+    "friendlyName": "Business Central - Publish App to Container",
+    "description": "Publish App to Dynamics 365 Business Central container",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Kine",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 10
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "groups": [
+        {
+            "name": "envgroup",
+            "displayName": "Environment"
+        }
+    ],
+    "instanceNameFormat": "Publish $(appname) to container $(containername)",
+    "inputs": [
+        {
+            "name": "containername",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the container",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "skipverify",
+            "type": "boolean",
+            "label": "Skip Verify",
+            "defaultValue": "fale",
+            "required": false,
+            "helpMarkDown": "Set if app is not signed and you want to skip signature verification",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "appname",
+            "type": "string",
+            "label": "App name to publish and install",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the App as it is in app.json"
+        },
+        {
+            "name": "appfile",
+            "type": "string",
+            "label": "App file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the App file to be published. Filter could be used. All found files will be published"
+        },
+        {
+            "name": "appfileexclude",
+            "type": "string",
+            "label": "App file Exclude",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to the App file to be excluded. Filter could be used."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "publishdockertask.ps1",
+            "platform": [
+                "windows"
+            ]
+
+        }
+    }
+}

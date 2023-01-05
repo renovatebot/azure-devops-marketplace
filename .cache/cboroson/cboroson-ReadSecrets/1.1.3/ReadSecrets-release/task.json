@@ -1,0 +1,122 @@
+{
+  "id": "DA1F456D-364E-4E58-A176-6CCE28A6F699",
+  "name": "cboroson-ReadSecrets",
+  "friendlyName": "Read Secrets from Key Vault",
+  "description": "Reads values from Key Vault to allow sharing data between releases",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/ReadSecrets)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 3
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "pickList",
+      "label": "Resource Group",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the Azure Resource Group that contains the Service Bus namespace specified above."
+    },
+    {
+      "name": "KeyVaultName",
+      "type": "pickList",
+      "label": "Key Vault Name",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the name of an existing Azure Key Vault.",
+    },
+    {
+      "name": "secretOption",
+      "type": "radio",
+      "label": "Secret retrieval option",
+      "defaultValue": "",
+      "required": true,
+      "options": {
+        "single": "Single secret",
+        "multiple": "Multiple secrets"
+      },
+      "helpMarkDown": "Retrieve either a single Key Vault secret by name or multiple secrets filtered by tags."
+    },
+    {
+      "name": "secretName",
+      "type": "string",
+      "label": "Secret Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of secret to retrieve.  This disables the ability to filter secrets by tags.",
+      "visibleRule": "secretOption = single"
+    },
+    {
+      "name": "TagValue1",
+      "type": "string",
+      "label": "Tag Value 1",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Tag value to filter by.  This can be used to return select secrets using the syntax $(foo).",
+      "visibleRule": "secretOption = multiple"
+    },
+    {
+      "name": "TagValue2",
+      "type": "string",
+      "label": "Tag Value 2",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Tag value to filter by.  This can be used to return select secrets using the syntax $(foo)",
+      "visibleRule": "secretOption = multiple"
+    },
+    {
+      "name": "TagValue3",
+      "type": "string",
+      "label": "Tag Value 3",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Tag value to filter by.  This can be used to return select secrets using the syntax $(foo)",
+      "visibleRule": "secretOption = multiple"
+    }
+],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "KeyVaultName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureKeyVaults"
+    }
+  ],
+  "instanceNameFormat": "Read Secrets: $(keyVaultName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ReadSecrets.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

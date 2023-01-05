@@ -1,0 +1,97 @@
+{
+  "id": "4f40d1a2-83b0-4ddc-9a77-e7f279eb1802",
+  "name": "NexusIqPipelineTask",
+  "friendlyName": "Nexus IQ for Azure DevOps",
+  "description": "The Nexus IQ for Azure DevOps extension provides full component intelligence and the ability to run policy against your application.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SonatypeIntegrations",
+  "version": {
+    "Major": 1,
+    "Minor": 5,
+    "Patch": 7
+  },
+  "instanceNameFormat": "Nexus IQ policy evaluation",
+  "groups": [
+    {
+      "name": "advancedOptions",
+      "displayName": "Advanced Options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "nexusIqService",
+      "type": "connectedService:NexusIqServiceConnection",
+      "label": "Nexus IQ Service Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Nexus IQ endpoint to use. If needed, click on 'manage', and add a new [Nexus IQ service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#sep-generic) and fill in the IQ server details"
+    },
+    {
+      "name": "organizationId",
+      "type": "string",
+      "label": "Organization ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the IQ Organization ID. This determines the organization under which the application will be created in case the application doesn't exist and the automatic application creation configuration is enabled."
+    },
+    {
+      "name": "applicationId",
+      "type": "string",
+      "label": "Application ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the IQ Application ID. Determines the policy elements (policies, labels, and license threat groups) to associate with this build, and is managed via the Nexus IQ Server"
+    },
+    {
+      "name": "stage",
+      "type": "string",
+      "label": "Stage",
+      "defaultValue": "Build",
+      "required": true,
+      "helpMarkDown": "Controls the stage the policy evaluation will be run against on the Nexus IQ Server"
+    },
+    {
+      "name": "scanTargets",
+      "type": "string",
+      "label": "Scan Targets",
+      "defaultValue": "**/*.jar, **/*.war, **/*.ear, **/*.zip, **/*.tar.gz",
+      "helpMarkDown": "A list of [Ant-style patterns](http://ant.apache.org/manual/dirtasks.html#patterns) relative to the workspace root that denote the files/archives to be scanned, e.g. `**/target/*.war`, `**/target/*.ear`."
+    },
+    {
+      "name": "ignoreSystemError",
+      "type": "boolean",
+      "label": "Ignore IQ Server's System Errors",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Controls the build outcome if there is a failure in communicating with the Nexus IQ Server (e.g. network outage). If checked, the build will be marked as warning. Otherwise, the build is marked as failed."
+    },
+    {
+      "name": "javaSystemProperties",
+      "type": "multiLine",
+      "label": "Java System Properties",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Command line parameters for Java System Properties. e.g. -Djava.net.useSystemProxies=false",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "enableDebugLogging",
+      "type": "boolean",
+      "label": "Enable Debug Logging",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Enables debug logging for IQ policy evaluation. This should be used only to troubleshoot any problem you may have when scanning a repository."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "task.js"
+    }
+  }
+}

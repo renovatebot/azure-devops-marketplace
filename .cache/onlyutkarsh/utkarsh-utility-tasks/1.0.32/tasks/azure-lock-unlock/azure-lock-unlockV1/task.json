@@ -1,0 +1,108 @@
+{
+    "id": "89b49283-19ba-4638-9387-bb6f33a137b3",
+    "name": "azure-lock-unlock",
+    "friendlyName": "Azure Lock/Unlock",
+    "description": "Apply or Remove locks to your Azure Subscription or Resource group",
+    "helpMarkDown": "v1.0.32<br/>[More Information](https://marketplace.visualstudio.com/items?itemName=onlyutkarsh.utkarsh-utility-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Utkarsh Shigihalli",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 32
+    },
+    "instanceNameFormat": "$(action) Azure Lock",
+    "inputs": [
+        {
+            "name": "applyTo",
+            "type": "radio",
+            "label": "Apply To",
+            "required": true,
+            "defaultValue": "ResourceGroup",
+            "helpMarkDown": "Apply the lock to Subscription or Resource group",
+            "options": {
+                "ResourceGroup": "Resource group",
+                "Subscription": "Subscription"
+            }
+        },
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure subscription"
+        },
+        {
+            "name": "resourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "required": true,
+            "helpMarkDown": "Provide the name of a resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "visibleRule": "applyTo=ResourceGroup"
+        },
+        {
+            "name": "action",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "Apply",
+            "required": true,
+            "helpMarkDown": "Action to be performed on the selected subscription or resource group.",
+            "options": {
+                "Apply": "Apply",
+                "Remove": "Remove"
+            }
+        },
+        {
+            "name": "lockType",
+            "type": "pickList",
+            "label": "Lock type",
+            "defaultValue": "ReadOnly",
+            "required": true,
+            "helpMarkDown": "Type of the lock you want to apply. [Read more](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-lock-resources)",
+            "options": {
+                "ReadOnly ": "ReadOnly",
+                "CanNotDelete": "CanNotDelete"
+            }
+        },
+        {
+            "name": "lockName",
+            "type": "string",
+            "label": "Lock name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the lock name. If the action is `Remove`, the lock with the specified name will be removed."
+        },
+        {
+            "name": "notes",
+            "type": "string",
+            "label": "Notes",
+            "defaultValue": "From Azure DevOps pipeline",
+            "required": false,
+            "helpMarkDown": "Custome notes for the lock",
+            "visibleRule": "action=Apply"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

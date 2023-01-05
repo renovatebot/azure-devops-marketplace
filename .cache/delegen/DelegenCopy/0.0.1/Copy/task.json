@@ -1,0 +1,82 @@
+﻿{
+  "id": "B723211A-77B9-4CCB-B419-5BEECC68E186",
+  "name": "Copy",
+  "friendlyName": "Copy",
+  "description": "Copy with Robocopy,Xcopy or OS Copy",
+  "helpMarkDown": "[More Information](http://www.delegen.com)",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "runsOn": [
+    "Agent",
+    "MachineGroup"
+  ],
+  "author": "Delegen Ltd.",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "releaseNotes": "Match pattern consistency.",
+  "demands": [],
+  "groups": [
+    {
+      "name": "CopyParameters",
+      "displayName": "Copy Details",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "CopyMethod",
+      "type": "pickList",
+      "label": "CopyMethod",
+      "defaultValue": "",
+      "required": true,
+      "options": {
+        "roboCopy": "RoboCopy",
+        "xcopy": "XCopy",
+        "osCopy": "Copy"
+
+      },
+      "helpMarkDown": "Choose your copy method",
+      "groupName": "CopyParameters"
+    },
+    {
+      "name": "CopyFrom",
+      "type": "filePath",
+      "label": "Copy from:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Source item to copy",
+      "groupName": "CopyParameters"
+    },
+    {
+      "name": "CopyTo",
+      "type": "filePath",
+      "label": "Copy to:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Destination path",
+      "groupName": "CopyParameters"
+    },
+    {
+      "name": "CopyArguments",
+      "type": "string",
+      "label": "Copy flags:",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments if needed",
+      "groupName": "CopyParameters"
+    }
+  ],
+  "instanceNameFormat": "Copy command: $(CopyMethod) $(CopyFrom) $(CopyTo) $(CopyArguments)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Delegen.vNext.Copy.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

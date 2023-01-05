@@ -1,0 +1,82 @@
+{
+  "id": "16223b9e-ae21-427d-8c0e-aaf1173b700c",
+  "name": "DotfuscatorCLI",
+  "friendlyName": "Dotfuscator Professional Command Line",
+  "description": "Run Dotfuscator Professional's command line interface with the supplied configuration file. ",
+  "helpMarkDown": "For more help using this task see [Using the Azure Pipelines Extension](https://www.preemptive.com/dotfuscator/pro/userguide/en/installation_build_agents.html#azure).\n\n<strong>NOTE:</strong> Only use this task if you cannot integrate Dotfuscator into your build via Dotfuscator’s MSBuild Targets.\n\nMost users should use [Dotfuscator’s MSBuild Targets](https://www.preemptive.com/dotfuscator/pro/userguide/en/interfaces_msbuild.html#targets) to integrate Dotfuscator into their build process, rather than this task.\n\n\n\n[More Information on this extension](https://marketplace.visualstudio.com/items?itemName=PreEmptiveSolutions.dotfuscator-pro-vsts)",
+  "category": "Build",
+  "visibility": [ "Build" ],
+  "author": "PreEmptive Solutions",
+  "version": { "Major": 1, "Minor": 1, "Patch": 0},
+  "groups": [
+      {
+        "name": "options",
+        "displayName": "Options",
+        "isExpanded": true
+      },
+      {
+          "name": "advanced",
+          "displayName": "Advanced",
+          "isExpanded": false
+      }
+  ],
+  "inputs": [
+      {
+          "name": "readMe",
+          "type": "multiLine",
+          "properties": {
+              "resizable": "false",
+              "rows": "2",
+              "maxLength": "279"
+          },
+          "label": "README",
+          "defaultValue": "NOTE: Only use this task if you cannot integrate Dotfuscator into your build via Dotfuscator’s MSBuild Targets. (See the info tooltip for details.)\nTo use this task, the build environment must have a copy of Dotfuscator Professional available, and a license key must be provided.",
+          "helpMarkDown": "Most users should use [Dotfuscator’s MSBuild Targets](https://www.preemptive.com/dotfuscator/pro/userguide/en/interfaces_msbuild.html#targets) to integrate Dotfuscator into their build process, rather than this task.\n\nIn either case, Dotfuscator must be [provisioned into the build environment](https://www.preemptive.com/dotfuscator/pro/userguide/en/installation_nuget.html) independently, and [a license key must be configured](https://www.preemptive.com/dotfuscator/pro/userguide/en/installation_activation.html).",
+          "required": false
+      },
+      {
+          "name": "configFile",
+          "type": "string",
+          "label": "Path To Config File",
+          "defaultValue": "config.xml",
+          "required": true,
+          "helpMarkDown": "The path to the Dotfuscator config file."
+      },
+      {
+          "name": "licenseKey",
+          "type": "string",
+          "label": "Dotfuscator Professional License Key",
+          "defaultValue": "",
+          "required": false,
+          "groupName": "options",
+          "helpMarkDown": "Your Dotfuscator Professional License Key from [PreEmptive Solutions](https://www.preemptive.com).\n\nLeave blank to use the `DOTFUSCATOR_LICENSE` environment variable or a pre-provisioned install."
+      },
+      {
+          "name": "dotfuscatorHome",
+          "type": "string",
+          "label": "Location of Dotfuscator application",
+          "defaultValue": "",
+          "required": false,
+          "groupName": "options",
+          "helpMarkDown": "Directory containing the Dotfuscator application.\n\nLeave blank to use the `DOTFUSCATOR_HOME` environment variable or if Dotfuscator is on the `PATH`."
+      },
+      {
+          "name": "additionalArgs",
+          "type": "string",
+          "label": "Additional Arguments To Dotfuscator",
+          "defaultValue": "",
+          "required": false,
+          "groupName": "advanced",
+          "helpMarkDown": "Any additional arguments to pass to Dotfuscator. See the [Command Line Reference](https://www.preemptive.com/dotfuscator/pro/userguide/en/references_command_line.html) for details."
+      }
+  ],
+  "instanceNameFormat": "Run Dotfuscator Professional Command Line using $(configFile)",
+  "execution": {
+      "Node": {
+          "target": "dotfuscatorcli.js",
+          "argumentFormat": ""
+      }
+  }
+}
+
+

@@ -1,0 +1,139 @@
+{
+  "id": "1d9b20a0-a488-4479-be82-40c4446af448",
+  "name": "SendEmail",
+  "friendlyName": "Send email",
+  "description": "Send an email to 1 or more addresses via the SMTP server you provide. Can be used across platforms",
+  "helpMarkDown": "https://github.com/servbus/SendMail4VSTS",
+  "category": "Utility",
+  "author": "servbus",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 5
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "smtpsettings",
+      "displayName": "SMTP Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "mailsettings",
+      "displayName": "Email settings",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "To",
+      "type": "string",
+      "label": "To Addresses",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "mailsettings",
+      "helpMarkDown": "To Addresses. Separated by commas (,)"
+    },
+    {
+      "name": "From",
+      "type": "string",
+      "label": "From Address",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "mailsettings",
+      "helpMarkDown": "From Address"
+    },
+    {
+      "name": "Subject",
+      "type": "string",
+      "label": "Mail Subject",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "mailsettings",
+      "helpMarkDown": "The subject of the email"
+    },
+    {
+      "name": "Body",
+      "type": "multiLine",
+      "label": "Mail Body",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "mailsettings",
+      "helpMarkDown": "The body of the email",
+      "properties": {
+        "resizable": true,
+        "rows": "20"
+      }
+    },
+    {
+      "name": "Attachment",
+      "type": "string",
+      "label": "Attachment (absolute path)",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "mailsettings",
+      "helpMarkDown": "The absolute path to the file."
+    },
+    {
+      "name": "SmtpServer",
+      "type": "string",
+      "label": "SMTP Server",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "Name or IP Address of a SMTP server"
+    },
+    {
+      "name": "SmtpPort",
+      "type": "string",
+      "label": "SMTP Port",
+      "defaultValue": "587",
+      "required": true,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "Port to the SMTP server"
+    },
+    {
+      "name": "SmtpUsername",
+      "type": "string",
+      "label": "SMTP Username",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "Username for the SMTP server"
+    },
+    {
+      "name": "SmtpPassword",
+      "type": "string",
+      "label": "SMTP Password",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "Password for the SMTP server"
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "The SMTP server's Encryption method is SSL?",
+      "defaultValue": "true",
+      "required": false,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "Indication whether to use SSL for connecting to the SMTP server"
+    },
+    {
+      "name": "STARTTLS",
+      "type": "boolean",
+      "label": "The SMTP server's Encryption method is STARTTLS?",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "smtpsettings",
+      "helpMarkDown": "The SMTP server's encryption method is STARTTLS"
+    }
+  ],
+  "instanceNameFormat": "Send an email with subject $(Subject)",
+  "execution": {
+    "Node": {
+      "target": "sendMail.js"
+    }
+  }
+}

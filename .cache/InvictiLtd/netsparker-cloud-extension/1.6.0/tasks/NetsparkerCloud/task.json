@@ -1,0 +1,220 @@
+{
+    "id": "e2a81a06-bb2a-4223-97b4-9e09b0cfed73",
+    "name": "netsparker-cloud",
+    "friendlyName": "Invicti Enterprise",
+    "description": "Integrate Azure DevOps with Invicti Enterprise in order to perform application scans as part of build and release tasks.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Invicti",
+    "visibility": [
+        "Build",
+        "Release"
+      ],
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 0
+    },
+    "groups": [
+        {
+            "name": "faildAndStopSettings",
+            "displayName": "Build fail and scan stop settings",
+            "isExpanded": true
+        },
+        {
+            "name": "reportSettings",
+            "displayName": "Report Settings",
+            "isExpanded": true
+        }          
+    ],
+    "instanceNameFormat": "Invicti Enterprise",
+    "inputs": [               
+        {
+            "name": "apiConnection",
+            "type": "connectedService:ne",
+            "label": "Invicti Enterprise Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Connection to the Invicti Enterprise instance to perform API calls."
+        },
+        {
+            "name": "scanTypes",
+            "type": "pickList",
+            "label": "ScanTypes",
+            "required": true,
+            "helpMarkDown": "Select  Scan Type",
+            "options": {
+                "0": "Incremental",
+                "1": "Full (With primary profile)",
+                "2": "Full (With selected profile)"               
+            }      
+        },   
+        {
+            "name": "scanWebSites",
+            "type": "pickList",
+            "label": "Websites",
+            "required": true,
+            "helpMarkDown": "Select  WebSites"          
+        },
+        {
+            "name": "scanWebSitesProfile",
+            "type": "pickList",
+            "label": "Websites Profile",
+            "required": true,
+            "helpMarkDown": "Select Scan Profile" ,
+            "visibleRule": "scanTypes = 0 || scanTypes = 2"
+        }, 
+        {
+            "name": "buildFail",
+            "type": "boolean",
+            "groupName" :"faildAndStopSettings",
+            "label": "Fail the build if one of the selected scan severity is detected ",
+            "required": false,
+            "helpMarkDown": "If enabled, when Invicti identifies one of the selected scan severity, the build is failed in your CI/CD tool.",
+            "defaultValue": "false"
+        },
+        {
+            "name": "severity",
+            "type": "pickList",
+            "label": "Severity",
+            "groupName" :"faildAndStopSettings",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select  Severity",
+            "options": {
+                "DoNotFail": "Do not fail the build",
+                "Critical": "Critical",
+                "Critical,High": "High or above",
+                "Critical,High,Medium": "Medium or above",
+                "Critical,High,Medium,Low" : "Low or above",
+                "Critical,High,Medium,Low,BestPractice" : "Best Practice or above"   
+            },
+            "visibleRule": "buildFail = true"      
+        },
+        {
+            "name": "hasReport",
+            "type": "boolean",
+            "groupName" :"reportSettings",
+            "label": "Generate report when the scan is complete",
+            "required": false,
+            "helpMarkDown": "When the scan is completed, you can get detailed reports by choosing one of the following report types.",
+            "defaultValue": "false"
+        },
+        {
+            "name": "reportType",
+            "type": "pickList",
+            "label": "Report Type",
+            "groupName" :"reportSettings",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select Report Type",
+            "options": {
+                "ScanDetail": "Detailed Scan Report",
+                "ExecutiveSummary" : "Executive Summary",
+                "OwaspTopTen2013": "OWASP Top Ten 2013",
+                "OwaspTopTen2017": "OWASP Top Ten 2017",
+                "SansTop25": "SANS Top 25",         
+                "WASC" : "WASC Threat Classification",
+                "PCICompliance" : "PCI DSS Compliance",
+                "HIPAACompliance" : "HIPAA Compliance",
+                "Iso27001Compliance" : "ISO 27001 Compliance",
+                "KnowledgeBase" : "Knowledge Base",                
+                "FullScanDetail" :"Full Scan Detail"
+            },
+            "visibleRule": "hasReport = true"                         
+        },
+        {
+            "name": "onlyConfirmedIssues",
+            "type": "boolean",
+            "groupName" :"reportSettings",
+            "label": "Exclude Addressed Issues",
+            "required": false,
+            "helpMarkDown": "If this is checked then the Addressed Issues will be excluded from the report results.",
+            "defaultValue": "true",
+            "visibleRule": "hasReport = true"
+        },
+        {
+            "name": "onlyUnconfirmedIssues",
+            "type": "boolean",
+            "groupName" :"reportSettings",
+            "label": "Export Confirmed",
+            "required": false,
+            "helpMarkDown": "If checked, confirmed vulnerabilities will be included in the report.",
+            "defaultValue": "false",
+            "visibleRule": "hasReport = true"
+        },
+        {
+            "name": "excludeAddressedIssues",
+            "type": "boolean",
+            "groupName" :"reportSettings",
+            "label": "Export Unconfirmed",
+            "required": false,
+            "helpMarkDown": "If checked, unconfirmed vulnerabilities will be included in the report.",
+            "defaultValue": "false",
+            "visibleRule": "hasReport = true"
+        },
+        {
+            "name": "isConfirmed",
+            "type": "boolean",
+            "groupName" :"faildAndStopSettings",
+            "label": "Is Confirmed",
+            "required": false,
+            "helpMarkDown": "Option to filter confirmed scan severities.",
+            "defaultValue": "false",
+            "visibleRule": "buildFail = true"
+        },
+        {
+            "name": "ignoreFalsePositive",
+            "type": "boolean",
+            "groupName" :"faildAndStopSettings",
+            "label": "Do Not Fail The Build When Scan Contains False Positive",
+            "required": false,
+            "helpMarkDown": "If selected, the build does not fail when the scan contains false positive(s).",
+            "defaultValue": "false",
+            "visibleRule": "buildFail = true"
+        },
+        {
+            "name": "ignoreRiskAccepted",
+            "type": "boolean",
+            "groupName" :"faildAndStopSettings",
+            "label": "Do Not Fail The Build When Scan Contains Accepted Risk",
+            "required": false,
+            "helpMarkDown": "If selected, the build does not fail when the scan contains accepted risk(s).",
+            "defaultValue": "false",
+            "visibleRule": "buildFail = true"
+        },
+        {
+            "name": "stopScan",
+            "type": "boolean",
+            "groupName" :"faildAndStopSettings",
+            "label": "Stop the scan if the build fails",
+            "required": false,
+            "helpMarkDown": "If enabled, Invicti stops the scan when the build is failed in your CI/CD tool.",
+            "defaultValue": "false",
+            "visibleRule": "buildFail = true"
+        }                      
+    ],
+    "dataSourceBindings": [
+        {         
+            "target": "scanWebSites",
+            "endpointId": "$(apiConnection)",
+            "dataSourceName": "Websites",
+            "resultTemplate": "{ \"Value\" : \"{{Id}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+        },
+        {         
+            "target": "scanWebSitesProfile",
+            "endpointId": "$(apiConnection)",
+            "dataSourceName": "Profiles",
+            "parameters": {
+				"scanWebSites": "$(scanWebSites)"
+			},
+            "resultTemplate": "{ \"Value\" : \"{{{Id}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"            
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

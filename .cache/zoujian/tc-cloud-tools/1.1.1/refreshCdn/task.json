@@ -1,0 +1,110 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "b0604801-95b3-4623-94b7-5b6935b362c5",
+  "name": "TencentCloudRefreshCdn",
+  "friendlyName": "Refresh Tencent Cloud CDN",
+  "description": "Refresh cdn on tencent cloud.",
+  "helpMarkDown": "[More Information](https://github.com/chsword/TencentCloudDevOpsTools)",
+  "category": "Utility",
+  "author": "Zou Jian",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 18
+  },
+  "runsOn": ["Agent", "DeploymentGroup"],
+  "visibility": ["Release", "Build"],
+  "instanceNameFormat": "Refresh CDN: $(Url)",
+  "inputs": [
+    {
+      "name": "Url",
+      "type": "multiLine",
+      "label": "Cdn Url prefix",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "url"
+    },
+    {
+      "name": "RefreshType",
+      "type": "pickList",
+      "label": "Refresh Type path or url",
+      "defaultValue": "path",
+      "required": true,
+      "options": {
+        "path": "path",
+        "url": "url"
+      }
+    },
+    {
+      "name": "RefreshPathFlushType",
+      "type": "pickList",
+      "label": "FlushType",
+      "defaultValue": "flush",
+      "required": true,
+      "options": {
+        "flush": "flush whitch updated",
+        "delete": "flush all"
+      },
+      "visibleRule": "RefreshType = path",
+      "helpMarkDown": "url :https://cloud.tencent.com/document/product/228/37871"
+    },
+    {
+      "name": "Region",
+      "type": "pickList",
+      "label": "Tencent Cloud Region",
+      "defaultValue": "ap-beijing",
+      "required": true,
+      "options": {
+        "ap-beijing": "ap-beijing",
+        "ap-shanghai": "ap-shanghai",
+        "ap-shenzhen": "ap-shenzhen",
+        "ap-beijing-1": "ap-beijing-1",
+        "ap-nanjing": "ap-nanjing",
+        "ap-guangzhou": "ap-guangzhou",
+        "ap-chengdu": "ap-chengdu",
+        "ap-chongqing": "ap-chongqing",
+        "ap-shenzhen-fsi": "ap-shenzhen-fsi",
+        "ap-shanghai-fsi": "ap-shanghai-fsi",
+        "ap-beijing-fsi": "ap-beijing-fsi",
+        "ap-hongkong": "ap-hongkong",
+        "ap-singapore": "ap-singapore",
+        "ap-mumbai": "ap-mumbai",
+        "ap-jakarta": "ap-jakarta",
+        "ap-seoul": "ap-seoul",
+        "ap-bangkok": "ap-bangkok",
+        "ap-tokyo": "ap-tokyo",
+        "na-siliconvalley": "na-siliconvalley",
+        "na-ashburn": "na-ashburn",
+        "na-toronto": "na-toronto",
+        "sa-saopaulo": "sa-saopaulo",
+        "eu-frankfurt": "eu-frankfurt",
+        "eu-moscow": "eu-moscow"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Region Name eg: ap-beijing https://cloud.tencent.com/document/product/436/6224"
+    },
+    {
+      "name": "SecretId",
+      "type": "string",
+      "label": "Tencent Cloud SecretId",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "SecretId"
+    },
+    {
+      "name": "SecretKey",
+      "type": "string",
+      "label": "Tencent Cloud SecretKey",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "SecretKey"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

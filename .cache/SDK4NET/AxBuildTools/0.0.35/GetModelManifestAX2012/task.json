@@ -1,0 +1,108 @@
+﻿{
+  "id": "F2BF0B47-2D03-4A9D-91D9-C917B0EEE738",
+  "name": "GetModelManifestAX2012",
+  "friendlyName": "Export a Model manifest from AX 2012",
+  "description": "Does Export a Model manifest from an AX 2012 Environment",
+  "helpMarkDown": "[More Information](http://go.microsoft.com/fwlink/?LinkID=613736)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "manifestSource",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "manifestFileName",
+      "type": "filePath",
+      "label": "Manifest file path (*.txt, .xml)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to save the model manifest file.",
+      "groupName": ""
+    },
+    {
+      "name": "outputType",
+      "type": "pickList",
+      "label": "Output type",
+      "defaultValue": "XML",
+      "required": true,
+      "helpMarkDown": "What should the output format be?",
+      "groupName": "manifestSource",
+      "options": {
+        "xml": "XML",
+        "plain": "Plain"
+      }
+    },
+    {
+      "name": "sourceType",
+      "type": "pickList",
+      "label": "Source type",
+      "defaultValue": "Database",
+      "required": true,
+      "helpMarkDown": "What should the source type be?",
+      "groupName": "manifestSource",
+      "options": {
+        "database": "Database",
+        "file": "File"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "visibleRule": "sourceType = database",
+      "groupName": "manifestSource"
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the model. (Not allowed if a minifest file path is set)",
+      "visibleRule": "sourceType = database",
+      "groupName": "manifestSource"
+    },
+    {
+      "name": "modelFileName",
+      "type": "filePath",
+      "label": "Model file path (.axmodel)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the ax model file.",
+      "visibleRule": "sourceType = file",
+      "groupName": "manifestSource"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - Export a Model manifest from AX 2012: $(manifestFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(workingFolder)"
+    }
+  }
+}

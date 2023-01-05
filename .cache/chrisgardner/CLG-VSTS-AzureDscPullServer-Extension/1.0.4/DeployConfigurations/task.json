@@ -1,0 +1,108 @@
+{
+	"id": "c71bd631-4fb9-4979-9a7e-c72d90f43763",
+	"name": "PublishAzureDscPullServerConfigurations",
+	"friendlyName": "Publish Azure DSC Pull Server Configurations",
+	"description": "Publish DSC configurations to your Azure Automation DSC Pull Server, including required modules and compiling configurations.",
+	"helpMarkDown": "Version: #{Build.BuildNumber}#. [More Information](https://github.com/chrislgardner/AzureDscPullServerExtension/wiki/)",
+	"category": "Test",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Chris Gardner",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 4
+	},
+	"demands": [],
+	"minimumAgentVersion": "1.95.0",
+	"groups": [],
+	"inputs": [
+		{
+			"name": "SourcePath",
+			"type": "filePath",
+			"label": "Configuration Source",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Absolute path of the source folder, or file on the local machine, or a UNC share. This will filter for any PS1 files within it."
+		},
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:AzureRM",
+			"label": "Azure Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell"
+		},
+		{
+			"name": "ResourceGroupName",
+			"type": "pickList",
+			"label": "Resource group",
+			"required": true,
+			"helpMarkDown": "Provide the name of a resource group.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "automationAccountName",
+			"type": "pickList",
+			"label": "Automation Account",
+			"required": true,
+			"helpMarkDown": "Provide the name of the Azure Automation Account.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "StorageAccountName",
+			"type": "pickList",
+			"label": "RM Storage Account",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Specify a pre-existing ARM storage account to store DSC resources in. A container called dscmodules will be created to store them.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+		{
+			"name": "OverwriteExistingConfigurations",
+			"type": "boolean",
+			"label": "Overwrite Existing Configurations",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "Toggle whether existing configurations should be overwritten during deployment."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "ResourceGroupName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureResourceGroups"
+		},
+		{
+			"name": "AutomationAccounts",
+			"target": "automationAccountName",
+			"endpointId": "$(ConnectedServiceName)",
+			"EndpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts?api-version=2015-10-31",
+			"resultSelector": "jsonpath:$.value[*].name",
+			"parameters": {
+				"ResourceGroupName": "$(ResourceGroupName)"
+			}
+		},
+		{
+			"target": "StorageAccountName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureStorageAccountRM"
+		}
+	],
+	"instanceNameFormat": "Publish Azure DSC Configuration",
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\DeployConfigurations.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

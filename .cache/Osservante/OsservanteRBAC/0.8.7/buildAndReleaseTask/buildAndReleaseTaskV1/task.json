@@ -1,0 +1,62 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f90c2b0c-e85a-4feb-ac05-dbf3a6561c28",
+    "name": "OsservanteRBAC",
+    "friendlyName": "Osservante RBAC",
+    "description": "Export RBAC from Azure to Code/Apply RBAC from Code to Azure",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "Osservante",
+    "version": {
+        "Major": 0,
+        "Minor": 8,
+        "Patch": 7
+    },
+    "instanceNameFormat": "Osservante RBAC - $(Mode)",
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+            }
+        },
+        {
+            "name": "rbacSubscription",
+            "type": "string",
+            "label": "Subscription(s) to process",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Comma delimited list of subscriptions to process (can be the name or the ID).  e.g. OSS-SUB-SBX,OSS-SUB-DEV,OSS-SUB-SIT"
+        },
+        {
+            "name": "Mode",
+            "type": "pickList",
+            "label": "Mode",
+            "required": true,
+            "helpMarkDown": "Mode to run in: Export, Plan, Apply, DisplayPlan",
+            "defaultValue": "Export",
+            "options": {
+                "Export": "Export",
+                "Plan": "Plan",
+                "Apply": "Apply",
+                "DisplayPlan": "DisplayPlan"
+            }
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "taskScript.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

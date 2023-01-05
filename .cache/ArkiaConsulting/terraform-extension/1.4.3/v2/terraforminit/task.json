@@ -1,0 +1,107 @@
+{
+    "$schema": "https://aka.ms/vsts-tasks.schema.json",
+    "id": "a0456120-0c4c-11e9-9d7a-196b04f1dd0c",
+    "name": "terraforminit",
+    "friendlyName": "Terraform Init",
+    "description": "Launch terraform init",
+    "author": "arkiaconsulting",
+    "category": "Utility",
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 1
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Init Terraform",
+    "preview": true,
+    "inputs": [{
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Current working directory when terraforminit is run."
+        },
+        {
+            "name": "useazurerm",
+            "type": "boolean",
+            "label": "Use AzureRM Provider",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task."
+        },
+        {
+            "name": "connectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription",
+            "visibleRule": "useazurerm=true"
+        },
+        {
+            "name": "backendConfigPath",
+            "type": "string",
+            "label": "Backend Config File",
+            "required": false,
+            "helpMarkDown": "Name of the backend config file (will be given to -backend-config parameter)"
+        },
+        {
+            "name": "initbackend",
+            "type": "boolean",
+            "label": "Init Storage Backend",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Wether or not to init terraform remote backend. If ticked, you have to switch on the option in the AzureRM Provider pane."
+        },
+        {
+            "name": "backendrg",
+            "type": "string",
+            "label": "Resource Group",
+            "required": false,
+            "helpMarkDown": "The name of the resource group hosting the storage account.",
+            "visibleRule": "initbackend=true"
+        },
+        {
+            "name": "backendstorage",
+            "type": "string",
+            "label": "Storage Account Name",
+            "required": false,
+            "helpMarkDown": "The name of the storage account hosting the state.",
+            "visibleRule": "initbackend=true"
+        },
+        {
+            "name": "backendcontainer",
+            "type": "string",
+            "label": "Storage Container Name",
+            "required": false,
+            "helpMarkDown": "The name container hosting the state.",
+            "visibleRule": "initbackend=true"
+        },
+        {
+            "name": "backendKey",
+            "type": "string",
+            "label": "Key",
+            "required": false,
+            "helpMarkDown": "The name of the remote file containing the state.",
+            "visibleRule": "initbackend=true"
+        },
+        {
+            "name": "tfrootpath",
+            "type": "string",
+            "label": "Terraform Files Path",
+            "required": false,
+            "helpMarkDown": "Optional path to terraform files"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/terraforminit/index.js",
+            "argumentFormat": ""
+        }
+    },
+    "dataSourceBindings": []
+}

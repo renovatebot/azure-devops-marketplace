@@ -1,0 +1,100 @@
+﻿{
+  "id": "1561E90D-14CC-47DE-812F-33F62B04BE0B",
+  "name": "SQLServerDeploy",
+  "instanceNameFormat": "Deploy $(dbName)",
+  "friendlyName": "SQLServer Deploy Dacpac",
+  "description": "Publish a dacpac file in especific database connection string",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [
+    "SqlPackage"
+  ],
+  "author": "Gustavo Américo (@gustavoamerico)",
+  "minimumAgentVersion": "1.89.0",
+  "inputs": [
+    {
+      "name": "dacpacPattern",
+      "type": "string",
+      "label": "File name pattern",
+      "defaultValue": "**/*.dacpac",
+      "helpMarkDown": "The name or pattern for search an dacpac file",
+      "required": true
+    },
+    {
+      "name": "dacpacPath",
+      "type": "filePath",
+      "label": "Path or path root",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true,
+      "helpMarkDown": "The dacpac file path or root."
+    },
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "SQL ConnectionString",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "dbName",
+      "type": "string",
+      "label": "Database name",
+      "defaultValue": "",
+      "helpMarkDown": "The database name for publish package",
+      "required": true
+    },
+    {
+      "name": "blockOnPossibleDataLoss",
+      "type": "boolean",
+      "label": "Block On possible data loss",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "specifies whether deployment should stop if the operation could cause data loss."
+    },
+    {
+      "name": "verifyDeployment",
+      "type": "boolean",
+      "label": "Verify deployment",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": " specifies whether the plan verification phase is executed or not.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "compareUsingTargetCollation",
+      "type": "boolean",
+      "label": "Compare using target collation",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "specifies whether the source collation will be used for identifier comparison."
+    },
+    {
+      "name": "allowIncompatiblePlatform",
+      "type": "boolean",
+      "label": "Allow in compatible platform",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": " specifies whether deployment will block due to platform compatibility."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\scripts\\command.ps1",
+      "workingDirectory": "$(currentDirectory)",
+      "argumentFormat": ""
+    }
+  },
+  "demands": []
+}

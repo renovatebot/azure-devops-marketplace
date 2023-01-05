@@ -1,0 +1,87 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "82f8620c-5c25-e398-ef53-8a91ca253d1c",
+    "name": "AzDOCosmosDBUpload",
+    "friendlyName": "JSON Upload to Cosmos DB",
+    "description": "When provided a JSON file path in the repository, upload the contents to a Cosmos DB instance",
+    "helpMarkDown": "For the Endpoint and Primary Key names, enter the name of the variable name. Separately add a reference to the variable group in the YAML file and surround the names in the YAML format - `$(<variable name>)`",
+    "category": "Utility",
+    "author": "Hannah K (@mindlessroman)",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 0
+    },
+    "runsOn": [],
+    "visibility": [],
+    "instanceNameFormat": "Upload a JSON file to CosmosDB",
+    "inputs": [
+        {
+            "name": "cosmosEndpointName",
+            "type": "string",
+            "label": "Endpoint Variable Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the variable that contains the URI for the Cosmos instance, as found in 'Keys,' and stored in a variable group"
+        },
+        {
+            "name": "cosmosKeyName",
+            "type": "string",
+            "label": "Primary Key Variable Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the variable that contains the primary key for the Cosmos instance, as found in 'Keys,' and stored in a variable group"
+        },
+        {
+            "name": "cosmosDatabase",
+            "type": "string",
+            "label": "Database Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The database to which you will connect. If it does not exist, it will be created"
+        },
+        {
+            "name": "cosmosContainer",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The container within the database to which you will connect. If it does not exist, it will be created"
+        },
+        {
+            "name": "cosmosPartition",
+            "type": "string",
+            "label": "Partition Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The partition key for the container. If one is not provided Cosmos will default to '/_partitionKey'"
+        },
+        {
+            "name": "fileLocation",
+            "type": "filePath",
+            "label": "JSON File Path in Repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the JSON file in the repository. Must be a relative path from `$(System.DefaultWorkingDirectory)`"
+        },
+        {
+            "name": "optInTelemetry",
+            "type": "boolean",
+            "label": "Opt-In for Telemetry?",
+            "helpMarkDown": "Opting in will send usage and minimal error problems to help improve the experience"
+        },
+        {
+            "name": "aiKey",
+            "type": "string",
+            "defaultValue": "d7a61200-9ee6-487f-ac36-898d559f8582",
+            "label": "AppInsights Key",
+            "visibleRule": "cosmosPartition = 1bb39b3ebe674937a6242e3b72a8dc3e"
+        }
+    ],
+    "groups": [],
+    "execution": {
+        "Node10": {
+            "target": "./.bin/index.js"
+        }
+    }
+}

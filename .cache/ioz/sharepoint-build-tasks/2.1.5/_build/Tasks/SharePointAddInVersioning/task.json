@@ -1,0 +1,48 @@
+{
+    "id":  "94d9ca89-a3d4-4abb-8b49-2505db9c431a",
+    "name":  "SharePointAddInVersioning",
+    "friendlyName":  "SharePoint Add-In Versioning",
+    "description":  "Set version of a SharePoint Add-In",
+    "helpMarkDown":  "Allows to change the version of SharePoint Add-Ins. Supports changing the version before compile time (in AppManifest.xml files) or after compile time (in packaged .app files). [More Information](https://github.com/iozag/sharepoint-build-tasks)",
+    "category":  "Build",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "IOZ AG",
+    "version":  {
+                    "Major":  "2",
+                    "Minor":  "1",
+                    "Patch":  "5"
+                },
+    "demands":  [
+
+                ],
+    "minimumAgentVersion":  "1.83.0",
+    "inputs":  [
+                   {
+                       "name":  "AddInFile",
+                       "type":  "filePath",
+                       "label":  "File pattern",
+                       "defaultValue":  "**\\AppManifest.xml",
+                       "required":  true,
+                       "helpMarkDown":  "Relative path from repo root to the SharePoint AppManifest or Add-In file which should be updated.  Wildcards can be used.  For example `**\\AppManifest.xml` for all AppManifests or `**\\*.app` for all Add-In files in all sub folders."
+                   },
+                   {
+                       "name":  "Version",
+                       "type":  "string",
+                       "label":  "Version",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Version which should be set in the Add-In files."
+                   }
+               ],
+    "instanceNameFormat":  "Set version of SharePoint Add-In $(AddInFile)",
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\SharePointAddInVersioning.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}

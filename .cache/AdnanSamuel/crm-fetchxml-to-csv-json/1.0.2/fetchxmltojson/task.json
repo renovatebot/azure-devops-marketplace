@@ -1,0 +1,66 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "dc9235f5-affc-421b-954d-956dcd41d874",
+    "name": "CRMFetchxmlToCSVorJson",
+    "friendlyrame": "CRMFetchxmlToCSVorJson",
+    "description": "A utility to save dataverse records to csv or json file by provising simple fetchxml",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Adnan Samuel",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "DataverseCrmToFetchxml1",
+    "inputs": [
+        {
+            "name": "1crmconnectionstring",
+            "type": "string",
+            "label": "OAuth Crm Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAuth Crm Connection"
+        }, {
+            "name": "1crmfetchxml",
+            "type": "string",
+            "label": "Crm Fetchxml",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Crm Fetchxml"
+        },
+		{
+            "name": "recordcount",
+            "type": "string",
+            "label": "Record Count",
+            "defaultValue": "5000",
+            "required": true,
+            "helpMarkDown": "Record Count"
+        },{
+      "name": "exportascsv",
+      "type": "radio",
+      "label": "Export as",
+      "required": false,
+      "defaultValue": "CSV",
+      "helpMarkDown": "Export the crm records as CSV or Json file.",
+      "options": {
+        "CSV": "Comma Seperated Values",
+        "JSON": "JavaScript Object Notation"
+		}
+	},
+        {
+      "name": "pathtosavefile",
+      "type": "filePath",
+      "label": "Path to save file",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Path to save file."
+    }    
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\powershellcrm.ps1",
+			"workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

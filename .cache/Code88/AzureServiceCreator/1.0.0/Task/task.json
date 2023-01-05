@@ -1,0 +1,202 @@
+{
+  "id": "14b0d197-f815-4d5e-b695-262c7c76b3a7",
+  "name": "AzureServicesCreator",
+  "friendlyName": "Creates Azure Services",
+  "description": "Creates Multiple Azure Services",
+  "author": "code88",
+  "helpMarkDown": "Azure Services Automation VSTS",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "Azure Services Automation $(message)",
+
+
+
+  "inputs": [
+
+      {
+            "name": "ConnectedServiceNameSelector",
+            "type": "pickList",
+            "label": "Azure Connection Type",
+            "required": false,
+            "helpMarkDown": "",
+            "defaultValue": "ConnectedServiceNameARM",
+            "options": {
+                  "ConnectedServiceNameARM": "Azure Resource Manager",
+                  "ConnectedServiceName": "Azure Classic"
+            }
+        },
+       {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Connection Type",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+        },
+        {
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Subscription",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+        },
+
+
+        {
+            "name": "Location",
+            "type": "pickList",
+            "label": "Location for the services",
+            "required": false,
+            "helpMarkDown": "Geographical region to generate the load from.",
+            "defaultValue": "North Europe",
+            "options": {
+                "East US": "East US (Virginia)",
+                "East US 2": "East US 2 (Virginia)",
+                "Central US": "Central US (Iowa)",
+                "West US": "West US (California)",
+                "North Central US": "North Central US (Illinois)",
+                "South Central US": "South Central US (Texas)",
+                "North Europe": "North Europe (Ireland)",
+                "West Europe": "West Europe (Netherlands)",
+                "Southeast Asia": "Southeast Asia (Singapore)",
+                "East Asia": "East Asia (Hong Kong)",
+                "Japan East": "Japan East (Saitama Prefecture)",
+                "Japan West": "Japan West (Osaka Prefecture)",
+                "Brazil South": "Brazil South (Sao Paulo State)",
+                "Australia East": "Australia East (New South Wales)",
+                "Australia Southeast": "Australia Southeast (Victoria)"
+            }
+        },
+
+        {
+            "name": "ResourceType",
+            "type": "pickList",
+            "label": "Resource Type",
+            "required": true,
+            "helpMarkDown": "",
+            "options": {
+                "cloudserviceClassic": "Cloud Service (Classic)",
+                "StorageClassic": "Storage (Classic)",
+                "ServiceBusClassic": "Service Bus (Classic)",
+                "ResourceGroup": "Resource Group",
+                "ApplicationInsights": "Application Insights",
+                "RedisCache":"Redis Cache",
+                "AppServicePlan": "Application Service Plan",
+                "WebApp":"Web Application",
+                "MoveResource" :"Move Classic Resource"
+            }
+        },
+
+           {
+            "name": "ServiceID",
+            "type": "string",
+            "label": "Resource Name",
+            "required": false,
+            "helpMarkDown": "Provide the name of the Service",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+
+ {
+            "name": "resourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group",
+            "required": false,
+            "helpMarkDown": "Provide the name of the resource group the resource should be when created",
+            "visibleRule": "ResourceType = ApplicationInsights || ResourceType = RedisCache || ResourceType = AppServicePlan || ResourceType = WebApp ",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+
+  {
+            "name": "resourceGroupNameMover",
+            "type": "pickList",
+            "label": "Resource Group",
+            "required": false,
+            "helpMarkDown": "The Resource Group the Service needs to moved to",
+            "visibleRule": "ResourceType = MoveResource",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+
+         {
+            "name": "AppServicePlanTier",
+            "type": "pickList",
+            "label": "App Service Tier",
+            "defaultValue": "Basic",
+            "required": false,
+            "helpMarkDown": "Different Tiers give different features. SLA, Storage and the amount of apps",
+            "visibleRule": "ResourceType = AppServicePlan ",
+           "options": {
+                "Free": "Free",
+                "Shared": "Shared",
+                "Basic": "Basic",
+                "Standard": "Standard",
+                "Premium": "Premium"
+            }
+        },
+
+         {
+            "name": "AlwaysOn",
+            "type": "boolean",
+            "label": "Sets the App Service to Always On",
+            "defaultValue": "false",
+            "required": false,
+            "visibleRule": "AppServicePlanTier = Basic || AppServicePlanTier = Standard || AppServicePlanTier = Premium"
+                    },
+
+
+       {
+            "name": "AppServiceName",
+            "type": "string",
+            "label": "Application Service Name",
+            "required": false,
+            "helpMarkDown": "The AppService that attaches to a Webapp",
+            "visibleRule": "ResourceType = WebApp",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        }  
+
+
+
+  ],
+  
+"dataSourceBindings": [
+      {
+            "target": "resourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+{
+            "target": "resourceGroupNameMover",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+
+        
+],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Services.ps1"
+    }
+  }
+}

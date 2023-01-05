@@ -1,0 +1,134 @@
+{
+  "id": "0f42e73b-1b51-41b9-8bd2-c1a864393316",
+  "name": "ADOSecurityScanner",
+  "friendlyName": "Azure DevOps (ADO) Security Scanner",
+  "description": "Scan Azure DevOps components for security issues.",
+  "helpMarkDown": "[More Information](http://aka.ms/devopskit/ADOSecurity)",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "azsdktm",
+  "version": {
+    "Major": 1,
+    "Minor": 5,
+    "Patch": 7
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.20.0",
+  "instanceNameFormat": "ADO Security Scanner",
+  "inputs": [
+    {
+      "name": "ADOConnectionName",
+      "type": "connectedService:externaltfs",
+      "label": "ADO Service Connection",
+      "defaultValue": "",
+      "helpMarkDown": "ADO connection required to access resources"
+    },
+    {
+      "name": "OrgName",
+      "type": "string",
+      "label": "Organization Name",
+      "defaultValue": "$(System.CollectionUri)",
+      "required": true,
+      "helpMarkDown": "Org name for which scan needs to be performed. Default value is set to current org."
+    },
+    {
+      "name": "ProjectNames",
+      "type": "string",
+      "label": "Project Names",
+      "defaultValue": "$(System.TeamProject)",
+      "required": true,
+      "helpMarkDown": "Comma-separated list of projects against which Security Verification should be run. Default value is set to current project."
+    },
+    {
+      "name": "ScanFilter",
+      "type": "radio",
+      "label": "Select scan option:",
+      "required": true,
+      "defaultValue": "Org_Project_User",
+      "options": {
+        "Org_Project_User": "Scan Organization and Project configuration controls only",
+        "BuildReleaseSvcConnAgentPoolVarGroupUser": "Scan build/release/service connection/agent pool/variable group controls only",
+        "All": "Scan both",
+        "SVCBased": "Service Id based scan"
+      }
+    },
+    {
+      "name": "ServiceId",
+      "type": "string",
+      "label": "Service Id",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "ServiceId for which scan should be performed.\n Use this if your org provides a mapping of services to ADO resources.",
+      "visibleRule": "ScanFilter = SVCBased"
+    },
+    {
+      "name": "BuildNames",
+      "type": "string",
+      "label": "Build Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of builds against which Security Verification Tests (SVTs) should be run or use '*' to scan all builds.",
+      "visibleRule": "ScanFilter = BuildReleaseSvcConnAgentPoolVarGroupUser || ScanFilter = All"
+    },
+    {
+      "name": "ReleaseNames",
+      "type": "string",
+      "label": "Release Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of releases against which Security Verification Tests (SVTs) should be run or use '*' to scan all releases.",
+      "visibleRule": "ScanFilter = BuildReleaseSvcConnAgentPoolVarGroupUser || ScanFilter = All"
+    },
+    {
+      "name": "ServiceConnectionNames",
+      "type": "string",
+      "label": "Service Connection Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of service connections against which Security Verification Tests (SVTs) should be run or use '*' to scan all service connections.",
+      "visibleRule": "ScanFilter = BuildReleaseSvcConnAgentPoolVarGroupUser || ScanFilter = All"
+    },
+    {
+      "name": "AgentPoolNames",
+      "type": "string",
+      "label": "Agent Pool Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of agent pools against which Security Verification Tests (SVTs) should be run or use '*' to scan all agent pools.",
+      "visibleRule": "ScanFilter = BuildReleaseSvcConnAgentPoolVarGroupUser || ScanFilter = All"
+    },
+    {
+      "name": "VariableGroupNames",
+      "type": "string",
+      "label": "Variable Group Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comma-separated list of variable groups against which Security Verification Tests (SVTs) should be run or use '*' to scan all variable groups.",
+      "visibleRule": "ScanFilter = BuildReleaseSvcConnAgentPoolVarGroupUser || ScanFilter = All"
+    },
+    {
+      "name": "isBaseline",
+      "type": "boolean",
+      "label": "Scan baseline controls only",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "EnableOMSLogging",
+      "type": "boolean",
+      "label": "Send events to Log Analytics",
+      "defaultValue": "false",
+      "helpMarkDown": "Enable this option to publish SVT evaluation results to a Log Analytics Workspace (specified via environment variables).",
+      "required": false
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "ADOSecurityScannerSVTRuntime.ps1"
+    }
+  }
+}

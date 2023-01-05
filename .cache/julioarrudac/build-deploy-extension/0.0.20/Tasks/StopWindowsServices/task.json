@@ -1,0 +1,78 @@
+{
+    "id":  "f12486d0-7d09-11e7-b6b2-091599e20064",
+    "name":  "StopWindowsServices",
+    "friendlyName":  "Stop Windows Service",
+    "description":  "Task used to Stop Windows Service in remote Machines",
+    "author":  "Julio Arruda",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  0,
+                    "Minor":  0,
+                    "Patch":  20
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Stop Windows Services $(ServiceName)",
+    "groups":  [
+                   {
+                       "name":  "configuracoes",
+                       "displayName":  "Configs",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "servico",
+                       "displayName":  "Service",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "EnvironmentName",
+                       "type":  "multiLine",
+                       "label":  "Machines",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "helpMarkDown":  "Provide a comma separated list of machine IP addresses or FQDNs along with ports. Port is defaulted based on the selected protocol. \u003cbr\u003eEg: dbserver.fabrikam.com,dbserver_int.fabrikam.com:5986,192.168.12.34:5986 \u003cbr\u003eOr provide output variable of other tasks. Eg: $(variableName) \u003cbr\u003eIf you are using HTTPS, name/IP of machine should match the CN in the certificate."
+                   },
+                   {
+                       "name":  "AdminUserName",
+                       "type":  "string",
+                       "label":  "Admin Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "helpMarkDown":  "Administrator login for the target machines."
+                   },
+                   {
+                       "name":  "AdminPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "helpMarkDown":  "Administrator password for the target machines. \u003cbr\u003eIt can accept variable defined in Build/Release definitions as \u0027$(passwordVariable)\u0027. \u003cbr\u003eYou may mark variable type as \u0027secret\u0027 to secure it."
+                   },
+                   {
+                       "name":  "ServiceName",
+                       "type":  "string",
+                       "label":  "Service Name",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Name of Service you need to stop"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "stopService.ps1"
+                                      }
+                  }
+}

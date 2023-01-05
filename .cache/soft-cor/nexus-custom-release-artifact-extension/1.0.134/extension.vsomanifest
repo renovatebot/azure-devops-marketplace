@@ -1,0 +1,663 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/keyoke/NexusPipelineArtifact"
+    },
+    "badges": [
+        {
+            "href": "https://dev.azure.com/softcores/NexusPipelineArtifact/_build?definitionId=2&_a=summary",
+            "uri": "https://dev.azure.com/softcores/NexusPipelineArtifact/_apis/build/status/keyoke.NexusPipelineArtifact?branchName=master",
+            "description": "Azure Pipeline for NexusPipelineArtifact"
+        }
+    ],
+    "demands": [
+        "api-version/5.0"
+    ],
+    "contributions": [
+        {
+            "id": "nexus-endpoint-type",
+            "description": "Service connection type for Sonatype Nexus Repository",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "nexus",
+                "displayName": "Sonatype Nexus Repository",
+                "url": {
+                    "displayName": "Repository URL"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username for connecting to the endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for connecting to the endpoint",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "Allows self-signed SSL certificates.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "dataSources": []
+            },
+            "constraints": []
+        },
+        {
+            "id": "nexus-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV2"
+            }
+        },
+        {
+            "id": "nexus-custom-release-artifact-type",
+            "description": "Sonatype Nexus Repository v2 Maven Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "nexus-maven-repository",
+                "displayName": "MavenRepoV2",
+                "endpointTypeId": "nexus",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
+                "downloadTaskId": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
+                "artifactType": "Package",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service connection",
+                        "description": "Nexus service connection",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Repository Id",
+                        "description": "Name of the Nexus repository in which to look for the component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "group",
+                        "name": "Group Id",
+                        "description": "The Maven groupId for a component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "artifact",
+                        "name": "Artifact Id",
+                        "description": "The Maven artifactId for a component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "group"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default Version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest"
+                                },
+                                {
+                                    "value": "specificVersionType",
+                                    "displayValue": "Specific version"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "defaultVersionSpecific",
+                        "name": "Version",
+                        "description": "The version of the component/asset.",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "group",
+                            "artifact",
+                            "defaultVersionType"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "properties": {
+                            "visibleRule": "defaultVersionType == specificVersionType"
+                        }
+                    },
+                    {
+                        "id": "packaging",
+                        "name": "Packaging",
+                        "description": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "defaultValue": "",
+                            "possibleValues": [
+                                {
+                                    "value": "pom",
+                                    "displayValue": "pom"
+                                },
+                                {
+                                    "value": "jar",
+                                    "displayValue": "jar"
+                                },
+                                {
+                                    "value": "ejb",
+                                    "displayValue": "ejb"
+                                },
+                                {
+                                    "value": "war",
+                                    "displayValue": "war"
+                                },
+                                {
+                                    "value": "ear",
+                                    "displayValue": "ear"
+                                },
+                                {
+                                    "value": "aar",
+                                    "displayValue": "aar"
+                                },
+                                {
+                                    "value": "tar.gz",
+                                    "displayValue": "tar.gz"
+                                },
+                                {
+                                    "value": "rar",
+                                    "displayValue": "rar"
+                                },
+                                {
+                                    "value": "zip",
+                                    "displayValue": "zip"
+                                },
+                                {
+                                    "value": "par",
+                                    "displayValue": "par"
+                                },
+                                {
+                                    "value": "maven-archetype",
+                                    "displayValue": "maven-archetype"
+                                },
+                                {
+                                    "value": "maven-plugin",
+                                    "displayValue": "maven-plugin"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": false
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "classifier",
+                        "name": "Classifier",
+                        "description": "The Maven classifier for a component. Common values are javadoc, sources or tests.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "extension",
+                        "name": "Extension",
+                        "description": "The extension used for a specific asset of a component.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    }
+                ],
+                "taskInputMapping": {
+                    "repository": "{{{definition}}}",
+                    "baseVersion": "{{{version}}}"
+                },
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/all_repositories",
+                        "resultSelector": "jsonpath:$.data[?(@.provider=='maven2')]",
+                        "resultTemplate": "{ Value : \"{{{id}}}\", DisplayValue : \"{{{id}}}\" }"
+                    },
+                    {
+                        "target": "group",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&cn=maven",
+                        "resultSelector": "jsonpath:$.data[*].groupId",
+                        "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }"
+                    },
+                    {
+                        "target": "artifact",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}",
+                        "resultSelector": "jsonpath:$.data[*]",
+                        "resultTemplate": "{ Value : \"{{{artifactId}}}\", DisplayValue : \"{{{artifactId}}}\" }"
+                    },
+                    {
+                        "target": "defaultVersionSpecific",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
+                        "resultSelector": "jsonpath:$.data[*]",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
+                        "resultSelector": "jsonpath:$.data[*]",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "endpointUrl": "{{{endpoint.url}}}service/local/lucene/search?repositoryId={{{definition}}}&g={{{group}}}&a={{{artifact}}}",
+                        "resultSelector": "jsonpath:$.data[0]",
+                        "resultTemplate": "{{#if latestRelease}}{ Value : \"{{{latestRelease}}}\", DisplayValue : \"{{{latestRelease}}}\" }{{else}}{ Value : \"{{{latestSnapshot}}}\", DisplayValue : \"{{{latestSnapshot}}}\" }{{/if}}"
+                    }
+                ],
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": false
+                }
+            }
+        },
+        {
+            "id": "nexus-build-release-task-v3",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/Tasks/DownloadArtifactsNexus/DownloadArtifactsNexusV3"
+            }
+        },
+        {
+            "id": "nexus-custom-release-artifact-type-v3",
+            "description": "Sonatype Nexus Repository v3 Artifact (Maven)",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "nexus-maven-repository-v3",
+                "displayName": "MavenRepoV3",
+                "endpointTypeId": "nexus",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{group}}:{{artifact}}",
+                "downloadTaskId": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
+                "artifactType": "Package",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service connection",
+                        "description": "Nexus service connection",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Repository Id",
+                        "description": "Name of the Nexus repository in which to look for the component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "group",
+                        "name": "Group Id",
+                        "description": "The Maven groupId for a component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "artifact",
+                        "name": "Artifact Id",
+                        "description": "The Maven artifactId for a component.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "group"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default Version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "latestType",
+                            "possibleValues": [
+                                {
+                                    "value": "latestType",
+                                    "displayValue": "Latest"
+                                },
+                                {
+                                    "value": "specificVersionType",
+                                    "displayValue": "Specific version"
+                                },
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "defaultVersionSpecific",
+                        "name": "Version",
+                        "description": "The version of the component/asset.",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "group",
+                            "artifact",
+                            "defaultVersionType"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "properties": {
+                            "visibleRule": "defaultVersionType == specificVersionType"
+                        }
+                    },
+                    {
+                        "id": "packaging",
+                        "name": "Packaging",
+                        "description": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others.",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "defaultValue": "",
+                            "possibleValues": [
+                                {
+                                    "value": "pom",
+                                    "displayValue": "pom"
+                                },
+                                {
+                                    "value": "jar",
+                                    "displayValue": "jar"
+                                },
+                                {
+                                    "value": "ejb",
+                                    "displayValue": "ejb"
+                                },
+                                {
+                                    "value": "war",
+                                    "displayValue": "war"
+                                },
+                                {
+                                    "value": "ear",
+                                    "displayValue": "ear"
+                                },
+                                {
+                                    "value": "aar",
+                                    "displayValue": "aar"
+                                },
+                                {
+                                    "value": "tar.gz",
+                                    "displayValue": "tar.gz"
+                                },
+                                {
+                                    "value": "rar",
+                                    "displayValue": "rar"
+                                },
+                                {
+                                    "value": "zip",
+                                    "displayValue": "zip"
+                                },
+                                {
+                                    "value": "par",
+                                    "displayValue": "par"
+                                },
+                                {
+                                    "value": "maven-archetype",
+                                    "displayValue": "maven-archetype"
+                                },
+                                {
+                                    "value": "maven-plugin",
+                                    "displayValue": "maven-plugin"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": false
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "classifier",
+                        "name": "Classifier",
+                        "description": "The Maven classifier for a component. Common values are javadoc, sources or tests.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "extension",
+                        "name": "Extension",
+                        "description": "The extension used for a specific asset of a component.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    }
+                ],
+                "taskInputMapping": {
+                    "repository": "{{{definition}}}",
+                    "baseVersion": "{{{version}}}"
+                },
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/repositories",
+                        "resultSelector": "jsonpath:$.[?(@.format=='maven2')]",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "group",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+                        "resultSelector": "jsonpath:$.items[*].group",
+                        "resultTemplate": "{ Value : \"{{{defaultResultKey}}}\", DisplayValue : \"{{{defaultResultKey}}}\" }",
+                        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+                        "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+                        "initialContextTemplate": "{\"continuationToken\" : null}"
+                    },
+                    {
+                        "target": "artifact",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }",
+                        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+                        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+                        "initialContextTemplate": "{\"continuationToken\" : null}"
+                    },
+                    {
+                        "target": "defaultVersionSpecific",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
+                        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+                        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+                        "initialContextTemplate": "{\"continuationToken\" : null}"
+                    },
+                    {
+                        "target": "versions",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }",
+                        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+                        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+                        "initialContextTemplate": "{\"continuationToken\" : null}"
+                    },
+                    {
+                        "target": "latestversion",
+                        "endpointUrl": "{{{endpoint.url}}}service/rest/v1/search?repository={{{definition}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version",
+                        "resultSelector": "jsonpath:$.items[0]",
+                        "resultTemplate": "{ Value : \"{{{version}}}\", DisplayValue : \"{{{version}}}\" }"
+                    }
+                ],
+                "ArtifactTriggerConfiguration": {
+                    "isTriggerSupported": false
+                }
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

@@ -1,0 +1,182 @@
+{
+    "id": "da9d5e69-e1b0-4af0-8f4b-a236c0c1d55d",
+    "name": "trigger-adf-pipeline",
+    "friendlyName": "Azure Data Factory Trigger Pipeline",
+    "description": "Trigger Azure Data Factory V2 Pipelines",
+    "author": "Jan Pieter Posthuma",
+    "helpMarkDown": "[More Information](https://github.com/liprec/vsts-publish-adf)",
+    "category": "Deploy",
+    "preview": false,
+    "visibility": ["Build", "Release"],
+    "runsOn": ["Agent"],
+    "demands": [],
+    "version": {
+        "Major": "2",
+        "Minor": "5",
+        "Patch": "3"
+    },
+    "minimumAgentVersion": "1.100.0",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "adf",
+            "displayName": "Data Factory Details",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": ["azureSubscription"],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is needed to connect to your Azure account.<br>To configure new service connection, select the Azure subscription from the list and click 'Authorize'.<br>If your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using 'Add' or 'Manage' button."
+        },
+        {
+            "name": "DatafactoryType",
+            "type": "pickList",
+            "label": "Data Integration Capabilities",
+            "helpMarkDown": "Azure Data Factory or Azure Synapse Analytics",
+            "defaultValue": "adf",
+            "options": {
+                "adf": "Azure Data Factory",
+                "synapse": "Azure Synapse Analytics"
+            },
+            "groupname": "azure"
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "required": true,
+            "helpMarkDown": "Provide the name of the resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "visibleRule": "DatafactoryType = adf",
+            "groupname": "azure"
+        },
+        {
+            "name": "DatafactoryName",
+            "type": "string",
+            "label": "Azure Data Factory",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Name of the Azure Data Factory.",
+            "visibleRule": "DatafactoryType = adf",
+            "groupname": "azure"
+        },
+        {
+            "name": "WorkspaceUrl",
+            "type": "string",
+            "label": "Synapse workspace development endpoint URL",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Name of the Synapse workspace development endpoint, eg. https://myworkspace.dev.azuresynapse.net",
+            "visibleRule": "DatafactoryType = synapse",
+            "groupname": "azure"
+        },
+        {
+            "name": "PipelineFilter",
+            "type": "string",
+            "label": "Pipeline Filter",
+            "required": false,
+            "helpMarkDown": "Regex filter to determine which triggers to toggle.\n-Empty string: *all* triggers will be toggled.",
+            "groupname": "adf"
+        },
+        {
+            "name": "PipelineParameterType",
+            "type": "pickList",
+            "label": "Pipeline Parameter Location",
+            "defaultValue": "inline",
+            "groupname": "adf",
+            "options": {
+                "inline": "Inline JSON",
+                "path": "JSON Path"
+            }
+        },
+        {
+            "name": "PipelineParameter",
+            "type": "multiLine",
+            "label": "Pipeline Parameter",
+            "visibleRule": "PipelineParameterType = inline",
+            "helpMarkDown": "Additional pipeline parameters (JSON)",
+            "groupname": "adf"
+        },
+        {
+            "name": "PipelineParameterPath",
+            "type": "filePath",
+            "label": "Pipeline Parameter Path",
+            "visibleRule": "PipelineParameterType = path",
+            "helpMarkDown": "Fully qualified path of the JSON file with additional pipeline parameters",
+            "groupname": "adf"
+        },
+        {
+            "name": "continue",
+            "type": "boolean",
+            "label": "Continue on Error",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Continue on deployment failures",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Throttle",
+            "type": "string",
+            "label": "Number of parallel actions",
+            "defaultValue": "5",
+            "required": false,
+            "helpMarkDown": "Number of parallel actions, default is 5",
+            "groupName": "advanced"
+        },
+        {
+            "name": "DeploymentOutputs",
+            "type": "string",
+            "label": "Deployment outputs",
+            "required": false,
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Provide a name for the variable for the output variable which will contain the RUN IDs of the package triggers in string format. You can use the “ConvertFrom-Json” PowerShell cmdlet to parse the JSON object and access the individual RUN IDs."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "instanceNameFormat": "Trigger pipeline run $(DatafactoryName)",
+    "execution": {
+        "Node10": {
+            "target": "./dist/triggeradfpipeline.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "TaskParameters_ConstructorFailed": "Task failed while initializing. Error: %s.",
+        "TaskParameters_MissingResourceGroup": "Missing required input 'ResourceGroupName', or define the input 'WorkspaceUrl'",
+        "TaskParameters_MissingDataFactoryName": "Missing required input 'DatafactoryName', or define the input 'WorkspaceUrl'",
+        "TaskParameters_IgnoredParameter": "Provided task parameter is ignored: %s",
+        "AzureModels_ConstructorFailed": "Unable to retrieve endpoint details for Azure",
+        "Generic_LoginAzure": "Error login in to Azure. Please check the Service Configuration. Error: %s.",
+        "Generic_CheckDataFactory": "Error calling DataFactory API. Error: %s.",
+        "Generic_CheckDataFactory2": "Datafactory not found: %s.",
+        "TriggerAdfPipelines_GetPipelines": "Error calling DataFactory/pipelines API. Error: %s.",
+        "TriggerAdfPipelines_GetPipelines2": "No pipeline(s) found.",
+        "TriggerAdfPipelines_TriggerPipeline": "Error calling 'createRun' API for pipeline %s. Error: %s.",
+        "TriggerAdfPipelines_TriggerPipelines": "Error retrieving pipelines: Error: ",
+        "TriggerAdfPipelines_AddedOutputVariable": "Updated output variable '%s', which contains the RUN IDs of the package triggers in string format."
+    }
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "2061c25a-2dbc-4c3a-870d-c480d9ce24f3",
+  "name": "GitGuardChanges",
+  "friendlyName": "GitGuardChanges",
+  "description": "Check if certain files have been changed between two commits",
+  "helpMarkDown": "[Learn more about this task](https://docs.devops-extensions.dev/docs/extensions/git-guard/tasks/git-guard-changes)",
+  "helpUrl": "https://docs.devops-extensions.dev/docs/extensions/git-guard/tasks/git-guard-changes",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 0
+  },
+  "inputs": [
+    {
+      "name": "sourceCommitHash",
+      "type": "string",
+      "label": "Source Commit Hash",
+      "required": true,
+      "helpMarkDown": "Oldest commit hash to check from"
+    },
+    {
+      "name": "targetCommitHash",
+      "type": "string",
+      "label": "Target Commit Hash",
+      "required": true,
+      "defaultValue": "HEAD",
+      "helpMarkDown": "Newest commit hash to check to  (Default `HEAD`)"
+    },
+    {
+      "name": "matchPattern",
+      "type": "string",
+      "label": "Match Pattern",
+      "required": true,
+      "helpMarkDown": "Files to match"
+    },
+    {
+      "name": "matchStrategy",
+      "type": "pickList",
+      "label": "Match Strategy",
+      "defaultValue": "all",
+      "required": true,
+      "options": {
+        "all": "All",
+        "single": "Single"
+      },
+      "helpMarkDown": "If single only a `single` result from `matchPattern` needs to be matched, else all. "
+    },
+    {
+      "name": "breakOnFailure",
+      "type": "boolean",
+      "label": "Break on failure",
+      "helpMarkDown": "Break the build in addition to setting the result variables",
+      "defaultValue": false
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "outputVariables": [
+    { "name": "gitGuardChangesResult", "description": "Match result" },
+    {
+      "name": "gitGuardChangesCount",
+      "description": "Count of number of matched files that was changed"
+    },
+    {
+      "name": "gitGuardChangesMatches",
+      "description": "List of file paths of files that was changed"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f7f46a95-255e-4f22-b71b-664dafa435a8",
+    "name": "AppCheckStartScan",
+    "friendlyName": "AppCheck: start a scan",
+    "description": "Start a specified scan. If the scan is already running, the task will abort it first",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "AppCheck-NG",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "inputs": [
+        {
+            "name": "AppcheckService",
+            "type": "connectedService:Appcheck",
+            "label": "AppCheck Service Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AppCheck connection to use"
+        },
+        {
+            "name": "ScanID",
+            "type": "string",
+            "label": "Scan ID",
+            "required": true,
+            "helpMarkDown": "The task will start the scan that has this ID"
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+          "Execute": {
+            "Method": "POST",
+            "EndpointId": "$(AppcheckService)",
+            "EndpointUrl": "$(endpoint.url)api/v1/$(endpoint.apitoken)/scan/$(ScanID)/startFromPipeline",
+            "Expression": "eq(root['success'], true)"
+          }
+        }
+    }
+}

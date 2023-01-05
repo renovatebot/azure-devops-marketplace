@@ -1,0 +1,97 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "c030fa5b-9e93-47fc-a3ed-3ea4e45ddccf",
+    "name": "RunCpptest",
+    "friendlyName": "Run Parasoft C/C++test",
+    "instanceNameFormat": "Run Parasoft C/C++test",
+    "description": "Run Parasoft C/C++test to ensure code quality and compliance with MISRA, AUTOSAR, CERT, and more.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=parasoft.cpptest-azure-devops)",
+    "helpUrl": "https://marketplace.visualstudio.com/items?itemName=parasoft.cpptest-azure-devops",
+    "category": "Test",
+    "author": "Parasoft",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "groups": [],
+    "inputs": [
+        {
+            "name": "workingDir",
+            "type": "string",
+            "label": "C/C++test working directory:",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Working directory for running C/C++test."
+        },
+        {
+            "name": "installDir",
+            "type": "string",
+            "label": "C/C++test installation directory:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Installation folder of Parasoft C/C++test. If not specified, the cpptestcli executable must be added to $PATH."
+        },
+        {
+            "name": "testConfig",
+            "type": "string",
+            "label": "Test configuration:",
+            "defaultValue": "builtin://Recommended Rules",
+            "required": false,
+            "helpMarkDown": "Test configuration to be used for code analysis."
+        },
+        {
+            "name": "compilerConfig",
+            "type": "string",
+            "label": "Compiler identifier:",
+            "defaultValue": "gcc_9-64",
+            "required": false,
+            "helpMarkDown": "Identifier of a compiler configuration. Ensure you specify the configuration that matches your compiler."
+        },
+        {
+            "name": "input",
+            "type": "string",
+            "label": "Input scope:",
+            "defaultValue": "cpptestscan.bdf",
+            "required": false,
+            "helpMarkDown": "Input scope for analysis (typically, cpptestscan.bdf or compile_commands.json, depending on the project type and the build system)."
+        },
+        {
+            "name": "reportDir",
+            "type": "string",
+            "label": "Report directory:",
+            "defaultValue": "reports",
+            "required": false,
+            "helpMarkDown": "Output folder for reports from code analysis."
+        },
+        {
+            "name": "reportFormat",
+            "type": "string",
+            "label": "Report format:",
+            "defaultValue": "xml,html,sarif-azure",
+            "required": false,
+            "helpMarkDown": "Format of reports from code analysis."
+        },
+        {
+            "name": "additionalParams",
+            "type": "string",
+            "label": "Addtional parameters:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional parameters for the cpptestcli executable."
+        },
+        {
+            "name": "commandLinePattern",
+            "type": "string",
+            "label": "Command line pattern:",
+            "defaultValue": "${cpptestcli} -workspace \"$(Pipeline.Workspace)\" -compiler \"${compilerConfig}\" -config \"${testConfig}\" -property report.format=${reportFormat} -report \"${reportDir}\" -module \"$(Build.Repository.Name)=.\" -input \"${input}\" ${scm} ${additionalParams}",
+            "required": false,
+            "helpMarkDown": "Command line pattern for running C/C++test."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

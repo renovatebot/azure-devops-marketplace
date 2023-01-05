@@ -1,0 +1,126 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "vsts.md"
+        }
+    },
+    "scopes": [
+        "vso.build",
+        "vso.build_execute",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "octopus-create-release",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "OctopusBuildAndReleaseTasks/Tasks/CreateOctopusRelease"
+            }
+        },
+        {
+            "id": "octopus-deploy",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "OctopusBuildAndReleaseTasks/Tasks/Deploy"
+            }
+        },
+        {
+            "id": "octopus-pack",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "OctopusBuildAndReleaseTasks/Tasks/Pack"
+            }
+        },
+        {
+            "id": "octopus-push",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "OctopusBuildAndReleaseTasks/Tasks/Push"
+            }
+        },
+        {
+            "id": "octopus-promote",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "OctopusBuildAndReleaseTasks/Tasks/Promote"
+            }
+        },
+        {
+            "id": "octopus-endpoint-type",
+            "description": "Octopus Deploy Endpoint type for Octopus Build tasks",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "OctopusEndpoint",
+                "displayName": "Octopus Deploy",
+                "dataSources": [
+                    {
+                        "name": "OctopusAllProjects",
+                        "endpointUrl": "$(endpoint.url)/api/projects/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllEnvironments",
+                        "endpointUrl": "$(endpoint.url)/api/environments/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusAllTenants",
+                        "endpointUrl": "$(endpoint.url)/api/tenants/all",
+                        "resultSelector": "jsonpath:$.[*]"
+                    },
+                    {
+                        "name": "OctopusProjectChannels",
+                        "endpointUrl": "$(endpoint.url)/api/projects/$(ProjectName)/channels",
+                        "resultSelector": "jsonpath:$.Items[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "API key for connection to Octopus Deploy",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 32
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "X-Octopus-ApiKey",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "The Octopus URL must be accessible from both VSTS and any agents that are running builds or releases. See [g.octopushq.com/ApiKey](http://g.octopushq.com/ApiKey) for details on how to generate an API key."
+            }
+        }
+    ],
+    "contributionTypes": []
+}

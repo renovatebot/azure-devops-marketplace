@@ -1,0 +1,110 @@
+{
+  "id": "BFB8E654-51D4-4ED0-8E04-2B3F0F4FCB6D",
+  "name": "MSDeployPackageSync",
+  "friendlyName": "MSDeploy Package Sync",
+  "description": "Publish a MSDeploy package.",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Robb Schiefer Jr. (@chief7)",
+  "version": {
+    "Major": 0,
+    "Minor": 8,
+    "Patch": 0
+  },
+  "demands": [
+    
+  ],
+  "minimumAgentVersion": "1.90.0",
+  "inputs": [
+    {
+      "name": "Package",
+      "type": "filePath",
+      "label": "Web Deploy Package",
+      "defaultValue": "",
+      "helpMarkDown": "Path to the MSDeploy package under the default artifact directory.",
+      "required": true
+    },
+    {
+      "name": "DestinationProvider",
+      "type": "string",
+      "label": "Destination Provider",
+      "defaultValue": "auto",
+      "required": true,
+        "helpMarkDown": "The destination MSDeploy provider.",
+	  "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "DestinationComputer",
+      "type": "string",
+      "label": "Destination Computer",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The destination computer to deploy the MSDeploy package to. If blank, will perform operations on agent machine. For an Azure website the format should be https://[SiteName].scm.azurewebsites.net:443/msdeploy.axd?site=[SiteName].",
+	  "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "AuthType",
+      "type": "string",
+      "label": "AuthType",
+      "defaultValue": "ntlm",
+      "required": false,
+	  "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "Username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+	  "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+	  "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "SourceProvider",
+      "type": "string",
+      "label": "SourceProvider",
+      "defaultValue": "",
+      "helpMarkDown": "The source MSDeploy provider. If blank, the package provider (package='$packageFile') will be used.",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "AdditionalArguments",
+      "type": "multiLine",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false
+    }
+  ],
+  "instanceNameFormat": "MSDeploy Package Sync: $(WebSiteName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\MSDeployPackageSync.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

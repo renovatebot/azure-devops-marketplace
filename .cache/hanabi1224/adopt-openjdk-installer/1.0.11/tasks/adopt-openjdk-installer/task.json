@@ -1,0 +1,113 @@
+{
+    "id": "b5377cda-e54d-425a-999a-5cca18d44267",
+    "name": "adopt-openjdk-installer",
+    "friendlyName": "Adopt OpenJDK Installer",
+    "description": "Download and install adopt openjdk and sets JAVA_HOME",
+    "helpUrl": "https://github.com/hanabi1224/azure-pipelines-task-adopt-openjdk-installer",
+    "helpMarkDown": "[Learn more about this task](https://github.com/hanabi1224/azure-pipelines-task-adopt-openjdk-installer) or [see the AdoptOpenJDK documentation](https://adoptopenjdk.net/releases.html)",
+    "category": "Tool",
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "hanabi1224",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "satisfies": [
+        "Java"
+    ],
+    "demands": [],
+    "groups": [
+        {
+            "name": "JavaInAzureGroup",
+            "displayName": "Download Java from an Azure blob",
+            "isExpanded": true
+        }
+    ],
+    "instanceNameFormat": "Use AdoptOpenJDK $(versionSpec)",
+    "inputs": [
+        {
+            "name": "majorVersion",
+            "type": "pickList",
+            "label": "JDK major version",
+            "required": true,
+            "options": {
+                "11": "11(LTS)",
+                "8": "8(LTS)",
+                "9": "9",
+                "10": "10",
+                "12": "12",
+                "13": "13",
+                "14": "14"
+            },
+            "helpMarkDown": "A number that specifies the JDK version to make available on the path. Use a whole number version, such as 11"
+        },
+        {
+            "name": "useLatestOption",
+            "type": "pickList",
+            "label": "Use latest",
+            "options": {
+                "latest": "latest",
+                "specific": "Specify minor version"
+            },
+            "required": true,
+            "defaultValue": "latest",
+            "helpMarkDown": "The architecture (x86, x64) of the JDK."
+        },
+        {
+            "name": "versionFilter",
+            "type": "string",
+            "label": "JDK version",
+            "defaultValue": "",
+            "visibleRule": "useLatestOption == specific",
+            "required": false,
+            "helpMarkDown": "A string that specifies the very JDK version, such as 11.0.6+10"
+        },
+        {
+            "name": "jdkArchitectureOption",
+            "type": "pickList",
+            "label": "JDK architecture",
+            "options": {
+                "x64": "x64",
+                "x86": "x86"
+            },
+            "required": true,
+            "defaultValue": "x64",
+            "helpMarkDown": "The architecture (x86, x64) of the JDK."
+        },
+        {
+            "name": "jvmOption",
+            "type": "pickList",
+            "label": "JVM",
+            "required": true,
+            "options": {
+                "hotspot": "HotSpot",
+                "openj9": "OpenJ9"
+            },
+            "defaultValue": "hotspot",
+            "helpMarkDown": "Choose a JVM"
+        },
+        {
+            "name": "useCacheOption",
+            "type": "pickList",
+            "label": "Use tool cache",
+            "required": false,
+            "options": {
+                "true": "true",
+                "false": "false"
+            },
+            "defaultValue": "true",
+            "helpMarkDown": "Use tool cache"
+        }
+    ],
+    "dataSourceBindings": [],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    },
+    "messages": {}
+}

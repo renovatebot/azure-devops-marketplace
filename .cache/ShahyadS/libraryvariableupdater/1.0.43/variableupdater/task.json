@@ -1,0 +1,96 @@
+{
+  "id": "E6EADBCF-E6BF-498A-93D7-D2BAE3BCB6C6",
+  "name": "variableupdater",
+  "friendlyName": "Library variable updater",
+  "description": "Task to update a variable in a variable group (library).",
+  "author": "Shahyad Sahrghi",
+  "helpMarkDown": "Important: Requires 'Allow Scripts to Access OAuth Token' enabled in the agent job additional options and set administrator role to 'Project Collection Build Service' in the variable group.",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "9"
+  },
+  "minimumAgentVersion": "2.117.0",
+  "instanceNameFormat": "Set library variable $(VariableName) to '$(NewValue)'",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "VariableGroupId",
+      "label": "Variable group Id",
+      "type": "pickList",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True",
+        "DisableManageLink": "True",
+        "IsSearchable": "false"
+      },
+      "helpMarkDown": "The variable group id."
+    },
+    {
+      "name": "VariableName",
+      "label": "Variable name",
+      "type": "pickList",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True",
+        "DisableManageLink": "True"
+      },
+      "helpMarkDown": "The name of the variable to add to the library variable group or update. (Picklist is under construction)"
+    },
+    {
+      "name": "NewValue",
+      "label": "New value",
+      "type": "string",
+      "required": false,
+      "helpMarkDown": "New value to set to the variable."
+    },
+    {
+      "name": "UseBasicParsing",
+      "type": "boolean",
+      "label": "Use basic parsing",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Indicates that the cmdlet uses basic parsing (PowerShell 5.1 and lower)"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "endpointId": "tfs:teamfoundation",
+      "target": "VariableGroupId",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/distributedtask/variablegroups?api-version=4.1-preview.1&$top=500&continuationToken={{{continuationToken}}}&groupName=*{{groupName}}*&queryOrder=0",
+      "resultSelector": "jsonpath:$.value[?(@.type=='Vsts')]",
+      "parameters": {
+        "groupName": "$(searchText)"
+      },
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }",
+      "callbackContextTemplate": "{\"continuationToken\" : \"{{{headers.x-ms-continuationtoken}}}\"}",
+      "callbackRequiredTemplate": "{{{#headers.x-ms-continuationtoken}}}true{{{/headers.x-ms-continuationtoken}}}",
+      "initialContextTemplate": "{\"continuationToken\" : \"{{{system.utcNow}}}\"}"
+    },
+    {
+      "endpointId": "tfs:teamfoundation",
+      "target": "VariableName",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/distributedtask/variablegroups?groupIds={{VariableGroupId}}&api-version=4.1-preview.1",
+      "resultSelector": "jsonpath:$.value[*].variables.*~",
+      "parameters": {
+        "VariableGroupId": "$(VariableGroupId)"
+      },
+      "resultTemplate": "{ \"Value\" : \"{{defaultResultKey}}\", \"DisplayValue\" : \"{{defaultResultKey}}\" }"
+    },
+  
+  ],
+  "execution": {
+    "Node10": {
+      "target": "run-task.js"
+	},
+    "PowerShell3": {
+      "target": "run-task.ps1"
+    }
+  }
+}

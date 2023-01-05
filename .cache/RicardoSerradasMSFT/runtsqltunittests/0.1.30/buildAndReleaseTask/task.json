@@ -1,0 +1,113 @@
+{
+    "id": "22cdde19-7a20-45df-be5a-fc15be7980b1",
+    "name": "runtsqltunittests",
+    "friendlyName": "Run tSQLt Unit Tests",
+    "description": "Run tSQLt Unit Tests and extract its results and Code Coverage",
+    "helpMarkDown": "[More information](https://github.com/ricardoserradas/RuntSQLtTests-AzDO)",
+    "categories": [
+        "Test"
+    ],
+    "author": "Ricardo Serradas",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "instanceNameFormat": "Run tSQlt Unit Tests",
+    "groups": [
+        {
+            "name": "databaseInformation",
+            "displayName": "Database Information",
+            "isExpanded": true
+        },
+        {
+            "name": "testExecution",
+            "displayName": "Test Execution",
+            "isExpanded": true
+        },
+        {
+            "name": "codeCoverage",
+            "displayName": "Code Coverage",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "connectionString",
+            "type": "string",
+            "label": "SQL Server Connection String",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The SQL Server Connection String to connect to the database",
+            "groupName": "databaseInformation"
+        },
+        {
+            "name": "queryTimeout",
+            "type": "string",
+            "label": "SQL Connection Timeout",
+            "defaultValue": "60",
+            "required": true,
+            "helpMarkDown": "The timeout to be used on Connection Strings to SQL Server",
+            "groupName": "databaseInformation"
+        },
+        {
+            "name": "rootOutput",
+            "type": "string",
+            "label": "The root folder to store all the output for this task",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/tSQLt-out",
+            "required": true,
+            "helpMarkDown": "The output from this task will be dropped under `$(System.DefaultWorkingDirectory)/tSQLt-out` unless modified here.",
+            "groupName": "testExecution"
+        },
+        {
+            "name": "testResultsFileName",
+            "type": "string",
+            "label": "The name for the Test Results XML report",
+            "defaultValue": "TEST-Results.xml",
+            "required": true,
+            "helpMarkDown": "You're going to need it to use the Publish Test Results task.",
+            "groupName": "testExecution"
+        },
+        {
+            "name": "enableCodeCoverage",
+            "type": "boolean",
+            "label": "Enable Code Coverage",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If you want Cobertura reports to be generated for the test execution, enable this.",
+            "groupName": "codeCoverage"
+        },
+        {
+            "name": "coberturaFileName",
+            "type": "string",
+            "label": "The name for the Cobertura Code Coverage XML report",
+            "defaultValue": "Cobertura.xml",
+            "required": true,
+            "helpMarkDown": "You're going to need it to use the Publish Test Results task.",
+            "groupName": "codeCoverage"
+        },
+        {
+            "name": "htmlReportsOutput",
+            "type": "string",
+            "label": "HTML reports output",
+            "defaultValue": "AzurePipelines",
+            "required": true,
+            "helpMarkDown": "The folder to store the report that needs to be published using the Publish Code Coverage results.",
+            "groupName": "codeCoverage"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working Directory",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "The folder to have all working files.",
+            "groupName": ""
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "Run-tSQLtTests.ps1"
+        }
+    }
+}

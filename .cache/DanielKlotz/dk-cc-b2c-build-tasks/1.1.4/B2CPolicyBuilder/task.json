@@ -1,0 +1,55 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ccb18f87-bde0-47c0-bf7f-baa6b082054b",
+    "name": "b2c-policy-build",
+    "friendlyName": "Build Azure AD B2C policies",
+    "description": "Replaces placeholders in Azure AD B2C policy files with settings from a settings file",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Joonas Westlin, Daniel Klotz",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Build B2C policies ($(environment))",
+    "inputs": [
+        {
+            "name": "environment",
+            "type": "string",
+            "label": "Environment",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "One of the environments in appsettings.json"
+        },
+        {
+            "name": "inputFolder",
+            "type": "filePath",
+            "label": "Input folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Folder containing custom policy files and appsettings.json"
+        },
+        {
+            "name": "outputFolder",
+            "type": "filePath",
+            "label": "Output folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to folder where built policy files are written"
+        },
+        {
+            "name": "additionalArguments",
+            "type": "multiLine",
+            "label": "Additional arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional settings as key-value pairs, one per line. E.g. <br><br>ApiUrl=https://test.com<br>ApiKey=$(ApiKey)"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

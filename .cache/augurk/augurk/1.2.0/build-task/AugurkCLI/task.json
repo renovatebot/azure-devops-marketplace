@@ -1,0 +1,204 @@
+{
+  "id": "0039234d-250b-4c8f-a65e-b7c102e433ba",
+  "name": "AugurkCLI",
+  "friendlyName": "Run Augurk CLI",
+  "description": "Runs the various commands supported by the Augurk CLI.",
+  "categorues": [ "Utility" ],
+  "author": "Augurk",
+  "version": {
+    "Major": 0,
+    "Minor": 3,
+    "Patch": 3
+  },
+  "demands": [
+    "augurk-cli"
+  ],
+  "instanceNameFormat": "Run augurk $(command)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "augurkInstance",
+      "type": "connectedService:Augurk",
+      "label": "Augurk Instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Augurk instance to which the results should be uploaded."
+    },
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "Command",
+      "defaultValue": "publish",
+      "options": {
+        "publish": "Publish features to Augurk",
+        "delete": "Delete features from Augurk",
+        "prune": "Prune features in Augurk"
+      },
+      "required": true,
+      "helpMarkDown": "Choose the command to run using the Augurk CLI"
+    },
+    {
+      "name": "productName",
+      "type": "pickList",
+      "label": "Product Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the product to operate on in Augurk.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "useFolderStructure",
+      "type": "boolean",
+      "label": "Use folder structure",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Indicates whether the folder structure in which the feature files are placed is used to create groups within Augurk. If this option is checked, the name of the parent folders of each feature file is used as a group name. Otherwise set the group name explicitly above.",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "groupName",
+      "type": "pickList",
+      "label": "Group Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of the group to operate on in Augurk, or empty to operate on all groups within the provided product.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "useFolderStructure=false"
+    },
+    {
+      "name": "features",
+      "type": "filePath",
+      "label": "Feature(s)",
+      "defaultValue": "**\/*.feature",
+      "required": true,
+      "helpMarkDown": "Relative path from repo root of the feature file(s) to publish. Wildcards can be used. For example, `**/*.feature` for all feature files in all sub folders.",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "language",
+      "type": "string",
+      "label": "Language",
+      "defaultValue": "en-US",
+      "required": true,
+      "helpMarkDown": "Language in which the feature files have been written. For example: `en-US` or `nl-NL`.",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "embedImages",
+      "type": "boolean",
+      "label": "Embed images",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Enable this option if you want images referenced in feature files to be embedded so they can be viewed in Augurk.",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Version of the feature files being published. Supports variables (in the format $(<variable-name>).",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "includeProductDescription",
+      "type": "boolean",
+      "label": "Include product description",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Indicates whether a product description file will be uploaded to Augurk",
+      "visibleRule": "command=publish"
+    },
+    {
+      "name": "productDescription",
+      "type": "filePath",
+      "label": "Product description",
+      "required": false,
+      "helpMarkDown": "Path to a Markdown file containing a description of the product being published to Augurk.",
+      "visibleRule": "command=publish && includeProductDescription=true"
+    },
+
+    {
+      "name": "featureName",
+      "type": "pickList",
+      "label": "Feature name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of the feature to delete, or empty to delete all features in the selected product and group.",
+      "visibleRule": "command=delete",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+
+    {
+      "name": "prereleaseOnly",
+      "type": "boolean",
+      "label": "Prune prerelease versions",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Indicates that prerelease versions of features in the configured product and group should be pruned.",
+      "visibleRule": "command=prune"
+    },
+    {
+      "name": "versionRegex",
+      "type": "string",
+      "label": "Version regular expression",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A regular expression used to match versions that should be pruned.",
+      "visibleRule": "command=prune && prereleaseOnly=false"
+    },
+
+    {
+      "name": "additionalArguments",
+      "type": "string",
+      "label": "Additional argument(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Any additional command line arguments you want to pass to the Augurk CLI",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "productName",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "Augurk Products"
+    },
+    {
+      "target": "groupName",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "Augurk Product Groups",
+      "parameters": {
+        "productName": "$(productName)"
+      }
+    },
+    {
+      "target": "featureName",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "Augurk Product Group Features",
+      "parameters": {
+        "productName": "$(productName)",
+        "groupName": "$(deleteGroupName)"
+      }
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "cli.js",
+      "argumentFormat": ""
+    }
+  }
+}

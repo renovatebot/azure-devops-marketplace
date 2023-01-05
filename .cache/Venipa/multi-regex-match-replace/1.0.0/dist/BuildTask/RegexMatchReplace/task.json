@@ -1,0 +1,97 @@
+{
+	"$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+	"id": "f0caa25b-d7c9-4f71-80fb-4db8ce751128",
+	"name": "RegExMatchReplace",
+	"friendlyName": "RegEx Match & Replace File(s) Content",
+	"description": "Visual Studio Team Services Task to replace multiple files content with a regex match",
+	"helpMarkDown": "[More Information](https://github.com/Venipa/regex-match-replace-vsts-task)",
+	"category": "Utility",
+	"visibility": ["Build", "Release"],
+	"runsOn": ["Agent", "MachineGroup"],
+  "author": "Venipa",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 0
+	},
+	"demands": [],
+	"minimumAgentVersion": "1.92.0",
+	"groups": [
+		{
+			"name": "regExMatch",
+			"displayName": "RegEx Match & Replace",
+			"isExpanded": true
+		}
+	],
+	"inputs": [
+		{
+			"name": "PathToFile",
+			"type": "string",
+			"label": "File Glob Matching",
+			"required": true,
+			"defaultValue": "",
+			"groupName": "regExMatch",
+			"helpMarkDown": "Select the file to run the Regular Expression search. glob pattern enabled (Ex. file/**/*.js)."
+		},
+		{
+			"name": "WorkingDirectory",
+			"type": "filePath",
+			"label": "Path to working folder (cwd)",
+			"required": false,
+			"defaultValue": "",
+			"groupName": "regExMatch",
+			"helpMarkDown": "Select the current working folder to run the glob/file search."
+		},
+		{
+			"name": "RegEx",
+			"type": "string",
+			"label": "Regular Expression to use",
+			"required": true,
+			"groupName": "regExMatch",
+			"helpMarkDown": "Enter the regular expression without the modifiers. _(Eg. (?:\\d*\\.)?\\d+)_ Learn more about Regular Expressions from [Microsoft RegEx Quick Reference](https://docs.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference) and test your Regular Expressions online using [RegExr](https://regexr.com/)"
+		},
+		{
+			"name": "Global",
+			"type": "boolean",
+			"label": "Global Match (g)",
+			"defaultValue": "true",
+			"required": false,
+			"groupName": "regExMatch",
+			"helpMarkDown": "Perform a global match _(Find all matches rather than stopping after the first match)_."
+		},
+		{
+			"name": "IgnoreCase",
+			"type": "boolean",
+			"label": "Ignore Case (i)",
+			"defaultValue": "false",
+			"required": false,
+			"groupName": "regExMatch",
+			"helpMarkDown": "Perform case-insensitive matching."
+		},
+		{
+			"name": "MultiLine",
+			"type": "boolean",
+			"label": "Multi Line (m)",
+			"defaultValue": "false",
+			"required": false,
+			"groupName": "regExMatch",
+			"helpMarkDown": "Perform multi-line matching."
+		},
+		{
+			"name": "ValueToReplace",
+			"type": "string",
+			"label": "Replacement value",
+			"required": true,
+			"groupName": "regExMatch",
+			"helpMarkDown": "Enter the value to replace with the regex match."
+		}
+	],
+	"instanceNameFormat": "RegEx Match & Replace",
+	"execution": {
+		"Node": {
+			"target": "regexMatchReplace.js",
+			"argumentFormat": ""
+		}
+	},
+	"messages": {}
+}

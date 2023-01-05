@@ -1,0 +1,74 @@
+{
+    "id": "6a508f61-1cdf-4c05-a4ad-03621f056acd",
+    "name": "validateVariablesTask",
+    "friendlyName": "Validate Variables",
+    "description": "Validate Variables by name and/or value.  A quick way to ensure variable values have been resolved if they reference other variables",
+    "helpMarkDown": "Errors or Warns if any variables match the supplied filters. By default any variables which have a value such as `Number$(NumberVariable)` will be considered invalid",
+    "category": "Azure Pipelines",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Ben Howard",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 572
+    },
+    "instanceNameFormat": "Validate Variables",
+    "groups": [
+        {
+            "name":"Filtering",
+            "displayName":"Filtering",
+            "isExpanded":true
+        },
+        {
+            "name":"Behavior",
+            "displayName":"Behaviour",
+            "isExpanded":true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "varNameRegex",
+            "type": "string",
+            "label": "Variable Name Regex",
+            "defaultValue": ".*",
+            "groupName": "Filtering",
+            "required": false,
+            "helpMarkDown": "The regular expression to use for filtering variable names. Default is `.*` (all variables)"
+        },
+        {
+            "name": "varValueRegex",
+            "type": "string",
+            "label": "Variable Value Regex",
+            "defaultValue": "\\$\\(.*?\\)",
+            "groupName": "Filtering",
+            "required": false,
+            "helpMarkDown": "The regular expression to use for filtering variable values. Default is `\\$\\(.*?\\)` (strings such as `$(this)`)"
+        },
+        {
+            "name":"warnOrError",
+            "type":"radio",
+            "label":"Warn Or Error",
+            "required":true,
+            "defaultValue":"Error",
+            "groupName": "Behaviour",
+            "options": {
+                "Warn":"warn",
+                "Error":"error"
+            },
+            "helpMarkDown": "Warn Or Error if variables matched"
+        }
+    ],
+    "OutputVariables": [
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "validateVariables.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

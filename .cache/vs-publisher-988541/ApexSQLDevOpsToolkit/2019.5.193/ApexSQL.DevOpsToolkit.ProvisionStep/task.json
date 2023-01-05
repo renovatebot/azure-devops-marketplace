@@ -1,0 +1,296 @@
+{
+  "id": "F352876E-0593-4475-9AB7-2E3B3885FBC8",
+  "name": "ApexSqlDotProvision",
+  "friendlyName": "ApexSQL DevOps toolkit - Provision",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Provision",
+  "description": "Provision step",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "sourceOptions",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "temporaryOptions",
+      "displayName": "Temporary",
+      "isExpanded": true
+    },
+    {
+      "name": "targetOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "ID",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": true,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "provisionSource",
+      "type": "radio",
+      "label": "Provision source",
+      "defaultValue": "image",
+      "options": {
+        "image": "Image",
+        "backup": "Backup"
+      },
+      "required": false,
+      "groupName": "sourceOptions",
+      "helpMarkDown": "Make sure that all requirements for image based provisioning are met.
+ For more info see: https://knowledgebase.apexsql.com/how-to-setup-image-based-database-provisioning"
+    },
+    {
+      "name": "sourceBackupOptions",
+      "type": "pickList",
+      "label": "Backup",
+      "defaultValue": "newBackup",
+      "options": {
+        "latestBackup": "Latest full backup",
+        "newBackup": "Create new backup",
+        "backupFile": "Backup file"
+      },
+      "required": false,
+      "helpMarkDown": "Create a new backup or restore the database from the last full backup or specify the path to the backup file.",
+      "groupName": "sourceOptions",
+      "visibleRule": "provisionSource = backup"
+    },
+    {
+      "name": "backupPath",
+      "type": "string",
+      "label": "Backup path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify full path to the backup file",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceBackupOptions = backupFile"
+    },
+    {
+      "name": "createImage",
+      "type": "boolean",
+      "label": "Create image",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Choose this option to create database image",
+      "groupName": "sourceOptions",
+      "visibleRule": "provisionSource = image"
+    },
+    {
+      "name": "sourceImageOptions",
+      "type": "pickList",
+      "label": "Image source",
+      "defaultValue": "backup",
+      "options": {
+        "backup": "Latest full backup",
+        "database": "Database"
+      },
+      "required": false,
+      "helpMarkDown": "Specify source for image creation",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "sourceSqlServer",
+      "type": "string",
+      "label": "Source SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify source database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceBackupOptions != backupFile || provisionSource == image"
+    },
+    {
+      "name": "sourceSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceBackupOptions != backupFile || provisionSource == image"
+    },
+    {
+      "name": "sourceSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceBackupOptions != backupFile || provisionSource == image"
+    },
+    {
+      "name": "sourceDbName",
+      "type": "string",
+      "label": "Source Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify source database name",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceBackupOptions != backupFile || provisionSource == image"
+    },
+    {
+      "name": "temporarySqlServer",
+      "type": "string",
+      "label": "Temporary SQL server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify temporary database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "temporarySqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "temporarySqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "temporaryDbName",
+      "type": "string",
+      "label": "Temporary SQL database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify temporary database name",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "imageNetworkPath",
+      "type": "string",
+      "label": "Image network path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "UNC path of folder where created image will be stored",
+      "groupName": "sourceOptions",
+      "visibleRule": "createImage = true"
+    },
+    {
+      "name": "createClone",
+      "type": "boolean",
+      "label": "Create clone",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Choose this option, if need to create database clone. This option can only be applied if the provision source is an image.",
+      "groupName": "sourceOptions",
+      "visibleRule": "provisionSource = image"
+    },
+    {
+      "name": "clonePath",
+      "type": "string",
+      "label": "Clone path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify path where database clone will be created.",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true"
+    },
+    {
+      "name": "lastImage",
+      "type": "boolean",
+      "label": "Last image",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Check to use last image or specify image source path",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true"
+    },
+    {
+      "name": "imageSource",
+      "type": "string",
+      "label": "Image source",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Full path to created virtual disk containing database image",
+      "groupName": "sourceOptions",
+      "visibleRule": "lastImage = false"
+    },
+    {
+      "name": "targetSqlServer",
+      "type": "string",
+      "label": "Target SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true || provisionSource = backup"
+    },
+    {
+      "name": "targetSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true || provisionSource = backup"
+    },
+    {
+      "name": "targetSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true || provisionSource = backup"
+    },
+    {
+      "name": "targetDbName",
+      "type": "string",
+      "label": "Target Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "sourceOptions",
+      "visibleRule": "createClone = true || provisionSource = backup"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

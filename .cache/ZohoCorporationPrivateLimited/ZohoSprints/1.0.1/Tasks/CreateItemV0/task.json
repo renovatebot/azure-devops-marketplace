@@ -1,0 +1,176 @@
+{
+    "id": "011b3046-0816-45da-b3f3-473a0fcda720",
+    "name": "ZohoSprintsCreateItemV0",
+    "friendlyName": "Create an Item in Zoho Sprints",
+    "description": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Zoho Corporation",
+    "preview": false,
+    "version": {
+        "Major": 1,
+        "Minor": 188,
+        "Patch": 0
+    },
+    "demands": [],
+    "minimumAgentVersion": "2.0.0",
+    "groups": [
+
+    ],
+    "inputs": [
+        {
+            "name": "zohosprintsconnection",
+            "type": "connectedService:ZohoSprints:Token",
+            "label": "Select Sprints Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the name of the ZohoSprints service connection to use to connect to the ZohoSprints."
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Project Number",
+            "required": true,
+            "helpMarkDown": "Enter the number of the project to which the item has to be added",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "sprint",
+            "type": "string",
+            "label": "Sprint Number",
+            "required": true,
+            "helpMarkDown": "Enter the number of the sprint to which the item has to be added",
+            "properties": {
+                "EditableOptions": "True",
+                "PopulateDefaultValue":"True"
+            }
+               
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "label": "Item Name",
+            "defaultValue": "$(Agent.JobName)-$(Build.BuildId)",
+            "required": true,
+            "helpMarkDown": "Enter the name of your item"
+        },
+        {
+            "name": "description",
+            "type": "multiLine",
+            "label": "Description",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Describe the item",
+            "properties":{
+                "rows": "3",
+                "maxLength":"10000"
+            }
+        },
+        {
+            "name": "assignee",
+            "type": "string",
+            "label": "Assign Users",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "User email addresses of the users who will work on the item.(separated by commas)",
+            "properties":{
+                "MultiSelect": "True",
+                "IsSearchable": "True"
+            }
+        },
+
+        {
+            "name": "status",
+            "type": "string",
+            "label": "Item Status",
+            "required": false,
+            "defaultValue": "",
+            "visibleRule":"sprint != 0",
+            "helpMarkDown": "Enter the status of the item",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "label": "Item Type",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Enter an item type",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "priority",
+            "type": "string",
+            "label": "Priority",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Set the priority of the item",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "startdate",
+            "type": "string",
+            "label": "Start Date",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Enter the start date of the item. For e.g., 2017-10-13T00:00:00Z"
+        },
+        {
+            "name": "enddate",
+            "type": "string",
+            "label": "End Date",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Enter the end date of the item. For e.g., 2017-11-13T00:00:00Z"
+        },
+        {
+            "name": "duration",
+            "type": "string",
+            "label": "Duration",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Enter the duration of the item. For e.g., .5 : 30 min, 2:50 : 2hrs 50min"
+        },
+        
+        {
+            "name": "estimationpoint",
+            "type": "string",
+            "label": "Estimation Points",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Enter Item Estimation Points",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "customFields",
+            "type": "multiLine",
+            "label": "Custom Fields",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Add your custom field details. For e.g., Custum_Field_Param_name1=Custum_Field_Param_Value1 Custum_Field_Param_name2=Custum_Field_Param_Value1",
+            "properties":{
+                "rows": "3"
+            }
+        }
+    ],
+    "dataSourceBindings": [],
+    "instanceNameFormat": "ZohoSprints item create",
+    "execution": {
+        "Node10": {
+            "target": "CreateItemV0/main.js"
+        }
+    }
+}

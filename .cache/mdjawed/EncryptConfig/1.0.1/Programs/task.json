@@ -1,0 +1,112 @@
+{
+   "id": "1727E1C9-4D11-445A-82FF-5A4BC5DC9902",
+   "name": "EncryptConfig",
+  "friendlyName": "Encrypt Config File",
+  "description": "Encrypt Config File Using aspnet_regiis",
+  "author": "Mohammed Jawed",
+  "helpMarkDown": "Encrypt section of Config File Using aspnet_regiis.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.83.0",
+ "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+  "instanceNameFormat": "Encrypt Config File Using aspnet_regiis",
+   "inputs": [
+   	   {
+            "name": "configFilePath",
+            "type": "filePath",
+            "label": "Config File Path",
+            "defaultValue": "",
+            "required": true,            
+            "helpMarkDown": "Path of Config file to be Encrypted."
+            
+        },
+		{
+            "name": "configFilePattern",
+            "type": "string",
+            "label": "Config File To Be Encrypt",
+            "defaultValue": "*.config",
+            "required": true,            
+            "helpMarkDown": "Config file to be Encrypted."
+            
+        },
+	   
+	   {
+            "name": "dataProtectionProvider",
+            "type": "pickList",
+            "label": "Encryption Provider To Use",
+            "required": true,          
+            "defaultValue": "DataProtectionConfigurationProvider",
+            "helpMarkDown": "Data Protection Provider to use for Encryption.",
+            "options": {
+                "DataProtectionConfigurationProvider": "DataProtectionConfigurationProvider",
+				"RsaProtectedConfigurationProvider": "RsaProtectedConfigurationProvider"
+            }
+        },
+		 {
+            "name": "SectionToCommentsInConfig",
+            "type": "pickList",
+            "label": "Comment Section of Config",
+            "defaultValue": "false",
+            "required": false,            
+            "helpMarkDown": "Check this option in case you want to comment section of config before Encrytion.",
+	    "groupName": "advanced",
+	   "options": {
+          "true": "Yes",
+          "false": "NO"
+        }
+            
+        },
+		 {
+            "name": "ToComment",
+            "type": "multiLine",
+            "label": "Section from config to comment Before Encryption",
+            "defaultValue": "",                        
+            "helpMarkDown": "Section from config to comment Before Encryption.",
+			"groupName": "advanced",
+			"visibleRule": "SectionToCommentsInConfig = true"			 
+        },
+		 
+		 {
+            "name": "sectionName",
+            "type": "string",
+            "label": "Section of Config file to be Encrypted",
+            "defaultValue": "",
+            "required": true,
+	     "properties": {
+                "resizable": "true",
+                "rows": "10",
+                "maxLength": "5000"
+            },           
+            "helpMarkDown": "Section of Config file to be Encrypted"
+        },
+       {
+      "name": "Recursive",
+      "type": "boolean",
+      "label": "Recursive?",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Mark this boolean field if the file search should be recursive, that is, to apply the encryption to all the files matching the pattern in all sub folders. Unmark the field if the file search should not be recursive: in this case, web.config files in the sub folders will not be considered for encryption for the pattern web.config."      
+    }		 
+   ],
+  "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\Encrypt.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

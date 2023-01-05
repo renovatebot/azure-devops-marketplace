@@ -1,0 +1,151 @@
+{
+    "id": "87a45e6c-a243-455c-861d-37404e26212d",
+    "name": "freestyle",
+    "friendlyName": "Semantic Release Freestyle",
+    "description": "Task for simplifying Semantic Release (0.0.53)",
+    "helpMarkDown": "Find help on Github",
+    "helpUrl": "https://github.com/DanielHabenicht/AzurePipelines-SemanticRelease/issues",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Daniel Habenicht",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 53
+    },
+    "instanceNameFormat": "Semantic Release",
+    "minimumAgentVersion": "2.144.0",
+    "groups": [
+        {
+            "name": "github",
+            "displayName": "GitHub Credentials",
+            "isExpanded": false
+        },
+        {
+            "name": "npm",
+            "displayName": "NPM Credentials",
+            "isExpanded": false
+        },
+        {
+            "name": "docker",
+            "displayName": "Docker Credentials",
+            "isExpanded": false
+        },
+        {
+            "name": "generic",
+            "displayName": "Generic Credentials",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "gitHubServiceConnection",
+            "type": "connectedService:github:OAuth,PersonalAccessToken",
+            "label": "GitHub connection (OAuth or PAT)",
+            "required": false,
+            "helpMarkDown": "Specify the name of the GitHub service connection to use to connect to the GitHub repository. The connection must be based on a GitHub user's OAuth or a GitHub personal access token. Learn more about service connections [here](https://aka.ms/AA3am5s).",
+            "groupName": "github"
+        },
+        {
+            "name": "npmServiceName",
+            "type": "connectedService:externalnpmregistry",
+            "label": "NPM Registry",
+            "required": false,
+            "helpMarkDown": "Credentials to use for publishing to an external registry.",
+            "groupName": "npm"
+        },
+        {
+            "name": "dockerServiceConnection",
+            "type": "connectedService:dockerregistry",
+            "label": "Container Registry",
+            "required": false,
+            "helpMarkDown": "Select a Docker registry service connection. Required for commands that need to authenticate with a registry.",
+            "groupName": "docker"
+        },
+        {
+            "name": "genericServiceEnv",
+            "type": "string",
+            "label": "Environment Variable for Generic Connection 1",
+            "helpMarkDown": "The Credentials from Service Connection 1 will be available to semantic release under this Environment Variable",
+            "groupName": "generic"
+        },
+        {
+            "name": "genericServiceConnection",
+            "type": "connectedService:generic",
+            "label": "Generic Connection 1",
+            "required": false,
+            "helpMarkDown": "Generic Service Connection for any credentials.",
+            "groupName": "generic"
+        },
+        {
+            "name": "configType",
+            "type": "radio",
+            "label": "Configuration Type",
+            "defaultValue": "filePath",
+            "required": false,
+            "helpMarkDown": "Arguments passed to the shell script",
+            "options": {
+                "filePath": "File Path",
+                "inline": "Inline",
+                "package": "Package.json"
+            }
+        },
+        {
+            "name": "configPath",
+            "type": "filePath",
+            "label": "Config Path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "configType = filePath || configType = package",
+            "helpMarkDown": "Relative path from repo root of the config file."
+        },
+        {
+            "name": "configMultiline",
+            "type": "multiLine",
+            "label": "Config",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "configType = inline",
+            "helpMarkDown": "The Configuration."
+        },
+        {
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "$(Build.Repository.LocalPath)",
+            "required": true,
+            "helpMarkDown": "The Working directory of Semantic Release",
+            "groupName": "advanced"
+        },
+        {
+            "name": "versionOverwrite",
+            "type": "multiLine",
+            "label": "Version Overwrite",
+            "defaultValue": "semantic-release@15",
+            "required": true,
+            "helpMarkDown": "Override the versions of the installed semantic-release package and plugins.",
+            "groupName": "advanced",
+            "validation": {
+                "expression": "isMatch(value, 'semantic-release', 'IgnoreCase,Multiline')",
+                "message": "Field must contain 'semantic-release' package (maybe with version)"
+            }
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

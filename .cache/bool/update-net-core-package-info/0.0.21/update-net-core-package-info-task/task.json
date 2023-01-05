@@ -1,0 +1,302 @@
+{
+	"id": "e918eba3-89fa-4f3e-bf52-75e4bd04d6ca",
+	"name": "update-net-core-package-info",
+	"friendlyName": "Update .Net Core Package Info",
+	"description": "Update package info of one or multiple projects during build",
+	"helpMarkDown": "Having Problems? Please [create an issue on our Github](https://github.com/BoolBySigma/UpdateNetCorePackageInfo/issues) and we will try to help you.",
+	"category": "Utility",
+	"author": "Bool (by Sigma)",
+	"version": {
+		"Major": 0,
+		"Minor": 0,
+		"Patch": 21
+	},
+	"instanceNameFormat": "Update .Net Core Package Info $(projectFiles)",
+	"groups": [
+		{
+			"name": "packageVersion",
+			"displayName": "Package Version",
+			"isExpanded": true
+		},
+		{
+			"name": "assemblyVersion",
+			"displayName": "Assembly Version",
+			"isExpanded": true
+		},
+		{
+			"name": "fileVersion",
+			"displayName": "Assembly File Version",
+			"isExpanded": true
+		}
+	],
+	"inputs": [
+		{
+			"name": "projectFiles",
+			"type": "filePath",
+			"label": "Project",
+			"defaultValue": "**\\*.csproj",
+			"required": true,
+			"helpMarkDown": "Relative path from repo root of the project file(s). Variables can be used, eg. `$(Build.SourcesDirectory)`. You can also use wildcards, eg. `**\\*.csproj` for all *.csproj files in all sub folders."
+		},
+		{
+			"name": "ensureAttribute",
+			"type": "boolean",
+			"label": "Add Missing Attributes",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Adds attribute to assembly info file if it is missing. If the attribute is not specified in this task it will not be added."
+		},
+		{
+			"name": "generateNuGet",
+			"type": "radio",
+			"label": "Generate NuGet Package On Build",
+			"defaultValue": "none",
+			"options": {
+				"none": "Do Not Update",
+				"true": "True",
+				"false": "False"
+			},
+			"required": false,
+			"helpMarkDown": "Select option for Generate NuGet Package On Build."
+		},
+		{
+			"name": "requireLicenseAcceptance",
+			"type": "radio",
+			"label": "Require License Acceptance",
+			"defaultValue": "none",
+			"options": {
+				"none": "Do Not Update",
+				"true": "True",
+				"false": "False"
+			},
+			"required": false,
+			"helpMarkDown": "Select option for Require License Acceptance."
+		},
+		{
+			"name": "packageId",
+			"type": "string",
+			"label": "Package Id",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "authors",
+			"type": "string",
+			"label": "Authors",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "company",
+			"type": "string",
+			"label": "Company",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "product",
+			"type": "string",
+			"label": "Product",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "description",
+			"type": "string",
+			"label": "Description",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "copyright",
+			"type": "string",
+			"label": "Copyright",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "licenseUrl",
+			"type": "string",
+			"label": "License Url",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "projectUrl",
+			"type": "string",
+			"label": "Project Url",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "iconUrl",
+			"type": "string",
+			"label": "Icon Url",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "repositoryUrl",
+			"type": "string",
+			"label": "Repository Url",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "repositoryType",
+			"type": "string",
+			"label": "Repository Type",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "tags",
+			"type": "string",
+			"label": "Tags",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "releaseNotes",
+			"type": "string",
+			"label": "Release Notes",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "neutralLanguage",
+			"type": "string",
+			"label": "Assembly Neutral Language",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "packageVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "packageVersion"
+		},
+		{
+			"name": "packageVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "packageVersion"
+		},
+		{
+			"name": "packageVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "packageVersion"
+		},
+		{
+			"name": "packageVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "$(Build.BuildId)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "packageVersion"
+		},
+		{
+			"name": "assemblyVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "$(Build.BuildId)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "fileVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "$(Build.BuildId)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		}
+	],
+	"execution": {
+		"Node": {
+			"target": "index.js",
+			"argumentFormat": ""
+		}
+	}
+}

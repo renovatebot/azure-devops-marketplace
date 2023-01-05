@@ -1,0 +1,215 @@
+{
+    "id": "5b447ab3-b758-458e-b887-d1ec8c7554e6",
+    "name": "PSCodeHealth",
+    "friendlyName": "PSCodeHealth (PowerShell code analysis)",
+    "description": "Gather PowerShell code quality metrics and enforce quality gates based on these metrics",
+    "helpMarkDown": "[More Information](https://github.com/MathieuBuisson/vsts-PSCodeHealth)",
+    "category": "Build and release",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Mathieu Buisson",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 108
+    },
+    "instanceNameFormat": "PowerShell Code Analysis",
+    "demands": [
+        "DotNetFramework"
+    ],
+    "minimumAgentVersion": "2.131.0",
+    "groups": [
+        {
+            "name": "htmlReport",
+            "displayName": "HTML Report",
+            "isExpanded": true
+        },
+        {
+            "name": "qualityGate",
+            "displayName": "Quality Gate",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SourceCodePath",
+            "type": "filePath",
+            "label": "Path to Analyze",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path of the directory to search for PowerShell files to analyze (it can also be a single script or module). If empty, it defaults to the root of the repo."
+        },
+        {
+            "name": "Recurse",
+            "type": "boolean",
+            "label": "Search PowerShell files in subdirectories",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "To search PowerShell files in 'Path to Analyze' and (if it is a folder) all subdirectories recursively."
+        },
+        {
+            "name": "Exclude",
+            "type": "multiLine",
+            "label": "File(s) to exclude",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "File(s) to exclude from the code analysis (1 per line). Enter a path element or pattern. Wildcards are permitted."
+        },
+        {
+            "name": "TestsPath",
+            "type": "filePath",
+            "label": "Pester Tests Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path of the file or directory where Pester tests are located. If empty, it defaults to the same location as 'Path to Analyze'."
+        },
+        {
+            "name": "GenerateHtmlReport",
+            "type": "boolean",
+            "label": "Generate an HTML report",
+            "defaultValue": "false",
+            "groupName": "htmlReport",
+            "required": false,
+            "helpMarkDown": "To instruct PSCodeHealth to generate a report as an HTML file."
+        },
+        {
+            "name": "HtmlReportPath",
+            "type": "string",
+            "label": "HTML report path (including file name)",
+            "defaultValue": "",
+            "visibleRule": "GenerateHtmlReport = true",
+            "groupName": "htmlReport",
+            "required": false,
+            "helpMarkDown": "Specify the path and file name of the generated HTML report. If empty, it defaults to `$(Build.ArtifactStagingDirectory)\\PSCodeHealth.html`"
+        },
+        {
+            "name": "SelectMetrics",
+            "type": "boolean",
+            "label": "Select metrics to evaluate (by default, all metrics are evaluated)",
+            "defaultValue": "false",
+            "groupName": "qualityGate",
+            "required": true,
+            "helpMarkDown": "If checked, it allows to select specific metrics to evaluate for compliance."
+        },
+        {
+            "name": "LinesOfCodeAverage",
+            "type": "boolean",
+            "label": "Lines of code per function (average)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "ScriptAnalyzerFindingsTotal",
+            "type": "boolean",
+            "label": "PSScriptAnalyzer findings (total)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "ScriptAnalyzerErrors",
+            "type": "boolean",
+            "label": "PSScriptAnalyzer findings of 'Error' severity (total)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "ScriptAnalyzerWarnings",
+            "type": "boolean",
+            "label": "PSScriptAnalyzer findings of 'Warning' severity (total)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "ScriptAnalyzerFindingsAverage",
+            "type": "boolean",
+            "label": "PSScriptAnalyzer findings per function (average)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "TestsPassRate",
+            "type": "boolean",
+            "label": "Passing Pester tests (%)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "TestCoverage",
+            "type": "boolean",
+            "label": "Source code exercised by Pester tests (%)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "ComplexityAverage",
+            "type": "boolean",
+            "label": "Cyclomatic complexity per function (average)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "NestingDepthAverage",
+            "type": "boolean",
+            "label": "Maximum nesting depth within functions (average)",
+            "defaultValue": "false",
+            "visibleRule": "SelectMetrics = true",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "For details on the code metrics collected by **PSCodeHealth**, please refer to [this documentation page](http://pscodehealth.readthedocs.io/en/latest/Metrics/)."
+        },
+        {
+            "name": "CustomSettingsPath",
+            "type": "filePath",
+            "label": "Override compliance rules with a custom settings file",
+            "defaultValue": "",
+            "groupName": "qualityGate",
+            "required": false,
+            "helpMarkDown": "Path of a JSON file containing user-defined compliance rules (metrics thresholds, etc...). [More information](http://pscodehealth.readthedocs.io/en/latest/HowDoI/CustomizeComplianceRules)"
+        },
+        {
+            "name": "ComplianceFailureAction",
+            "type": "pickList",
+            "label": "Action to take in case of compliance failure(s)",
+            "defaultValue": "warning",
+            "groupName": "qualityGate",
+            "required": true,
+            "options": {
+                "continue": "Silently continue",
+                "warning": "Log warning",
+                "fail": "Log error and set task result to 'Failed'"
+            },
+            "helpMarkDown": "Action to take if there is at least 1 of the evaluated metrics rules with a compliance result of : 'Fail'."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "EntryPoint.ps1",
+            "platforms": [ "windows" ]
+        }
+    }
+}

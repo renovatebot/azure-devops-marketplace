@@ -1,0 +1,102 @@
+{
+  "id": "13159b9a-b7ba-4977-922c-2b5cb63c90df",
+  "name": "UnityActivateLicenseTask",
+  "friendlyName": "Unity Activate License",
+  "description": "Activates a Unity license on the agent.",
+  "helpMarkDown": "Use this task to activate a Unity Plus/Pro license on the executing agent machine. [More Information](https://unitydevops.com/docs/unity-activate-license-task)",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Dinomite Studios",
+  "version": {
+    "Major": "1",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "releaseNotes": "[Full Changelog](https://github.com/Dinomite-Studios/unity-azure-pipelines-tasks/blob/master/Tasks/UnityActivateLicense/UnityActivateLicenseV1/CHANGELOG.md)",
+  "minimumAgentVersion": "2.144.0",
+  "instanceNameFormat": "Unity Activate License",
+  "inputs": [
+    {
+      "name": "username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The username used to activate the Unity Editor."
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The password used to activate the Unity Editor."
+    },
+    {
+      "name": "serial",
+      "type": "string",
+      "label": "Serial",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Serial key used to activate the Unity Editor. The serial key must be assigned to the user defined by username and password above."
+    },
+    {
+      "name": "unityEditorsPathMode",
+      "type": "pickList",
+      "label": "Unity editors location",
+      "defaultValue": "unityHub",
+      "helpMarkDown": "Define where to look for Unity installations on the agent.",
+      "options": {
+        "unityHub": "Unity Hub default installation path",
+        "environmentVariable": "Use UNITYHUB_EDITORS_FOLDER_LOCATION environment variable on agent",
+        "specify": "Specify path"
+      }
+    },
+    {
+      "name": "customUnityEditorsPath",
+      "type": "string",
+      "label": "Editors folder location",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "unityEditorsPathMode == specify",
+      "helpMarkDown": "Specify where to look for Unity Editor versions on the agent."
+    },
+    {
+      "name": "unityProjectPath",
+      "type": "filePath",
+      "label": "Unity project path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "(Optional) Enter the directory path to the Unity project. If no value is entered, the root of the repository will be used."
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "logsOutputPath",
+      "description": "Path to the Unity editor log files generated."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "unity-activate-license.js",
+      "argumentFormat": ""
+    }
+  },
+  "postjobexecution": {
+    "Node10": {
+      "target": "post-unity-activate-license.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "successLicenseActivated": "Unity editor license activated",
+    "successLicenseReturned": "Unity editor license returned",
+    "failUnity": "The Unity process failed with exit code",
+    "projectPathInfo": "Determining Unity editor version for project at",
+    "warningAlphaBetaVersion": "You are using a Unity Alpha/Beta version. It may not be supported by the extension!",
+    "successGetUnityEditorVersion": "Success, Unity editor version found",
+    "failGetUnityEditorVersion": "Fail, Unity editor version not found"
+  }
+}

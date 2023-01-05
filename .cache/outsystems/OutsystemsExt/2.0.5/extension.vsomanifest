@@ -1,0 +1,91 @@
+{
+    "manifestVersion": 1,
+    "scopes": [],
+    "demands": [
+        "api-version/3.0"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/OutSystems/vsts"
+    },
+    "contributions": [
+        {
+            "id": "outsystems-task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task",
+            "properties": {
+                "name": "outsystems-task"
+            }
+        },
+        {
+            "id": "outsystems-service-endpoint",
+            "description": "Service Endpoint type for OutSystems Platform connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "outsystems",
+                "displayName": "OutSystems Platform",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the OutSystems Lifetime to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/applications",
+                        "resultSelector": "jsonpath:$[*].Key"
+                    },
+                    {
+                        "name": "OSLifetimeApps",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/applications",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OSLifetimeAppsVersions",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/applications/{{outsystemsApplication}}/versions?MaximumVersionsToReturn=20",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "osLifetimeEnvironments",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/environments",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "osLifetimeDeployments",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/deployments",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "osLifetimeModules",
+                        "endpointUrl": "{{endpoint.url}}lifetimeapi/rest/v1/modules",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "Allows the Outsystems Platform clients to accept self-signed SSL server certificates.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://github.com/OutSystems/vsts/wiki/Getting-Started\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

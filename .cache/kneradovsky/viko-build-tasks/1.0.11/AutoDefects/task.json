@@ -1,0 +1,76 @@
+{
+    "id": "af839968-eceb-413b-a3b2-30d384ccd169",
+    "name": "AutoDefects",
+    "friendlyName": "AutoDefects",
+    "description": "Automatically creates defects using the failed tests from the current build",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "kneradovsky",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Creates defects from test results",
+    "groups": [
+        {
+            "name": "authentication",
+            "displayName": "Authentication",
+            "isExpanded": false
+        }
+
+    ],
+    "inputs": [
+        {
+            "name": "Assignees",
+            "type": "filePath",
+            "label": "Assignees list file",
+            "defaultValue": "assignees.json",
+            "required": false,
+            "helpMarkDown": "Bug assignees list in json format. Format: {\"testrunname\":\"username\"}"
+        },
+        {
+            "name": "authtype",
+            "type": "pickList",
+            "label": "Authentication type",
+            "defaultValue": "oauth",
+            "required": false,
+            "helpMarkDown": "Authentication type to access the tfs rest api",
+            "options": {
+                "oauth": "OAuth",
+                "NTLM": "NTLM",
+                "Basic": "Basic"
+            },
+            "groupName" : "authentication"
+        },
+        {
+            "name": "Username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Username to access tfs rest api (NTLM and Basic types)",
+            "groupName" : "authentication",
+            "visibilityRule" : "authtype != OAuth"
+        },
+        {
+            "name": "Password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password to access tfs rest api (NTLM and Basic types)",
+            "groupName" : "authentication",
+            "visibilityRule" : "authtype != OAuth"
+        }
+
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages" : {
+    }
+
+}

@@ -1,0 +1,91 @@
+{
+  "id": "12345679-D313-4BE1-B24A-93B2666D8A9A",
+  "name": "AX2012ReportDeploy",
+  "friendlyName": "AX 2012 Report - Deploy",
+  "description": "Deploys the reports of an AX 2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-reports-ax-2012/ax-2012-report-deploy)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The path to the client configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "reportName",
+      "type": "string",
+      "label": "Report name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A comma-seperated list of reports to deploy. If empty, all reports will be deployed.",
+      "groupName": ""
+    },
+    {
+      "name": "modifiedAfter",
+      "type": "string",
+      "label": "Modified after",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Limits the reports to be deployed to those modified after a specified date. (optional)",
+      "groupName": ""
+    },
+    {
+      "name": "restartReportServer",
+      "type": "boolean",
+      "label": "Restart report server",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Forces the Reporting Services service to restart after a report is deployed.",
+      "groupName": ""
+    },
+    {
+      "name": "skipDeletingExistingReport",
+      "type": "boolean",
+      "label": "Skip deleting existing reports",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies that the cmdlet should not delete existing report design metadata when executed.",
+      "groupName": ""
+    },
+    {
+      "name": "skipReportServerAdminCheck",
+      "type": "boolean",
+      "label": "Skip report server admin check",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies that the Build step should be executed without checking whether the user has administrator rights on Reporting Services.",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Report - Deploy: $(configurationFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

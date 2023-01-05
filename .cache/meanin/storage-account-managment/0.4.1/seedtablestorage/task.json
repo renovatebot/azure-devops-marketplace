@@ -1,0 +1,72 @@
+{
+    "id": "110d73bd-2a62-42bc-9628-5a8bf702295e",
+    "name": "SeedTableStorage",
+    "friendlyName": "Seed Table Storage",
+    "description": "Seed Table Storage from given json file",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Paweł Ruciński - github.com/meanin <meanin@wp.pl>",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Seed $(StorageAccountName)/$(TableName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+          "name": "ConnectedServiceName",
+          "type": "connectedService:AzureRM",
+          "label": "Azure Subscription",
+          "defaultValue": "",
+          "required": true,
+          "helpMarkDown": "Azure Resource Manager subscription where storage is."
+        },
+        {
+            "name": "StorageAccountName",
+            "type": "string",
+            "label": "Storage Account name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Storage Account name"
+        },
+        {
+            "name": "TableName",
+            "type": "string",
+            "label": "Table name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Selected table name to seed"
+        },
+        {
+            "name": "JsonPath",
+            "type": "filePath",
+            "label": "Seed Json Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Fully qualified path of the json file or a path relative to the the default working directory"
+        },
+        {
+            "name": "UpdateOnConflict",
+            "type": "boolean",
+            "label": "Update Row On Conflict",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "This option set to true will cause overriding values in a table storage by given from a json file"
+        }
+    ],
+    "execution": {
+        "AzurePowerShell": {
+          "target": "seedtablestorage.ps1"
+        }
+    }
+}

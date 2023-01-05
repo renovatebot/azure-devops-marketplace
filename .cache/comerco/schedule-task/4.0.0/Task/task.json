@@ -1,0 +1,79 @@
+{
+    "id": "dcb90d2d-fd42-482a-8309-48cc994cfb9d",
+    "name": "ScheduleTask",
+    "friendlyName": "Use PowerShell to schedule a task",
+    "description": "Schedule actions for a task",
+    "category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+    "author": "Comerco",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Enable/Disable scheduled task $(TaskName)",
+    "inputs": [
+        {
+            "name": "TaskName",
+            "type": "string",
+            "label": "Task Name",          
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a task."
+        },
+        {
+            "name": "TaskPath",
+            "type": "string",
+            "label": "Task Path",          
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path of a task ie: \\folder1\\folder2\\"
+        },        
+        {
+            "name": "Action",
+            "type": "pickList",
+            "label": "Action for the scheduled task",            
+            "required": true,
+            "helpMarkDown": "Type of the action: Enable, Disable, Start, Stop",
+            "options": {
+                "enable": "Enable",
+                "disable": "Disable",
+                "Start": "Start",
+                "Stop": "Stop"
+                }
+        },
+        {
+            "name": "AdminUserName",
+            "type": "string",
+            "label": "Login",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Administrator login for the target machine.<br>Eg: domain\\username"
+        },
+      {
+        "name": "AdminPassword",
+        "type": "string",
+        "label": "Password",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Password for administrator login for the target machine. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+      },
+      {
+        "name": "MachineNameslist",
+        "type": "string",
+        "label": "List of machine names delimited by commas(,) or semicolons(;)",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Name of the machines where the schedule task is running. (ex: serverName1,serverName2,serverName3;serverName4)"
+      }
+    ],
+    "execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\task.ps1",
+			"workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

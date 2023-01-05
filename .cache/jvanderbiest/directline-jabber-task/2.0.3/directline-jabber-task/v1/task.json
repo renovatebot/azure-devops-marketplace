@@ -1,0 +1,89 @@
+{
+    "id": "3b9727ae-fe2b-47b7-bdb3-d429d86b27e1",
+    "name": "directline-jabber",
+    "friendlyName": "Directline Jabber",
+    "description": "Uses the Directline Jabber testing tool in your Azure DevOps pipelines.",
+    "helpMarkDown": "https://github.com/jvanderbiest/directline-jabber",
+    "category": "Utility",
+    "author": "Jonas Van der Biest",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "instanceNameFormat": "Directline Jabber",
+    "inputs": [{
+            "name": "authentication",
+            "type": "pickList",
+            "label": "Directline authentication",
+            "required": true,
+            "helpMarkDown": "Specify authentication you would like to use for directline. You can use a directline secret that does the authentication directly or you could use your endpoint that generates a token for communcation with directline. See repository for more information.",
+            "defaultValue": "token",
+            "options": {
+                "directlineSecret": "Directline secret",
+                "token": "Token endpoint"
+            }
+        },
+        {
+            "name": "directlineSecretValue",
+            "type": "string",
+            "label": "Directline secret",
+            "required": true,
+            "helpMarkDown": "Your secret that you can find in the bot channels registration directline channel on Azure",
+            "visibleRule": "authentication == directlineSecret"
+        },
+        {
+            "name": "tokenValue",
+            "type": "string",
+            "label": "Endpoint Token",
+            "required": true,
+            "helpMarkDown": "An endpoint token that generates a token to use with directline",
+            "visibleRule": "authentication == token"
+        },
+        {
+            "name": "folderPath",
+            "type": "filePath",
+            "label": "Folder path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify a directory with your transcript files."
+        },
+        {
+            "name": "includeSubfolders",
+            "type": "boolean",
+            "label": "Include sub folders",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Indicate whether sub folders will be included when looking for transcript files."
+        },
+        {
+            "name": "preprocessFilePath",
+            "type": "filePath",
+            "label": "Preprocess file path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A file that contains activities to process before the actual conversation"
+        },
+        {
+            "name": "userId",
+            "type": "string",
+            "label": "Replace conversation user id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Replaces the user id with the specified one in a conversation."
+        },
+        {
+            "name": "userIdPrefix",
+            "type": "string",
+            "label": "Use a prefix for the user id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Prefixes the user id with the specified one in a conversation."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

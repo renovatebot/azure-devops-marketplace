@@ -1,0 +1,109 @@
+{
+    "id": "abca0c47-7bc2-4f13-ba9c-ab04b0880cb4",
+    "name": "TICS",
+    "friendlyName": "TICS Quality Analysis",
+    "description": "This build task executes TICSQServer to analyze your software archive and update the TICS Quality Database. TICS must be available on the agent on which this task runs. TICSQServer updates the Viewer automatically after it finishes. ",
+    "helpMarkDown": "[More information] https://www.tiobe.com/tics/documentation/#doc=tfs/index.html",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "TIOBE Software (Maikel Steneker)",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "instanceNameFormat": "TICSQServer analysis",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "wrapperlocation",
+            "type": "string",
+            "label": "Build Server installation path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The fully qualified directory where TICS is located, e.g. C:\\Program Files (x86)\\TIOBE\\TICS\\BuildServer. This directory should contain the TICSQServer and TICSMaintenance executables. You can leave this field empty if these executables can be found on the PATH environment variable of the TFS agent."
+        },
+        {
+            "name": "ticscfg",
+            "type": "string",
+            "label": "TICS Configuration directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The directory of the TICS configuration that should be used, e.g. C:\\Program Files (x86)\\TIOBE\\TICS\\FileServer\\cfg. The TICS configuration directory contains the SERVER.txt and PROJECTS.txt configuration files, among others. This setting sets the TICS environment variable before executing TICSQServer. You can leave this field empty if this variable is already set on the TFS agent."
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Project name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the project for which this run should be performed. This project should already exist in the TICS Configuration as you cannot create a new project using this plugin. You can create a new project by using the Build Configuration page of the Viewer or by using TICSMaintenance from the command line."
+        },
+        {
+            "name": "branchname",
+            "type": "string",
+            "label": "Branch name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the branch for which the run should be performed. Although most projects only have one branch (named 'trunk', 'main', or 'master'), you still need to specify the branch name here because more branches might be added later. To find out the branches of a project you can use the Build Configuration page of the TICS Viewer."
+        },
+        {
+            "name": "branchdir",
+            "type": "filePath",
+            "label": "Branch directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The branch directory is the root directory of the source files for the branch. If left empty, the branch directory will be set to the root of the repository."
+        },
+        {
+            "name": "env",
+            "type": "multiLine",
+            "label": "Environment variables",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A new-line separated list of environment variables that will be set before invoking TICSQServer. Some TICS modules and code checkers might need configuration using environment variables.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "tmpdirenabled",
+            "type": "boolean",
+            "label": "Create temporary directory (tmpdir)",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "",
+            "groupName": "advanced"
+        },
+        {   
+            "name": "tmpdir",
+            "type": "string",
+            "label": "Tmpdir location",
+            "defaultValue": "",
+            "required": false, 
+            "helpMarkDown": "TICSQServer will create a directory named 'ticstmpdir' in this directory. This tmpdir will contain log files useful for debugging problems encountered during the TICSQServer analysis. Example: C:/temp/.",
+            "groupName": "advanced",
+            "visibleRule": "tmpdirenabled = true"
+        },
+        {
+            "name": "extraargs",
+            "type": "string",
+            "label": "Extra arguments",
+            "defaultValue": "-calc ALL",
+            "required": false,
+            "helpMarkDown": "Extra arguments to pass to the TICSQServer invocation.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

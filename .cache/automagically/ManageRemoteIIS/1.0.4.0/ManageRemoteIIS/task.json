@@ -1,0 +1,223 @@
+{
+  "id": "b02b9dd3-1b71-44ca-a6a2-ab43ede80684",
+  "name": "ManageRemoteIIS",
+  "friendlyName": "Manage IIS",
+  "description": "Manages IIS resources on remote machine",
+  "author": "automagically",
+  "helpMarkDown": "Manages IIS resources on remote machine",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "4"
+  },
+  "groups": [
+    {
+      "name": "createOrConfigure",
+      "displayName": "Create or configure",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "remoteServer",
+      "type": "string",
+      "label": "Remote server",
+      "defaultValue": "$(serverName)",
+      "required": true,
+      "helpMarkDown": "Remote server name or comma separated list of remote server names"
+    },
+    {
+      "name": "remoteUserName",
+      "type": "string",
+      "label": "Remote username",
+      "defaultValue": "$(deployUserName)",
+      "required": true,
+      "helpMarkDown": "Username of user on remote computer."
+    },
+    {
+      "name": "remoteUserPassword",
+      "type": "string",
+      "label": "Remote user password",
+      "defaultValue": "$(deployUserPassword)",
+      "required": true,
+      "helpMarkDown": "Password of the user on remote computer."
+    },
+    {
+      "name": "remoteWinRMProtocol",
+      "type": "radio",
+      "label": "Protocol",
+      "required": true,
+      "defaultValue": "http",
+      "options": {
+        "http": "HTTP",
+        "https": "HTTPS"
+      },
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "createOrConfigure",
+      "helpMarkDown": "Select the action to perform",
+      "options": {
+        "startWebsite": "Start Website",
+        "stopWebsite": "Stop Website",
+        "restartWebsite": "Restart Website",
+        "createWebsite": "Create Website",
+        "configureWebsite": "Configure Website",
+        "deleteWebsite": "Delete Website",
+        "startApppool": "Start Application Pool",
+        "stopApppool": "Stop Application Pool",
+        "restartApppool": "Restart Application Pool",
+        "createApppool": "Create Application Pool",
+        "configureApppool": "Configure Application Pool",
+        "deleteApppool": "Delete Application Pool",
+        "createWebapp": "Create Web Application",
+        "configureWebapp": "Configure Web Application",
+        "deleteWebapp": "Delete Web Application",
+        "createVirtualdir": "Create Virtual Directory",
+        "configureVirtualdir": "Configure Virtual Directory",
+        "deleteVirtualdir": "Delete Virtual Directory"
+      }
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": true,
+      "groupname": "createOrConfigure",
+      "helpMarkDown": "IIS resource name (website, web app, app pool, virtual directory"
+    },
+    {
+      "name": "websitePort",
+      "type": "string",
+      "label": "Port",
+      "defaultValue": "80",
+      "required": false,
+      "helpMarkDown": "Website port",
+      "groupname": "createOrConfigure",
+      "visibleRule": "action = createWebsite"
+    },
+    {
+      "name": "physicalPath",
+      "type": "string",
+      "label": "Physical path",
+      "required": false,
+      "helpMarkDown": "Physical path",
+      "groupname": "createOrConfigure",
+      "visibleRule": "action = createWebsite || action = configureWebsite || action = createWebapp || action = configureWebapp || action = createVirtualdir || action = configureVirtualdir"
+  },
+    {
+      "name": "parentWebsite",
+      "type": "string",
+      "label": "IIS Parent website",
+      "defaultValue": "Default Web Site",
+      "required": false,
+      "helpMarkDown": "Parent website",
+      "groupname": "createOrConfigure",
+      "visibleRule": "action = createWebapp || action = configureWebapp || action = createVirtualdir || action = configureVirtualdir || action = deleteWebapp || action = deleteVirtualdir"
+  },
+    {
+      "name": "pathUnderParentWebsite",
+      "type": "string",
+      "label": "Path under parent website",
+      "defaultValue": "\\",
+      "required": false,
+      "helpMarkDown": "Path under parent website",
+      "groupname": "createOrConfigure",
+      "visibleRule": "action = createWebapp || action = configureWebapp || action = createVirtualdir || action = configureVirtualdir || action = deleteWebapp || action = deleteVirtualdir"
+  },
+  {
+    "name": "webAppPoolName",
+    "type": "string",
+    "label": "Application pool",
+    "required": false,
+    "helpMarkDown": "Application pool name",
+    "groupname": "createOrConfigure",
+    "visibleRule": "action = createWebsite || action = configureWebsite || action = createWebapp || action = configureWebapp"
+  },
+  {
+    "name": "DotNetVersion",
+    "type": "pickList",
+    "label": ".NET Version",
+    "defaultValue": "v4.0",
+    "required": false,
+    "groupName": "createOrConfigure",
+    "visibleRule": "action = createApppool || action = configureApppool",
+    "helpMarkDown": "Select the version of the .NET Framework that is loaded by the application pool. <br>If the applications assigned to this application pool do not contain managed code, then select the 'No Managed Code' option from the list.<br>",
+    "options": {
+      "v4.0": "v4.0",
+      "v2.0": "v2.0",
+      "No Managed Code": "No Managed Code"
+    }
+  },
+  {
+    "name": "PipeLineMode",
+    "type": "pickList",
+    "label": "Managed Pipeline Mode",
+    "defaultValue": "Integrated",
+    "required": false,
+    "groupName": "createOrConfigure",
+    "visibleRule": "action = createApppool || action = configureApppool",
+    "helpMarkDown": "Select the managed pipeline mode that specifies how IIS processes requests for managed content. Use classic mode only when the applications in the application pool cannot run in the Integrated mode.",
+    "options": {
+      "Integrated": "Integrated",
+      "Classic": "Classic"
+    }
+  },
+  {
+    "name": "AppPoolIdentity",
+    "type": "pickList",
+    "label": "Identity",
+    "defaultValue": "ApplicationPoolIdentity",
+    "required": false,
+    "groupName": "createOrConfigure",
+    "visibleRule": "action = createApppool || action = configureApppool",
+    "helpMarkDown": "Configure the account under which an application pool's worker process runs. Select one of the predefined security accounts or configure a custom account.",
+    "options": {
+      "ApplicationPoolIdentity": "ApplicationPoolIdentity",
+      "LocalService": "LocalService",
+      "LocalSystem": "LocalSystem",
+      "NetworkService": "NetworkService",
+      "SpecificUser": "Custom Account"
+    }
+  },
+  {
+    "name": "AppPoolUsername",
+    "type": "string",
+    "label": "Username",
+    "defaultValue": "",
+    "required": false,
+    "groupName": "createOrConfigure",
+    "visibleRule": "AppPoolIdentity = SpecificUser"
+  },
+  {
+    "name": "AppPoolPassword",
+    "type": "string",
+    "label": "Password",
+    "defaultValue": "",
+    "required": false,
+    "groupName": "createOrConfigure",
+    "helpMarkDown": "If you are using a gMSA, this is not required.",
+    "visibleRule": "AppPoolIdentity = SpecificUser"
+  }
+    ],
+    "instanceNameFormat": "$(action): $(Name)",
+    "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ManageRemoteIIS.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

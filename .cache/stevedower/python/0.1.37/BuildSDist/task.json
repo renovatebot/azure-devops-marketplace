@@ -1,0 +1,72 @@
+{
+    "id": "E4E76C18-202B-43D8-BD49-E48623290AD2",
+    "name": "BuildSDist",
+    "friendlyName": "Build a Python sdist (Experimental)",
+    "description": "Creates an sdist using an installed copy of Python.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Build wheels from $(setuppy)",
+    "inputs": [
+        {
+            "name": "setuppy",
+            "type": "filePath",
+            "label": "setup.py file",
+            "defaultValue": "setup.py",
+            "groupName": "packages",
+            "required": true,
+            "helpMarkDown": "Location of your setup.py file."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Output Folder",
+            "defaultValue": "$(Build.BinariesDirectory)\\dist",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where the sdist will be written. By default, `$(Build.BinariesDirectory)\\dist` is used."
+        },
+        {
+            "name": "python",
+            "type": "filePath",
+            "label": "Python",
+            "defaultValue": "$(Build.BinariesDirectory)\\python.exe",
+            "groupName": "advanced",
+            "helpMarkDown": "Search path for installed Python versions. This will be passed to Get-ChildItem and the last match will be used."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "--upgrade setuptools cython",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to building sdists."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "BuildSDist.ps1"
+        }
+    }
+}

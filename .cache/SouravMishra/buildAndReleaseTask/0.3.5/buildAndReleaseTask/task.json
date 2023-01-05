@@ -1,0 +1,81 @@
+{
+  "id": "a2e330f0-1b07-11e9-837a-a3ec72c2343b",
+  "name": "InvokeMetaDefenderTask",
+  "friendlyName": "MetaDefender Artifacts Scanner",
+  "description": "Use MetaDefender to scan artifacts while build or release process",
+  "author": "ABB.Ability.Platform",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "showEnvironmentVariables": true,
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "3",
+    "Patch": "4"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "InvokeMetaDefenderTask $(message)",
+  "inputs": [
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Current working directory when InvokeMetaDefenderTask is run."
+    },
+    {
+      "name": "metadefender-host",
+      "type": "string",
+      "label": "Host URL",
+      "defaultValue": "https://abb-ability-platform-metadefender.westeurope.cloudapp.azure.com",
+      "required": true,
+      "helpMarkDown": "URL to MetaDefender"
+    },
+    {
+      "name": "metadefender-apikey",
+      "type": "string",
+      "label": "API key",
+      "defaultValue": "$(MetadefenderApiKey)",
+      "required": true,
+      "helpMarkDown": "API Key"
+    },
+    {
+      "name": "metadefender-filesToScan",
+      "type": "multiLine",
+      "label": "Files to Scan",
+      "defaultValue": "$(System.ArtifactsDirectory)/ZipForMetaDefender.zip",
+      "required": true,
+      "helpMarkDown": "MetaDefender file to scan path. Supports multiple lines of minimatch patterns.",
+      "properties": {
+          "rows": "3",
+          "resizable": "true"
+      }
+    },
+    {
+      "name": "metadefender-timeout",
+      "type": "int",
+      "label": "Timeout for uploading the file",
+      "defaultValue": 0,
+      "required": true,
+      "helpMarkDown": "Timeout for uploading the file. See documentation: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-restmethod?view=powershell-7.1"
+    },
+    {
+      "name": "metadefender-disable-keep-alive",
+      "type": "boolean",
+      "label": "Disable keep alive during uploading the file",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Disable keep alive during uploading the file. See documentation: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-restmethod?view=powershell-7.1"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "task.ps1"
+    }
+  }
+}

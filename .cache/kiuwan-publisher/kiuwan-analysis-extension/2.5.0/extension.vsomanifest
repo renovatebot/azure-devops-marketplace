@@ -1,0 +1,171 @@
+{
+    "manifestVersion": 1,
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://www.kiuwan.com/docs/display/K5/FAQs+-+Frequently+Asked+Questions"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/kiuwan/tfs-vsts-extension"
+    },
+    "scopes": [
+        "vso.code",
+        "vso.build",
+        "vso.test"
+    ],
+    "contributions": [
+        {
+            "id": "kiuwan-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view with Kiuwan results info",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Kiuwan",
+                "uri": "kiuwanTab.html",
+                "supportsTasks": [
+                    "f345ac07-f8a0-4859-bcaf-d71fd62bcf37"
+                ]
+            }
+        },
+        {
+            "id": "build-kiuwan-summary-section",
+            "type": "ms.vss-build-web.build-results-section",
+            "description": "A section contributing to our own new tab and also to existing build 'summary' tab",
+            "targets": [
+                "ms.vss-build-web.build-results-summary-tab"
+            ],
+            "properties": {
+                "name": "Kiuwan Summary",
+                "uri": "kiuwanSummary.html",
+                "supportsTasks": [
+                    "f345ac07-f8a0-4859-bcaf-d71fd62bcf37",
+                    "4e6e25e3-c0b5-4986-8714-5c751945c15f"
+                ],
+                "order": 20,
+                "height": 300
+            }
+        },
+        {
+            "id": "build-kiuwan-audit-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view and depends on Kiuwan delivery analysis task",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Kiuwan Audit",
+                "uri": "kiuwanAuditTab.html",
+                "supportsTasks": [
+                    "4e6e25e3-c0b5-4986-8714-5c751945c15f"
+                ]
+            }
+        },
+        {
+            "id": "kiuwan-bl-analysis-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "baseline-analysis-task"
+            }
+        },
+        {
+            "id": "kiuwan-cr-analysis-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "delivery-analysis-task"
+            }
+        },
+        {
+            "id": "kiuwan-service-endpoint",
+            "description": "Kiuwan servide endpoint to connect to the Kiuwan platform",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "kiuwan",
+                "displayName": "Kiuwan Platform",
+                "url": {
+                    "displayName": "Kiuwan URL",
+                    "helpText": "For the cloud Kiuwan Service use: https://www.kiuwan.com This is the default.</br>For Kiuwan Enterprise on-premises use your Kiuwan server URL (i.e. http://kiuwan.mycompany.com).",
+                    "isVisible": true
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "domainid",
+                        "name": "Kiuwan Domain ID",
+                        "description": "If your Kiuwan account is configured for SSO authentication, set here the Domain ID for your account. Contact your Kiuwan admin for details.<br />Leave empty otherwise.<br /><b>WARNING</b>: for TFS 2005 set this to 0 (the number zero) for non-SSO Kiuwan accounts. In this case the combo with possible applications in the tasks definitions will not work. This is a shortcoming of TFS 2005 only",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "saas/rest/v1/info",
+                        "resultSelector": "jsonpath:$.username"
+                    },
+                    {
+                        "name": "ListApplications",
+                        "endpointUrl": "saas/rest/v1/apps/list",
+                        "resultSelector": "jsonpath:$[*].name"
+                    },
+                    {
+                        "name": "ListModels",
+                        "endpointUrl": "saas/rest/v1/qualitymodels",
+                        "resultSelector": "jsonpath:$[*].name"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "X-KW-CORPORATE-DOMAIN-ID",
+                                "value": "{{endpoint.domainid}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "This is your Kiuwan username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Yup! this is your Kiuwan password",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkdown": "<a href=\"https://www.kiuwam.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

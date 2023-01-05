@@ -1,0 +1,110 @@
+{
+  "id": "12345679-AEE5-4319-BED2-F9147382645A",
+  "name": "AX2012ModelUninstall",
+  "friendlyName": "AX 2012 Model - Uninstall",
+  "description": "Uninstalls a model from an AX model store",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-models-ax-2012/ax-2012-model-uninstall)",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "modelIdentification",
+      "displayName": "Model identification",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "identificationType",
+      "type": "pickList",
+      "label": "Identification type",
+      "defaultValue": "modelName",
+      "required": true,
+      "helpMarkDown": "How should the identification be done?",
+      "groupName": "modelIdentification",
+      "options": {
+        "modelName": "Model name",
+        "layerName": "Layer name",
+        "manifestFile": "Manifest file"
+      }
+    },
+    {
+      "name": "modelNames",
+      "type": "string",
+      "label": "Model name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the model(s). (comma-separated)",
+      "visibleRule": "identificationType = modelName",
+      "groupName": "modelIdentification"
+    },
+    {
+      "name": "layerNames",
+      "type": "string",
+      "label": "Layer name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the three-letter name of the Microsoft Dynamics AX layer(s) where the model is installed, for example, VAR. (comma-separated)",
+      "groupName": "modelIdentification",
+      "visibleRule": "identificationType = layerName"
+    },
+    {
+      "name": "manifestFileName",
+      "type": "filePath",
+      "label": "Manifest file path (.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies an XML file that identifies a model. Use the \"AX2012 Model - Get Model manifest\" Build step to output a sample manifest file.",
+      "visibleRule": "identificationType = manifestFile",
+      "groupName": "modelIdentification"
+    },
+    {
+      "name": "showModelDetails",
+      "type": "boolean",
+      "label": "Show model details",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the model details be shown?",
+      "groupName": "advanced"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Model - Uninstall: $(configurationFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

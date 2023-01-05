@@ -1,0 +1,89 @@
+{
+    "id":"90e55fc3-9daa-4f11-b946-66338210ec51",
+    "name":"PushToHeroku",
+    "friendlyName": "Push To Heroku",
+    "description": "Updates an app using Heroku Git.",
+    "helpMarkDown": "[More Information](https://github.com/BoostingMy/vsts-heroku-tasks/wiki)",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Boosting.my",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 11
+    },
+    "demands": [
+        "msbuild",
+        "visualstudio"
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ApiKey",
+            "type": "string",
+            "label": "API Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "An valid API Key that represents a valid app contributor."
+        },
+        {
+            "name": "AppName",
+            "type": "string",
+            "label": "App Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the app which should be updated."
+        },
+        {
+            "name": "PushRoot",
+            "type": "filePath",
+            "label": "Push Root",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Root folder to be pushed."
+        },
+        {
+            "name": "GitIgnore",
+            "type": "multiLine",
+            "label": "Git Ignore",
+            "defaultValue": "node_modules",
+            "required": false,
+            "helpMarkDown": "File or folder paths to ignore on pushing to Keroku. See the [gitignore documentation](https://git-scm.com/docs/gitignore)."
+        },
+        {
+            "name": "CommitMessage",
+            "type": "string",
+            "label": "Commit Message",
+            "defaultValue": "Pushed from $(Release.ReleaseName) - $(Release.ReleaseDescription).",
+            "required": false,
+            "helpMarkDown": "Message that identifies the release action. If left blank will be set to default value."
+        },
+        {
+            "name": "ForceOnPushing",
+            "type": "boolean",
+            "label": "Force On Push",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, changes will be pushed using --force.",
+            "groupName": "advanced"
+        }
+    ],    
+    "instanceNameFormat": "Push to Heroku: $(ArtifactName)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\PushToHeroku.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        } 
+    }
+}
+

@@ -1,0 +1,140 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "dts-translation-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Translation"
+            }
+        },
+        {
+            "id": "dts-alignment-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Alignment"
+            }
+        },
+        {
+            "id": "dts-regeneration-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Regeneration"
+            }
+        },
+        {
+            "id": "dts-lcsserviceendpoint",
+            "description": "Service endpoint type for Dynamics Lifecycle Services",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "dts-lcsserviceendpoint",
+                "displayName": "Dynamics Lifecycle Services",
+                "url": {
+                    "displayName": "Authentication Endpoint",
+                    "helpText": "URL for the Azure Active Directory authentication endpoint",
+                    "value": "https://login.microsoftonline.com/common/oauth2"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "apiurl",
+                        "name": "Lifecycle Services API Endpoint",
+                        "description": "URL for the Dynamics Lifecycle Services API endpoint",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "apiurlInput",
+                            "defaultValue": "https://lcsapi.lcs.dynamics.com"
+                        }
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "LanguageListSource",
+                        "endpointUrl": "https://lcsapi.lcs.dynamics.com/dts/languages?productType=$(productType)",
+                        "resultSelector": "jsonpath:$.languages[*]"
+                    },
+                    {
+                        "name": "TargetLanguageListSource",
+                        "endpointUrl": "https://lcsapi.lcs.dynamics.com/dts/languages?productType=$(productType)&sourceLanguage=$(sourceLanguage)",
+                        "resultSelector": "jsonpath:$.languages[*]"
+                    },
+                    {
+                        "name": "ProductListSource",
+                        "endpointUrl": "https://lcsapi.lcs.dynamics.com/dts/products",
+                        "resultSelector": "jsonpath:$.products[*]"
+                    },
+                    {
+                        "name": "ProductVersionListSource",
+                        "endpointUrl": "https://lcsapi.lcs.dynamics.com/dts/productVersions?productType=$(productType)",
+                        "resultSelector": "jsonpath:$.products[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "Azure Active Directory Credential",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "E-mail address of user with sufficient permissions to interact with LCS asset library and environments",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "username"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for the Azure Active Directory account.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "password"
+                                }
+                            },
+                            {
+                                "id": "clientid",
+                                "name": "Application (Client) ID",
+                                "description": "Specify a client ID for a native application registration in Azure Active Directory with API permissions for Dynamics Lifecycle Services",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

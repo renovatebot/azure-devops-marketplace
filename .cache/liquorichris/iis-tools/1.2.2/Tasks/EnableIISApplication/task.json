@@ -1,0 +1,94 @@
+{
+	"id": "b11415fa-42bf-4443-a1f8-00152d183041",
+	"name": "EnableIISApplication",
+	"friendlyName": "Enable IIS Application",
+	"description": "Remove the app_offline.htm from a file location.",
+	"author": "pwshliquori",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": [ ],
+	"version": {
+        "Major": "1",
+        "Minor": "2",
+        "Patch": "0"
+	},
+	"instanceNameFormat": "Enable IIS Application",
+	"inputs": [
+		{
+			"name": "targetType",
+			"type": "radio",
+			"label": "Type",
+			"defaultValue": "unc",
+			"required": false,
+			"helpMarkDown": "Target destination path: UNC path or remote computer local path.",
+			"options": {
+				"unc": "UNC Path",
+				"remoteComputer": "Remote Computer"
+			}
+		},
+		{
+			"name": "uncPath",
+			"type": "textbox",
+			"label": "UNC Path",
+			"visibleRule": "targetType = unc",
+			"required": true,
+			"defaultValue": "",
+			"helpMarkDown": "UNC path destination path to remove the app_offline.htm file."
+		},
+		{
+			"name": "computerName",
+			"type": "multiLine",
+			"label": "Computer Names:",
+			"visibleRule": "targetType = remoteComputer",
+			"required": true,
+			"helpMarkDown": "A comma separated list of remote computers to remove the app_offline.htm file to."
+		},
+		{
+			"name": "localPath",
+			"type": "textbox",
+			"label": "Local Path",
+			"visibleRule": "targetType = remoteComputer",
+			"defaultValue": "C:\\inetpub\\wwwroot",
+			"required": true,
+			"helpMarkDown": "Local folder to remove the app_offline.htm file."
+		},
+		{
+			"name": "userName",
+			"type": "textbox",
+			"label": "Admin Username",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Administrator username to run on the remote computer."
+		},
+		{
+			"name": "password",
+			"type": "textbox",
+			"label": "Password",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Administrator password to run on the remote computer."
+		},
+		{
+			"name": "authentication",
+			"type": "textbox",
+			"label": "Authentication",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "Authentication method to be use to run Invoke-Command. e.g. CredSSP"
+		},
+		{
+			"name": "configurationName",
+			"type": "textbox",
+			"label": "Configuration Name",
+			"visibleRule": "targetType = remoteComputer",
+			"helpMarkDown": "PSSession Configuration name if using a custom configuration or JEA Constrained Endpoint."
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)/Enable-IISApplication.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

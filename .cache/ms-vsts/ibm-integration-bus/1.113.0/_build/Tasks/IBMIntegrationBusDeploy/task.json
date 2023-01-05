@@ -1,0 +1,196 @@
+{
+    "id": "3E8286C9-EEFF-40EB-9C19-E3A686A1DB6E",
+    "name": "IBMIntegrationBusDeploy",
+    "friendlyName": "IBM Integration Bus Deployment",
+    "description": "Deploy a Broker Archive file to IBM Integration Bus",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "113",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.3",
+    "instanceNameFormat": "Deploy $(barPath) to IBM Integration Bus.",
+    "groups": [
+        {
+            "name": "integrationNodeSpec",
+            "displayName": "Connection Options",
+            "isExpanded": true
+        },
+        {
+            "name": "deploy",
+            "displayName": "Deployment",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "barPath",
+            "type": "filePath",
+            "label": "Broker Archive File",
+            "defaultValue": "**/*.bar",
+            "required": true,
+            "groupName": "deploy",
+            "helpMarkDown": "Path to the Broker Archive (BAR) file to publish. A glob pattern can be used but it must resolve to exactly one BAR file."
+        },
+        {
+            "name": "connType",
+            "type": "pickList",
+            "label": "Connection Method",
+            "defaultValue": "serviceEndpoint",
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "",
+            "options": {
+                "serviceEndpoint": "Service Endpoint Connection",
+                "address": "Enter Connection Details",
+                "file": "Use .broker File"
+            }
+        },
+        {
+            "name": "iibEndpoint",
+            "type": "connectedService:ibmintegrationbusendpoint",
+            "label": "Integration Bus Endpoint",
+            "groupName": "integrationNodeSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Service endpoint for IBM Integration Bus.",
+            "visibleRule": "connType = serviceEndpoint"
+        },
+        {
+            "name": "integrationNodeName",
+            "type": "string",
+            "label": "Integration Node Name",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "This parameter identifies the name of a specified integration node.  This is called Broker in prior versions.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "integrationNodeSpec",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "integrationNodeSpec",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "ipAddress",
+            "type": "string",
+            "label": "Hostname / IP Address",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "Hostname or the IP address of the Integration Node.  Do not prefix with protocol names such as 'tcp' or 'https'.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "port",
+            "type": "string",
+            "label": "Port",
+            "defaultValue": "4414",
+            "required": false,
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "The port on which the web user interface HTTP connection listener is listening.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "queueManager",
+            "type": "string",
+            "label": "Queue Manager",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "The name of the broker's queue manager.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "configFile",
+            "type": "filePath",
+            "label": ".broker File",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "integrationNodeSpec",
+            "helpMarkDown": "The path of a file that contains the connetion details. If you want to run a command that uses SSL to administer a remote broker over a secured channel, you can define a variable IBM_JAVA_OPTIONS in the variables tab and specify the keystore and truststore password for the connection.",
+            "visibleRule": "connType = file"
+        },
+        {
+            "name": "integrationServerName",
+            "type": "string",
+            "label": "Integration Server Name",
+            "defaultValue": "",
+            "groupName": "deploy",
+            "required": true,
+            "helpMarkDown": "The name of the Integration Server to deploy to."
+        },
+        {
+            "name": "completeDeployment",
+            "type": "boolean",
+            "label": "Run a Complete Deployment",
+            "groupName": "deploy",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "The default operation is a delta or incremental deployment.  Check this to override the default operation and run a complete deployment."
+        },
+        {
+            "name": "restartIntegrationServer",
+            "type": "boolean",
+            "label": "Restart Integration Server",
+            "defaultValue": false,
+            "required": false,
+            "groupName": "deploy",
+            "helpMarkDown": "Restart Integration Server after deployment."
+        },
+        {
+            "name": "timeoutSecs",
+            "type": "string",
+            "label": "Timeout in Seconds for mqsideploy",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "The maximum time in seconds that 'mqsideploy' command waits for the broker to complete the request before returning."
+        },
+        {
+            "name": "options",
+            "type": "string",
+            "label": "Optional Arguments",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Any additional options for 'mqsideploy' command."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "iib-deploy.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "InvalidFile": "The specified Broker Archive file is invalid.",
+        "NoFilesFound": "No file found using pattern: %s",
+        "MultipleFilesFound": "More than one file found using pattern: %s",
+        "SuccessfullyPublished": "Successfully published Broker Archive file to server."
+    }
+}

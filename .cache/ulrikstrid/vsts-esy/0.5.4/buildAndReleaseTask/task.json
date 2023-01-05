@@ -1,0 +1,63 @@
+{
+  "id": "de6ff299-5f71-4949-8fb6-bfb690b9cb5d",
+  "name": "esy",
+  "friendlyName": "Esy",
+  "instanceNameFormat": "Esy $(arguments)",
+  "description": "Run esy commands in VSTS.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "author": "Ulrik Strid",
+  "demands": ["node.js"],
+  "version": {
+    "Major": 0,
+    "Minor": 5,
+    "Patch": 4
+  },
+  "runsOn": ["Agent", "DeploymentGroup"],
+  "groups": [
+    {
+      "name": "install",
+      "displayName": "Install Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Source directory"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "Arguments",
+      "defaultValue": "install",
+      "required": true,
+      "helpMarkDown": "Additionals arguments"
+    },
+    {
+      "name": "esyPath",
+      "type": "string",
+      "label": "esy location",
+      "defaultValue": "node_modules/esy/bin/esy",
+      "required": false,
+      "helpMarkDown": "esy to run when agent can't find global installed esy.  Defaults to the esy under node_modules folder of the working directory.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "esy.js"
+    }
+  },
+  "messages": {
+    "EsyCouldNotInstall": "Esy could not be installed from npm correctly. %s",
+    "EsyNotInstalled": "Esy is not installed globally (or is not in the path of the user the agent is running as) and it is not in the local working folder: %s",
+    "EsyReturnCode": "Esy exited with return code: %d",
+    "EsyFailed": "Esy failed with error: %s"
+  }
+}

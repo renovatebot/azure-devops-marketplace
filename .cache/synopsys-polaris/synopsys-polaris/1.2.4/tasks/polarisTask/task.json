@@ -1,0 +1,72 @@
+{
+  "id": "62645f53-3f11-41b1-b439-b7197034d52c",
+  "name": "SynopsysPolaris",
+  "friendlyName": "Polaris Software Integrity Platform",
+  "description": "The Azure Dev Ops plugin for Polaris Software Integrity Platform.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Synopsys",
+  "version": {
+    "Major": 1,
+    "Minor": 2,
+    "Patch": 4
+  },
+  "instanceNameFormat": "Synopsys Polaris $(buildCommand)",
+  "inputs": [
+    {
+      "name": "polarisService",
+      "type": "connectedService:polarisServer",
+      "label": "Polaris Software Integrity Platform Service Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Synopsys Polaris instance this task will run against."
+    },
+    {
+      "name": "polarisProxyService",
+      "type": "connectedService:polarisServerProxy",
+      "label": "Polaris Software Integrity Platform Proxy Service Endpoint",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The proxy this task should use."
+    },
+    {
+      "name": "polarisCommand",
+      "type": "string",
+      "label": "Polaris Software Integrity Platform Command",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The arguments to pass to the Polaris Software Integrity Platform CLI."
+    },
+    {
+      "name": "waitForIssues",
+      "type": "boolean",
+      "label": "Check for issues",
+      "defaultValue": false,
+      "helpMarkDown": "If enabled, this task wait for the Polaris Software Integrity Platform instance and fail the build if issues are detected."
+    },
+    {
+      "name": "populateChangeSetFile",
+      "type": "boolean",
+      "label": "Populate SCM changeset in file at $CHANGE_SET_FILE_PATH for incremental analysis",
+      "defaultValue": false,
+      "helpMarkDown": "If enabled, a file is created at CHANGE_SET_FILE_PATH with the absolute paths to all changed files. If the environment variable is not present, the file will be created at .synopsys/polaris/changeSetFile.txt and the environment variable will be set. Note that $CHANGE_SET_FILE_PATH will be replaced with the given path in the command."
+    },
+    {
+      "name": "whenChangeSetEmpty",
+      "type": "pickList",
+      "label": "When static analysis is skipped because the changeset contained no files to analyze",
+      "defaultValue": "succeed",
+      "helpMarkDown": "If there are no changed files, the task can be configured to succeed or fail.",
+      "options": {
+        "succeed": "Succeed",
+        "fail": "Fail"
+      },
+      "visibleRule": "populateChangeSetFile = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "PolarisTask.js"
+    }
+  }
+}

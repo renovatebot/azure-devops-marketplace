@@ -1,0 +1,72 @@
+{
+  "id": "FA13BEC0-51CE-4631-A41E-F2621379A136",
+  "name": "PublishArtifacts-Task",
+  "friendlyName": "Publish Serena Artifacts",
+  "description": "Publish artifacts for Serena Deployment Automation",
+  "helpMarkDown": "v1.0.0 [More Information](https://github.com/Schlumberger/vsts-serena-deployment-automation#readme)",
+  "category": "Deploy",
+  "preview": true,
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "author": "naked Agility Limited - Martin Hinshelwood",
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.92.0",
+  "groups": [
+    {
+      "name": "Overrides",
+      "displayName": "Override defaults set in your Process Template .zip",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "SDAServerService",
+      "type": "connectedService:SerenaDAEndpoint",
+      "label": "Serena Deployment Automation Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The endpoint should contain both the Token for access as well a the URL of the VSTS Account that you want to connect to. You will need an endpoint per VSTS Account."
+    },
+    {
+      "name": "pathToPublish",
+      "type": "filePath",
+      "label": "Path to Publish",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)\\*",
+      "required": true,
+      "helpMarkDown": "Select the Scope of files to upload."
+    },
+    {
+      "name": "artifactName",
+      "type": "string",
+      "label": "Artifact Name",
+      "defaultValue": "$(Build.BuildDefinitionName)",
+      "required": true,
+      "helpMarkDown": "If checked the task will poll the update service on the interval provided. Recommneded is 30 seconds."
+    },
+    {
+      "name": "artifactVersion",
+      "type": "string",
+      "label": "Artifact Version",
+      "defaultValue": "$(Build.BuildNumber)",
+      "required": true,
+      "helpMarkDown": "The version number to use. Defaults to Build Number"
+    }
+  ],
+  "instanceNameFormat": "Publish $(artifactName) as $(artifactVersion)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\publishArtifacts.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(System.DefaultWorkingDirectory)"
+    }
+  }
+}

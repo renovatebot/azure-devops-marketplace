@@ -1,0 +1,134 @@
+{
+    "id": "e340e148-3bf6-4ee5-93ef-ff93ffc16f67",
+    "name": "Azure Function Keys",
+    "friendlyName": "Azure Function Keys",
+    "description": "Get and Update Azure Function Keys in App Settings",
+    "helpMarkDown": "https://github.com/AjeetChouksey/vsts-extensions/blob/master/AzureAppSettings/README.md     http://www.azure365.co.in",
+    "category": "Build, Release",
+    "author": "Ajeet Chouksey",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch":8
+    },
+    "minimumAgentVersion": "2.131.0",
+    "instanceNameFormat": "AppSettings",
+    "demands": ["azureps"],
+   
+     "inputs": [{
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AzureRM Subscription that contains the AzureRM App Service"
+        },
+        {
+            "name": "functionAppName",
+            "type": "pickList",
+            "label": "Azure App Service",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the AzureRM App Service."
+        },
+        {
+            "name": "resourceGroup",
+            "type": "pickList",
+            "label": "Resource Group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select AzureRM Resource Group that contains the AzureRM App Service"
+        },
+        {
+            "name": "slotName",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "production",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the slot to configure, or leave empty to use the default, production slot."
+        },
+        {
+            "name": "selectFunctionName",
+            "type":"pickList",
+            "label": "Function Name",
+            "defaultValue": "all",
+             "required": false,
+            "options":{
+                "all":"ALL"
+              } ,
+              "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Do you want to include all functions or any specific. In case of specific please mention the function name. Default value is 'All'"
+        },
+        {
+            "name": "selectFunctionKeyType",
+            "type":"pickList",
+            "label": "Function Key Type",
+            "defaultValue": "all",
+             "required": false,
+            "options":{
+                "all":"ALL"
+              } ,
+              "properties": {
+                "EditableOptions": "True"
+            },
+             "helpMarkDown": "Do you want to include all functions keys or any specific. In case of specific please mention the function key type. Default value is 'All'"
+        },
+        {
+            "name": "hostKey",
+            "type":"radio",
+            "label": "Include Host and Master Keys",
+            "defaultValue": "false",
+            "required": true,
+            "options":{
+                "true":"Yes",
+                "false":"No"
+            },          
+            "helpMarkDown": "Do you want to include HOSTKEY in output. Default value is 'NO'"
+        }
+    ],
+    "dataSourceBindings": [{
+            "target": "functionAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        },
+        {
+            "target": "resourceGroup",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppResourceGroup",
+            "parameters": {
+                "WebAppName": "$(functionAppName)"
+            }
+        },       
+        {
+            "target": "slotName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppSlotsId",
+            "parameters": {
+                "ResourceGroupName": "$(resourceGroup)",
+                "WebAppName": "$(functionAppName)"
+            },
+            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "AppKeys.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

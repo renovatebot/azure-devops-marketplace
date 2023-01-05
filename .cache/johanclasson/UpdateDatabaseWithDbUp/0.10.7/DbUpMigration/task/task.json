@@ -1,0 +1,84 @@
+{
+    "id": "4182dbda-71db-4d18-89b3-75255b7802eb",
+    "name": "UpdateDatabaseWithDbUp",
+    "friendlyName": "DbUp Migration",
+    "description": "Runs SQL Server change scripts, and only those which have not been run already.",
+    "helpMarkDown": "[More Information](https://github.com/johanclasson/vso-agent-tasks)",
+    "category": "Deploy",
+    "visibility": [
+                  "Build",
+                  "Release"
+                  ],
+    "author": "Johan Classon",
+    "version": {
+        "Major": 0,
+        "Minor": 10,
+        "Patch": 7
+    },
+    "demands": [
+        "DotNetFramework"
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectionString",
+            "type": "string",
+            "label": "Connection String",
+            "defaultValue": "Server=$(dbup.server);Database=$(dbup.database);User ID=$(dbup.userId);Password=$(dbup.password);Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", 
+            "helpMarkDown": "The connection string to the database where the scripts should run on.",
+            "required": true
+        },
+        { 
+            "name": "ScriptPath", 
+            "type": "filePath", 
+            "label": "Script Folder Path", 
+            "defaultValue": "", 
+            "required": true,
+            "helpMarkDown": "The folder path where all scripts which should be run are located."
+        },
+        { 
+            "name": "JournalToSqlTable", 
+            "type": "boolean",
+            "label": "Journal To SQL Table", 
+            "defaultValue": true,
+            "helpMarkDown": "If the scripts should be journaled in a SQL table. Not journaled scripts will be run each time.",
+            "groupName": "advanced"
+        },
+        { 
+            "name": "ScriptFileFilter", 
+            "type": "string",
+            "label": "Script File Filter", 
+            "defaultValue": ".*",
+            "helpMarkDown": "If only some of the scripts in the script folder path should be run. For example if jornaled scripts are named 201601011213-script_description.sql and the not journaled scripts are named everytime-script_description.sql, set the filet to ^everytime to target just the not journaled scripts.",
+            "groupName": "advanced"
+        },
+        { 
+            "name": "TransactionStrategy", 
+            "type": "pickList",
+            "options": {
+                "NoTransactions": "No Transactions",
+                "TransactionPerScript": "Transaction Per Script",
+                "SingleTransaction": "Single Transaction"
+            },
+            "label": "Transaction Strategy", 
+            "defaultValue": "TransactionPerScript",
+            "required": true,
+            "helpMarkDown": "Select No Transactions if you want to have manual control over the transactions through the content of the SQL scripts.",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "DbUp Migration",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\Update-Database.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

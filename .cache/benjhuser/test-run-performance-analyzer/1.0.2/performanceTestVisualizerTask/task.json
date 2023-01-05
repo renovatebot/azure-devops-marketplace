@@ -1,0 +1,67 @@
+{
+    "id": "5ff2933b-1964-412d-b34d-ed3b74ae170c",
+    "name": "testRunPerformanceAnalyzer",
+    "friendlyName": "Testrun Performance Analyzer",
+    "description": "This tasks creates csv files for all test cases of a test run based on the run duration of the tests. The files can then be used for creating a visual representation of the trend of the run duration. Furthermore it allows the specify a threshold in percent, which will compare the last test run with the previous and will fail if the threshold is exceeded.",
+    "helpMarkDown": "",
+    "category": "Test",
+    "author": "Benjamin Huser",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 1
+	},
+	"instanceNameFormat": "Analyze TestRun $(testRunName)",
+    "groups": [
+		{
+			"name": "configuration",
+			"displayName": "Configuration",
+			"isExpanded": true
+		}
+	],
+	"inputs": [
+		{
+			"name":  "testRunName",
+			"type":  "string",
+			"label":  "Name of the Test Run that shall be analyzed",
+			"defaultValue":  "",
+			"required":  true,
+			"helpMarkDown":  "The name of the test run that shall be analyzed.",
+			"groupName":  "configuration"
+		},
+		{
+			"name":  "numberOfItemsToFetch",
+			"type":  "string",
+			"label":  "Number of Test Runs to include",
+			"defaultValue":  "10",
+			"required":  true,
+			"helpMarkDown":  "Defines how many Test Runs shall be analyzed",
+			"groupName":  "configuration"
+		},
+		{
+			"name":  "failIfThresholdExceeded",
+			"type":  "boolean",
+			"label":  "Fail Task if any of the last test runs exceeds threshold",
+			"defaultValue":  false,
+			"required":  true,
+			"helpMarkDown":  "If enabled, the last two test runs are compared and if the last run took more time than the previous one plus a given threshold the task will fail. The csv files will still be created.",
+			"groupName":  "configuration"
+		},
+		{
+			"name":  "threshold",
+			"type":  "string",
+			"label":  "The threshold (in %) which a test run is allowed to take longer than the previous one",
+			"defaultValue":  10,
+			"required":  true,
+			"visibleRule": "failIfThresholdExceeded = true",
+			"groupName":  "configuration"
+		}
+	],	
+    "execution": {
+        "Node": {
+            "target": "index.js",
+			"argumentFormat":  "",
+			"workingDirectory":  "$(currentDirectory)"
+        }
+    }
+}

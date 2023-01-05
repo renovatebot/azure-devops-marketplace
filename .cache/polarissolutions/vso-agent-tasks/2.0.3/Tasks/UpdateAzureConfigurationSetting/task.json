@@ -1,0 +1,97 @@
+{
+    "id": "ef133cf0-c464-4488-8599-bb6fb0dea309",
+    "name": "UpdateAzureCloudServiceConfigurationSetting",
+    "friendlyName": "Update a configuration setting for an Azure Cloud Service",
+    "description": "Given a service, key, and value, updates the configuration within azure to a provided value.",
+    "author": "Polaris Solutions",
+    "helpMarkDown": "Select the service you want to update the configuration setting value for and then provide the appropriate key/value",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "azureps"
+    ],
+    "version": {
+        "Major": "2",
+        "Minor": "1",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "Update Setting $(SettingKey) for $(ServiceName) in $(Slot) to $(SettingValue)",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure:Certificate,UsernamePassword",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure subscription to target for deployment."
+        },
+        {
+            "name": "ServiceName",
+            "type": "pickList",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "StorageAccount",
+            "type": "pickList",
+            "label": "Storage Account",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select a classic storage account.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "Slot",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "",
+            "required": true,
+            "options": {
+                "Production": "Production",
+                "Staging": "Staging"
+            }
+        },
+        {
+            "name": "SettingKey",
+            "type": "string",
+            "label": "Setting Key",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The key name within the service configuration (.cscfg)"
+        },
+        {
+            "name": "SettingValue",
+            "type": "string",
+            "label": "Setting Value",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The replacement value for the provided key"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ServiceName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureHostedServiceNames"
+        },
+        {
+          "target": "StorageAccount",
+          "endpointId": "$(ConnectedServiceName)",
+          "dataSourceName": "AzureStorageServiceNames"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\Update-AzureConfigurationSetting.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

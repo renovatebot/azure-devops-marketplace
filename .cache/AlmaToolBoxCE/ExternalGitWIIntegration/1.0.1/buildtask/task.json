@@ -1,0 +1,65 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EB9",
+    "name": "ExternalGitWIIntegration",
+    "friendlyName": "External Git WorkItem Integration",
+    "description": "This task allows you to associate external git changes with Work Item specified in last commit message, identified by #ID",
+    "helpMarkDown": "This task allows you to associate external git changes with Work Item specified in last commit message, identified by #ID",
+    "author": "Gabriele Mazzocca",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "External Git WorkItem Integration",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "VSTSUrl",
+            "type": "string",
+            "label": "Url Visual Studio Team Service",
+            "defaultValue": "vsts-server-url",
+            "required": true,
+            "helpMarkDown": "The url of VSTS (ex. https://<ACCOUNT>.visualstudio.com)"
+        },
+		{
+            "name": "Location",
+            "type": "filePath",
+            "label": "Working folder",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "Working folder for the run process. defaultValue: $(System.DefaultWorkingDirectory)"
+        },
+		{
+            "name": "token",
+            "type": "string",
+            "label": "PAT for VSTS",
+            "defaultValue": "vsts-server-token",
+            "required": true,
+            "helpMarkDown": "personal access token for Visual Studio Team Service"
+        }
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "run.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+
+}

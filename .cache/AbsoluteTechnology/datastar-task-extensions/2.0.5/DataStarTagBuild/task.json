@@ -1,0 +1,137 @@
+{
+    "id": "2BE9BEA5-FCF7-496A-8E2C-285C30308175",
+    "name": "DataStarTagBuild",
+    "friendlyName": "DataStar Tag Build Utility",
+    "description": "Updates TFS Builds with tags.",
+    "helpMarkDown": "[More Information](https://datastar.software/content/azuredevops/TagBuild/)",
+    "category": "DataStar",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Absolute Technology Limited",
+    "version": {
+      "Major": 2,
+      "Minor": 0,
+      "Patch": 5
+    },
+	"releaseNotes": "The task uses the TFS Web Service API to apply tags to builds.",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+		{
+            "name": "ProjectName",
+            "type": "string",
+            "label": "Project Name",
+            "required": true,
+            "helpMarkDown": "The TFS ProjectName."
+        },
+        {
+            "name": "BuildTags",
+            "type": "string",
+            "label": "Build Tags",
+            "required": true,
+            "helpMarkDown": "The comma separated list of build tags."
+        },
+        {
+            "name": "BuildIds",
+            "type": "string",
+            "label": "Build Ids",
+            "required": true,
+            "helpMarkDown": "The comma separated list of build ids to which the tags should be applied"
+        },
+        {
+            "name": "FailOnStderr",
+            "type": "boolean",
+            "label": "Fail on Standard Error",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, this task will fail if any errors are written to the StandardError stream.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "RepositoryUri",
+            "type": "string",
+            "label": "TFS Repository Uri",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "The TFS Server Url (defaults to the BUILD_REPOSITORY_URI)"
+        },
+	    {
+		    "name": "BearerToken",
+		    "type": "string",
+		    "label": "Bearer Token",
+		    "groupName": "advanced",
+		    "required": false,
+		    "helpMarkDown": "Optional security token if not using default credentials"
+	    },
+        {
+            "name": "Username",
+            "type": "string",
+            "label": "Username",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Optional username if not using default credentials"
+        },
+        {
+            "name": "Password",
+            "type": "string",
+            "label": "Password",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+        },
+		{
+            "name": "UseProxyServer",
+            "type": "boolean",
+            "label": "Use Proxy Server",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Use a proxy server, if the Url is not specified it will try to determine the proxy server automatically.",
+            "groupName": "advanced"
+        },
+		{
+            "name": "ProxyUri",
+            "type": "string",
+            "label": "Proxy Uri",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "The Proxy Server Url"
+        },
+		{
+            "name": "ProxyUsername",
+            "type": "string",
+            "label": "Proxy Username",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional username if not using default credentials"
+        },
+        {
+            "name": "ProxyPassword",
+            "type": "string",
+            "label": "ProxyPassword",
+            "groupName": "advanced",
+            "required": false,
+			"visibleRule": "UseProxyServer = true",
+            "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+        }
+    ],
+    "instanceNameFormat": "Tag TFS Builds",
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    },
+    "messages": {
+    }
+}

@@ -1,0 +1,73 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "bb17c085-ec32-46ad-bb9c-a21958e390d8",
+    "name": "SmokeWebTest",
+    "friendlyName": "Smoke Web Test",
+    "description": "Smoke web test with attempts configuration.",
+    "category": "Azure Pipelines",
+    "author": "Christian Arenas Navarro",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Smoke Web Test",
+    "inputs": [
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Url",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "expectedStatusCode",
+            "type": "int",
+            "label": "Expected status code (200-599)",
+            "defaultValue": "200",
+            "required": true
+        },
+        {
+            "name": "attempts",
+            "type": "int",
+            "label": "Number of attempts",
+            "defaultValue": "30",
+            "required": true,
+            "groupName": "advanced"
+        },
+        {
+            "name": "numberOfSecondsBetweenAttempts",
+            "type": "int",
+            "label": "Number of seconds between attempts",
+            "defaultValue": "10",
+            "required": true,
+            "groupName": "advanced"
+        },
+        {
+            "name": "timeoutInSeconds",
+            "type": "int",
+            "label": "Timeout in seconds",
+            "defaultValue": "5",
+            "required": true,
+            "groupName": "advanced"
+        }
+    ],
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+			"target": "$(currentDirectory)\\run-smoke-test.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

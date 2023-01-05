@@ -1,0 +1,58 @@
+{
+    "id": "f7c56e2a-d1f1-4cff-b5d3-a32c9516c6e0",
+    "name": "Windows Application Driver",
+    "friendlyName": "WinAppDriver",
+    "description": "Use this extention to integrate Windows Application Driver (WinAppDriver) into your Azure Pipeline.",
+    "helpMarkDown": "Checkout the WinAppDriver GitHub Repo to learn more - https://github.com/Microsoft/WinAppDriver",
+    "category": "Utility",
+    "author": "Microsoft",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "inputs": [
+		{
+            "name": "OperationType",
+            "type": "radio",
+            "label": "Start or Stop WinAppDriver on Agent",
+            "required": true,
+            "helpMarkDown": "Start WinAppDriver Process",
+            "defaultValue": "Start",
+            "options": {
+                "Start": "Start WinAppDriver",
+                "Stop": "Stop WinAppDriver"
+            }
+        },
+        {
+            "name": "WADArguments",
+            "type": "string",
+            "label": "Pass in command line arguments here",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Runs WinAppDriver.exe as administrator with command line arguments specifying local IP and port (e.g. pass in 127.0.0.1:4723 for both IP address and Port, or just 4723 for just port). May require disabling Windows UAC on Private Agents.",
+            "visibleRule": "OperationType = Start"
+        },
+		{
+            "name": "AgentResolution",
+            "type": "pickList",
+            "label": "Select System Resolution on Agent",
+            "defaultValue": "Default",
+            "required": false,
+            "helpMarkDown": "Select resolution to run on agent. 1080P recommended.",
+            "options": {
+				"Default":"Default",
+                "720p": "720p - 1280 x 720",
+                "1080p": "1080p - 1920 x 1080",
+                "4K": "4K - 3840 x 2160"
+            },
+            "visibleRule": "OperationType = Start"
+        }
+    ],   
+	"instanceNameFormat": "$(OperationType) - WinAppDriver",
+    "execution": {
+        "PowerShell3": {
+            "target": "WADPowershell.ps1"
+        }
+	}
+}

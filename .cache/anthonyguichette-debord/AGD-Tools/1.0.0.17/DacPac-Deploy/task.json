@@ -1,0 +1,119 @@
+{
+    "id": "A6D28082-1111-0804-1005-000000000006",
+    "name": "AGD-DacPacDeploy",
+    "friendlyName": "DacPac Deployment",
+    "description": "Deploy/Update a database based on a dacpac file.",
+    "author": "Anthony Guichette-Debord",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0",
+      "Patch": "5"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "DacPac Deployment",
+    "groups": [
+      {
+          "name":"database",
+          "displayName":"Database",
+          "isExpanded":true
+      }
+    ],
+    "inputs": [
+      {
+        "name": "file",
+        "type": "filePath",
+        "label": "DacPac file",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "",
+        "groupName":"database"
+      },
+      {
+        "name": "sqlInstance",
+        "type": "string",
+        "label": "SQL Server instance",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "",
+        "groupName":"database"
+      },
+      {
+        "name": "sqlDatabase",
+        "type": "string",
+        "label": "Database name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "",
+        "groupName":"database"
+      },
+      { 
+        "name": "deploy",
+        "type": "boolean",
+        "label": "Deploy",
+        "defaultValue": "true",
+        "required": true,
+        "helpMarkDown": "Deploy the dacpac differences to the specified database.",
+        "groupName":"database"
+      },
+      { 
+        "name": "isDeployProperties",
+        "type": "boolean",
+        "label": "Script Database Options",
+        "defaultValue": "false",
+        "required": true,
+        "helpMarkDown": "If True, the database properties will be include in the SQL script.",
+        "groupName":"database"
+      },
+      { 
+        "name": "excludeObjectTypes",
+        "type": "string",
+        "label": "Exclude Object Types",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "List of the SQL Object types that will be excluded in the SQL script. (ex. 'Users;Logins;RoleMembership;Permissions'). Posible values: Aggregates, ApplicationRoles, Assemblies, AsymmetricKeys, BrokerPriorities, Certificates, ColumnEncryptionKeys, ColumnMasterKeys, Contracts, DatabaseRoles, DatabaseTriggers, Defaults, ExtendedProperties, ExternalDataSources, ExternalFileFormats, ExternalTables, Filegroups, FileTables, FullTextCatalogs, FullTextStoplists, MessageTypes, PartitionFunctions, PartitionSchemes, Permissions, Queues, RemoteServiceBindings, RoleMembership, Rules, ScalarValuedFunctions, SearchPropertyLists, SecurityPolicies, Sequences, Services, Signatures, StoredProcedures, SymmetricKeys, Synonyms, Tables, TableValuedFunctions, UserDefinedDataTypes, UserDefinedTableTypes, ClrUserDefinedTypes, Users, Views, XmlSchemaCollections, Audits, Credentials, CryptographicProviders, DatabaseAuditSpecifications, DatabaseScopedCredentials, Endpoints, ErrorMessages, EventNotifications, EventSessions, LinkedServerLogins, LinkedServers, Logins, Routes, ServerAuditSpecifications, ServerRoleMembership, ServerRoles, ServerTriggers",
+        "groupName":"database"
+      },
+      { 
+        "name": "isDropObjectsNotInSource",
+        "type": "boolean",
+        "label": "Drop objects that aren't in source",
+        "defaultValue": "false",
+        "required": true,
+        "helpMarkDown": "If True, the database objects that aren't in dacpac will be dropped.",
+        "groupName":"database"
+      },
+      { 
+        "name": "doNotDropObjectTypes",
+        "type": "string",
+        "label": "Do Not Drop Object Types",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "List of the SQL Object types that won't be dropped. (ex. 'Users;Logins;RoleMembership;Permissions'). Posible values: Aggregates, ApplicationRoles, Assemblies, AsymmetricKeys, BrokerPriorities, Certificates, ColumnEncryptionKeys, ColumnMasterKeys, Contracts, DatabaseRoles, DatabaseTriggers, Defaults, ExtendedProperties, ExternalDataSources, ExternalFileFormats, ExternalTables, Filegroups, FileTables, FullTextCatalogs, FullTextStoplists, MessageTypes, PartitionFunctions, PartitionSchemes, Permissions, Queues, RemoteServiceBindings, RoleMembership, Rules, ScalarValuedFunctions, SearchPropertyLists, SecurityPolicies, Sequences, Services, Signatures, StoredProcedures, SymmetricKeys, Synonyms, Tables, TableValuedFunctions, UserDefinedDataTypes, UserDefinedTableTypes, ClrUserDefinedTypes, Users, Views, XmlSchemaCollections, Audits, Credentials, CryptographicProviders, DatabaseAuditSpecifications, DatabaseScopedCredentials, Endpoints, ErrorMessages, EventNotifications, EventSessions, LinkedServerLogins, LinkedServers, Logins, Routes, ServerAuditSpecifications, ServerRoleMembership, ServerRoles, ServerTriggers",
+        "groupName":"database",
+        "visibleRule": "isDropObjectsNotInSource = true"
+      },
+      {
+        "name": "logFile",
+        "type": "string",
+        "label": "Log script file",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "",
+        "groupName":"database"
+      }
+    ],
+    "execution": {
+      "PowerShell": {
+        "target": "$(currentDirectory)\\DacPac-Deploy.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+    }
+  }

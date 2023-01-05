@@ -1,0 +1,106 @@
+{
+  "id": "b4dd806c-ecb6-4e23-bea7-38e5958688fe",
+  "name": "ApplyEntityFrameworkMigrationsWithMigrate",
+  "friendlyName": "Apply Entity Framework migrations",
+  "description": "Apply Entity Framework migrations using migrate.exe",
+  "author": "Tobania",
+  "helpMarkDown": "Uses the provided migrate.exe to apply migrations on a database",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Apply Entity Framework migrations",
+  "groups": [
+    {
+      "name": "folders",
+      "displayName": "Folders",
+      "isExpanded": true
+    },
+    {
+      "name": "configuration",
+      "displayName": "Configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "WorkingFolder",
+      "type": "filePath",
+      "label": "Working directory",
+      "required": true,
+      "helpMarkDown": "The root folder from wich to work. This folder should contain migrate.exe and the bin folder which contains the Entity Framework dll and the dll containing the migrations and the configuration file with connection string.",
+      "groupName": "folders"
+    },
+    {
+      "name": "BinFolder",
+      "type": "string",
+      "label": "Binaries folder",
+      "required": true,
+      "helpMarkDown": "The folder containing the binaries (EntityFramework.dll and your DLL with the migrations). This folder should be relative to the working folder above!",
+      "groupName": "folders",
+      "defaultValue": "bin"
+    },
+    {
+      "name": "MigrateExeFolder",
+      "type": "string",
+      "label": "Migrate folder",
+      "helpMarkDown": "The folder containing migrate.exe, relative to the working folder above",
+      "defaultValue": "Migrate",
+      "groupName": "folders",
+      "required": true
+    },
+    {
+      "name": "ConfigurationFile",
+      "type": "string",
+      "label": "Configuration file",
+      "required": true,
+      "helpMarkDown": "The Web.config or app.config containing the connection string to use",
+      "groupName": "configuration"
+    },
+    {
+      "name": "TargetAssembly",
+      "type": "string",
+      "label": "Target assembly",
+      "required": true,
+      "helpMarkDown": "The **filename** of the assembly containing the migrations.",
+      "groupName": "configuration"
+    },
+    {
+      "name": "TargetDbContextConfiguration",
+      "type": "string",
+      "label":  "DbContext configuration",
+      "required": false,
+      "helpMarkDown": "The namespace and name of the migrations configuration you wish to execute, in case of multiple DbContexts",
+      "groupName": "configuration"
+    },
+    {
+      "name": "UseVerbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable verbose logging"
+    }
+
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ApplyEntityFrameworkMigrationsWithMigrate.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-$extensions = Get-Content -raw -Path extensions.json | ConvertFrom-Json 
+$extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json 
 
 function add-version
 {
@@ -27,22 +27,22 @@ foreach ($extension in $extensions) {
     $extensionId = $extension.extensionName
     Write-host "::group::$publisherId/$extensionId"
 
-    $extensionDataFile = "$publisherId/$extensionId/extension.json"
+    $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
-    $extensionData = gc -raw "$publisherId/$extensionId/extension.json" | ConvertFrom-Json -AsHashtable
+    $extensionData = gc -raw $extensionDataFile | ConvertFrom-Json -AsHashtable
 
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 })
     {
         $extensionVersion = $version.version
 
-        $extensionManifestFile = "$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
+        $extensionManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
         $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
 
         $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
         foreach ($taskContribution in $taskContributions)
         {
-            $localpath = "$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
+            $localpath = ".cache/$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
             
             $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json
 

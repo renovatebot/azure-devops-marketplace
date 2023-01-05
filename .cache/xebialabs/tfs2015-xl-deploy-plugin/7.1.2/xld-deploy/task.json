@@ -1,0 +1,81 @@
+{
+    "author": "Xebialabs",
+    "category": "Deploy",
+    "dataSourceBindings": [
+        {
+            "dataSourceName": "Repositories",
+            "endpointId": "$(connectedServiceName)",
+            "target": "targetEnvironment"
+        }
+    ],
+    "description": "Import and deploy the artifact to XL Deploy server.",
+    "execution": {
+        "PowerShell3": {
+            "target": "task.ps1"
+        }
+    },
+    "friendlyName": "Deploy with XL Deploy",
+    "helpMarkDown": "[More Information](https://docs.xebialabs.com/xl-deploy/concept/team-foundation-server-2015-plugin.html)",
+    "id": "589DCE45-4881-4410-BCF0-1AFBD0FC0F65",
+    "inputs": [
+        {
+            "helpMarkDown": "The XL Deploy server endpoint.",
+            "label": "XL Deploy Endpoint",
+            "name": "connectedServiceName",
+            "required": true,
+            "type": "connectedService:xldserver"
+        },
+        {
+            "defaultValue": "Container",
+            "helpMarkDown": "The location of the artifact.",
+            "label": "Artifact Location",
+            "name": "artifactLocation",
+            "options": {
+                "Container": "Server",
+                "FilePath": "File share"
+            },
+            "required": true,
+            "type": "pickList"
+        },
+        {
+            "defaultValue": "\\\\my\\share\\$(Build.DefinitionName)\\$(Build.BuildNumber)",
+            "helpMarkDown": "The file share to which to copy the files",
+            "label": "Path",
+            "name": "targetPath",
+            "required": false,
+            "type": "string",
+            "visibleRule": "artifactLocation = FilePath"
+        },
+        {
+            "defaultValue": "",
+            "helpMarkDown": "Environment name as specified in XL Deploy.",
+            "label": "Target Environment",
+            "name": "targetEnvironment",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "required": true,
+            "type": "pickList"
+        },
+        {
+            "defaultValue": "false",
+            "helpMarkDown": "Invoke a rollback in the case of deployment failure.",
+            "label": "Rollback on deployment failure",
+            "name": "rollback",
+            "required": true,
+            "type": "boolean"
+        }
+    ],
+    "instanceNameFormat": "XL Deploy - Import and Deploy",
+    "minimumAgentVersion": "1.95.0",
+    "name": "xldDeploy",
+    "version": {
+        "Major": 6,
+        "Minor": "1",
+        "Patch": "2"
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ]
+}

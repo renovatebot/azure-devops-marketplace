@@ -1,0 +1,112 @@
+{
+    "id": "08ccbc90-a50e-11e7-b6d4-73125b89d3af",
+    "name": "WinRmFileCopy",
+    "friendlyName": "Windows Machine File Copy (WinRM)",
+    "description": "Copy files on remote machines via WinRM",
+    "author": "Mario Majcica",
+    "helpMarkDown": "Replace with markdown to show in help",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "2",
+        "Minor": "0",
+        "Patch": "8"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SourcePath",
+            "type": "filePath",
+            "label": "Source",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Absolute path of the source folder or file on the local machine, or a UNC Share like c:\\fabrikamfiber or \\\\\\\\fabrikamshare\\fabrikamfiber."
+        },
+        {
+            "name": "MachineNames",
+            "type": "multiLine",
+            "label": "Machines",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a comma separated list of machine IP addresses or FQDNs. <br>Eg: dbserver.fabrikam.com,192.168.12.34 <br>Or provide output variable of other tasks. Eg: $(variableName)"
+        },
+        {
+            "name": "AdminUserName",
+            "type": "string",
+            "label": "Admin Login",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Administrator login for the target machines."
+        },
+        {
+            "name": "AdminPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password for administrator login for the target machines. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+        },
+        {
+            "name": "TargetPath",
+            "type": "string",
+            "label": "Destination Folder",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Local Path on the target machines or an accessible UNC path for copying the files from the source like d:\\fabrikam or \\\\\\\\fabrikam\\Web."
+        },
+        {
+            "name": "CleanTargetBeforeCopy",
+            "type": "boolean",
+            "label": "Clean Target",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Selecting it will clean the destination folder before copying the files."
+        },
+        {
+            "name": "UseSsl",
+            "type": "boolean",
+            "label": "Use SSL",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Secure Socket layer connection will be used for WinRM connection."
+        },
+        {
+            "name": "TestCertificate",
+            "type": "boolean",
+            "label": "Using Test Certificate",
+            "defaultValue": "false",
+            "visibleRule": "UseSsl = true",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "If this option is selected, client skips the validation that the server certificate is signed by a trusted certificate authority (CA) when connecting over Hypertext Transfer Protocol over Secure Socket Layer (HTTPS)."
+        },
+        {
+            "name": "CopyFilesInParallel",
+            "type": "boolean",
+            "label": "Copy Files in Parallel",
+            "defaultValue": "true",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Selecting it will copy files in parallel to the machines."
+        }
+    ],
+    "instanceNameFormat": "Copy files from $(SourcePath)",
+    "execution": {
+        "PowerShell3": {
+            "target": "WinRmFileCopy.ps1"
+        }
+    }
+}

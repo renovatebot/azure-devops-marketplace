@@ -1,0 +1,117 @@
+{
+    "id": "506E537C-A122-40AE-928D-13E78628F6FF",
+    "name": "AwsBeanstalkRelease",
+    "friendlyName": "AWS Beanstalk Deployment",
+    "description": "Build task to upload a new application version to an Elastic Beanstalk in AWS.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?spirit21.AwsBeanstalkReleaseExtension)",
+    "category": "Deploy",
+    "visibility":[
+        "Release"
+				],
+    "author": "Mark Buggermann",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.91.0",
+	"groups" : [
+		{
+			"name" : "credentials",
+			"DisplayName" : "AWS Credentials",
+			"isExpanded": true
+		},
+		{
+				"name": "beanstalk",
+				"displayName": "Beanstalk",
+				"isExpanded": true
+		}
+	],
+    "inputs": [
+        {
+            "name": "awsaccessKey",
+            "type": "string",
+            "label": "Access key",
+            "required": true,
+			"defaultValue": "",
+            "helpMarkDown": "Access key for IAM user. [More information](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)",
+			"groupName": "credentials"
+        },
+        {
+            "name": "secretKey",
+            "type": "string",
+            "label": "Secret access key",
+            "required": true,
+			"defaultValue": "",
+            "helpMarkDown": "Secret access key for IAM user. [More information](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)",
+			"groupName": "credentials"
+        },
+        {
+            "name": "region",
+            "type": "pickList",
+            "label": "Region",
+			"defaultValue": "us-east-1",
+            "required": false,
+            "helpMarkDown": "The region where the S3 bucket should be created. [More information](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)",
+			"options": {
+				"us-east-1": "us east 1",
+				"us-east-2": "us east 2",
+				"us-west-1": "us west 1",
+				"us-west-2": "us west 2",
+				"ca-central-1" : "ca central 1",
+				"eu-west-1" : "eu west 1",
+				"eu-central-1" : "eu central 1",
+				"eu-west-2" : "eu west 2",
+				"ap-northeast-1" : "ap northeast 1",
+				"ap-northeast-2" : "ap northeast 2",
+				"ap-southeast-1" : "ap southeast 1", 
+				"ap-southeast-2" : "ap southeast 2",
+				"ap-south-1" : "ap south 1",
+				"sa-east-1" : "sa east 1"
+			}
+        },
+        {
+            "name": "applicationBundle",
+            "type": "filePath",
+            "label": "Deployment bundle",
+            "required": true,
+            "helpMarkDown": "MsDeploy zip package [More information](https://www.iis.net/downloads/microsoft/web-deploy)",
+			"groupName": "beanstalk"
+        },
+		{
+            "name": "applicationName",
+            "type": "string",
+            "label": "Application name",
+            "required": true,
+			"defaultValue": "",
+            "helpMarkDown": "The application name of your elastic beanstalk. [More information](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-create-wizard.html)",
+			"groupName": "beanstalk"
+        },
+		{
+            "name": "environmentName",
+            "type": "string",
+            "label": "Environment name",
+            "required": true,
+            "helpMarkDown": "The environment name of your elastic beanstalk. [More information](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/environments-create-wizard.html)",
+			"defaultValue": "",
+			"groupName": "beanstalk"
+        },
+		{
+            "name": "versionLabel",
+            "type": "string",
+            "label": "Version label",
+            "required": true,
+            "helpMarkDown": "The version label which identifies the uploaded application version. [More information](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/applications-versions.html)",
+			"groupName": "beanstalk"
+        }
+		
+    ],
+    "instanceNameFormat":  "Release new Beanstalk application",
+	"execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\beanstalk_deployment.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

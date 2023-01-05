@@ -1,0 +1,129 @@
+{
+    "id": "047393e1-82e4-4d24-8275-237409bb378e",
+    "name": "publishbcapppertenant",
+    "friendlyName": "Business Central - Publish PerTenant App",
+    "description": "Publish PerTenant app to Dynamics 365 Business Central tenant",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Kine",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "groups": [
+        {
+            "name": "envgroup",
+            "displayName": "Environment"
+        },
+        {
+            "name": "authgroup",
+            "displayName": "Authentification"
+        }
+    ],
+    "instanceNameFormat": "Publish App to $(tenant)",
+    "inputs": [
+        {
+            "name": "tenant",
+            "type": "string",
+            "label": "Tenant name/ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name or ID of the tenant",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "environment",
+            "type": "string",
+            "label": "Environment",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of the environment like Sandbox. For production leave empty.",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "apiversion",
+            "type": "string",
+            "label": "API Version",
+            "defaultValue": "v2.0",
+            "required": false,
+            "helpMarkDown": "Version of the API used in the URL https://api.businesscentral.dynamics.com/XXX/",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "automationapiversion",
+            "type": "string",
+            "label": "Automation API Version",
+            "defaultValue": "beta",
+            "required": false,
+            "helpMarkDown": "Version of the Automation API used in the URL https://api.businesscentral.dynamics.com/v2.0/tenant/api/automation/XXX/...",
+            "groupName": "envgroup"
+        },
+        {
+            "name": "appfile",
+            "type": "string",
+            "label": "App file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the App file to be published. Filter could be used. All found files will be published"
+        },
+        {
+            "name": "appfileexclude",
+            "type": "string",
+            "label": "App file Exclude",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to the App file to be excluded. Filter could be used."
+        },
+        {
+            "name": "appid",
+            "type": "string",
+            "label": "App ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "ID of the application in the tenant AAD",
+            "groupName": "authgroup"
+        },
+        {
+            "name": "appsecret",
+            "type": "string",
+            "label": "App Secret",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Secret of the application in the tenant AAD",
+            "groupName": "authgroup"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "User login",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Login for the user under which the app will be published",
+            "groupName": "authgroup"
+        },
+        {
+            "name": "userpwd",
+            "type": "string",
+            "label": "User Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Password of the user to be used to publish the app",
+            "groupName": "authgroup"
+        }
+
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "publishtenanttask.ps1",
+            "platform": [
+                "windows"
+            ]
+
+        }
+    }
+}

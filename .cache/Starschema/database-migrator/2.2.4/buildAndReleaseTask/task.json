@@ -1,0 +1,138 @@
+{
+    "id": "bfd8ce84-e666-40c0-882b-b1b4cf0a0607",
+    "name": "MigrateDatabaseVersion",
+    "friendlyName": "Migrate database version",
+    "description": "Migrate database version with up/down sripts in migration directories",
+    "helpMarkDown": "",
+    "author": "Starschema Ltd",
+    "preview": false,
+    "deprecated":false,
+    "showEnvironmentVariables":false,
+    "runsOn": [ "Agent" ],
+    "category": "Deploy",
+    
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 4
+    },
+
+    "groups": [
+        {
+            "name": "dir",
+            "displayName": "Directory Settings",
+            "isExpanded": true
+        },
+
+        {
+            "name": "sql",
+            "displayName": "Sql Settings",
+            "isExpanded": true
+        }
+    ],
+    "instanceNameFormat": "Migrate database version",
+    "inputs": [
+        {
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Directory containing migrations",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The directory containing the migrations.  Empty is the root of the repo (build) or artifacts (release), which is $(System.DefaultWorkingDirectory)",
+            "groupName": "dir"
+        },
+        {
+            "name": "upSqlName",
+            "type": "string",
+            "required": true,
+            "defaultValue": "Up.sql",
+             "label": "Migration sql file name",
+            "helpMarkDown": "The name of the file that contains the SQL scripts that are ran when the migration is applied",
+            "groupName": "dir"
+        },
+        {
+            "name": "downSqlName",
+            "type": "string",
+            "required": true,
+            "defaultValue": "Down.sql",
+             "label": "Revert sql file name",
+            "helpMarkDown": "The name of the file that contains the SQL scripts that are ran when the migration is reverted",
+            "groupName": "dir"
+        },
+
+        {
+            "name": "server",
+            "type": "string",
+            "required": true,
+            "label": "SQL Server host name",
+            "helpMarkDown": "The SQL Server host URL without port. Example: my-db.com or my-db\\instance",
+            "groupName": "sql"
+        },
+        {
+            "name": "port",
+            "type": "string",
+            "required": true,
+            "label": "SQL Server port",
+            "defaultValue": "1433",
+            "helpMarkDown": "The SQL Server port. Default: 1433",
+            "groupName": "sql"
+        },
+        {
+            "name": "db",
+            "type": "string",
+            "required": true,
+            "label": "Database name",
+            "helpMarkDown": "The name of the database",
+            "groupName": "sql"
+        },
+        {
+            "name": "user",
+            "type": "string",
+            "required": true,
+            "label": "Username",
+            "helpMarkDown": "The name of the user to use to log in",
+            "groupName": "sql"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "required": true,
+            "label": "Password",
+            "helpMarkDown": "The password to use to log in",
+            "groupName": "sql"
+        },
+        {
+            "name": "encrypt",
+            "type": "boolean",
+            "required": true,
+            "label": "Encrypt (true required for Azure databases)",
+            "defaultValue": true,
+            "helpMarkDown": "Check to encrypt the communication with the database",
+            "groupName": "sql"
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "required": true,
+            "label": "Connection timeout",
+            "helpMarkDown": "The SQL Server connection timeout",
+            "defaultValue": "30",
+            "groupName": "sql"
+        },
+        {
+            "name": "migrationTableName",
+            "type": "string",
+            "required": true,
+            "label": "Migration table name",
+            "helpMarkDown": "The name of the SQL table that contains the migration information",
+            "defaultValue": "dbo.__DbMigrations",
+            "groupName": "sql"
+        }
+       
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "9e9efe80-1343-4058-bf4d-8e3189d51fa7",
+  "name": "azure-deveops-ispw-operation-task",
+  "friendlyName": "BMC ISPW Operations",
+  "description": "This task is used for ISPW operations.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "BMC Software",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Echo instanceName",
+  "inputs": [
+    {
+      "name": "connectionId",
+      "type": "pickList",
+      "label": "Host Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "This field specifies the host connection associated with a CES URL. Host connections with CES url can be configured in the Common Configuration Extension."
+    },
+    {
+      "name": "cesUrl",
+      "type": "pickList",
+      "label": "CES URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "This field specifies the CES URL. Host connections with CES url can be configured in the Common Configuration Extension."
+    },
+    {
+      "name": "cesSecretToken",
+      "type": "string",
+      "label": "CES secret token",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The available CES secret token to perform ISPW actions for Rest API call. In this feild, please pass pipeline variable name which is storing CES secret token as secret in Azure pipeline. Example $(variablename)."
+    },
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ISPW action to be performed",
+      "options": {
+        "AddTask": "Add Task",
+        "BuildAssignment": "Build Assignment",
+        "BuildRelease": "Build Release",
+        "BuildTask": "Build Task",
+        "CancelAssignment": "Cancel Assignment",
+        "CancelDeployment": "Cancel Deployment",
+        "CancelRelease": "Cancel Release",
+        "CloseAssignment": "Close Assignment",
+        "CloseRelease": "Close Release",
+        "CreateAssignment": "Create Assignment",
+        "CreateRelease": "Create Release",
+        "DeployAssignment": "Deploy Assignment",
+        "DeployRelease": "Deploy Release",
+        "DeployTask": "Deploy Task",
+        "FallbackAssignment": "Fallback Assignment",
+        "FallbackRelease": "Fallback Release",
+        "GenerateTask": "Generate Task",
+        "GenerateTasksInAssignment": "Generate Tasks In Assignment",
+        "GenerateTasksInRelease": "Generate Tasks In Release",
+        "GetAssignmentInfo": "Get Assignment Info",
+        "GetAssignmentTaskList": "Get Assignment Task List",
+        "GetReleaseTaskInfo": "Get Release Task Info",
+        "GetReleaseTaskList": "Get Release Task List",
+        "GetSetInfo": "Get Set Info",
+        "GetSetTaskList": "Get Set Task List",
+        "PromoteAssignment": "Promote Assignment",
+        "PromoteRelease": "Promote Release",
+        "RegressAssignment": "Regress Assignment",
+        "RegressRelease": "Regress Release"
+      }
+    },
+    {
+      "name": "request",
+      "label": "Request",
+      "type": "multiLine",
+      "options": {},
+      "defaultValue": "#The following messages are commented out to show how to use the 'Request' field.\n#Click on the help button to the right of the screen for examples of how to populate this field based on 'Action' type\n #\n #For example, if you select GenerateTasksInAssignment for 'Action' field,\n# you may populate the following properties in 'Request' field.\n # The property value should be based on your own container ID and level.\n #\n #assignmentId=PLAY000313\n #level=STG2\n",
+      "required": true,
+      "helpMarkDown": "[Please Click To Get Request Details For Action](https://github.com/bmc-compuware/ispw-operations-azure-extension/blob/master/help.md)"
+    },
+    {
+      "name": "skipWaitingForSetCompletion",
+      "label": "Skip waiting for the completion of the set (if applicable)",
+      "type": "boolean",
+      "required": true,
+      "defaultValue": "false",
+      "helpMarkDown": "This allows to turn on / off polling a set to wait for the job finish if it is applicable.",
+      "options": {
+        "true": "Yes",
+        "false": "No"
+      }
+    },
+    {
+      "name": "showResponseBodyInConsole",
+      "label": "Show Response body in console",
+      "type": "boolean",
+      "required": true,
+      "defaultValue": "true",
+      "helpMarkDown": "This allows you to turn off writing the response body to the log.",
+      "options": {
+        "true": "Yes",
+        "false": "No"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "endpointId": "tfs:teamfoundation",
+      "target": "connectionId",
+      "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/hostconnection",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{\"Value\":\"{{{host}}}#{{{code_page}}}\",\"DisplayValue\":\"{{{host}}}\"}"
+    },
+    {
+      "endpointId": "tfs:teamfoundation",
+      "target": "cesUrl",
+      "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/hostconnection",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{\"Value\":\"{{{ces_url}}}\",\"DisplayValue\":\"{{{ces_url}}}\"}"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

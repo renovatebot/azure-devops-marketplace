@@ -1,0 +1,243 @@
+{
+    "id": "c6f3c728-4d4c-4aa5-a3a1-fc16f6ff9a66",
+    "name": "Veracode Flaw Importer",
+    "friendlyName": "Veracode Flaw Importer",
+    "description": "Import flaws from the Veracode Platform and create work items.",
+    "helpMarkDown": "[Veracode](http://www.veracode.com)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Veracode",
+    "demands": [
+        "java"
+    ],
+    "version": {
+        "Major": 3,
+        "Minor": 15,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Import flaws: $(veracodeAppProfile) - $(sandboxName)",
+    "groups": [
+        {
+            "name": "connectionDetailsGroup",
+            "displayName": "Connection Details",
+            "isExpanded": true
+        },
+        {
+            "name": "flawSource",
+            "displayName": "Flaw Source",
+            "isExpanded": true
+        },
+        {
+            "name": "workItemGenerationSettings",
+            "displayName": "Work Item Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "AdvancedGroup",
+            "displayName": "Advanced Scan Settings",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectionDetailsSelection",
+            "type": "radio",
+            "label": "Select Connection Source",
+            "required": true,
+            "groupName": "connectionDetailsGroup",
+            "defaultValue": "Endpoint",
+            "helpMarkDown": "Select the connection source for connecting to Veracode or enter your Veracode API credentials.",
+            "options": {
+                "Endpoint": "Service Connection",
+                "Credentials": "Credentials"
+            }
+        },
+        {
+            "name": "AnalysisService",
+            "type": "connectedService:VeracodeAnalysisCenterEndpoint",
+            "label": "Select Service Connection",
+            "required": true,
+            "groupName": "connectionDetailsGroup",
+            "helpMarkDown": "Select a service connection or click Manage to create a service connection.",
+            "visibleRule": "ConnectionDetailsSelection = Endpoint"
+        },
+        {
+            "name": "apiId",
+            "type": "string",
+            "label": "API ID",
+            "required": true,
+            "groupName": "connectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode API ID. For instructions on generating your API credentials, go to the Veracode Help Center and search for \"Generate Veracode API Credentials\".",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "apiKey",
+            "type": "string",
+            "label": "API Key",
+            "required": true,
+            "groupName": "connectionDetailsGroup",
+            "helpMarkDown": "Enter your Veracode API key. For instructions on generating your API credentials, go to the Veracode Help Center and search for \"Generate Veracode API Credentials\".",
+            "visibleRule": "ConnectionDetailsSelection = Credentials"
+        },
+        {
+            "name": "proxySettings",
+            "type": "string",
+            "label": "Proxy Settings",
+            "required": false,
+            "helpMarkDown": "Enter web proxy settings to pass to the Veracode API wrapper.",
+            "groupName": "AdvancedGroup"
+        },
+        {
+            "name": "failBuildIfFlawImporterFails",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": false,
+            "groupName": "AdvancedGroup",
+            "label": "Fail build if flaw importer build step fails",
+            "helpMarkDown": "Clear this option to allow the build to continue if the Flaw Importer build step fails."
+        },
+        {
+            "name": "veracodeAppProfile",
+            "type": "string",
+            "required": true,
+            "groupName": "flawSource",
+            "label": "Application Name",
+            "defaultValue": "$(system.teamProject)",
+            "helpMarkDown": "Enter the name of the application profile in the Veracode Platform."
+        },
+        {
+            "name": "sandboxName",
+            "type": "string",
+            "label": "Sandbox Name",
+            "required": false,
+            "groupName": "flawSource",
+            "helpMarkDown": "Enter the name of the Veracode developer sandbox, if you are using one."
+        },
+        {
+            "name": "scanType",
+            "type": "pickList",
+            "label": "Scan Type",
+            "required": true,
+            "defaultValue": "Dynamic and Static Analysis",
+            "helpMarkDown": "Select the scan type from which to import flaws.",
+            "groupName": "workItemGenerationSettings",
+            "options": {
+                "Dynamic and Static Analysis" : "Dynamic and Static Analysis",
+				"Software Composition Analysis" : "Software Composition Analysis",
+				"Dynamic, Static, and Software Composition Analysis": "Dynamic, Static, and Software Composition Analysis"
+            }
+        },
+        {
+            "name": "importType",
+            "type": "pickList",
+            "label": "Import",
+            "required": true,
+            "defaultValue": "All Unmitigated Flaws Violating Policy",
+            "helpMarkDown": "From the dropdown menu, select the types of flaws you want to import from the Veracode scan results.",
+            "groupName": "workItemGenerationSettings",
+            "options": {
+                "All Flaws" : "All Flaws",
+				"All Unmitigated Flaws" : "All Unmitigated Flaws",
+				"All Flaws Violating Policy":"All Flaws Violating Policy",
+				"All Unmitigated Flaws Violating Policy":"All Unmitigated Flaws Violating Policy"
+            }
+        },
+        {
+            "name": "workItemType",
+            "type": "pickList",
+            "label": "Work Item Type",
+            "required": true,
+            "defaultValue": "Bug",
+            "groupName": "workItemGenerationSettings",
+            "helpMarkDown": "From the dropdown menu, select which type of work item you want the plugin to create for each of the imported flaws.",
+            "options": {
+                "Bug": "Bug",
+                "Issue": "Issue",
+                "Task": "Task",
+                "Epic": "Epic",
+                "Feature": "Feature",
+                "Test Case": "Test Case",
+                "User Story": "User Story"
+            }
+        },
+        {
+            "name": "area",
+            "type": "string",
+            "required": true,
+            "groupName": "workItemGenerationSettings",
+            "label": "Area Path",
+            "defaultValue": "$(system.teamProject)",
+            "helpMarkDown": "Enter the path to the area where you want to create work items."
+        },
+        {
+            "name": "overwriteAreaPathInWorkItemsOnImport",
+            "type": "boolean",
+            "required": true,
+            "defaultValue": true,
+            "groupName": "workItemGenerationSettings",
+            "label": "Overwrite Area Path in Work Items on Import",
+            "helpMarkDown": "Select this option to overwrite the area path in work items of imported flaws during the next import. If this option is cleared, existing work items retain their area path."
+        },
+        {
+            "name": "addCustomTag",
+            "type": "string",
+            "required": false,
+            "groupName": "workItemGenerationSettings",
+            "label": "Add Custom Tag",
+            "helpMarkDown": "Add a custom metadata tag to the work item."
+        },
+        {
+            "name": "addCweAsATag",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": true,
+            "groupName": "workItemGenerationSettings",
+            "label": "Add CWE as a Tag",
+            "helpMarkDown": "Add the CWE ID as a work item tag."
+        },
+        {
+            "name": "foundInBuild",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": true,
+            "groupName": "workItemGenerationSettings",
+            "label": "Add Build ID as a Tag",
+            "helpMarkDown": "Add the name of the Veracode scan to the Found In field of the work item."
+        },
+        {
+            "name": "addScanNameAsATag",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": true,
+            "groupName": "workItemGenerationSettings",
+            "label": "Add Scan Name as a Tag",
+            "helpMarkDown": "Select to import the scan name to the work item as a tag."
+        },
+        {
+            "name": "flawImportLimit",
+            "type": "string",
+            "required": true,
+            "defaultValue": "1000",
+            "groupName": "workItemGenerationSettings",
+            "label": "Flaw Import Limit",
+            "helpMarkDown": "Enter the maximum number of flaws you want to import."
+        },
+        {
+            "name": "customFields",
+            "type": "multiLine",
+            "required": false,
+            "groupName": "workItemGenerationSettings",
+            "label": "Custom Fields",
+            "helpMarkDown": "Enter a key:value pair to specify the name and value for each custom field. Each key:value pair must be on a new line."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "App.js",
+            "argumentFormat": ""
+        }
+    }
+}

@@ -1,0 +1,176 @@
+{
+    "id": "258a38e6-0183-45dc-83f9-335e6c8bcedf",
+    "name": "AssociateTestMethodsWithTestCases",
+    "friendlyName": "Test Case Association Manager",
+    "description": "Azure DevOps task for managing the associations between Test Methods and Test Cases.",
+    "helpMarkDown": "[Learn more about this task](https://marketplace.visualstudio.com/items?itemName=ilionx.AssociateToolTask)",
+    "category": "Deploy",
+    "visibility": [
+        "Release",
+        "Build"
+	],
+    "author": "ilionx",
+    "version": {
+        "Major": 3,
+        "Minor": 2,
+        "Patch": 2103111
+    },
+	"groups": [
+	    {
+		    "name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+    "instanceNameFormat": "Manage Test Case Associations",
+    "inputs": [
+		{
+            "name": "CollectionUri",
+            "type": "string",
+            "label": "Collection Uri",
+            "defaultValue": "$(System.TeamFoundationCollectionUri)",
+            "required": true,
+            "helpMarkDown": "The Azure DevOps collection Uri used for accessing the project work items.",
+            "visibleRule": "CollectionUri=47"
+		},
+		{
+            "name": "ProjectName",
+            "type": "string",
+            "label": "Project Name",
+            "defaultValue": "$(System.TeamProject)",
+            "required": true,
+            "helpMarkDown": "The project name containing the test plan.",
+            "visibleRule": "ProjectName=47"
+		},
+		{
+            "name": "SourceFolder",
+            "type": "filePath",
+            "label": "Source Folder",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "The source folder used to execute the tool on."
+		},
+		{
+            "name": "MinimatchPatterns",
+            "type": "string",
+            "label": "Minimatch Patterns",
+            "defaultValue": "**\\$(BuildConfiguration)\\**\\*Test.Integration*.dll;**\\$(BuildConfiguration)\\**\\*Test.Unit*.dll;!**\\obj\\**",
+            "required": true,
+            "helpMarkDown": "Minimatch patterns to search for within the source folder, separated by a semicolon. [Learn more about minimatch patterns](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/file-matching-patterns?view=azure-devops)"
+		},
+		{
+            "name": "PersonalAccesstoken",
+            "type": "string",
+            "label": "Personal Access Token",
+            "defaultValue": "$(PersonalAccessToken)",
+            "required": true,
+            "helpMarkDown": "The personal access token used for accessing the Azure DevOps project. <br>It can accept variable defined in build or release pipelines as `$(passwordVariable)`. <br>You may mark a variable as 'secret' to secure it."
+		},
+		{
+            "name": "TestPlanId",
+            "type": "pickList",
+            "label": "Test Plan",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select a test plan containing the test suites with test cases."
+		},
+		{
+            "name": "TestSuiteId",
+            "type": "pickList",
+            "label":  "Test Suite",
+            "defaultValue":  "",
+            "required":  true,
+            "helpMarkDown": "Select a test suite containing the test cases.",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+		},
+		{
+            "name": "TestFrameworkType",
+            "type": "pickList",
+            "label": "TestFramework Type",
+            "defaultValue": "",
+            "required": true,
+            "options": {
+                "mstest": "MSTest",
+                "xunit": "xUnit"
+            },
+            "helpMarkDown": "The type of Unit Test Framework."
+		},
+		{
+            "name": "TestType",
+            "type": "pickList",
+            "label": "Test Type",
+            "defaultValue": "",
+            "required": false,
+            "options": {
+                "unit": "Unit",
+                "integration": "Integration"
+            },
+            "helpMarkDown": "The automation test type. For custom test types, just write the type within the input field.",
+            "properties": {
+              "EditableOptions": "True"
+            }
+		},
+		{
+            "name": "ValidateOnly",
+            "type": "boolean",
+            "label": "Validate Only",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Indicate if you only want to validate the changes without saving the work item."
+		},
+		{
+            "name": "VerboseLogging",
+            "type": "boolean",
+            "label": "Verbose Logging",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "When turned on it also outputs the successful matchings and the fixes next to the warnings/errors."
+		},
+		{
+            "name": "DebugMode",
+            "type": "boolean",
+            "label": "Debug Mode",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "When debug mode is turned on any exception thrown by the tool will be printed to the console. <b>Use this only in case of unsolvable issues.</b>",
+            "groupName": "advanced"
+		}
+	],
+	"dataSourceBindings": [
+		{
+		    "target": "TestPlanId",
+		    "endpointId": "tfs:teamfoundation",
+		    "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans?filterActivePlans=true&api-version=3.0-preview.2&$skip={{skip}}&$top=1000",
+		    "resultSelector": "jsonpath:$.value[*]",
+		    "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}} - {{{name}}}\" }",
+		    "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+		    "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+		    "initialContextTemplate": "{\"skip\": \"0\"}"
+		},
+		{
+		    "target": "TestSuiteId",
+		    "endpointId": "tfs:teamfoundation",
+		    "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans/{{testPlan}}/suites?$asTreeView=true&api-version=3.0-preview.2",
+		    "parameters": {
+                "testPlan": "$(TestPlanId)"
+            },
+		    "resultSelector": "jsonpath:$.value[*]",
+		    "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}} - {{{name}}} ({{{testCaseCount}}})\" }",
+		    "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+		    "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+		    "initialContextTemplate": "{\"skip\": \"0\"}"
+		}
+	],
+	"outputVariables": [],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

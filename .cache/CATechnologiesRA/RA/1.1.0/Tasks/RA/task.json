@@ -1,0 +1,209 @@
+{
+    "id": "8af7083b-a782-46c2-94fc-18965c6b48bf",
+    "name": "RA",
+    "friendlyName": "CA Release Automation",
+    "description": "Run RA Deployment Plan",
+    "helpMarkDown": "[CA](https://marketplace.visualstudio.com/items?itemName=CATechnologiesRA.RA)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Yigal Dviri",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "demands": [
+        "node.js"
+    ],
+    "minimumAgentVersion": "1.91.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced options for \"Create new Deployment Plan\" strategy",
+            "helpMarkDown": "When using \"Create new Deployment Plan\" strategy you may add this options as well",
+            "isExpanded": false
+        }
+    ],
+
+    "instanceNameFormat": "Run Deployment Plan $(deploymentPlanName)",
+    "inputs": [
+        {
+          "name": "NAC",
+          "type": "connectedService:RA",
+          "label": "RA Server",
+          "helpMarkDown": "Release Automation server endpoint ",
+          "required": true
+        },
+        {
+          "name": "strategy",
+          "type": "pickList",
+          "label": "Strategy",
+          "defaultValue": "Run Existing Deployment Plan",
+          "required": true,
+          "helpMarkDown" : "Select weather to create a new deployment plan and run it of just execute an existing deployment plan.",
+          "options": {
+            "Run Existing Deployment Plan": "Run Existing Deployment Plan",
+            "Create new Deployment Plan": "Create new Deployment Plan"
+          }
+        },
+        {
+          "name": "applicationName",
+          "type": "string",
+          "label": "Application Name",
+          "helpMarkDown": "The application where the deployment template is defined.",
+          "required": true
+        },
+        {
+          "name": "project",
+          "type": "string",
+          "label": "Project Name",
+          "helpMarkDown": "The project in which the deployment plan will be created. If the project name does not exist then it will be created.",
+          "required": true
+        },
+        {
+          "name": "templateCategory",
+          "type": "string",
+          "label": "Template Category",
+          "helpMarkDown": "The Template Category which the Deployment Plan will be created from.",
+          "visibleRule": "strategy = Create new Deployment Plan",
+          "required": true
+        },
+        {
+          "name": "deploymentTemplate",
+          "type": "string",
+          "label": "Deployment Template",
+          "helpMarkDown": "The Deployment Template which the Deployment Plan will be created from.",
+          "visibleRule": "strategy = Create new Deployment Plan",
+          "required": true
+        },
+        {
+          "name": "deploymentPlanName",
+          "type": "string",
+          "label": "Deployment Plan Name",
+          "defaultValue": "DeploymentPlan-$(Build.BuildNumber)",
+          "helpMarkDown": "The Name of the Deployment Plan that will be used for the deployment.",
+          "required": true
+        },
+        {
+          "name": "deploymentPlanDescription",
+          "type": "string",
+          "label": "Deployment Plan Description",
+          "helpMarkDown": "The newly created Deployment Plan description.",
+          "visibleRule": "strategy = Create new Deployment Plan",
+          "required": false
+        },
+        {
+          "name": "build",
+          "type": "string",
+          "label": "Build number",
+          "defaultValue": "Build-$(Build.BuildNumber)",
+          "helpMarkDown": "The build name for the deployment plan.",
+          "required": true
+        },
+        {
+          "name": "deploymentName",
+          "type": "string",
+          "label": "Deployment Name",
+          "defaultValue": "Deployment-$(Build.BuildNumber)",
+          "helpMarkDown": "The name of the new created deployment.",
+          "required": true
+        },
+        {
+          "name": "deploymentDescription",
+          "type": "string",
+          "label": "Deployment Description",
+          "helpMarkDown": "The newly created Deployment description.",
+          "required": false
+        },
+        {
+          "name": "deploymentStageToPerform",
+          "type": "pickList",
+          "label": "Deployment Stage To Perform",
+          "options":{
+            "None": "None",
+            "Initialization": "Initialization",
+            "Validation": "Validation",
+            "Approval-Gate": "Approval-Gate",
+            "Distribute-Execution-Server": "Distribute-Execution-Server",
+            "Distribute-Agent": "Distribute-Agent",
+            "Deployment": "Deployment",
+            "Post-Deployment": "Post-Deployment"
+          },
+          "defaultValue": "Deployment",
+          "helpMarkDown": "Execute The stage after deployment has been created. default is to run all the stages",
+          "required": false
+        },
+        {
+          "name": "environments",
+          "type": "string",
+          "label": "Environment",
+          "helpMarkDown": "Environment to deploy on.",
+          "required": true
+        },
+        {
+          "name": "timeout",
+          "type": "string",
+          "label": "Timeout",
+          "defaultValue": 0,
+          "visibleRule": "strategy = Create new Deployment Plan",
+          "helpMarkDown": "Maximum time to wait for Nolio Server to finish the deployment, default is 0 - meaning no timeout.",
+          "required": false
+        },
+        {
+          "name": "artifactsMethod",
+          "type": "radio",
+          "label": "Artifacts Package as...",
+          "options":{
+            "artifactPackageName": "Package Name",
+            "artifactPackageAsXML": "XML"
+          },
+          "defaultValue": "Package Name",
+          "required": false,
+          "groupName": "advanced"
+        },
+        {
+          "name": "artifactPackageAsXML",
+          "type": "multiLine",
+          "label": "Artifact Package as XML",
+          "helpMarkDown": "Provide an xml representation of the new artifacts package to be used by the deployment plan. You can generate a template for the xml from the Artifact Packages page in Release Automation, by clicking the icon next to the page's header.",
+          "visibleRule": "artifactsMethod = artifactPackageAsXML",
+          "required": false,
+          "groupName": "advanced"
+        },
+        {
+          "name": "artifactPackageName",
+          "type": "string",
+          "label": "Existing Artifact Package name",
+          "helpMarkDown": "Supply an Existing Artifact Package name.",
+          "visibleRule": "artifactsMethod = artifactPackageName",
+          "required": false,
+          "groupName": "advanced"
+        },
+        {
+          "name": "manifest",
+          "type": "multiLine",
+          "label": "Manifest",
+          "helpMarkDown": "Supply values for Release parameters in XML form.</br>You may generate the manifest from a deployment template, add the values to the XML and copy-paste it to here.",
+          "required": false,
+          "groupName": "advanced"
+        },
+        {
+          "name": "properties",
+          "type": "multiLine",
+          "label": "Properties",
+          "helpMarkDown": "Supply values for template properties in 'key:values' form - Pairs of getter properties.</br>For example: \"key1\":\"value1\",\"key2\":\"value2\".",
+          "required": false,
+          "groupName": "advanced"
+        }
+
+    ],
+    "execution": {
+        "Node": {
+            "target": "ra.js",
+            "argumentFormat": ""
+        }
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "id": "417db4b2-39a7-4109-914f-6d2122b9304d",
+    "name": "S3Upload",
+    "friendlyName": "AWS S3 Upload",
+    "description": "Build task to upload a file to S3 bucket in AWS.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=MFelling.AWSS3Upload)",
+    "category": "Utility",
+    "visibility":[
+        "Build"
+				],
+    "author": "Marcus Felling",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.91.0",
+    "inputs": [
+        {
+            "name": "BucketName",
+            "type": "string",
+            "label": "Bucket Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the S3 Bucket"
+        },
+        {
+            "name": "File",
+            "type": "string",
+            "label": "File or folder to upload",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)/examplefile.txt",
+            "required": true,
+            "helpMarkDown": "Path to file or folder. File Example: $(Build.SourcesDirectory)/examplefile1.txt Folder Example: $(Build.ArtifactsStagingDirectory)/ExampleFolder/"
+        },
+        {
+            "name": "Key",
+            "type": "string",
+            "label": "Name of S3 Object",
+            "defaultValue": "examplefile.txt",
+            "required": false,
+            "helpMarkDown": "Name and directory that the corresponding file will have in Amazon S3. Example: S3FolderName/examplefile1.$(Build.BuildID)-uploaded.txt **Note:** This field is not available for folder uploads, file and folder names will be the same as local."
+        }
+    ],
+    "instanceNameFormat":  "Upload file to S3 bucket",
+	"execution":  {
+					  "PowerShell3":  {
+										  "target":  "$(currentDirectory)\\S3UploadTask.ps1"
+									  }
+                  },
+    "messages": {
+        "Upload": "Upload Complete",
+    }
+}

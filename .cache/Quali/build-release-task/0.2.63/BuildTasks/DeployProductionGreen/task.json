@@ -1,0 +1,89 @@
+{
+  "id": "a36996ef-979b-4c78-8580-ba9ee0407624",
+  "name": "DeployGreenProduction",
+  "friendlyName": "Deploy Green Production",
+  "description": "Deploys a new Green to the specified Production with CloudShell Colony",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 63
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "Deploy Green Production",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "colonyEndpoint",
+      "type": "connectedService:colonyServiceEndpoint",
+      "label": "Service Connection",
+      "required": true,
+      "helpMarkDown": "This is the name of the connection that you entered when you created the \"CloudShell Colony service connection\" during the plugin configuration."
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "20",
+      "helpMarkDown": "Set the timeout for this step (in minutes), if your new Green will not be ready when the timeout is reached, CloudShell Colony will abort the deployment.",
+      "required": true
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your CloudShell Colony space."
+    },
+    {
+      "name": "productionId",
+      "type": "string",
+      "label": "Production Id",
+      "required": true,
+      "helpMarkDown": "Enter the Id of the production's Green you want started."
+    },
+    {
+      "name": "artifacts",
+      "type": "multiLine",
+      "label": "Artifacts",
+      "required": false,
+      "helpMarkDown": "If this blueprint has artifacts, you may specify them in a comma/semi-comma/newline separated list of artifact names and their values. e.g., artifact1 name=value1, artifact2 name=value2"
+    },
+    {
+      "name": "Inputs",
+      "type": "multiLine",
+      "label": "Inputs",
+      "required": false,
+      "helpMarkDown": "If this blueprint has inputs, you may specify them in a comma/semi-comma/newline separated list of input names and their values. e.g., input1 name=value1, input2 name=value2"
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "Production_Green_Details",
+      "description": "All the Production's Green details including instances' IP addresses, ports and other infrastructure details required to properly run your tests. You may query this parameter to get the required information."
+    },
+    {
+      "name": "Production_Id",
+      "description": "The identifier of the production environment. You will use this identifier to end your sandbox when needed."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}

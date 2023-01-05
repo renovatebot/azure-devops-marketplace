@@ -1,0 +1,339 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7a06fda6-b456-11ea-b3de-0242ac130003",
+    "name": "QualysWASConnector",
+    "friendlyName": "Scan Web Applications with Qualys WAS",
+    "description": "Detect Web Application Vulnerabilities using the Qualys Web Application Scanning (WAS) service",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Qualys",
+    "version": {
+        "Major": 4,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Scan Web Applications with Qualys WAS",
+    "groups": [
+        {
+            "name": "scanAPIParameters",
+            "displayName": "Launch Scan API Parameters",
+            "isExpanded": true
+        },
+        {
+            "name": "optionalParameters",
+            "displayName": "Optional Parameters",
+            "isExpanded": true
+        },
+        {
+            "name": "failureConditionsByVulSev",
+            "displayName": "Build Failure Conditions By Vulnerability Severity",
+            "isExpanded": true
+        },
+        {
+            "name": "failureConditionsByQID",
+            "displayName": "Build Failure Conditions By QIDs",
+            "isExpanded": true
+        },
+        {
+            "name": "failureConditionsIfScanNotSuccessful",
+            "displayName": "Build Failure Conditions By Scan Completion Status",
+            "isExpanded": true
+        },
+        {
+            "name": "timeoutSettings",
+            "displayName": "Timeout Settings",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "webApplication",
+            "type": "pickList",
+            "label": "Select Web Application from WAS",
+            "groupName": "scanAPIParameters",
+            "helpMarkDown": "Select the Web Application from the dropdown list to launch WAS Scan. Please wait until all the web applications fetched from above configured Qualys Account.",
+            "required": true
+        },
+        {
+            "name": "scanName",
+            "type": "string",
+            "label": "Scan Name",
+            "groupName": "scanAPIParameters",
+            "defaultValue": "$(DefinitionName)_azureDevOps_$(ID)",
+            "helpMarkDown": "Qualys requires scan names to be unique. To make this scan name unique, this plugin will always append execution time to this scan name. Additionally, to add your Azure DevOps job name and build/release number in the scan name, you can use this ->  `$(DefinitionName)_azureDevOps_$(ID)`",
+            "required": false
+        },
+        {
+            "name": "scanType",
+            "type": "pickList",
+            "label": "Scan Type",
+            "groupName": "scanAPIParameters",
+            "defaultValue": "VULNERABILITY",
+            "required": true,
+            "helpMarkDown": "The scan type to launch a new scan with. DISCOVERY: A discovery scan crawls through your web application to find information without performing vulnerability testing.VULNERABILITY: A vulnerability scan crawls through your web application just like a discovery scan, but also performs vulnerability tests and sensitive content checks to tell you about the security posture of your web application.",
+            "options": {
+                "VULNERABILITY": "VULNERABILITY",
+                "DISCOVERY": "DISCOVERY"
+            }
+        },
+        {
+            "name": "authenticationRecord",
+            "type": "pickList",
+            "label": "Authentication Record",
+            "groupName": "optionalParameters",
+            "defaultValue": "None",
+            "required": false,
+            "helpMarkDown": "Specify [Other -> AuthRecord Name] set to an auth record, or [Use Default] to use the default auth record for the target web app.",
+            "options": {
+                "None": "None",
+                "Use Default": "Use Default",
+                "Other": "Other"
+            }
+        },
+        {
+            "name": "authRecordName",
+            "type": "pickList",
+            "label": "Authentication Record Name",
+            "visibleRule": "authenticationRecord = Other",
+            "groupName": "optionalParameters",
+            "helpMarkDown": "Select the Auth Record Name from the dropdown list. Please wait until all the Auth Records fetched from the configured Qualys Account."
+        },
+        {
+            "name": "optionProfile",
+            "type": "pickList",
+            "label": "Option Profile",
+            "groupName": "optionalParameters",
+            "defaultValue": "Use Default",
+            "required": false,
+            "helpMarkDown": "The name of the option profile that includes scan settings.Specify [Other -> Profile Name] set to an Option Profile, or [Use Default] to use the default Option Profile for the scan of target web app.",
+            "options": {
+                "Use Default": "Use Default",
+                "Other": "Other"
+            }
+        },
+        {
+            "name": "profileName",
+            "type": "pickList",
+            "label": "Profile Name",
+            "groupName": "optionalParameters",
+            "visibleRule": "optionProfile = Other",
+            "helpMarkDown": "Select the Option Profile Name from the dropdown list. Please wait until all the Option Profiles fetched from the configured Qualys Account."
+        },
+        {
+            "name": "cancelOptions",
+            "type": "pickList",
+            "label": "Cancel Options",
+            "groupName": "optionalParameters",
+            "defaultValue": "None",
+            "helpMarkDown": "set to [None] - Forces the use of the target web app's cancelScans option if set.
+            Set to [Cancel After X Hours
+            ] to the one selected value from [Hours
+            ] dropdown to the specific value(range from 1 to 24 hrs ) while launching the scan.",
+            "options": {
+                "None": "None",
+                "Cancel After X Hours": "Cancel After X Hours"
+            }
+        },
+        {
+            "name": "hours",
+            "type": "pickList",
+            "label": "Hours",
+            "groupName": "optionalParameters",
+            "defaultValue": "1",
+            "visibleRule": "cancelOptions = Cancel After X Hours",
+            "options": {
+                "1": "1",
+                "2": "2",
+                "3": "3",
+                "4": "4",
+                "5": "5",
+                "6": "6",
+                "7": "7",
+                "8": "8",
+                "9": "9",
+                "10": "10",
+                "11": "11",
+                "12": "12",
+                "13": "13",
+                "14": "14",
+                "15": "15",
+                "16": "16",
+                "17": "17",
+                "18": "18",
+                "19": "19",
+                "20": "20",
+                "21": "21",
+                "22": "22",
+                "23": "23",
+                "24": "24"
+            }
+        },
+        {
+            "name": "failBySeverity1",
+            "type": "boolean",
+            "label": "Fail if the count of Severity 1 vulnerabilities is more than ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByVulSev",
+            "helpMarkDown": "Fail the build if severity count is greater than the configured count.All severity level conditions are 'OR'ed together.example: Fail with more than 0 Severity vulns OR Fail with more than 0 Severity2 vulns OR .."
+        },
+        {
+            "name": "sev1",
+            "type": "string",
+            "label": "Enter Vulnerability Count",
+            "visibleRule": "failBySeverity1 = true",
+            "groupName": "failureConditionsByVulSev",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failBySeverity2",
+            "type": "boolean",
+            "label": "Fail if the count of Severity 2 vulnerabilities is more than ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByVulSev",
+            "helpMarkDown": "Fail the build if severity count is greater than the configured count.All severity level conditions are 'OR'ed together.example: Fail with more than 0 Severity vulns OR Fail with more than 0 Severity2 vulns OR .."
+        },
+        {
+            "name": "sev2",
+            "type": "string",
+            "label": "Enter Vulnerability Count",
+            "visibleRule": "failBySeverity2 = true",
+            "groupName": "failureConditionsByVulSev",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failBySeverity3",
+            "type": "boolean",
+            "label": "Fail if the count of Severity 3 vulnerabilities is more than ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByVulSev",
+            "helpMarkDown": "Fail the build if severity count is greater than the configured count.All severity level conditions are 'OR'ed together.example: Fail with more than 0 Severity vulns OR Fail with more than 0 Severity2 vulns OR .."
+        },
+        {
+            "name": "sev3",
+            "type": "string",
+            "label": "Enter Vulnerability Count",
+            "visibleRule": "failBySeverity3 = true",
+            "groupName": "failureConditionsByVulSev",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failBySeverity4",
+            "type": "boolean",
+            "label": "Fail if the count of Severity 4 vulnerabilities is more than ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByVulSev",
+            "helpMarkDown": "Fail the build if severity count is greater than the configured count.All severity level conditions are 'OR'ed together.example: Fail with more than 0 Severity vulns OR Fail with more than 0 Severity2 vulns OR .."
+        },
+        {
+            "name": "sev4",
+            "type": "string",
+            "label": "Enter Vulnerability Count",
+            "visibleRule": "failBySeverity4 = true",
+            "groupName": "failureConditionsByVulSev",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failBySeverity5",
+            "type": "boolean",
+            "label": "Fail if the count of Severity 5 vulnerabilities is more than ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByVulSev",
+            "helpMarkDown": "Fail the build if severity count is greater than the configured count.All severity level conditions are 'OR'ed together.example: Fail with more than 0 Severity vulns OR Fail with more than 0 Severity2 vulns OR .."
+        },
+        {
+            "name": "sev5",
+            "type": "string",
+            "label": "Enter Vulnerability Count",
+            "visibleRule": "failBySeverity5 = true",
+            "groupName": "failureConditionsByVulSev",
+            "required": true,
+            "defaultValue": "0"
+        },
+        {
+            "name": "failwithAnyQIDs",
+            "type": "boolean",
+            "label": "Fail with any of these QIDs ",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsByQID",
+            "helpMarkDown": "A list of QIDs to be checked in the vulnerabilities scan result. It can be simple comma separated list of QIDs or range of QIDs. eg. 150001,150124,150179-150181"
+        },
+        {
+            "name": "qidlist",
+            "type": "string",
+            "label": "Enter QIDs",
+            "visibleRule": "failwithAnyQIDs = true",
+            "groupName": "failureConditionsByQID",
+            "required": true
+        },
+        {
+            "name": "failIfWasCouldNotScan",
+            "type": "boolean",
+            "label": "Fail the build if WAS could not scan the web application",
+            "defaultValue": "false",
+            "required": false,
+            "groupName": "failureConditionsIfScanNotSuccessful",
+            "helpMarkDown": "By selecting this option the build will fail if WAS could not scan the web application."
+        },
+        {
+            "name": "dataCheckFrequency",
+            "type": "string",
+            "label": "How often to check for data (in minutes)",
+            "defaultValue": "5",
+            "required": true,
+            "groupName": "timeoutSettings",
+            "helpMarkDown": "The polling interval in minutes. It is the time to wait between subsequent API calls.If this field is kept empty, plugin will by default use 5 minutes as frequency interval."
+        },
+        {
+            "name": "waitTimeforScanResult",
+            "type": "string",
+            "label": "How long to wait for scan results (in minutes)",
+            "defaultValue": "60*24",
+            "required": true,
+            "groupName": "timeoutSettings",
+            "helpMarkDown": "The timeout period for fetching scanned vulnerabilities data. The Qualys task will end after the timeout period.If this field kept empty, plugin will by default use 60*24 minutes as Timeout period."
+        },
+        {
+            "name": "WasService",
+            "type": "connectedService:Was",
+            "label": "WAS service/server endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the WAS end point to use. If needed, select 'manage', and add a new service endpoint of type 'WAS server connection'"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "webApplication",
+            "endpointId": "$(WasService)",
+            "dataSourceName": "WasApplications",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}-{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "authRecordName",
+            "endpointId": "$(WasService)",
+            "dataSourceName": "WasAuthRecords",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "profileName",
+            "endpointId": "$(WasService)",
+            "dataSourceName": "WasOptionProfiles",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

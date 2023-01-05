@@ -1,0 +1,142 @@
+{
+    "id": "2dd68b03-81e9-4951-9194-4c533a6ceca0",
+    "name": "DES-Azure-Serviceconnection-Distribution",
+    "friendlyName": "Des-Azure Serviceconnection Distribution",
+    "description": "Distribute one or more Azure DevOps Service connections to one or more Azure DevOps Team Projects.",
+    "helpUrl": "https://docs.microsoft.com/en-us/azure/devops/extend/overview?toc=%2Fazure%2Fdevops%2Fextend%2Ftoc.json&bc=%2Fazure%2Fdevops%2Fextend%2Fbreadcrumb%2Ftoc.json&view=azure-devops",
+    "helpMarkDown": "[More information](https://docs.microsoft.com/en-us/azure/devops/extend/overview?toc=%2Fazure%2Fdevops%2Fextend%2Ftoc.json&bc=%2Fazure%2Fdevops%2Fextend%2Fbreadcrumb%2Ftoc.json&view=azure-devops)",
+    "category": "Azure Pipelines",
+    "author": "Developer enabling services for Azure(Des-Azure)",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build"
+    ],
+    "preview": "false",
+    "instanceNameFormat": "Serviceconnection Distribution",
+    "groups": [
+        {
+            "name": "Credentials",
+            "displayName": "Azure DevOps Credentials",
+            "isExpanded": true
+        },
+        {
+            "name": "RunType",
+            "displayName": "Run Type",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "Token",
+            "type": "string",
+            "label": "PAT",
+            "defaultValue": "$(Maintain.Pipelines.Pat)",
+            "required": true,
+            "groupName": "Credentials",
+            "helpMarkDown": "Your Azure DevOps PAT with all scopes"
+        },
+        {
+            "name": "FileOrFolderSelector",
+            "type": "picklist",
+            "label": "Source Type",
+            "defaultValue": "Folder",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Select either Folder or Files as input",
+            "options": {
+                "Folder": "Folder",
+                "Files": "Files"
+            }
+        },
+        {
+            "name": "TeamProjectsToTarget",
+            "type": "picklist",
+            "label": "Team Projects to Target",
+            "defaultValue": "Neither",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Select the run target",
+            "options": {
+                "TeamProjects": "Specific Team Projects",
+                "Exclude": "All Team Projects Except",
+                "Neither": "All Team Projects"
+            }
+        },
+        {
+            "name": "CommitMessage",
+            "type": "string",
+            "label": "Commit Message",
+            "defaultValue": "$(Build.SourceVersionMessage)",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "Last Commit message or reason for change"
+        },
+        {
+            "name": "Projects",
+            "type": "array",
+            "label": "Projects",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "One or more team project names comma separated",
+            "visibleRule": "TeamProjectsToTarget = TeamProjects"
+        },
+        {
+            "name": "ExcludeTeamProjects",
+            "type": "array",
+            "label": "Projects to Exclude",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "One or more team project names to ignore comma separated",
+            "visibleRule": "TeamProjectsToTarget = Exclude"
+        },
+        {
+            "name": "Folder",
+            "type": "string",
+            "label": "Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "The name of a folder containing Serviceconnection",
+            "visibleRule": "FileOrFolderSelector = Folder"
+        },
+        {
+            "name": "Files",
+            "type": "array",
+            "label": "Files",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "RunType",
+            "helpMarkDown": "A list of JSON Serviceconnection files comma separated",
+            "visibleRule": "FileOrFolderSelector = Files"
+        },
+        {
+            "name": "ExtraVerbose",
+            "type": "boolean",
+            "label": "Increase Verbosity",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Some verbose messages are always shown. Set to true to increase the level of verbosity, i.e. log additional verbose messages",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "Main.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

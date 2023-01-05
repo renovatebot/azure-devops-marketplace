@@ -1,0 +1,123 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "13ee48a4-2714-4a68-abd5-64e07fa5781c",
+    "name": "synapse-graph-task",
+    "friendlyName": "Synapse Dependency Graph",
+    "description": "Creates a markdown friendly dependency graph for your Synapse workspace using a mermaid flowchart.",
+    "helpMarkDown": "[Learn more about this task](https://github.com/mzhukovs/synapse-graph-devops-ext)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Mark Zhukovsky",
+    "version": {
+        "Major": 0,
+        "Minor": 90,
+        "Patch": 9
+    },
+    "instanceNameFormat": "Synapse Graph: $(workspace)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "workspace",
+            "type": "string",
+            "label": "Azure Synapse Workspace Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the Azure Synapse workspace (or Data Factory) to generate a dependency graph for."
+        },
+        {
+            "name": "synapseDirectory",
+            "type": "filePath",
+            "label": "Synapse Source Directory",
+            "defaultValue": "$(Build.SourcesDirectory)/synapse",
+            "required": true,
+            "helpMarkDown": "The location on the build agent that contains the Azure Synapse workspace (or Data Factory) JSON objects."
+        },
+        {
+            "name": "artifactStagingDirectory",
+            "type": "filePath",
+            "label": "Graph Artifact Staging Directory",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)/synapsegraph",
+            "required": true,
+            "helpMarkDown": "The location on the build agent to save the resulting dependency graph to and publish as artifact."
+        },
+        {
+            "name": "itemTypes",
+            "type": "string",
+            "label": "Item Types to Include in the Graph",
+            "defaultValue": "Trigger, Pipeline, LinkedService, Dataset, Dataflow, Notebook, SparkJobDefinition, BigDataPool, IntegrationRuntime, ManagedVirtualNetwork, ManagedPrivateEndpoint",
+            "required": true,
+            "helpMarkDown": "The comma-separated list of types of Synapse/ADF objects to include in the graph.\n\nUseful to reduce clutter - e.g. you may not care about Datasets, only which Pipelines hit which LinkedServices, or you may only want to see Triggers and Pipelines only, etc."
+        },
+        {
+            "name": "mdTarget",
+            "type": "pickList",
+            "label": "Markdown Target",
+            "defaultValue": "ADO",
+            "required": true,
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "options": {
+                "ADO": "Azure DevOps",
+                "GH": "GitHub"
+            },
+            "helpMarkDown": "The flavor of mermaid markdown syntax to use for the resulting graph code."
+        },
+        {
+            "name": "includePipelineRegex",
+            "groupName": "advanced",
+            "type": "multiLine",
+            "label": "Pipeline Name Regex for Inclusion",
+            "required": false,
+            "defaultValue": "",
+            "properties": {
+                "resizable": true,
+                "rows": "10",
+                "maxLength": "500"
+            },
+            "helpMarkDown": "Add one or more regular expressions and/or explicit pipeline names (one per each line) that will be run on each Synapse/ADF pipeline name to check if it should be included or not.\n\nIf the entire name is matched by at least one of these expressions then the pipeline AND ITS DEPENDENCIES will be included in the graph (unless already excluded by the Item Type filter above, or subsequently excluded by any Regex Exclusion rules specified in the next input).\n\nUseful for zeroing in on specific pipelines, e.g. for certain downstream consumers / projects."
+        },
+        {
+            "name": "requirePathToPipelineRegex",
+            "groupName": "advanced",
+            "type": "multiLine",
+            "label": "Pipeline Name Regex for Path Checking",
+            "required": false,
+            "defaultValue": "",
+            "properties": {
+                "resizable": true,
+                "rows": "10",
+                "maxLength": "500"
+            },
+            "helpMarkDown": "Add one or more regular expressions and/or explicit pipeline names (one per each line) that will be run on each Synapse/ADF pipeline name to check if it should be treated as a 'primary' pipeline.\n\nFor the pipelines whose entire name is matched by at least one of these expressions,  all other objects must have a direct path to them.\n\nUseful for de-cluttering, e.g. you may have used a RegEx to include certain pipelines (for example, a utility pipeline), but they may tie to other objects that are still not relevant and you can filter out by ensuring they all have a path to these pipelines of primary interest."
+        },
+        {
+            "name": "excludeRegex",
+            "groupName": "advanced",
+            "type": "multiLine",
+            "label": "Object Name Regex for Exclusion",
+            "required": false,
+            "defaultValue": "",
+            "properties": {
+                "resizable": true,
+                "rows": "10",
+                "maxLength": "500"
+            },
+            "helpMarkDown": "Add one or more regular expressions and/or explicit object names (one per each line) that will be run on each Synapse/ADF object name to check if it should be excluded or not.\n\nIf the entire object name is matched by at least one of these expressions then it will be excluded from the graph (even if matched by one of the Inclusion Regex rules above).\n\nUseful to reduce clutter in the graph, e.g. by excluding common dependencies that all contain a certain identifier in their name, e.g. a utility or the default storage / Key Vault linked service that everything depends on."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "synapse_graph_task.js"
+        }
+    }
+}
