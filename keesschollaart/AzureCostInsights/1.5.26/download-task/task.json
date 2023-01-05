@@ -1,0 +1,121 @@
+{
+    "id": "adff96fa-a978-4c69-8fb4-08fda81b3c15",
+    "name": "DownloadCostData",
+    "friendlyName": "Download Cost Data",
+    "description": "Fetch your Azure Cost data and prepare it for use in the widget",
+    "helpMarkDown": "[More Information](https://github.com/keesschollaart81/CaseOnline.AzureCostInsights)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Kees Schollaart",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 30
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.99.0",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription."
+        },
+        {
+            "name": "DaysToDownload",
+            "type": "string",
+            "label": "Days to download",
+            "defaultValue": "60",
+            "required": true,
+            "helpMarkDown": "The number of days to download usage data for"
+        },
+        {
+            "name": "apiToUse",
+            "type": "pickList",
+            "label": "Which Azure API to use",
+            "helpMarkDown": "The new consumption API is easier & faster but not all types of subscription are supported. Checkout [this blogpost](https://azure.microsoft.com/nl-nl/blog/azure-consumption-usage-details-api/) for more info. When unsure, start with 'consumption' and the task will fail with a message saying that you need to switch from to the 'usage' api.",
+            "defaultValue": "consumption",
+            "required": true,
+            "options": {
+                "consumption": "Consumption",
+                "usage": "Usage"
+            }
+        },
+        {
+            "name": "offerType",
+            "type": "string",
+            "label": "Offer ID",
+            "defaultValue": "MS-AZR-0003P",
+            "visibleRule": "apiToUse == usage",
+            "required": true,
+            "helpMarkDown": "Set this field to a valid Offer ID code (e.g., MS-AZR-0026P). See [Microsoft Azure Offer Details](https://azure.microsoft.com/en-us/support/legal/offer-details/) for more information on the list of available Offer IDs, country/region availability, and billing currency. The Offer ID parameter consists of the “MS-AZR-“ prefix, plus the Offer ID number. Open your subscription in the Azure Portal and check the 'Offer Type' on the summary of the subscription pane."
+        },
+        {
+            "name": "currency",
+            "type": "string",
+            "label": "Currency",
+            "defaultValue": "USD",
+            "visibleRule": "apiToUse == usage",
+            "required": true,
+            "helpMarkDown": "Set to the currency in which the resource rates need to be provided. Can be found in the details of your subscription [here](https://account.azure.com/Subscriptions/). More info [here](https://docs.microsoft.com/en-us/previous-versions/azure/reference/mt219004(v%3dazure.100))"
+        },
+        {
+            "name": "locale",
+            "type": "string",
+            "label": "Locale",
+            "defaultValue": "en-US",
+            "visibleRule": "apiToUse == usage",
+            "required": true,
+            "helpMarkDown": "Set to the culture in which the resource metadata needs to be localized. More info [here](https://docs.microsoft.com/en-us/previous-versions/azure/reference/mt219004(v%3dazure.100))"
+        },
+        {
+            "name": "regioInfo",
+            "type": "string",
+            "label": "Regio Info",
+            "defaultValue": "US",
+            "visibleRule": "apiToUse == usage",
+            "required": true,
+            "helpMarkDown": "Set to the 2 letter ISO code where the offer was purchased. Find your locale [here](https://account.azure.com/Profile). More info [here](https://docs.microsoft.com/en-us/previous-versions/azure/reference/mt219004(v%3dazure.100))"
+        },
+        {
+            "name": "filter",
+            "type": "pickList",
+            "label": "Filter data (Pro & Enterprise)",
+            "helpMarkDown": "Filter the dataset that users can use when configuring the widgets.<br/><br/>When using both the Resource Group and the Tags filter, it's evaluated as an AND condition (first filter by RG Name, then by tag).<br/><br/>[More info on filtering on the Wiki](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Filtering-the-available-data)<br/><br/>This is only supported for the [pro & enterprise](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Personal,-Pro-&-Enterprise) plans and enforced when configuring the widget.",
+            "defaultValue": "no",
+            "required": true,
+            "options": {
+                "no": "No filtering, download everything",
+                "rgThenTag": "Filter: by Resource Group then by Tag"
+            }
+        },
+        {
+            "name": "filterRgName",
+            "type": "multiLine",
+            "label": "Filter by Resource Group name(s)",
+            "helpMarkDown": "A comma seperated list of names of the Resource Groups to download.<br/><br/>Leave empty to only filter by tag.<br/><br/>This is a case-sensitive whitelist!<br/><br/>[More info about filtering on the wiki](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Filtering-the-available-data)<br/><br/>Only supported for the [pro & enterprise](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Personal,-Pro-&-Enterprise) plans.",
+            "defaultValue": "",
+            "visibleRule": "filter == rgThenTag"
+        },
+        {
+            "name": "filterTag",
+            "type": "multiLine",
+            "label": "Filter by tag(s)",
+            "helpMarkDown": "A comma seperated list of filters on tags. Both tags on Resource Groups and tags on Resources can be used to filter.<br/><br/>Use the `myTag=myTagValue,OtherTag=*` syntax to filter for the existence of the tag via a ```*``` (wildcard on the tag value) or the exact value of the tag.<br/><br/>Leave this field empty to not filter by tag at all.<br/><br/>[More info](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Filtering-the-available-data)<br/><br/>Only supported for the [pro & enterprise](https://github.com/keesschollaart81/AzureCostInsights.Marketplace/wiki/Personal,-Pro-&-Enterprise) plans",
+            "defaultValue": "MyTag=MyTagValue,OtherTag=*",
+            "visibleRule": "filter == rgThenTag"
+        }
+    ],
+    "dataSourceBindings": [],
+    "instanceNameFormat": "Download cost data $(ConnectedServiceNameARM)",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
