@@ -61,15 +61,16 @@ $marketplace = "https://marketplace.visualstudio.com"
 Write-host "::endgroup::"
 
 Write-host "::group::Fetching Extension Metadata"
+$skipCache = $env:USE_CACHE -ne "true"
 $pageSize= 100;
 $page = 1
 $totalFetched = 0
 $max = 0
 $extensions = @()
 $cacheFile = "Extensions.json"
-if (-not (Test-Path -path $cacheFile -PathType Leaf))
+if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
 {
-    do 
+    do
     {
         $result = Get-Extensions -PageSize $pageSize -Page $page
         $totalFetched += $result.extensions.Count
