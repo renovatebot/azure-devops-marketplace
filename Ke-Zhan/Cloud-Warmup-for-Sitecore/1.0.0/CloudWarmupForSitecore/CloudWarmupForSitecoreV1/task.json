@@ -1,0 +1,84 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b35d967b-7bc2-40aa-8824-d3917fdd2890",
+    "name": "CloudWarmupForSitecore",
+    "friendlyName": "Cloud Warmup for Sitecore",
+    "description": "Warms up Sitecore websites hosted on Azure App Services by requesting root url, and ensures that Sitecore Bootloader module installations are finished.",
+    "helpMarkDown": "[Learn more about this task](https://kezhan.info/2020/04/04/Azure-DevOps---Cloud-Warmup-for-Sitecore.html)",
+    "helpUrl": "https://kezhan.info/2020/04/04/Azure-DevOps---Cloud-Warmup-for-Sitecore.html",
+    "category": "Deploy",
+    "author": "Ke Zhan",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "instanceNameFormat": "Warms up Sitecore site: $(webappName)",
+    "inputs": [
+        {
+            "name": "kuduUsername",
+            "type": "string",
+            "label": "Kudu User Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Kudu User Name"
+        },
+        {
+            "name": "kuduPassword",
+            "type": "string",
+            "label": "Kudu User Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Kudu User Password"
+        },
+        {
+            "name": "webappName",
+            "type": "string",
+            "label": "Azure Web App Name/Slot Full Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Web App Name. If slot is in use, include slot name as well like: yourapp-slotname"
+        },
+        {
+            "name": "maxRetries",
+            "type": "string",
+            "label": "Max Retry Count",
+            "defaultValue": "5",
+            "required": false,
+            "helpMarkDown": "The max number of retries"
+        },
+        {
+            "name": "requestTimeout",
+            "type": "string",
+            "label": "Request Timeout",
+            "defaultValue": "300",
+            "required": false,
+            "helpMarkDown": "Http request timeout in seconds"
+        },
+        {
+            "name": "totalTimeout",
+            "type": "string",
+            "label": "Total Timeout",
+            "defaultValue": "1800",
+            "required": false,
+            "helpMarkDown": "Total Timeout in seconds"
+        },
+        {
+            "name": "coolingOffBetweenRetries",
+            "type": "string",
+            "label": "Cooling Off Time Between Retries",
+            "defaultValue": "60",
+            "required": false,
+            "helpMarkDown": "Wait time in seconds between attmpts"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "index.ps1"
+        }
+    }
+}
