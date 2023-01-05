@@ -1,0 +1,103 @@
+{
+  "id": "53872c9a-a53f-4fcf-973d-8ded3d75432d",
+  "name": "serverlesSecurity",
+  "friendlyName": "Aqua Serverless Security",
+  "description": "Security Assessment for serverless",
+  "author": "aquasec",
+  "helpMarkDown": "This task scans a serverless for security vulnerabilities.",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "25"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Aqua Serverless Scanning",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "codeScanPath",
+      "type": "string",
+      "label": "Code scan path",
+      "defaultValue": "$(Build.SourcesDirectory)",
+      "required": false,
+      "helpMarkDown": "The code path to scan."
+    },
+    {
+      "name": "customFlags",
+      "type": "string",
+      "label": "Custom flags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom flags."
+    },
+    {
+      "name": "showNegligible",
+      "type": "boolean",
+      "label": "Show negligible vulnerabilities",
+      "required": true,
+      "helpMarkDown": "Show negligible/unknown severity vulnerabilities.",
+      "defaultValue": false
+    },
+    {
+      "name": "connection",
+      "type": "connectedService:Generic",
+      "label": "Aqua Management Console Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Aqua Management Console connection. click the Manage link and create a new Generic Service Endpoint, enter the Aqua Management Console url, e.g. <b>`https://server.example.com`</b>, and required credentials."
+    },
+    {
+      "name": "notCompliesCmd",
+      "type": "string",
+      "label": "Shell command to execute when no compliance",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "When image doesn’t comply with Aqua policy command to execute when no compliance."
+    },
+    {
+      "name": "caCertificates",
+      "type": "boolean",
+      "label": "Do not verify TLS certificates.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "scanMalware",
+      "type": "boolean",
+      "label": "Collect malware files when scanning.",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "showWillNotFix",
+      "type": "boolean",
+      "label": "Show vulnerabilities that will not be fixed.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "dockerTask.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "ScanReturnCode": "scan exited with return code: %d",
+    "ScanFailed": "scan failed with error: %s"
+  }
+}
