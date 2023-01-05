@@ -1,0 +1,176 @@
+{
+    "id": "4daefc03-60eb-4b7f-b7f4-dd3e99683f0e",
+    "name": "Reporting Deploy",
+    "friendlyName": "Reporting Deploy",
+    "description": "Tarea con la funcionalidad para publicar reportes...",
+    "category": "Deploy",
+    "author": "Hugo Jimenez",
+    "version": {
+        "Major": 11,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "2.131.0",
+    "instanceNameFormat": "Reporting Deploy",
+    "inputs": [
+        {
+            "name": "tipoDespliegueReportes",
+            "type": "radio",
+            "label": "Tipo de reportes",
+            "defaultValue": "ssrs",
+            "required": true,
+            "options": {
+                "ssrs": "SSRS",
+                "powerbi": "Power BI"
+            },
+            "helpMarkDown": "Tipo de reportes a publicar, ya sean reportes para un Reporting Service o para Power BI."
+        },
+        {
+            "name": "RutaArtefactoReportes",
+            "type": "filePath",
+            "label": "Ruta del artefacto a publicar",
+            "helpMarkDown": "Ruta donde se encuentran los reportes a publicar (archivos RDL, RDS, etc).",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "NombreCarpetaReportes",
+            "type": "string",
+            "label": "Nombre de la carpeta para los reportes",
+            "helpMarkDown": "Nombre de la carpeta en el Reporting Server donde se publicarán los reportes. Si la misma no existe, se creará automáticamente.",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "NombreCarpetaDataSource",
+            "type": "string",
+            "label": "Nombre de la carpeta para el/los Data Source(s)",
+            "helpMarkDown": "Nombre de la carpeta donde se ubicará el o los Data Sources para los reportes.",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "UrlServicioWebReportes",
+            "type": "string",
+            "label": "URL del servicio web de reportes",
+            "helpMarkDown": "URL del servicio web de reportes. Ejemplo: http://localhost:8080/ReportWs/ReportService2010.asmx?wsdl",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "NombreUsuarioInstalacion",
+            "type": "string",
+            "label": "Nombre de la cuenta de usuario para instalación",
+            "helpMarkDown": "Nombre de usuario local o de dominio, que se usará para instalar los reportes en el servidor.",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "ContrasenniaUsuarioInstalacion",
+            "type": "string",
+            "label": "Contraseña del usuario para instalación",
+            "helpMarkDown": "Contraseña del usuario que instalará los reportes en el servidor.",
+            "required": true,
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "ActualizarDataSource",
+            "type": "boolean",
+            "label": "Actualizar Data Source",
+            "helpMarkDown": "Si el Data Source no existe, lo creará, de lo contrario, actualiza sobreescribiéndolo.",
+            "defaultValue": false,
+            "visibleRule": "tipoDespliegueReportes = ssrs"
+        },
+        {
+            "name": "UsuarioConexionBaseDatosDataSource",
+            "type": "string",
+            "label": "Usuario de conexión a base de datos",
+            "helpMarkDown": "Usuario local o de dominio, que posea privilegios de conexión con la base de datos a la que apunta el DataSource.",
+            "defaultValue": "",
+            "visibleRule": "ActualizarDataSource = true"
+        },
+        {
+            "name": "ContrasenniaConexionBaseDatosDataSource",
+            "type": "string",
+            "label": "Contraseña de conexión a base de",
+            "helpMarkDown": "Contraseña del usuario con privilegios de conexión con la base de datos.",
+            "defaultValue": "",
+            "visibleRule": "ActualizarDataSource = true"
+        },
+        {
+            "name": "UrlPowerBiReportServer",
+            "type": "string",
+            "label": "URL portal Power BI",
+            "helpMarkDown": "URL del portal de Power BI donde se publican los reportes. Ejemplo: http://localhost/ReportsPBI",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "NombreCarpetaReportesPbi",
+            "type": "string",
+            "label": "Nombre de carpeta de reportes",
+            "helpMarkDown": "Nombre con el que se publicará la carpeta de los reportes en el servidor.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "RutaArchivosPublicar",
+            "type": "filePath",
+            "label": "Ruta de archivos PBIX a publicar",
+            "helpMarkDown": "Ruta de los archivo de reportes a publicar en la carpeta ingresada.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "TipoAutenticación",
+            "type": "boolean",
+            "label": "Tipo de autenticación.",
+            "helpMarkDown": "Tipo de autenticación del datasource de los reportes.",
+            "defaultValue": false,
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "UsuarioConexionReportesPbi",
+            "type": "string",
+            "label": "Usuario para conexión",
+            "helpMarkDown": "Nombre de usuario que se conectará mediante el datasource de los reportes.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "ContrasenniaConexionReportesPbi",
+            "type": "string",
+            "label": "Contraseña del usuario para conexión",
+            "helpMarkDown": "Contraseña del usuario que se conectará mediante el datasource de los reportes.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "ServidorBaseDatosReportes",
+            "type": "string",
+            "label": "Nombre de servidor",
+            "helpMarkDown": "Nombre del servidor donde se hospeda la base de datos a consumir por los reportes.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        },
+        {
+            "name": "BaseDatosReportes",
+            "type": "string",
+            "label": "Nombre de base de datos",
+            "helpMarkDown": "Nombre de la base de datos a la que se conectarán los reportes.",
+            "defaultValue": "",
+            "visibleRule": "tipoDespliegueReportes = powerbi"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "reportingtools.ps1"
+        }
+    }
+}
