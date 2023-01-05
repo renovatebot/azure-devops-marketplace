@@ -1,0 +1,154 @@
+{
+	"id": "4d5cf5df-4506-483d-bf89-cf17465fb98a",
+	"name": "power-bi-utility-task",
+	"friendlyName": "PowerBI Utility",
+	"description": "Release Task of PowerBI Utility",
+	"author": "SDC BI bd",
+	"helpMarkDown": "",
+	"category": "Utility",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "0",
+		"Patch": "24"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "PowerBI Utility",
+	"inputs": [
+		{
+			"name": "Username",
+			"type": "string",
+			"label": "Publishing User",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Username of the publishing user."
+		},
+		{
+			"name": "Password",
+			"type": "string",
+			"label": "Password",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Password of the user. Value should be a secured variable."
+		},
+		{
+			"name": "ClientId",
+			"type": "string",
+			"label": "ClientId",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "ClientId of the application that has access to the PowerBI API."
+		},
+		{
+			"name": "Action",
+			"label": "Action",
+			"type": "pickList",
+			"required": true,
+			"helpMarkDown": "Select the action you would like to perform",
+			"defaultValue": "Upload",
+			"options": {
+				"DirectQuery": "Set All Dataset Connections In Group",
+				"Upload": "Upload PowerBI Report",
+				"UpdateDatasources": "Update Datasources In Group"
+			}
+		},
+		{
+			"name": "Connectionstring",
+			"type": "string",
+			"label": "Connectionstring",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The new connection string to the database",
+			"visibleRule": "Action = DirectQuery"
+		},
+		{
+			"name": "SourceBranch",
+			"type": "string",
+			"label": "Source branch",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The branch name of the source code",
+			"visibleRule": "Action = Upload || Action = UpdateDatasources"
+		},
+		{
+			"name": "BranchNameAsSuffix",
+			"type": "boolean",
+			"label": "Add branch name as suffix in Power BI report",
+			"defaultValue": "true",
+			"required": false,
+			"helpMarkDown": "To help separate the report generate in feature branch from master branch",
+			"visibleRule": "Action = Upload || Action = UpdateDatasources"
+		},
+		{
+			"name": "PowerBIPath",
+			"type": "filePath",
+			"label": "Source file",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Absolute path of the file",
+			"visibleRule": "Action = Upload || Action = UpdateDatasources"
+		},
+		{
+			"name": "Overwrite",
+			"type": "boolean",
+			"label": "Overwrite PowerBI File",
+			"defaultValue": "true",
+			"required": false,
+			"helpMarkDown": "Should the dataset be overwritten?",
+			"visibleRule": "Action = Upload"
+		},
+		{
+			"name": "ConnectionDetailsServer",
+			"type": "string",
+			"label": "Server",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "AAS Server name",
+			"visibleRule": "Action = UpdateDatasources"
+		},
+		{
+			"name": "ConnectionDetailsDatabase",
+			"type": "string",
+			"label": "Database",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "AAS database name",
+			"visibleRule": "Action = UpdateDatasources"
+		},
+		{
+			"name": "Dataset",
+			"type": "string",
+			"label": "Dataset",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The name of the dataset with direct query",
+			"visibleRule": "Action = DirectQuery"
+		},
+		{
+			"name": "GroupName",
+			"type": "string",
+			"label": "GroupName",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Name of the group to publish the file to."
+		},
+		{
+			"name": "Create",
+			"type": "boolean",
+			"label": "Create if workspace does not exist",
+			"defaultValue": "true",
+			"required": false,
+			"helpMarkDown": "Create the workspace when it does not exist",
+			"visibleRule": "Action = Upload"
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "run-task.ps1"
+		}
+	}
+}
