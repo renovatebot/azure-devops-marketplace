@@ -1,0 +1,64 @@
+{
+    "id": "BEBB32CE-C324-4BFE-A928-0DA040EDFCFF",
+    "name": "YandexDiskPublishTask",
+    "friendlyName": "Yandex.Disk Publish Task",
+    "description": "Publish build artifact to Yandex.Disk",
+    "helpMarkDown": "[More Information](https://github.com/cmgt/ya-disk-publish",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+	"runsOn": [
+        "Agent"
+	],
+    "author": "Denis Porotikov",
+    "version": {
+        "Major": 0,
+        "Minor": 5,
+        "Patch": 9
+    },
+    "instanceNameFormat": "Yandex.Disk Publish",
+    "inputs": [
+        {
+            "name": "contents",
+            "type": "multiLine",
+            "label": "Contents",
+            "defaultValue": "**",
+            "required": true,
+            "helpMarkDown": "File paths to include as part of the publish. Supports multiple lines of match patterns. [More Information](https://go.microsoft.com/fwlink/?LinkID=708389)"
+		},	
+		{
+            "name": "sourcepath",
+            "type": "filePath",
+            "label": "Source path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The source folder that the copy pattern(s) will be run from.  Empty is the root of the repo.  Use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) if files are not in the repo. Example: $(agent.builddirectory)"
+        },
+        {
+            "name": "destpath",
+            "type": "string",
+            "label": "Yandex.Disk destination path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A sample test/test.txt"
+        },
+		{
+            "name": "oauthtoken",
+            "type": "string",
+            "label": "OAuth Token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "https://oauth.yandex.ru/authorize?response_type=token&client_id=6a5e12a08a6544448b257078a9eaef10"
+		}
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+	"messages": {
+		"FoundNFiles": "found %d files"
+	}
+}
