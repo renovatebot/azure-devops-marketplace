@@ -1,0 +1,81 @@
+{
+    "id": "a8b696ba-d31e-402f-9815-69a7de733e12",
+    "name": "SqlBackup",
+    "friendlyName": "Backup SQL Database",
+    "description": "Backup a SQL Server database",
+    "author": "Andrew Lackenby",
+    "category": "Utility",
+    "version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "9"
+    },
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "inputs": [
+                {
+            "name": "backupType",
+            "type": "pickList",
+            "label": "Backup Type",
+            "defaultValue": "Full",
+            "required": true,
+            "options": {
+            "Full": "Full backup",
+            "Log": "Trnasaction Log backup",
+            "Incremental": "Incremental backup"
+            },
+            "helpMarkDown": "Specify the backup type you want to perform."
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "Server Name",
+            "required": true,
+            "helpMarkDown": "Enter the server name as ServerName or ServerName\\Instance"
+        },
+         {
+            "name": "databaseName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true,
+            "helpMarkDown": "Specify the name of the database you want to backup."
+        },
+        {
+            "name": "backupFile",
+            "type": "string",
+            "label": "Backup file name",
+            "required": true,
+            "helpMarkDown": "Specify the file name (including full path) of the backup file"
+        },
+        {
+            "name": "withInit",
+            "type": "boolean",
+            "label": "Initialse backup file",
+            "defaultValue":"true",
+            "required": false,
+            "helpMarkDown": "Determines whether the file associated with a backup operation are initialised as part of the backup operation."
+        },
+        {
+            "name": "credentialName",
+            "type": "string",
+            "label": "SQL Credential",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Sets the Credential property value, which is used to authenticate to the Windows Azure storage account.("
+        }
+    ],
+    "instanceNameFormat": "Run Sql Backup of $(databaseName)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\SqlBackup.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
