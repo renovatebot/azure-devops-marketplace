@@ -1,0 +1,109 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.release",
+        "vso.serviceendpoint_manage",
+        "vso.work"
+    ],
+    "contributions": [
+        {
+            "id": "split-service-connection",
+            "description": "Service endpoint type for Split connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "split",
+                "displayName": "Split",
+                "url": {
+                    "value": "https://integration-service-public.split.io/azuredevops",
+                    "isVisible": false
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/installation/projects/{{endpoint.projectname}}",
+                        "resultSelector": "jsonpath:$.result"
+                    },
+                    {
+                        "name": "SplitWorkspaces",
+                        "endpointUrl": "{{endpoint.url}}/api/integrations/azuredevops/workspaces?offset=0&limit=100",
+                        "resultSelector": "jsonpath:$.objects[*]"
+                    },
+                    {
+                        "name": "SplitEnvironments",
+                        "endpointUrl": "{{endpoint.url}}/api/environments/ws/$(WorkspaceId)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "SplitTrafficTypes",
+                        "endpointUrl": "{{endpoint.url}}/api/trafficTypes/ws/$(WorkspaceId)",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "projectname",
+                        "name": "Project name",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 64
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Split Token",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "split-work-item-form-page",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "Custom work item form page",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Split",
+                "uri": "dist/WorkItemTab/index.html"
+            }
+        },
+        {
+            "id": "split-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/ReleaseTask"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

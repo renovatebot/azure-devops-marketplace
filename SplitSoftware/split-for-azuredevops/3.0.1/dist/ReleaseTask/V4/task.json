@@ -1,0 +1,72 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "184d6e5d-f8c1-429a-a90f-ff39dc4334ac",
+  "name": "SplitUpdateDefinition",
+  "friendlyName": "Split",
+  "description": "All splits connected to work items in this release are set to 100% off and 0% on in your selected workspace and environment.  Edit the targeting definition field to customize your task. If a definition already exists for a split in the workspace and environment, the existing definition is not updated by this task.",
+  "category": "Deploy",
+  "author": "Split",
+  "version": {
+    "Major": 4,
+    "Minor": 2,
+    "Patch": 2
+  },
+  "instanceNameFormat": "Configure splits",
+  "inputs": [
+    {
+      "name": "ServiceConnection",
+      "type": "connectedService:split",
+      "label": "Service Connection",
+      "helpMarkDown": "Select a Split service connection."
+    },
+    {
+      "name": "WorkspaceId",
+      "type": "pickList",
+      "label": "Workspace",
+      "required": true,
+      "helpMarkDown": "Select a workspace."
+    },
+    {
+      "name": "EnvironmentId",
+      "type": "pickList",
+      "label": "Environment",
+      "required": true,
+      "helpMarkDown": "Select an environment."
+    },
+    {
+      "name": "SplitTargetingDefinition",
+      "type": "multiLine",
+      "label": "Split Targeting Definition",
+      "defaultValue": "{\n  \"treatments\": [\n    {\n      \"name\": \"on\"\n    },\n    {\n      \"name\": \"off\"\n    }\n  ],\n  \"defaultTreatment\": \"off\",\n  \"rules\": [],\n  \"defaultRule\": [\n    {\n      \"treatment\": \"off\",\n      \"size\": 100\n    }\n  ]\n}",
+      "properties": {
+        "resizable": true,
+        "rows": "4",
+        "maxLength": "1000"
+      },
+      "required": true,
+      "helpMarkDown": "Include a targeting definition."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "dataSourceBindings": [
+    {
+      "target": "WorkspaceId",
+      "endpointId": "$(ServiceConnection)",
+      "dataSourceName": "SplitWorkspaces",
+      "resultTemplate": "{\"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "EnvironmentId",
+      "endpointId": "$(ServiceConnection)",
+      "dataSourceName": "SplitEnvironments",
+      "parameters": {
+        "WorkspaceId": "$(WorkspaceId)"
+      },
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    }
+  ]
+}
