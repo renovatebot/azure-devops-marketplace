@@ -1,0 +1,95 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/kiuwan/tfs-vsts-extension"
+    },
+    "scopes": [
+        "vso.work",
+        "vso.code",
+        "vso.project",
+        "vso.symbols"
+    ],
+    "contributions": [
+        {
+            "id": "kiuwan-bl-analysis-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "baseline-analysis-task"
+            }
+        },
+        {
+            "id": "kiuwan-cr-analysis-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "delivery-analysis-task"
+            }
+        },
+        {
+            "id": "kiuwan-service-endpoint",
+            "description": "Kiuwan servide endpoint to connect to the Kiuwan platform",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "kiuwan",
+                "displayName": "Kiuwan Platform",
+                "url": {
+                    "displayName": "Kiuwan URL",
+                    "value": "https://api.kiuwan.com",
+                    "helpMarkDown": "The Kiuwan Service Endpoint URL is always https://api.kiuwan.com"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/info",
+                        "resultSelector": "jsonpath:$.username"
+                    },
+                    {
+                        "name": "ListApplications",
+                        "endpointUrl": "{{endpoint.url}}/apps/list",
+                        "resultSelector": "jsonpath:$[*].name"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "This is your Kiuwan username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isrequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Yup! this is your Kiuwan password",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isrequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkdown": "<a href=\"https://www.kiuwam.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

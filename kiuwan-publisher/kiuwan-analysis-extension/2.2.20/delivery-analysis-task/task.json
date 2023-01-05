@@ -1,0 +1,222 @@
+{
+    "id": "4e6e25e3-c0b5-4986-8714-5c751945c15f",
+    "name": "kiuwan-delivery-analysis-task",
+    "friendlyName": "Kiuwan Delivery Analysis",
+    "description": "Run a Kiuwan delivery Kiuwan analysis on the source code extracted by the build configuration.",
+    "helpMarkDown": "WARNING: To use this build task you need to have valid credentials to a Kiuwan account.",
+    "category": "Build",
+    "author": "Javier Salado",
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 10
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "Kiuwan delivery analysis",
+    "groups": [
+        {
+            "name": "security",
+            "displayName": "Security analysis performance",
+            "isExpanded": true
+        },
+        {
+            "name": "database",
+            "displayName": "Database code analysis ",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced analysis settings",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "kiuwanConnection",
+            "type": "connectedService:Kiuwan",
+            "label": "Kiuwan Service",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Kiuwan service connection"
+        },
+        {
+            "name": "projectnameselector",
+            "type": "radio",
+            "label": "What do you want to use as Kiuwan application name?",
+            "defaultValue": "default",
+            "required": true,
+            "options": {
+                "default": "$(System.TeamProject)",
+                "kiuwanapp": "Kiuwan application from list",
+                "appname": "Define a custom name"
+            },
+            "helpMarkDown": "You can use System.TeamProject variable, pick an aexisting application from a list or set a new application name."
+        },
+        {
+            "name": "kiuwanappname",
+            "type": "pickList",
+            "label": "Available Kiuwan applications",
+            "required": false,
+            "visibleRule": "projectnameselector = kiuwanapp",
+            "helpMarkDown": "Select an existing application in Kiuwan to associate results to."
+        },
+        {
+            "name": "customappname",
+            "type": "string",
+            "label": "Kiuwan application name",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "projectnameselector = appname",
+            "helpMarkDown": "Custom application name in Kiuwan to associate results to. It will be cautomatically created if it doesn't exist in your account."
+        },
+        {
+            "name": "analysislabel",
+            "type": "string",
+            "label": "Analysis label",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A label to identify this analysis in Kiuwan. The build number is always appended to the specified label. if empty, the label will be the build number."
+        },
+        {
+            "name": "analysisscope",
+            "type": "radio",
+            "label": "Anlysis Scope",
+            "defaultValue": "completeDelivery",
+            "required": true,
+            "helpMarkDown": "Status this change reques. Could be in progress or resolved",
+            "options": {
+                "completeDelivery": "Complete application",
+                "partialDelivery": "Only changes"
+            }
+        },
+        {
+            "name": "failonaudit",
+            "type": "boolean",
+            "label": "Fail on Kiuwan audit fail?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Should the task fail if the Kiuwan audit fails?"
+        },
+        {
+            "name": "skipclones",
+            "type": "boolean",
+            "label": "Skip duplication of code analysis?",
+            "defaultValue": false,
+            "required": true,
+            "groupName": "security",
+            "helpMarkDown": "Skipping the duplicated code analysis is recommended for code security analysis only.<br />Applies only to Kiuwan accounts with the Code Analysis module."
+        },
+        {
+            "name": "skiparch",
+            "type": "boolean",
+            "label": "Skip architecture analysis?",
+            "defaultValue": true,
+            "required": true,
+            "groupName": "security",
+            "helpMarkDown": "Skipping the architecture code analysis is recommended for code security analysis only.<br />Applies only to Kiuwan accounts with the Architecture module."
+        },
+        {
+            "name": "crstatus",
+            "type": "radio",
+            "label": "Change request status",
+            "defaultValue": "inprogress",
+            "required": false,
+            "helpMarkDown": "Status of this change request. Could be in progress or resolved",
+            "options": {
+                "inprogress": "In progress",
+                "resolved": "Resolved"
+            }
+        },
+        {
+            "name": "encoding",
+            "type": "string",
+            "label": "Source code encoding",
+            "defaultValue": "UTF-8",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Encoding to use to parse the source code files. UTF-8 should work in most cases, but for example if you know that your code has latin characters use ISO-8859-1"
+        },
+        {
+            "name": "includepatterns",
+            "type": "string",
+            "label": "Include patterns",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separated list of ant like patterns of the files to include in the analysis"
+        },
+        {
+            "name": "excludepatterns",
+            "type": "string",
+            "label": "Exclude patterns",
+            "defaultValue": "**/*.min.js,**/*.Designer.vb,**/*Reference.vb,**/*Service.vb,**/*Silverlight.vb,**/*.designer.vb,**/*reference.vb,**/*service.vb,**/*silverlight.vb,**/*.Designer.cs,**/*Reference.cs,**/*Service.cs,**/*Silverlight.cs,**/*.designer.cs,**/*reference.cs,**/*service.cs,**/*silverlight.cs,**/.*,**/Pods/BuildHeaders/**/*.h,**/Pods/Headers/**/*.h",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Comma separatedlist of ant like patterns to exclude specific files from the analysis"
+        },
+        {
+            "name": "memory",
+            "type": "string",
+            "label": "Maximum memory for the analysis (MB)",
+            "defaultValue": "1024",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Maximum memory to allocate to run the analysis in MB. The default value of of 1024, is usually enough for big application you can increase it."
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Analysis timeout (min)",
+            "defaultValue": "60",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Maximum time to run the analysis. If reached, the analysis will end and fail. Usually the default is enough, change it only in the case of very big applications (more than 1 MLoC)."
+        },
+        {
+            "name": "dbanalysis",
+            "type": "boolean",
+            "label": "Is there database code included in your application?",
+            "defaultValue": false,
+            "required": true,
+            "groupName": "database",
+            "helpMarkDown": "Check this if you have stored procedures code in your repository to analyze."
+        },
+        {
+            "name": "dbtechnology",
+            "type": "pickList",
+            "label": "Database technology used in the application",
+            "defaultValue": "none",
+            "required": true,
+            "groupName": "database",
+            "visibleRule": "dbanalysis == true",
+            "options": {
+                "none": "None",
+                "plsql": "Oracle PL/SQL",
+                "transactsql": "Microsoft/Sybase Transact SQL",
+                "informix": "Informix stored procedures"
+            },
+            "helpMarkDown": "Please, select the type of stored procedures you use in your application. We support Oracle PL/SQL, Microsoft SQLServer TransactSQL, Sybase Transact and Informix stored procedures."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "kiuwanappname",
+            "endpointId": "$(kiuwanConnection)",
+            "dataSourceName": "ListApplications"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "run-kla-delivery.ps1"
+        },
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
