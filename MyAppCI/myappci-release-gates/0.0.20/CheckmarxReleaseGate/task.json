@@ -1,0 +1,85 @@
+{
+    "id": "c000ab90-969e-11ea-a412-63b0e805a14d",
+    "name": "CheckmarxReleaseGate",
+    "friendlyName": "Checkmarx Release Gate",
+    "description": "The gate can be configured to check if a treshold for high-findings is reached.",
+    "author": "MyAppCI",
+    "helpMarkDown": "Replace with markdown to show in help",
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "0",
+      "Minor": "9",
+      "Patch": "2"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "CheckmarxReleaseGate $(message)",
+    "groups": [
+        {
+            "name": "configuration",
+            "displayname": "Configuration",
+            "isExpanded": true
+        },
+        {
+            "name": "tresholds",
+            "displayname": "Tresholds",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:Generic",
+            "label": "Generic service pointing to your checkmarx instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Generic service/server end point having the URL with protcoll https://mycheckmarx.com, username and password.",
+            "groupName": "configuration"
+        },
+        {
+            "name": "projectid",
+            "type": "string",
+            "label": "Checkmarx project id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The technical id (integer) of the checkmarx projext.",
+            "groupName": "configuration"
+        },
+        {
+            "name": "clientsecret",
+            "type": "string",
+            "label": "Client secret",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Checkmarx API Client secret",
+            "groupName": "configuration"
+        },
+        {
+            "name": "treshholdaging",
+            "type": "string",
+            "label": "Max scan aging in days",
+            "defaultValue": "7",
+            "required": true,
+            "helpMarkDown": "Max scan aging in days",
+            "groupName": "tresholds"
+        },
+        {
+            "name": "treshholdhighseverity",
+            "type": "string",
+            "label": "Max number of high severity issues",
+            "defaultValue": "7",
+            "required": true,
+            "helpMarkDown": "Max number of high severity issues",
+            "groupName": "tresholds"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
