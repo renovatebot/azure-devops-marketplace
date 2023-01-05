@@ -1,0 +1,48 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "debf98c1-f645-459a-a64e-d8d00d8fdc7d",
+    "name": "WinServiceLauncher",
+    "friendlyName": "Windows Service Launcher",
+    "description": "Temporarily starts a Windows Service on local system",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "evy Solutions GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "net start $(serviceName)",
+    "inputs": [
+        {
+            "name": "serviceName",
+            "type": "string",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the service (not Service Display Name)"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "launcher.js", 
+            "platforms": [ "windows" ]
+        }
+    },
+    "postjobexecution": {
+        "Node10": {
+            "target": "descent.js",
+            "platforms": [ "windows" ]
+        }
+    },
+    "messages": {
+        "InstallRequiresWindows": "Launching a Windows servies requires a windows agent. Installing on Mac or Linux is not supported ."
+    }
+}
