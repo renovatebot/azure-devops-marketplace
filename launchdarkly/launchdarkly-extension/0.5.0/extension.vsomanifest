@@ -1,0 +1,107 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "LaunchDarkly.WorkItemPage",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "LaunchDarkly Work Item Page",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "LaunchDarkly",
+                "uri": "static/workItemPage.html"
+            }
+        },
+        {
+            "id": "LaunchDarkly.RMSummarySection",
+            "type": "ms.vss-releaseManagement-web.release-summary-section",
+            "targets": [
+                "ms.vss-releaseManagement-web.release-details-summary-tab"
+            ],
+            "properties": {
+                "name": "LaunchDarkly Summary",
+                "uri": "static/rmSummarySection.html"
+            }
+        },
+        {
+            "id": "LaunchDarkly.RMTab",
+            "type": "ms.vss-releaseManagement-web.release-summary-tab",
+            "targets": [
+                "ms.vss-releaseManagement-web.release-details-view"
+            ],
+            "properties": {
+                "name": "LaunchDarkly Tab",
+                "uri": "static/rmTab.html"
+            }
+        },
+        {
+            "id": "LaunchDarkly.Endpoint",
+            "description": "LaunchDarkly provides feature flags as a service.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "launchdarkly",
+                "displayName": "LaunchDarkly",
+                "url": "https://f24113ef.ngrok.io/api",
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "API key for connection to LaunchDarkly",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "api_key {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "Flags",
+                        "endpointUrl": "https://f24113ef.ngrok.io/proxy/api/features",
+                        "resultSelector": "jsonpath:$.items"
+                    },
+                    {
+                        "name": "FlagByKey",
+                        "endpointUrl": "https://f24113ef.ngrok.io/proxy/api/features/{{flagKey}}",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "LaunchDarkly.Rollout.Task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Rollout"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.profile",
+        "vso.serviceendpoint_query",
+        "vso.work",
+        "vso.release"
+    ],
+    "baseUri": "https://f24113ef.ngrok.io",
+    "contributionTypes": []
+}
