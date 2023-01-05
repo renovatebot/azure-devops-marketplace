@@ -1,0 +1,62 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "CloudMakerAzureDeployment",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "AzureDeployment"
+            }
+        },
+        {
+            "id": "cloudmaker-public-api-endpoint",
+            "description": "",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cloudmaker",
+                "displayName": "Cloud Maker",
+                "url": {
+                    "value": "https://api.cloudmaker.ai",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "Solutions",
+                        "endpointUrl": "{{endpoint.url}}/v1/solutions",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "headers": [
+                            {
+                                "name": "X-Api-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Stages",
+                        "endpointUrl": "{{endpoint.url}}/v1/solutions/{{SolutionId}}/stages",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "headers": [
+                            {
+                                "name": "X-Api-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

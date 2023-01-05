@@ -1,0 +1,114 @@
+{
+  "id": "25e3decd-0119-43cd-8819-85b4a5fdde84",
+  "name": "CloudMakerAzureDeployment",
+  "friendlyName": "Cloud Maker Azure Deployment",
+  "description": "Deploys a Cloud Maker blueprint",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "author": "Cloud Maker",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 15
+  },
+  "instanceNameFormat": "Cloud Maker Azure Deployment",
+  "inputs": [
+    {
+      "name": "Organisation",
+      "type": "connectedService:cloudmaker",
+      "label": "Organisation",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The CloudMaker service endpoint configured for your organisation"
+    },
+    {
+      "name": "BlueprintName",
+      "type": "pickList",
+      "label": "Blueprint name",
+      "required": true,
+      "helpMarkDown": "Select the blueprint to deploy."
+    },
+    {
+      "name": "BlueprintVersion",
+      "type": "pickList",
+      "label": "Blueprint version",
+      "required": true,
+      "helpMarkDown": "The version of the blueprint to deploy"
+    },
+    {
+      "name": "ConnectedServiceName",
+      "aliases": [
+        "azureSubscription"
+      ],
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
+    },
+    {
+      "name": "ResourceGroupName",
+      "type": "pickList",
+      "label": "Resource group",
+      "required": true,
+      "helpMarkDown": "The name of a resource group.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "ResourceGroupLocation",
+      "type": "pickList",
+      "label": "Resource group location",
+      "required": true,
+      "helpMarkDown": "Location for deploying the resource group. If the resource group already exists in the subscription, then this value will be ignored.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "DeploymentMode",
+      "type": "pickList",
+      "label": "Deployment mode",
+      "defaultValue": "Incremental",
+      "required": true,
+      "helpMarkDown": "Refer to [this](https://docs.microsoft.com/en-us/azure/azure-resource-manager/deployment-modes) for more details. \n\n Incremental mode handles deployments as incremental updates to the resource group. It leaves unchanged resources that exist in the resource group but are not specified in the template. \n\n Complete mode deletes resources that are not in your template. Complete mode takes relatively more time than incremental mode. If the task times out, consider increasing the timeout, or changing the mode to 'Incremental'. \n [Warning] This action will delete all the existing resources in the resource group that are not specified in the template. \n\n Validate mode enables you to find problems with the template before creating actual resources. \n\n By default, Incremental mode is used.",
+      "options": {
+        "Incremental": "Incremental",
+        "Complete": "Complete",
+        "Validation": "Validation only"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ResourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "ResourceGroupLocation",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureLocations"
+    },
+    {
+      "target": "BlueprintName",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "Blueprints",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\":\"{{{name}}}\"}"
+    },
+    {
+      "target": "BlueprintVersion",
+      "endpointId": "$(Organisation)",
+      "dataSourceName": "BlueprintVersions",
+      "parameters": {
+        "BlueprintId": "$(BlueprintName)"
+      }
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "src/index.js"
+    }
+  }
+}
