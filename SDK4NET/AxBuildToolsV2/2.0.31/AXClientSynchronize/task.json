@@ -1,0 +1,151 @@
+{
+  "id": "12345679-D2DE-4C57-9E86-F87AA6E3D541",
+  "name": "AXClientSynchronize",
+  "friendlyName": "AX Client - Synchronize database",
+  "description": "Synchronizes the database of an AX environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-synchronize-database)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 16
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch",
+        "Classic": "Classic"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "syncDB",
+      "type": "boolean",
+      "label": "Synchronize database",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the database synchronized?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "syncTasks",
+      "type": "boolean",
+      "label": "Synchronize tasks",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the tasks synchronized?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "syncRoles",
+      "type": "boolean",
+      "label": "Synchronize roles",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the roles synchronized?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "syncRuntimeModel",
+      "type": "boolean",
+      "label": "Synchronize runtime model",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the runtime model synchronized?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "dbOnly",
+      "type": "boolean",
+      "label": "Database only",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Should only the database synchronized?",
+      "visibleRule": "runMode = Classic",
+      "groupName": ""
+    },
+    {
+      "name": "deleteAxLogFiles",
+      "type": "boolean",
+      "label": "Delete AX log files",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Deletes the ax log files before the synchronisation of the AX database starts.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Synchronize database: $(configurationFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

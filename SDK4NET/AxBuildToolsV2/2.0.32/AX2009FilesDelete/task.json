@@ -1,0 +1,146 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "12345679-E2B4-47FB-96C3-D63C981296E9",
+  "name": "AX2009FilesDelete",
+  "friendlyName": "AX 2009 Files - Delete",
+  "description": "Deletes a application, layer or label files from an AX 2009 environment",
+  "helpMarkDown": "[More Information](https://sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-2009-server/ax-2009-files-delete)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 16
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "deleteMode",
+      "type": "pickList",
+      "label": "Delete mode",
+      "defaultValue": "Application",
+      "required": true,
+      "helpMarkDown": "What files should be deleted?",
+      "groupName": "",
+      "options": {
+        "Application": "Application files",
+        "Layer": "Layer files",
+        "Label": "Label files"
+      }
+    },
+    {
+      "name": "layerNames",
+      "type": "string",
+      "label": "Layer name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the three-letter name of the Microsoft Dynamics AX layer(s), for example, VAR. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "deleteMode = Layer"
+    },
+    {
+      "name": "excludeLayerNames",
+      "type": "string",
+      "label": "Exclude layer name(s)",
+      "defaultValue": "SYS, SYP, GLS, GLP, DIS, DIP, LOS, LOP, HFX, SL1, SL2, SL3",
+      "required": false,
+      "helpMarkDown": "Specifies the three-letter name of the Microsoft Dynamics AX layer(s) to exclude, for example, SYS. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "deleteMode = Layer"
+    },
+    {
+      "name": "labelNames",
+      "type": "string",
+      "label": "Label name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the label name(s) of the Microsoft Dynamics AX label file(s), for example, AHD. (optional, comma-separated)",
+      "groupName": "",
+      "visibleRule": "deleteMode = Label"
+    },
+    {
+      "name": "excludeLabelNames",
+      "type": "string",
+      "label": "Exclude layer name(s)",
+      "defaultValue": "SYS, SYP, GLS, GLP, DIS, DIP, LOS, LOP, HFX, SL1, SL2, SL3",
+      "required": false,
+      "helpMarkDown": "Specifies the label name(s) of the Microsoft Dynamics AX label file(s) to exclude, for example, SYS. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "deleteMode = Label"
+    },
+    {
+      "name": "labelLanguages",
+      "type": "string",
+      "label": "Label file language(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the language(s) of the Microsoft Dynamics AX label file(s), for example, en-US. (optional, comma-separated)",
+      "groupName": "",
+      "visibleRule": "deleteMode = Label"
+    },
+    {
+      "name": "removeIndexes",
+      "type": "boolean",
+      "label": "Remove object and label indexes",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the object and label indexes be removed?",
+      "groupName": "",
+      "visibleRule": "deleteMode != Application"
+    },
+    {
+      "name": "backupMode",
+      "type": "pickList",
+      "label": "Backup mode",
+      "defaultValue": "CleanAndBackup",
+      "required": true,
+      "helpMarkDown": "How should the backup be done?",
+      "groupName": "",
+      "visibleRule": "",
+      "options": {
+        "NoBackup": "No backup",
+        "BackupOnly": "Backup only",
+        "CleanAndBackup": "Clean and backup"
+      }
+    },
+    {
+      "name": "backupFolder",
+      "type": "string",
+      "label": "Backup folder",
+      "defaultValue": "Old",
+      "required": false,
+      "helpMarkDown": "Specifies the backup folder name.",
+      "groupName": "",
+      "visibleRule": "backupMode != NoBackup"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2009 Files - Delete: $(configurationFileName) - $(deleteMode)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

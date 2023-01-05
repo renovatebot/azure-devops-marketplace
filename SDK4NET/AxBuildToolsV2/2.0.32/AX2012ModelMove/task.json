@@ -1,0 +1,94 @@
+{
+  "id": "12345679-284C-479F-B6E5-B5A14241F991",
+  "name": "AX2012ModelMove",
+  "friendlyName": "AX 2012 Model - Move",
+  "description": "Moves a model within a AX 2012 model store",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-models-ax-2012/ax-2012-model-move)",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "modelIdentification",
+      "displayName": "Model identification",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "targetModelName",
+      "type": "string",
+      "label": "Target model name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The model to be replaced.",
+      "groupName": ""
+    },
+    {
+      "name": "identificationType",
+      "type": "pickList",
+      "label": "Identification type",
+      "defaultValue": "modelName",
+      "required": true,
+      "helpMarkDown": "How should the identification be done?",
+      "groupName": "modelIdentification",
+      "options": {
+        "modelName": "Model name",
+        "manifestFile": "Manifest file"
+      }
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the model.",
+      "visibleRule": "identificationType = modelName",
+      "groupName": "modelIdentification"
+    },
+    {
+      "name": "manifestFileName",
+      "type": "filePath",
+      "label": "Manifest file path (.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies an XML file that identifies a model. Use the \"AX2012 Model - Get Model manifest\" Build step to output a sample manifest file.",
+      "visibleRule": "identificationType = manifestFile",
+      "groupName": "modelIdentification"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Model - Move: $(targetModelName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

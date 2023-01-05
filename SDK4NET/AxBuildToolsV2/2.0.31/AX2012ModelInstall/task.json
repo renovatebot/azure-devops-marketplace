@@ -1,0 +1,121 @@
+{
+  "id": "12345679-C740-4CD8-8893-60F95A6A41B2",
+  "name": "AX2012ModelInstall",
+  "friendlyName": "AX 2012 Model - Install",
+  "description": "Install a model into an AX 2012 model store",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-models-ax-2012/ax-2012-model-install)",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "modelFileName",
+      "type": "filePath",
+      "label": "Model file path (.axmodel)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the ax model file.",
+      "groupName": ""
+    },
+    {
+      "name": "conflictMode",
+      "type": "pickList",
+      "label": "Conflict mode",
+      "defaultValue": "reject",
+      "required": true,
+      "helpMarkDown": "Specifies what to do in the event that a conflict of element IDs between the model being imported and another model in the same layer is found. Possible values include Reject, Push, or Overwrite. Reject stops the import process. Push duplicates the model element into the related update layer. For example, for the ISV layer, the update layer is ISP. Overwrite replaces the existing model element with the imported model element. The default value is Reject.",
+      "groupName": "advanced",
+      "options": {
+        "reject": "Reject",
+        "push": "Push",
+        "overwrite": "Overwrite"
+      }
+    },
+    {
+      "name": "targetLayerName",
+      "type": "string",
+      "label": "Targer layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies which layer a conflict model should be created in. It must be a layer above the layer that the model itself is imported into. The default value is the patch layer of the layer that the model itself is imported into, or, if importing into a patch layer, to the USR layer. (optional)",
+      "groupName": "advanced",
+      "visibleRule": "conflictMode = push"
+    },
+    {
+      "name": "ReplaceModelName",
+      "type": "string",
+      "label": "Replace model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies a model to be replaced by the model that is being installed. (optional)",
+      "groupName": "advanced"
+    },
+    {
+      "name": "noOptimize",
+      "type": "boolean",
+      "label": "Do not optimize",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies that the system skip steps to optimize the database, such as re-indexing. After installation is finished, you would then call the Build step \"AX 2012 Model Store - Optimize\".",
+      "groupName": "advanced"
+    },
+    {
+      "name": "createParents",
+      "type": "boolean",
+      "label": "Create parents",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specifies that if you install a child element that does not have a parent in the model store, a new parent element should be created. By default, this option is off, so that if child elements that do not have parents are encountered, the import process is stopped. In general, we recommend that you avoid the use of this parameter, if possible. If you are importing multiple models that have dependencies, we strongly recommend that you import them in the correct order, so that the use of the Create Parents parameter is not required. If you must use Create Parents, then we recommend that you use it in combination with the Conflict mode set to Push, and then resolve issues with the parent elements in AOT. Note that if you use the Create Parents parameter, a new model of Category virtual will be created.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "showModelDetails",
+      "type": "boolean",
+      "label": "Show model details",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the model details be shown?",
+      "groupName": "advanced"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Model - Install: $(modelFileName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

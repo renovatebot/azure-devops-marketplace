@@ -1,0 +1,93 @@
+{
+  "id": "12345679-64F4-4925-BF90-1056E669A177",
+  "name": "WindowsServiceAction",
+  "friendlyName": "Windows - Service action",
+  "description": "Does start, stop or restart a Windows service.",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-windows-server/windows-service-action)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "minimumAgentVersion": "2.105.7",
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 20
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "start",
+      "required": true,
+      "options": {
+        "start": "Start",
+        "stop": "Stop",
+        "restart": "Restart"
+      },
+      "helpMarkDown": "Select the action, either start, stop or restart the windows service.",
+      "groupName": ""
+    },
+    {
+      "name": "destination",
+      "type": "pickList",
+      "label": "Destination",
+      "defaultValue": "local",
+      "required": true,
+      "options": {
+        "local": "Local computer",
+        "remote": "Remote computer"
+      },
+      "helpMarkDown": "Should the service action run on local or remote computer?",
+      "groupName": ""
+    },
+    {
+      "name": "computerNames",
+      "type": "string",
+      "label": "Computer name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The computer name(s) to run the service action. (comma-separated)",
+      "visibleRule": "destination = remote",
+      "groupName": ""
+    },
+    {
+      "name": "serviceNames",
+      "type": "string",
+      "label": "Service name(s)",
+      "defaultValue": "Microsoft.Dynamics.AX.Framework.Tools.DMF.SSISHelperService.exe, CommerceDataExchangeAsyncClientService, Microsoft Dynamics AX for Retail Offline Sync Service, DynamicsAXConnectorForMobileApplications, W3SVC, Microsoft Dynamics AX Commerce Data Exchange: Real-time Service 5.1, Microsoft Dynamics AX Commerce Data Exchange: Real-time Service 6.1, MR2012ApplicationService, MR2012ProcessService",
+      "required": true,
+      "helpMarkDown": "The service name(s) to perform the service action. (comma-separated)",
+      "visibleRule": "",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step.",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - Windows - Service action: $(action) - $(serviceNames)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
