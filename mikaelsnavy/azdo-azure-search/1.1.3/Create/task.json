@@ -1,0 +1,79 @@
+{
+   "id": "8c9db9e8-4737-4cca-8afc-8db2632bc0c0",
+   "name": "Create",
+   "friendlyName": "Create Azure Search Object",
+   "description": "Deploys Azure Search Datasource, Index, or Indexer from a JSON definition",
+   "helpMarkDown": "[More Information](https://github.com/mikaelsnavy/azdo-azure-search/blob/master/overview.md)",
+   "category": "Deploy",
+   "visibility": ["Release"],
+   "author": "Mikael Stadden",
+   "version": {
+      "Major": 1,
+      "Minor": 0,
+      "Patch": 0
+   },
+   "demands": [],
+   "inputs": [
+      {
+        "name": "SearchServiceName",
+        "type": "string",
+        "label": "Search Service Name",
+        "defaultValue": "",
+        "helpMarkDown": "Name of your Azure Search Service",
+        "required": true
+      },
+      {
+        "name": "ApiKey",
+        "type": "string",
+        "label": "API Key",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Azure Search API Key that is used to create objects in Azure Search"
+      },
+      {
+        "name": "SearchServiceApiVersion",
+        "type": "pickList",
+        "label": "Search Service API Version",
+        "defaultValue": "2017-11-11-Preview",
+        "helpMarkDown": "API Version of Azure Search to use when creating your object",
+        "required": true,
+        "options": {
+          "2017-11-11-Preview": "2017-11-11-Preview",
+          "2017-11-11": "2017-11-11"
+        }
+      },
+      {
+        "name": "SearchServiceObject",
+        "type": "pickList",
+        "label": "Type of Object to Deploy",
+        "defaultValue": "",
+        "helpMarkDown": "Choose either an Azure Search Datasource, Index, or Indexer to deploy. This needs to match your JSON definition.",
+        "required": true,
+        "options": {
+          "Datasource": "Datasource",
+          "Index": "Index",
+          "Indexer": "Indexer"
+        }
+      },
+      {
+         "name": "JsonPath",
+         "type": "filePath",
+         "label": "Azure Search Object JSON File Path from Artifact",
+         "defaultValue": "",
+         "helpMarkDown": "Path to the JSON file from your artifact that defines your Azure Search Object",
+        "required": true
+      },
+      {
+        "name": "OverwriteExistingObject",
+        "type": "boolean",
+        "label": "Overwrite existing object if it exists?",
+        "defaultValue": true,
+        "helpMarkDown": "If set, will delete an existing Azure Search object of the same name before creating the specified object.",
+        "required": false
+      }
+   ],
+   "instanceNameFormat": "Create",
+   "execution":
+    {"Node":{"target":"Create.js"}}
+   
+}
