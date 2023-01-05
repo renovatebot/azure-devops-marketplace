@@ -1,0 +1,93 @@
+{
+  "minimumAgentVersion": "2.0.0",
+  "demands": [],
+  "messages": {
+    "noProjectFilesFound": "Project file(s) matching the specified pattern were not found.",
+    "zipFailed": "Zip failed with error: %s",
+    "noWebProjctFound": "No web project was found in the repository. Web projects are identified by presence of either a web.config file or wwwroot folder in the directory.",
+    "dotnetCommandFailed": "Dotnet command failed with non-zero exit code on the following projects : %s",
+    "noPublishFolderFoundToZip": "A publish folder could not be found to zip for project file: %s."
+  },
+  "name": "DotNetCoreCLI-sxs",
+  "friendlyName": ".NET Core (Side-by-side)",
+  "id": "6171c853-a612-5699-bfed-56aefa97d158",
+  "description": "Build, test and publish using dotnet core command-line.",
+  "runsOn": [
+    "Agent"
+  ],
+  "inputs": [
+    {
+      "options": {
+        "test": "test",
+        "publish": "publish",
+        "build": "build",
+        "run": "run",
+        "restore": "restore"
+      },
+      "label": "Command",
+      "type": "pickList",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "name": "command",
+      "required": true,
+      "defaultValue": "build",
+      "helpMarkDown": "Select or type a dotnet command"
+    },
+    {
+      "name": "publishWebProjects",
+      "label": "Publish Web Projects",
+      "visibleRule": "command = publish",
+      "helpMarkDown": "If true, the task will try to find the web projects in the repository and run the publish command on them. Web projects are identified by presence of either a web.config file or wwwroot folder in the directory.",
+      "type": "boolean",
+      "defaultValue": "true",
+      "required": true
+    },
+    {
+      "name": "projects",
+      "label": "Project(s)",
+      "visibleRule": "command != publish || publishWebProjects = false",
+      "helpMarkDown": "Relative path of the .csproj file(s) from repo root. Wildcards can be used. For example, **/*.csproj for all .csproj files in all the sub folders.",
+      "type": "multiLine",
+      "defaultValue": "",
+      "required": false
+    },
+    {
+      "name": "arguments",
+      "label": "Arguments",
+      "helpMarkDown": "Arguments to the selected command. For example, build configuration, output folder, rutime. The arguments depend on the command selected.",
+      "type": "string",
+      "defaultValue": "",
+      "required": false
+    },
+    {
+      "name": "zipAfterPublish",
+      "label": "Zip Published Projects",
+      "visibleRule": "command = publish",
+      "helpMarkDown": "If true, folder created by the publish command will be zipped.",
+      "type": "boolean",
+      "defaultValue": "true",
+      "required": false
+    }
+  ],
+  "author": "Microsoft Corporation",
+  "instanceNameFormat": "dotnet $(command)",
+  "version": {
+    "Minor": 0,
+    "Patch": 2,
+    "Major": 1
+  },
+  "execution": {
+    "Node": {
+      "argumentFormat": "",
+      "target": "dotnetcore.js"
+    }
+  },
+  "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?linkid=832194)",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "groups": [],
+  "category": "Build"
+}
