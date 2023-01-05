@@ -1,0 +1,307 @@
+{
+  "$schema": "https://aka.ms/vsts-tasks.schema.json",
+  "id": "089890f0-617e-11e8-9afa-37d5fc39dea1",
+  "name": "terraformakc",
+  "friendlyName": "Terraforming (by AKC)",
+  "description": "Run Terraform commands",
+  "author": "arkiaconsulting",
+  "helpMarkDown": "A Node task to help you provision cloud resources using terraform.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "deprecated": true,
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "3",
+    "Patch": "10"
+  },
+  "groups": [
+    {
+      "name": "general",
+      "displayName": "General",
+      "isExpanded": true
+    },
+    {
+      "name": "azurermprovider",
+      "displayName": "AzureRM Provider",
+      "isExpanded": false
+    },
+    {
+      "name": "init",
+      "displayName": "Init",
+      "isExpanded": false
+    },
+    {
+      "name": "workspace",
+      "displayName": "Workspace",
+      "isExpanded": false
+    },
+    {
+      "name": "maincommand",
+      "displayName": "Main",
+      "isExpanded": false
+    },
+    {
+      "name": "output",
+      "displayName": "Terraform Output",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "terraform $(message)",
+  "inputs": [
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Current working directory when terraform is run."
+    },
+    {
+      "name": "download",
+      "defaultValue": false,
+      "type": "boolean",
+      "label": "Download Terraform",
+      "required": true,
+      "helpMarkDown": "Wether or not to download Terraform before running the command."
+    },
+    {
+      "name": "tfversion",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "0.11.7",
+      "required": true,
+      "visibleRule": "download=true",
+      "helpMarkDown": "The Terraform version to use."
+    },
+    {
+      "name": "useazurerm",
+      "type": "boolean",
+      "label": "Use AzureRM Provider",
+      "defaultValue": true,
+      "required": true,
+      "groupName": "azurermprovider",
+      "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task."
+    },
+    {
+      "name": "connectedServiceNameARM",
+      "aliases": [
+        "azureSubscription"
+      ],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "required": true,
+      "groupName": "azurermprovider",
+      "visibleRule": "useazurerm=true",
+      "helpMarkDown": "Select an Azure resource manager subscription"
+    },
+    {
+      "name": "init",
+      "type": "boolean",
+      "label": "Init",
+      "defaultValue": false,
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "Wether or not to execute to init before running the command. Required only once per build phase."
+    },
+    {
+      "name": "initbackend",
+      "type": "boolean",
+      "label": "Init Storage Backend",
+      "defaultValue": false,
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "Wether or not to init terraform remote backend. If ticked, you have to switch on the option in the AzureRM Provider pane."
+    },
+    {
+      "name": "backendKey",
+      "type": "string",
+      "label": "Key",
+      "defaultValue": "my.terraform.tfstate",
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "The name of the remote file containing the state.",
+      "visibleRule": "initbackend=true"
+    },
+    {
+      "name": "backendrg",
+      "type": "picklist",
+      "label": "Resource Group",
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "The name of the resource group hosting the storage account.",
+      "visibleRule": "initbackend=true"
+    },
+    {
+      "name": "backendstorage",
+      "type": "picklist",
+      "label": "Storage Account Name",
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "The name of the storage account hosting the state.",
+      "visibleRule": "initbackend=true"
+    },
+    {
+      "name": "backendcontainer",
+      "type": "string",
+      "label": "Storage Container Name",
+      "required": true,
+      "groupName": "init",
+      "helpMarkDown": "The name container hosting the state.",
+      "visibleRule": "initbackend=true"
+    },
+    {
+      "name": "customcommandline",
+      "type": "string",
+      "label": "Custom Command Line",
+      "required": false,
+      "groupName": "init",
+      "helpMarkDown": "Additional command line options. ie: -backend-config=\"key=myKey\"",
+      "visibleRule": "init=true"
+    },
+    {
+      "name": "cmdType",
+      "type": "pickList",
+      "defaultValue": "plan",
+      "label": "Command",
+      "required": true,
+      "properties": {
+        "editableOptions": "False"
+      },
+      "options": {
+        "plan": "Terraform plan",
+        "apply": "Terraform apply"
+      },
+      "groupName": "maincommand"
+    },
+    {
+      "name": "useworkspace",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "workspace",
+      "required": true,
+      "label": "Use Workspace",
+      "helpMarkDown": "Select a specific workspace before running the command."
+    },
+    {
+      "name": "workspace",
+      "defaultValue": "default",
+      "type": "string",
+      "groupName": "workspace",
+      "required": true,
+      "label": "Workspace",
+      "visibleRule": "useworkspace==true",
+      "helpMarkDown": "The name of the workspace to select before running the command."
+    },
+    {
+      "name": "createworkspace",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "workspace",
+      "required": true,
+      "visibleRule": "useworkspace==true",
+      "label": "Create Workspace If Not Exist",
+      "helpMarkDown": "Create the given workspace if it does not exist."
+    },
+    {
+      "name": "savePlanResult",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "maincommand",
+      "required": true,
+      "label": "Save Plan Result",
+      "visibleRule": "cmdType=plan",
+      "helpMarkDown": "Saves the execution plan for re-use with the apply command."
+    },
+    {
+      "name": "varsfile",
+      "defaultValue": "",
+      "type": "string",
+      "groupName": "maincommand",
+      "required": false,
+      "label": "Vars File",
+      "helpMarkDown": "Path to a 'tfvars' file, relative to the working directory.",
+      "visibleRule": "cmdType=plan || cmdType=apply"
+    },
+    {
+      "name": "usePlanResult",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "maincommand",
+      "required": true,
+      "label": "Use Plan Result",
+      "visibleRule": "cmdType=apply",
+      "helpMarkDown": "Re-use a previously generated execution plan"
+    },
+    {
+      "name": "planOutput",
+      "groupName": "maincommand",
+      "defaultValue": "tfplan",
+      "label": "Plan Result",
+      "required": false,
+      "type": "string",
+      "visibleRule": "cmdType=plan && savePlanResult=true",
+      "helpMarkDown": "The name of the generated execution plan to save."
+    },
+    {
+      "name": "applyInput",
+      "groupName": "maincommand",
+      "defaultValue": "tfplan",
+      "label": "Saved Plan",
+      "required": false,
+      "type": "string",
+      "visibleRule": "cmdType=apply && usePlanResult=true",
+      "helpMarkDown": "The name of the previously saved execution plan."
+    },
+    {
+      "name": "storeoutput",
+      "defaultValue": false,
+      "type": "boolean",
+      "groupName": "output",
+      "required": true,
+      "label": "Get State Output",
+      "helpMarkDown": "Wether or not to store a Terraform state output in a task variable"
+    },
+    {
+      "name": "tfoutputname",
+      "label": "Output Name",
+      "type": "string",
+      "required": true,
+      "groupName": "output",
+      "visibleRule": "storeoutput=true",
+      "helpMarkDown": "The name of a Terraform output variable"
+    },
+    {
+      "name": "taskoutputname",
+      "label": "Task Variable Name",
+      "type": "string",
+      "required": true,
+      "groupName": "output",
+      "visibleRule": "storeoutput=true",
+      "helpMarkDown": "The name of a task variable to store the output in."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "built/index.js",
+      "argumentFormat": ""
+    }
+  },
+  "dataSourceBindings": [
+    {
+      "target": "backendrg",
+      "endpointId": "$(connectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "backendstorage",
+      "endpointId": "$(connectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourcegroups/$(backendrg)/providers/Microsoft.Storage/storageAccounts?api-version=2017-10-01",
+      "resultSelector": "jsonpath:$.value[*].name"
+    }
+  ]
+}

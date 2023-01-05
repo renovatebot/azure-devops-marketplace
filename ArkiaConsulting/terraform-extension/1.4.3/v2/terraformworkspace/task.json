@@ -1,0 +1,60 @@
+{
+    "id": "eee9c2f0-40bb-11e9-a7b9-397dee481e69",
+    "name": "terraformworkspace",
+    "friendlyName": "Terraform Workspace",
+    "description": "Launch terraform workspace",
+    "author": "arkiaconsulting",
+    "helpMarkDown": "Replace with markdown to show in help",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 3,
+        "Patch": 1
+    },
+    "preview": true,
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "terraform workspace $(workspacename)",
+    "inputs": [{
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Current working directory when terraform command is run."
+        },
+        {
+            "name": "workspacename",
+            "type": "string",
+            "label": "Workspace",
+            "required": true,
+            "helpMarkDown": "The name of the workspace to select"
+        },
+        {
+            "name": "useazurerm",
+            "type": "boolean",
+            "label": "Use AzureRM Provider",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task."
+        },
+        {
+            "name": "connectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription",
+            "visibleRule": "useazurerm=true"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/terraformworkspace/index.js",
+            "argumentFormat": ""
+        }
+    }
+}

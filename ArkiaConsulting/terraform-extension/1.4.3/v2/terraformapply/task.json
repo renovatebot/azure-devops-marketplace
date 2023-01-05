@@ -1,0 +1,57 @@
+{
+  "$schema": "https://aka.ms/vsts-tasks.schema.json",
+  "id": "09ff8590-1518-11e9-a4df-5159632253af",
+  "name": "terraformapply",
+  "friendlyName": "Terraform Apply",
+  "description": "Launch terraform apply",
+  "author": "arkiaconsulting",
+  "category": "Utility",
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 3,
+    "Patch": 1
+  },
+  "preview": true,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Terraform Apply",
+  "inputs": [{
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Current working directory when terraform init has been ran"
+    },
+    {
+      "name": "useazurerm",
+      "type": "boolean",
+      "label": "Use AzureRM Provider",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, you should tick"
+    },
+    {
+      "name": "connectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "required": true,
+      "helpMarkDown": "Select an Azure resource manager subscription",
+      "visibleRule": "useazurerm=true"
+    },
+    {
+      "name": "planOrPath",
+      "defaultValue": "tfplan",
+      "label": "Execution Plan File or terraform files directory",
+      "required": false,
+      "type": "string",
+      "helpMarkDown": "The name of the execution plan that has previously been generated, or the directory containing the terraform files to apply"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "dist/terraformapply/index.js",
+      "argumentFormat": ""
+    }
+  }
+}
