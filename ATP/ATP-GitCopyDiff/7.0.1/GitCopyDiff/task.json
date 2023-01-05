@@ -1,0 +1,124 @@
+{
+  "id": "f1d2356c-c929-43c1-a5bb-adb07e19dab5",
+  "name": "GitCopyDiff",
+  "friendlyName": "Git Copy Diff",
+  "description": "A task that copies added/modified/renamed/moved files to a specified directory.",
+  "author": "ATP P&I IT",
+  "helpMarkDown": "copies added/modified/renamed/moved files to a specified folder with extension Changed and Deleted. ### Prerequisites * Repository must be Git. * Allow scripts to access Oauth must be **Enabled**",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "7",
+    "Minor": "0",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "GitCopyDiff $(message)",
+  "inputs": [
+    {
+      "name": "workingdir",
+      "type": "string",
+      "label": "Working Directory",
+      "defaultValue": "$(SYSTEM.DEFAULTWORKINGDIRECTORY)",
+      "required": true,
+      "helpMarkDown": "The working directory (The git root)."
+    },
+    {
+      "name": "currentcommit",
+      "type": "string",
+      "label": "Current commit",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The current commit id. If not set the HEAD will be use."
+    },
+    {
+      "name": "destination",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "$(SYSTEM.ARTIFACTSDIRECTORY)",
+      "required": true,
+      "helpMarkDown": "The directory where files should be placed."
+    },
+    {
+      "name": "changeType",
+      "type": "pickList",
+      "label": "Change Type",
+      "defaultValue": "A,C,D,M,R,T",
+      "required": true,
+      "helpMarkDown": "Specify which files to copy by change type",
+      "options": {
+        "A": "Added",
+        "C": "Copied",
+        "D": "Deleted",
+        "M": "Modified",
+        "R": "Renamed",
+        "T": "Type Changed",
+        "A,C,D,M,R,T": "All"
+      }
+    },
+    {
+      "name": "gittag",
+      "type": "string",
+      "label": "Tag",
+      "defaultValue": "$(build.buildNumber)",
+      "required": true,
+      "helpMarkDown": "Tag for given commit, the commit is used for finding the diff between the new one. Can be hashid."
+    },
+    {
+      "name": "flatten",
+      "type": "boolean",
+      "label": "Flatten",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Flatten directory structure (all files to same directory)"
+    },
+    {
+      "name": "testIfTagFound",
+      "type": "boolean",
+      "label": "Test if tag is found in branch",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "If set to true, it will test if tag is found in branch, fail if not found"
+    },
+    {
+      "name": "branchAsRoot",
+      "type": "string",
+      "label": "Use branch as root",
+      "defaultValue": "origin/master",
+      "required": false,
+      "helpMarkDown": "Use this branch as root if old commit (gittag) not found."
+    },
+    {
+      "name": "nameOfFileDeletedList",
+      "type": "string",
+      "label": "File name",
+      "defaultValue": "FilesToBeDelete.ps1",
+      "required": true,
+      "helpMarkDown": "The name of the file, that contains all url's to the files removed from the repository"
+    },
+    {
+      "name": "textBeforeFile",
+      "type": "string",
+      "label": "Text before file",
+      "defaultValue": "Remove-Item -LiteralPath '",
+      "required": false,
+      "helpMarkDown": "Text before the url to the deleted file from repository"
+    },
+    {
+      "name": "textAfterFile",
+      "type": "string",
+      "label": "Text after file",
+      "defaultValue": "' -ErrorAction Ignore",
+      "required": false,
+      "helpMarkDown": "Text after the url to the deleted file from repository"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "copychanged.ps1"
+    }
+  }
+}
