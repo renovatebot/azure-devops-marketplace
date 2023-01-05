@@ -1,0 +1,75 @@
+{
+    "id": "88e530ad-cf5e-4b88-a5d9-e6ce96760718",
+    "name": "keyvaultseeder",
+    "friendlyName": "KeyVault Seeder",
+    "description": "The KeyVault Seeder extension equips your Azure DevOps pipelines at runtime with the secrets of the defined Azure KeyVault.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "white duck GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [ 
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "CMD"
+    ],
+    "minimumAgentVersion": "2.0.0",
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure subscription for the KeyVault"
+        },
+        {
+            "name": "keyVaultName",
+            "type": "pickList",
+            "label": "KeyVault",
+            "required": true,
+            "helpMarkDown": "Provide the name of an existing KeyVault",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "jsonFilePath",
+            "type": "filePath",
+            "label": "KeyVault values",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the values.json which should be populated in the KeyVault"
+        },
+        {
+            "name": "environment",
+            "type": "string",
+            "label": "Environment",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Environment which key/value pairs should be populated in the KeyVault"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "keyVaultName",
+            "endpointId": "$(connectedServiceName)",
+            "dataSourceName": "AzureKeyVaultsList",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "instanceNameFormat": "Seed Azure KeyVault: $(keyVaultName) [env: $(environment)]",
+    "execution": {
+        "PowerShell3": {
+            "target": "setKeyVaultSecrets.ps1"
+        }
+    }
+}
