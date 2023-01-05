@@ -1,0 +1,106 @@
+{
+  "id": "d65d1fab-63ad-41fa-9050-9d161eadb1bd",
+  "name": "akamaicachepurge",
+  "friendlyName": "Akamai Cache Purge",
+  "instanceNameFormat": "Purge Akamai Cache",
+  "description": "Purge content cache at the Akamai Edge using Fast Purge API",
+  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-akamai-cache-purge> project repository",
+  "category": "Release",
+  "author": "Dmitry Serbin",
+  "deprecated": false,
+  "preview": false,
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1666
+  },
+  "inputs": [
+    {
+      "name": "edgegridEndpoint",
+      "type": "connectedService:edgegrid",
+      "label": "Akamai EdgeGrid endpoint",
+      "helpMarkDown": "Select service endpoint for Akamai EdgeGrid connection",
+      "required": true
+    },
+    {
+      "name": "network",
+      "type": "pickList",
+      "label": "Target network name",
+      "helpMarkDown": "Specify target Akamai network name (i.e. `staging` or `production`)",
+      "options": {
+        "staging": "Staging",
+        "production": "Production"
+      },
+      "required": true
+    },
+    {
+      "name": "purgeType",
+      "type": "radio",
+      "label": "Purge type",
+      "helpMarkDown": "Type to perform content purging by\n\n- `url` - purge by URL\n- `cpCode` - purge by CP Code",
+      "required": true,
+      "defaultValue": "url",
+      "options": {
+        "url": "URL",
+        "cpCode": "CP Code"
+      }
+    },
+    {
+      "name": "purgeMethod",
+      "type": "radio",
+      "label": "Purge method",
+      "helpMarkDown": "Method to perform content purging by\n\n- `Delete` - selecting this method means the content that is currently in Akamai’s edge server caches is never served.\n- `Invalidate` - Select this method to mark the cached content as invalid",
+      "required": true,
+      "defaultValue": "invalidate",
+      "options": {
+        "delete": "Delete",
+        "invalidate": "Invalidate"
+      }
+    },
+    {
+      "name": "urls",
+      "type": "multiLine",
+      "label": "Target URLs",
+      "helpMarkDown": "Specify target Akamai-hosted URLs to purge cache (example `https://time.akau.devops.akademo.it/one`, wildcards are not supported)",
+      "properties": {
+        "rows": 6,
+        "maxLength": 1000
+      },
+      "validation": {
+        "expression": "isMatch(value, '^(http|https)://(.*)', 'IgnoreCase')",
+        "message": "That does not appear to be a valid URL"
+      },
+      "required": false,
+      "visibleRule": "purgeType = url"
+    },
+    {
+      "name": "cpCodes",
+      "type": "multiLine",
+      "label": "Target CP Codes",
+      "helpMarkDown": "Specify target Akamai-hosted CP Codes to purge cache (example `123456`, wildcards are not supported)",
+      "properties": {
+        "rows": 6,
+        "maxLength": 1000
+      },
+      "validation": {
+        "expression": "isMatch(value, '^$|^([0-9]+|[\\n|\\s])+$', 'IgnoreCase')",
+        "message": "That does not appear to be a valid CP Code, please use numbers only"
+      },
+      "required": false,
+      "visibleRule": "purgeType = cpCode"
+    },
+    {
+      "name": "wait",
+      "type": "boolean",
+      "label": "Wait for activation",
+      "helpMarkDown": "Wait for purge request activation",
+      "defaultValue": false,
+      "required": false
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "task.js"
+    }
+  }
+}
