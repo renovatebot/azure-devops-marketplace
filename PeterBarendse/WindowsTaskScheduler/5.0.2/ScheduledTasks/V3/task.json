@@ -1,0 +1,295 @@
+{
+  "id": "3f71a0d1-a67c-4231-8012-ee71410633c1",
+  "name": "WindowsTaskScheduler",
+  "friendlyName": "Windows Task Scheduler",
+  "description": "Create and maintain scheduled tasks on Windows servers.",
+  "author": "Peter Barendse",
+  "helpMarkDown": "This extension can create and alter Windows scheduled tasks, using WinRM.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "3",
+    "Minor": "1",
+    "Patch": "10"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "ServerSettings",
+      "displayName": "Server Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "BasicScheduledtaskSettings",
+      "displayName": "Scheduled task Settings",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Windows Task Scheduler",
+  "inputs": [
+    {
+      "name": "Servers",
+      "type": "string",
+      "label": "Server(s)",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Enter the server names. Multiple entries should be comma seperated (server.domain.loc)."
+    },
+    {
+      "name": "ServerUserName",
+      "type": "string",
+      "label": "Username",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "User needs local administrator permissions (domain\\user)"
+    },
+    {
+      "name": "ServerPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": ""
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Use HTTP or HTTPS for the WinRM connection with the machine(s)."
+    },
+    {
+      "name": "CheckCA",
+      "type": "boolean",
+      "label": "Skip CA check",
+      "defaultValue": "true",
+      "required": false,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol.",
+      "visibleRule": "UseSSL = true"
+    },
+    {
+      "name": "Method",
+      "type": "pickList",
+      "label": "Deploy method",
+      "defaultValue": "Manual",
+      "options": {
+        "Manual": "Manual",
+        "XML": "XML File"
+      },
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Run the task once, daily or on selected days."
+    },
+    {
+      "name": "TaskName",
+      "type": "string",
+      "label": "Task Name",
+      "defaultValue": "",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Provide as taskname. Folders are supported. Either enter just the taskname, or folder\\taskname.",
+      "visibleRule": "Method = Manual"
+    },
+    {
+      "name": "TaskNameforXML",
+      "type": "string",
+      "label": "Task Name",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Provide as taskname. Folders are supported. Either enter just the taskname, or folder\\taskname. <br>This step is optional. The taskname and folder can be supplied within the XML. (Task.RegistrationInfo.URI)",
+      "visibleRule": "Method = XML"
+    },
+    {
+      "name": "TaskDescription",
+      "type": "string",
+      "label": "Task Description",
+      "defaultValue": "",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Task description",
+      "visibleRule": "Method = Manual"
+    },
+    {
+      "name": "TaskActions",
+      "type": "multiLine",
+      "label": "Task Actions",
+      "defaultValue": "cmd.exe\n\"C:\\demo folder\\executable.exe\" [-Name Argument1 -Item Argument 2]",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "10"
+      },
+      "helpMarkDown": "Define the actions. Several can be made. One line per Action. Arguments per action must be placed around square brackets: <br><br> Eg: \"C:\\folder name\\example.exe\" [-Arg1 value1 -Arg2 value2]",
+      "visibleRule": "Method = Manual"
+    },
+    {
+      "name": "XMLFile",
+      "type": "filePath",
+      "label": "XML file location",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Folder where XML file exist.",
+      "visibleRule": "Method = XML",
+      "groupName": "BasicScheduledtaskSettings"
+    },
+    {
+      "name": "TaskEnabled",
+      "type": "boolean",
+      "label": "Enable task",
+      "defaultValue": "true",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Enable or disable the task upon creation or update."
+    },
+    {
+      "name": "Schedule",
+      "type": "pickList",
+      "label": "Run Schedule",
+      "defaultValue": "Daily",
+      "options": {
+        "Once": "Once",
+        "Daily": "Daily",
+        "DaysofWeek": "Weekly",
+        "Immediately": "Immediately"
+      },
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Run the task once, daily or on selected days.",
+      "visibleRule": "Method = Manual"
+    },
+    {
+      "name": "TriggerDays",
+      "type": "pickList",
+      "label": "Running days",
+      "defaultValue": "",
+      "options": {
+        "Monday": "Monday",
+        "Tuesday": "Tuesday",
+        "Wednesday": "Wednesday",
+        "Thursday": "Thursday",
+        "Friday": "Friday",
+        "Saturday": "Saturday",
+        "Sunday": "Sunday"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "DisableManageLink": "True"
+      },
+      "visibleRule": "Schedule = DaysofWeek && Method = Manual",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Define on which days the task runs."
+    },
+    {
+      "name": "TriggerTime",
+      "type": "string",
+      "label": "Start time",
+      "defaultValue": "09:00",
+      "required": true,
+      "visibleRule": "Schedule != Immediately && Method = Manual",
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Define which time the task starts. HH:MM"
+    },
+    {
+      "name": "RemoveScheduledTask",
+      "type": "boolean",
+      "label": "Delete task after completion",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Delete the task upon completion.",
+      "visibleRule": "Schedule = Immediately && Method = Manual"
+    },
+    {
+      "name": "TriggerTimeout",
+      "type": "string",
+      "label": "Delete timeout (in sec)",
+      "required": true,
+      "DefaultValue": "60",
+      "GroupName": "BasicScheduledtaskSettings",
+      "visibleRule": "RemoveScheduledTask = true && Method = Manual",
+      "helpMarkDown": "The task can only be deleted when it's not running. Define in seconds how long must be waited, before a timeout on the running task is given."
+    },
+    {
+      "name": "RunAsUser",
+      "type": "string",
+      "label": "Run task as",
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Username to run the task, <br><br> Eg: dev\\svc00001 or NT Authority\\SYSTEM."
+    },
+    {
+      "name": "RunAsPassword",
+      "type": "string",
+      "label": "Task password",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Password for the matching username. If you keep this field blank, the task will only run if the task user is logged in on the target machine. The field needs to be blank if the user is an NT Authority such as LOCAL SERVICE or SYSTEM."
+    },
+    {
+      "name": "AdvancedSettings",
+      "type": "boolean",
+      "label": "Set Repetition and Interval settings",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Repetition and Interval settings",
+      "visibleRule": "Method = Manual"
+    },
+    {
+      "name": "TriggerRepetitionInterval",
+      "type": "pickList",
+      "label": "Repeat task every:",
+      "defaultValue": "",
+      "options": {
+        "5 Minutes": "5 Minutes",
+        "10 Minutes": "10 Minutes",
+        "15 Minutes": "15 Minutes",
+        "30 Minutes": "30 Minutes",
+        "1 Hour": "1 Hour"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "required": true,
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "Repeat task at an interval. Values can be edited. Please use the format <number> <TimeNotation>. Eg. 3 Hours or 7 minutes. Minutes and hours are supported",
+      "visibleRule": "AdvancedSettings = true"
+    },
+    {
+      "name": "TriggerRepetitionDuration",
+      "type": "pickList",
+      "label": "for a duration of:",
+      "defaultValue": "",
+      "options": {
+        "Indefinitely": "Indefinitely",
+        "15 Minutes": "15 Minutes",
+        "30 Minutes": "30 Minutes",
+        "1 Hour": "1 Hour",
+        "8 Hours": "8 Hours",
+        "12 Hours": "12 Hours",
+        "1 Day": "1 Day"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "GroupName": "BasicScheduledtaskSettings",
+      "helpMarkDown": "The duration can only be equal or greater then the interval. Values can be edited. Please use the format <number> <TimeNotation>. Eg. 3 Hours or 7 minutes. Minutes, hours and days are supported",
+      "visibleRule": "AdvancedSettings = true"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ScheduledTasks.ps1"
+    }
+  }
+}
