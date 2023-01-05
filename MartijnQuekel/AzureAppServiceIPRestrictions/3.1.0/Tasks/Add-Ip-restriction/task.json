@@ -1,0 +1,124 @@
+{
+    "id": "e9a790d6-416a-4066-a230-8d7637085687",
+    "name": "AzureAppServiceIPRestrictionsAdd",
+    "friendlyName": "Azure App Service: Add IP Restrictions",
+    "description": "Add IP Restrictions, use custom address or add the IP of the build agent.",
+    "author": "Martijn Quekel",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "demands": ["azureps"],
+    "version": {
+        "Major": "3",
+        "Minor": "1",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Set IP Restrictions: $(pickList)",
+    "inputs": [{
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AzureRM Subscription that contains the AzureRM App Service"
+        },
+        {
+            "name": "WebAppName",
+            "type": "pickList",
+            "label": "Azure App Service",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the AzureRM App Service."
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select AzureRM Resource Group that contains the AzureRM App Service"
+        },
+        {
+            "name": "Slot",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the slot to configure, or leave empty to use the default, production slot."
+        },
+        {
+            "name": "AddBuildAgentIP",
+            "type": "boolean",
+            "label": "Add Build Agent IP Address",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Adds the IP Address of the Build Agent that is executing this build/release."
+        },
+        {
+            "name": "IpAddresses",
+            "type": "multiLine",
+            "label": "IP Addresses",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Add Ip Addresses, separate each IP Address by comma or newline.  Subnet masks can be specified using CIDR syntax (e.g. 10.0.0.0/24).  Comments can be added to each line by separating the comment from the rest of the line with a space (e.g. 10.0.0.0/24 Production subnet).",
+            "properties": {
+                "resizable": "true",
+                "rows": "20"
+            }
+        },
+        {
+            "name": "OverWriteExisting",
+            "type": "boolean",
+            "label": "Overwrite existing configuration",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Overwrite all the current IP Addresses in Azure."
+        }
+    ],
+    "dataSourceBindings": [{
+            "target": "WebAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        },
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppResourceGroup",
+            "parameters": {
+                "WebAppName": "$(WebAppName)"
+            }
+        },
+        {
+            "target": "Slot",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppSlotsId",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)",
+                "WebAppName": "$(WebAppName)"
+            },
+            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+        }
+    ],
+    "execution": {
+        "AzurePowerShell": {
+            "target": "add-ip.ps1"
+        }
+    }
+}
