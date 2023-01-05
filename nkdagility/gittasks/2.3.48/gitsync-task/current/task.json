@@ -1,0 +1,81 @@
+{
+  "id": "36cbb8f8-6f18-4b55-bdd7-3ecf87044b08",
+  "name": "gitsync",
+  "friendlyName": "Publish Git Repo",
+  "description": "Lets you Sync your Git repository with another",
+  "helpMarkDown": "v2.3.48 [More Information](https://dev.azure.com/nkdagility/Azure-DevOps-Git-Tools)",
+  "category": "Utility",
+  "preview": true,
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "naked Agility - Martin Hinshelwood",
+  "version": {
+    "Major": "2",
+    "Minor": "3",
+    "Patch": "48"
+  },
+  "minimumAgentVersion": "2.103.0",
+  "inputs": [
+    {
+
+      "name": "targetType",
+      "type": "radio",
+      "label": "Type",
+      "required": true,
+      "defaultValue": "github",
+      "helpMarkDown": "Target for Git code sync",
+      "options": {
+        "github": "GitHub",
+        "othergit": "Other Git"
+      }
+    },
+    {
+      "name": "githubEndpointId",
+      "type": "connectedService:github",
+      "label": "GitHub Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the service endpoint for your GitHub connection. To create one, click the Manage link and create a new service endpoint.",
+      "visibleRule": "targetType = github"
+    },
+    {
+      "name": "repositoryName",
+      "type": "pickList",
+      "label": "Repository",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the GitHub repository",
+      "properties": {
+        "DisableManageLink": "True"
+      },
+      "visibleRule": "targetType = github"
+    },
+    {
+      "name": "repoUrl",
+      "type": "string",
+      "label": "Git Repo Url",
+      "required": true,
+      "helpMarkDown": "Enter the fully qualified and authenticated Git Repo URL. e.g. https://$(githubpersonaltoken)@github.com/nkdAgility/vsts-gitsync-tasks.git",
+      "visibleRule": "targetType = othergit"
+    }
+  ],
+  "sourceDefinitions": [
+    {
+      "target": "repositoryName",
+      "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/repositories?serviceEndpointId=$(githubEndpointId)",
+      "selector": "jsonpath:$.repositories.[*].id",
+      "keySelector": "jsonpath:$.repositories.[*].id",
+      "authKey": "tfs:teamfoundation"
+    }
+  ],
+  "instanceNameFormat": "Publish Git Repo to $(repositoryName)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\gitsync.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(Build.SourcesDirectory)"
+    }
+  }
+}
