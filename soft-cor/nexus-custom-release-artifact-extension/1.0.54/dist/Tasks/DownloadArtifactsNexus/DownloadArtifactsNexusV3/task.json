@@ -1,0 +1,121 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
+    "name": "DownloadArtifactsNexusMavenRepository",
+    "friendlyName": "Download Artifacts - Nexus (Maven Repository)",
+    "description": "Download Nexus Maven Artifact",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
+    "category": "Deploy",
+    "visibility": ["Release"],
+    "demands": [],
+    "runsOn": [
+      "Agent",
+      "MachineGroup"
+    ],
+    "preview": true,
+    "author": "soft-cor",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 13
+    },
+    "minimumAgentVersion": "1.99.0",
+    "instanceNameFormat": "Download Artifacts - Nexus (Maven Repository)",
+    "inputs": [
+            {
+            "name": "connection",
+            "type": "connectedService:nexus",
+            "label": "Nexus service connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Nexus service connection"
+          },
+          {
+            "name": "repository",
+            "type": "string",
+            "label": "Repository Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "Name of the Nexus repository in which to look for the component."
+            },
+            {
+            "name": "group",
+            "type": "string",
+            "label": "Group Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven groupId for a component."
+          },
+          {
+            "name": "artifact",
+            "type": "string",
+            "label": "Artifact Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven artifactId for a component."
+          },
+          {
+            "name": "baseVersion",
+            "type": "string",
+            "label": "Base Version",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The base version of the component/asset."
+          },
+          {
+            "name": "packaging",
+            "label": "Packaging",
+            "type": "string",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others."
+          },
+          {
+            "name": "classifier",
+            "type": "string",
+            "label": "Classifier",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Maven classifier for a component. Common values are javadoc, sources or tests."
+          },
+          {
+            "name": "extension",
+            "type": "string",
+            "label": "Extension",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The extension used for a specific asset of a component."
+          },
+          {
+            "name": "downloadPath",
+            "type": "string",
+            "label": "Download Path",
+            "defaultValue": "$(System.ArtifactsDirectory)",
+            "required": true,
+            "helpMarkDown": "Path on the agent machine where the artifacts will be downloaded"
+          }
+    ],
+    "dataSourceBindings": [
+     
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

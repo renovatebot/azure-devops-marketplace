@@ -1,0 +1,218 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "6a26339d-ca44-4f1c-8511-fde5b7550a68",
+    "name": "DownloadArtifactsNexusMavenRepositoryV3",
+    "friendlyName": "Download Artifacts - Nexus Maven Repository v3",
+    "description": "Download Nexus Maven Repository v3 Artifact",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
+    "category": "Deploy",
+    "visibility": ["Release"],
+    "demands": [],
+    "runsOn": [
+      "Agent",
+      "MachineGroup"
+    ],
+    "preview": false,
+    "author": "soft-cor",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 61
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "Download Artifacts - Nexus Maven Repository v3",
+    "inputs": [
+            {
+            "name": "connection",
+            "aliases": [
+              "NexusConnection"
+            ],
+            "type": "connectedService:nexus",
+            "label": "Nexus service connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Nexus Repository service connection"
+          },
+          {
+            "name": "repository",
+            "aliases": [
+              "RepositoryId"
+            ],
+            "type": "pickList",
+            "label": "Repository Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "Name of the Nexus Repository in which to look for the component."
+            },
+            {
+            "name": "group",
+            "aliases": [
+              "GroupId"
+            ],
+            "type": "pickList",
+            "label": "Group Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven groupId for a component."
+          },
+          {
+            "name": "artifact",
+            "aliases": [
+              "ArtifactId"
+            ],
+            "type": "pickList",
+            "label": "Artifact Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven artifactId for a component."
+          },
+          {
+            "name": "baseVersion",
+            "aliases": [
+              "BaseVersion"
+            ],
+            "type": "pickList",
+            "label": "Version",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The version of the component/asset."
+          },
+          {
+            "name": "packaging",
+            "aliases": [
+              "Packaging"
+            ],
+            "options": {
+              "pom": "pom",
+              "jar": "jar",
+              "ejb": "ejb",
+              "war": "war",
+              "ear": "ear",
+              "aar": "aar",
+              "tar.gz": "tar.gz",
+              "rar": "rar",
+              "zip": "zip",
+              "par": "par",
+              "maven-archetype": "maven-archetype",
+              "maven-plugin": "maven-plugin"
+            },
+            "label": "Packaging",
+            "type": "pickList",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Maven packaging for a component, which is jar by default. Other values as used in Maven and other build tools are ear, war, maven-plugin, pom, ejb, zip, tar.gz, aar and many others."
+          },
+          {
+            "name": "classifier",
+            "aliases": [
+              "Classifier"
+            ],
+            "type": "string",
+            "label": "Classifier",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Maven classifier for a component. Common values are javadoc, sources or tests."
+          },
+          {
+            "name": "extension",
+            "aliases": [
+              "Extension"
+            ],
+            "type": "string",
+            "label": "Extension",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The extension used for a specific asset of a component."
+          },
+          {
+            "name": "downloadPath",
+            "aliases": [
+              "DownloadPath"
+            ],
+            "type": "string",
+            "label": "Download Path",
+            "defaultValue": "$(System.ArtifactsDirectory)",
+            "required": true,
+            "helpMarkDown": "Path on the agent machine where the artifacts will be downloaded"
+          }
+    ],
+    "OutputVariables": [{
+      "name" : "MAVEN_REPOSITORY_ASSET_FILENAME",
+      "description" : "The primary file name of the asset which was downloaded from your Maven Repository based on the packaging."
+    },
+    {
+      "name" : "MAVEN_REPOSITORY_ASSET_FILENAMES",
+      "description" : "The comma seperated list of all the file names for the assets which were downloaded from your Maven Repository."
+    }],
+    "dataSourceBindings": [
+      {
+        "target": "repository",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/repositories",
+        "resultSelector":"jsonpath:$.[?(@.format=='maven2')]",
+        "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+      },
+      {
+        "target": "group",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "parameters":{
+          "repository": "$(repository)"
+        },
+        "resultSelector":"jsonpath:$.items[*].group",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#equals continuationToken null}}false{{else}}true{{/equals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
+      },
+      {
+        "target": "artifact",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)"
+        },
+        "resultSelector":"jsonpath:$.items[*].name",
+        "resultTemplate": "{ \"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
+      },
+      {
+        "target": "baseVersion",
+        "endpointId": "$(connection)",
+        "endpointUrl":"{{{endpoint.url}}}service/rest/v1/search?repository={{{repository}}}&maven.groupId={{{group}}}&maven.artifactId={{{artifact}}}&sort=version{{#notEquals continuationToken null}}&continuationToken={{{continuationToken}}}{{/notEquals}}",
+        "parameters":{
+          "repository": "$(repository)",
+          "group":"$(group)",
+          "artifact":"$(artifact)"
+        },
+        "resultSelector":"jsonpath:$.items[*]",
+        "resultTemplate": "{ \"Value\" : \"{{{version}}}\", \"DisplayValue\" : \"{{{version}}}\" }",
+        "callbackContextTemplate": "{\"continuationToken\" : \"{{{continuationToken}}}\"}",
+        "callbackRequiredTemplate": "{{#notEquals continuationToken null}}true{{/notEquals}}",
+        "initialContextTemplate":"{\"continuationToken\" : null}"
+      }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

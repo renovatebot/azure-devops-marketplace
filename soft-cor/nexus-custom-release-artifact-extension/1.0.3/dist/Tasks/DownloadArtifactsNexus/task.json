@@ -1,0 +1,105 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a843bbfd-4ced-4e8d-8102-cf2f193ee283",
+    "name": "DownloadArtifactsNexus",
+    "friendlyName": "Download Artifacts - NEXUS",
+    "description": "Download NEXUS Artifact",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=soft-cor.nexus-custom-release-artifact-extension)",
+    "category": "Deploy",
+    "visibility": ["Release"],
+    "demands": [],
+    "runsOn": [
+      "Agent",
+      "MachineGroup"
+    ],
+    "preview": true,
+    "author": "soft-cor",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.99.0",
+    "instanceNameFormat": "Download Artifacts - NEXUS",
+    "inputs": [
+            {
+            "name": "connection",
+            "type": "connectedService:nexus",
+            "label": "NEXUS service connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "NEXUS service connection"
+          },
+          {
+            "name": "repository",
+            "type": "string",
+            "label": "Repository Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "NEXUS repository"
+            },
+            {
+            "name": "group",
+            "type": "string",
+            "label": "Group Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Nexus Group Id.  Only letters, numbers, underscore(_), hyphon(-), and dot(.) are allowed."
+          },
+          {
+            "name": "artifact",
+            "type": "string",
+            "label": "Artifact Id",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "Artifact Id"
+          },
+          {
+            "name": "artifactVersion",
+            "type": "string",
+            "label": "Artifact Version",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "Artifact Version"
+          },
+          {
+            "name": "packaging",
+            "label": "Packaging",
+            "type": "string",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+              "EditableOptions": "True"
+            },
+            "helpMarkDown": "The Nexus Packaging type: pom, jar, ejb, war, ear, rar, par, maven-archetype, or maven-plugin."
+          },
+          {
+            "name": "downloadPath",
+            "type": "string",
+            "label": "Download Path",
+            "defaultValue": "$(System.ArtifactsDirectory)",
+            "required": true,
+            "helpMarkDown": "Path on the agent machine where the artifacts will be downloaded"
+          }
+    ],
+    "dataSourceBindings": [
+     
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
