@@ -1,0 +1,69 @@
+{
+    "id":  "4C2AD5B6-2102-4399-BA5D-15651CFABF67",
+    "name":  "Token Comparer",
+    "author":  "Jasper Gilhuis - Xpirit",
+    "friendlyName":  "Token Comparer",
+    "description":  "Compare files containting Tokens against your defined Release variables.",
+    "helpMarkDown":  "Version: 1.0.312. [More Information](https://github.com/JasperGilhuis/VSTS.BRM.TokenComparer/wiki/)",
+    "category":  "Utility",
+    "visibility":  [
+                       "Release"
+                   ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  0,
+                    "Patch":  312
+                },
+    "minimumAgentVersion":  "1.90.0",
+    "inputs":  [
+                   {
+                       "name":  "targetFiles",
+                       "type":  "multiLine",
+                       "label":  "Specify path(s) to files that you want to compare against the defined variables",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Specify one or more paths, separated by `;` or newline.",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "10"
+                                      }
+                   },
+                   {
+                       "name":  "tokenPrefix",
+                       "type":  "string",
+                       "label":  "Token prefix",
+                       "defaultValue":  "__",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the prefix for your tokens, e.g. {#TOKEN**#} or __TOKEN**__**."
+                   },
+                   {
+                       "name":  "tokenSuffix",
+                       "type":  "string",
+                       "label":  "Token suffix",
+                       "defaultValue":  "__",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the suffix for your tokens, e.g. {#TOKEN**#} or __TOKEN**__**."
+                   },
+                   {
+                       "name":  "comparerResultAction",
+                       "type":  "pickList",
+                       "label":  "Comparer result action",
+                       "defaultValue":  "fail",
+                       "required":  true,
+                       "options":  {
+                                       "continue":  "Silently continue",
+                                       "warn":  "Write warning",
+                                       "fail":  "Fail with error"
+                                   },
+                       "helpMarkDown":  "Specify the action based on the comparer results."
+                   }
+               ],
+    "instanceNameFormat":  "Token Comparer",
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\TokenComparer.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}
