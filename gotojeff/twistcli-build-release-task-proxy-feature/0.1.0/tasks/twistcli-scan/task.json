@@ -1,0 +1,60 @@
+{
+    "id": "e5fe14b0-6962-514d-9e5d-ea5d2023bf1f",
+    "name": "twistcli-scan-proxy-supported",
+	"friendlyName": "Twistlock twistcli scan(proxy supported)",
+    "description": "Task to scan container images using twistcli within Azure DevOps Build & Release pipelines",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Twistlock (created by Mario Weigel)",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Twistlock twistcli scan(proxy supported)",
+    "inputs": [
+        {
+            "name": "scanType",
+            "type": "picklist",
+            "label": "Scan type",
+            "defaultValue": "images",
+            "required": true,
+            "options": {
+                "images": "images",
+                "serverless": "serverless"
+            },
+            "helpMarkDown": "Select the type of twistcli scan: container images or serverless functions"
+        },
+        {
+            "name": "twistlockService",
+            "type": "connectedService:twistlockConsole-20.04",
+            "label": "Twistlock service/server end point",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Twistlock end point to use. If needed, click on 'manage', and add a new service endpoint of type 'Twistlock server connection'"
+        },
+        {
+            "name": "artifact",
+            "type": "string",
+            "label": "Image/Function zip",
+            "required": true,
+            "helpMarkDown": "The ID or name of the container image to scan or filename of the serverless functions zip file"
+        },
+        {
+            "name": "httpProxy",
+            "type": "string",
+            "label": "Http Proxy",
+            "required": false,
+            "helpMarkDown": "The http proxy to be used by twistcli"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js"
+        }
+    }
+}
