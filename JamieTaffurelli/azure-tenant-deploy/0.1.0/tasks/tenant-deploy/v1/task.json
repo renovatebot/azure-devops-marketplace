@@ -1,0 +1,38 @@
+{
+  "id": "62a7982c-0bad-41a5-a801-4212159e2422",
+  "name": "azure-tenant-deploy",
+  "friendlyName": "Azure Tenant Deploy",
+  "description": "Deploy ARM template to Azure tenant",
+  "helpMarkDown": "[More information]https://github.com/JamieTaffurelli/azure-devops-extensions/blob/master/tenant-deploy/README.md",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent", "MachineGroup"],
+  "author": "JamieTaffurelli",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Deploy Tenant",
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "aliases": ["azureSubscription"],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to authenticate as",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "tenant-deploy.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
