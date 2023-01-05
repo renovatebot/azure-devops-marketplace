@@ -1,0 +1,51 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "00e583fb-0748-4063-81de-94b6f8b5472b",
+  "name": "k6-load-test",
+  "friendlyName": "k6 Load Test",
+  "description": "Run a load test using k6, either locally or in the cloud.",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "author": "Load Impact / k6",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Run $(filename) with k6",
+  "demands": ["Go"],
+  "inputs": [
+    {
+      "name": "executionMode",
+      "label": "Execution Mode",
+      "helpMarkDown": "To run in the k6 cloud, you'll have to provide your k6 cloud token as a secret variable with the name `K6_CLOUD_TOKEN`.<br/><br/>Dont have a k6 account yet? Go to https://k6.io/cloud and activate your free trial.",
+      "type": "pickList",
+      "required": true,
+      "options": {
+        "local": "Locally on the agent",
+        "cloud": "In the k6 cloud (see help icon)"
+      },
+      "defaultValue": "Locally on the agent"
+    },
+    {
+      "name": "filename",
+      "type": "string",
+      "label": "Test script filename",
+      "defaultValue": "test.js",
+      "required": false,
+      "helpMarkDown": "Path to the test script to execute, relative to the workspace."
+    },
+    {
+      "name": "args",
+      "type": "string",
+      "label": "Additional arguments",
+      "required": false,
+      "helpMarkDown": "Additional arguments to provide to the k6 CLI. See https://k6.io/docs/using-k6/options for details."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "task.js"
+    }
+  }
+}
