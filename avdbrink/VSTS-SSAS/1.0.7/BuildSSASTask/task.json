@@ -1,0 +1,89 @@
+﻿{
+  "id": "6FC422C6-F77E-4EBE-B124-D008BA47F4D0",
+  "name": "BuildSsas",
+  "friendlyName": "SSAS Build",
+  "description": "Build SQL Server Analysis Services Project (Multi dimensional only) into .asdatabase file using devenv.com",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "author": "avdbrink",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 7
+  },
+  "demands": [ ],
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayname": "Advanced",
+      "isExpanded":  false  
+    }
+  ],
+  "inputs": [
+    {
+      "name": "projPath",
+      "type": "filePath",
+      "label": "Path to Project File",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to *.dwproj file"
+    },
+    {
+      "name": "projCmdSwitch",
+      "type": "pickList",
+      "label": "Command line switch",
+      "defaultValue": "build",
+      "required": true,
+      "options": {
+        "rebuild": "Rebuild",
+        "build": "Build"
+      },
+      "helpMarkDown": "Rebuild cleans and then builds the specified solution. Build does no cleaning. See: https://msdn.microsoft.com/en-us/library/xee0c8y7.aspx"
+    },
+    {
+      "name": "projConfigName",
+      "type": "string",
+      "label": "Project Configuration Name",
+      "defaultValue": "$(BuildConfiguration)",
+      "required": true,
+      "helpMarkDown": "Optional. The name of a Project build configuration that will be used to build the project named in Project File. Default value is $(BuildConfiguration). See: https://msdn.microsoft.com/en-us/library/abtk353z.aspx"
+    },
+    {
+      "name": "projPlatformName",
+      "type": "string",
+      "label": "Project Platform Name",
+      "defaultValue": "$(BuildPlatform)",
+      "required": true,
+      "helpMarkDown": "The name of the project platform that will be used to build the project named in project File. Default value is $(BuildPlatform)."
+    },
+    {
+      "name": "devenvPath",
+      "type": "string",
+      "label": "Location of devenv.com",
+      "defaultValue": "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\devenv.com",
+      "required": true,
+      "groupname": "advanced",
+      "helpMarkDown": "Location of devenv.com. Usually somewhere inside the visual studio folder. NB: For now the VS17 agent does not seem to contain devenv.com"
+    }
+
+  ],
+  "instanceNameFormat": "Build SSAS $(projPath)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\BuildSSASTask.ps1",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "StartingTask": "Starting BuildSSASTask"
+  }
+}
