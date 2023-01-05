@@ -1,0 +1,191 @@
+{
+	"id": "fa652500-9d10-4074-93ab-156f408590a5",
+	"name": "sendNotificationToCDD",
+	"friendlyName": "Send Notification to CDD",
+	"description": "This task sends a notification to CDD when a build is completed (success and/or failure).",
+	"helpMarkDown": "Task to send build notification to CDD",
+	"category": "Deploy",
+	"author": "Sumit Samson",
+	"version": {
+		"Major": 0,
+		"Minor": 1,
+		"Patch": 0
+	},
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"instanceNameFormat": "sendNotificationToCDD",
+	"inputs": [
+		{
+			"name": "cddEndpoint",
+			"type": "connectedService:cddServiceEndpoint",
+			"label": "Connection Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select the CDD endpoint to use. If needed, select 'Manage', and add a new service endpoint of the type 'CDD server connection'"
+		},
+		{
+			"name": "application",
+			"type": "pickList",
+			"label": "Application",
+			"defaultValue": "repoNameAsApplicationName",
+			"required": true,
+			"helpMarkDown": "Specify the application name or select the Use Source Code Repository Name as Application Name option (only if the Source Code Management setting in the project is for a single Git repository)",
+			"options": {
+				"repoNameAsApplicationName": "Use Source Code Repository Name as Application Name",
+				"customApplicationName": "Specify the Application Name"
+			},
+			"properties": {
+				"EditableOptions": "False"
+			}
+		},
+		{
+			"name": "applicationName",
+			"type": "string",
+			"label": "Application Name",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify the Application Name.",
+			"visibleRule": "application = customApplicationName"
+		},
+		{
+			"name": "applicationVersion",
+			"type": "pickList",
+			"label": "Application Version",
+			"defaultValue": "branchNameAsVersion",
+			"required": true,
+			"helpMarkDown": "Specify the application version name or select the Use Source Code Branch Name as Application Version option (only if the Source Code Management setting in the project is for a single Git repository)",
+			"options": {
+				"branchNameAsVersion": "Use Source Code Branch Name as Application Version",
+				"customApplicationVersion": "Specify the Application Version Name "
+			},
+			"properties": {
+				"EditableOptions": "False"
+			}
+		},
+		{
+			"name": "applicationVersionName",
+			"type": "string",
+			"label": "Application Version Name",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify the Application Version Name.",
+			"visibleRule": "applicationVersion = customApplicationVersion"
+		},
+		{
+			"name": "ignoreNonExistentCDDApp",
+			"type": "boolean",
+			"label": "Ignore Nonexistent CDD Applications?",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Specify whether the task fails if the specified application does not exist in CDD"
+		},
+		{
+			"name": "cddTokens",
+			"type": "multiLine",
+			"label": "Release Tokens",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Enter token \"name\":\"value\" pairs. When a build notification is sent to CDD, the specified token is updated with the specified value. Ex. {\"packageName\":\"BillingPackage_85\"}"
+		},
+		{
+			"name": "commitSource",
+			"type": "multiLine",
+			"label": "Source Control Connection Parameters",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Enter one or more \"name\":\"value\" pairs. The field name is the name as it appears in CDD when creating a source control connection on the Application Management page. You can update multiple fields. When a build notification is sent to CDD, the specified field is updated with the specified value and is used to create or update a test source. Ex. {\"Repository\":\"MyApp\"}"
+		},
+		{
+			"name": "testData",
+			"type": "multiLine",
+			"label": "Test Data",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Enter the name of the test source, parameter name, and parameter value. The adaptive testing task uses this data when running the tests. You can specify multiple test sources and fields. Use the field names as they appear in the test source template in CDD, which can be retrieved from the test catalog by entering the application name without a version. Ex: [{\"name\": \"JUnit_Test_Source\", \"parameters\": {\"Branch\":\"myBranch\"...}}]"
+		},
+		{
+			"name": "notificationExecutionStrategy",
+			"type": "pickList",
+			"label": "Notification Execution Strategy:",
+			"defaultValue": "executeExistingRelease",
+			"required": true,
+			"helpMarkDown": "Select this option if you would like CDD to execute the release which contain the application version specified in this task",
+			"options": {
+				"executeExistingRelease": "Execute an existing release",
+				"createRelease": "Create a release",
+				"onlyRunTests": "Only run my tests in CDD"
+			},
+			"properties": {
+				"EditableOptions": "False"
+			}
+		},
+		{
+			"name": "dslSource",
+			"type": "pickList",
+			"label": "DSL Source",
+			"required": false,
+			"defaultValue": "businessApplication",
+			"helpMarkDown": "Select the source of the DSL to be used for the release creation",
+			"options": {
+				"fileSource": "File Source",
+				"businessApplication": "Business Application"
+			},
+			"properties": {
+				"EditableOptions": "False"
+			},
+			"visibleRule": "notificationExecutionStrategy = createRelease"
+		},
+		{
+			"name": "fileSourceName",
+			"type": "string",
+			"label": "File Source name",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify the file source name that will be used to create the release.",
+			"visibleRule": "dslSource = fileSource"
+		},
+		{
+			"name": "dslFilename",
+			"type": "string",
+			"label": "DSL File name",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify the DSL file name that will be used to create the release.",
+			"visibleRule": "dslSource = fileSource"
+		},
+		{
+			"name": "fileSourceParameters",
+			"type": "multiLine",
+			"label": "Override Filesource Parameters",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify the file source parameters that are defined in CDD to override",
+			"visibleRule": "dslSource = fileSource"
+		},
+		{
+			"name": "dslParameter",
+			"type": "multiLine",
+			"label": "DSL Parameter",
+			"required": false,
+			"defaultValue": "",
+			"helpMarkDown": "Specify parameters to be used when creating the release based on the business application DSL file. Enter \"field name\" and \"value\" pairs. For example: {\"ReleaseVersion\":\"8.0\"}",
+			"visibleRule": "notificationExecutionStrategy = createRelease"
+		},
+		{
+			"name": "runSubset",
+			"type": "boolean",
+			"label": "Run a subset of test suites selected by the Test Advisor",
+			"required": false,
+			"defaultValue": true,
+			"helpMarkDown": "Select this option to run only the test suites that the Test Advisor selects. The Test Advisor selects test suites that are most relevant to recent changes and that are likely to fail fast.",
+			"visibleRule": "notificationExecutionStrategy = onlyRunTests"
+		}
+	],
+	"execution": {
+		"Node10": {
+			"target": "cdd.js"
+		}
+	}
+}

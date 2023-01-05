@@ -1,0 +1,93 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.work"
+    ],
+    "contributions": [
+        {
+            "id": "cdd-service-endpoint",
+            "description": "Service endpoint type for CDDirector connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cddServiceEndpoint",
+                "displayName": "CDD server",
+                "url": {
+                    "displayName": "CDD Server URL",
+                    "helpText": "Specify the server name for logging to the CDDirector application. For CDD SaaS use https://cddirector.io"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "cddTenantId",
+                        "name": "Tenant ID",
+                        "description": "Enter your tenant ID or leave empty if you are not using multi-tenancey",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/cdd/design/{{endpoint.cddTenantId}}/v1/releases",
+                        "resultSelector": "jsonpath:$.totalResultsCount"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CDD API Key",
+                                "description": "Insert the API Key. It is recommended to use the API Key of an integration user for a specific CDD project",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "azureToken",
+                                "name": "Azure DevOps Token",
+                                "description": "Azure Devops Server Personal Access Token(PAT)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "sendNotificationToCDDTask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/sendNotificationTask"
+            }
+        }
+    ],
+    "baseUri": "https://localhost:44300",
+    "contributionTypes": []
+}
