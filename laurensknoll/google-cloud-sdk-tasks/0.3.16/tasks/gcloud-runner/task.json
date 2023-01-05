@@ -1,0 +1,63 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b2d623e9-bbcc-4593-8042-7bbfdd38fd15",
+    "name": "GcloudRunner",
+    "friendlyName": "Run a custom gcloud command",
+    "description": "Execute gcloud commands to manage resources on Google Cloud Platform (GCP)",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "laurensknoll@binx.io",
+    "version": {
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "instanceNameFormat": "gcloud $(command)",
+    "groups": [
+        {
+            "displayName": "Advanced",
+            "name": "advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "command",
+            "type": "string",
+            "label": "command",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The gcloud command to execute. For example, to execute 'gcloud run deploy', enter 'run deploy'"
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional arguments to the selected command. For example, to specify the project of the gcloud command add '--project project-id'"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working directory",
+            "helpMarkDown": "The working directory where the command will run. When empty, the root of the repository (for builds) or artifacts (for releases) is used, which is the value of '$(System.DefaultWorkingDirectory)'.",
+            "required": false,
+            "groupName": "advanced"
+        },
+        {
+            "name": "quiet",
+            "type": "boolean",
+            "label": "Quiet",
+            "defaultValue": true,
+            "helpMarkDown": "Disable all interactive prompts for this command. If input is required, defaults will be used, or an error will be raised.",
+            "required": false,
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
