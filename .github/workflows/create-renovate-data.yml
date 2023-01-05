@@ -1,0 +1,31 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Create Renovate Data
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download recent extensions
+        run: |
+          .\01-extension-security-scan.ps1
+        env:
+          AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
+        shell: pwsh 
+        
+      - name: Generate renovate-data.json
+        run: |
+          .\02-generate-renovate-data.ps1
+        shell: pwsh 
