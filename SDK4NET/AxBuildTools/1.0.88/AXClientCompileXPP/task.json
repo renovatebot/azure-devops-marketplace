@@ -1,0 +1,100 @@
+{
+  "id": "C9B41934-FEC6-4DAF-8070-D260467DF9E3",
+  "name": "AXClientCompileXPP",
+  "friendlyName": "AX Client - Compile X++",
+  "description": "Compiles X++ of an AX 2009/2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-compile-xpp)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "crossReferenceUpdateMode",
+      "type": "pickList",
+      "label": "XReference update mode",
+      "defaultValue": "Auto",
+      "required": true,
+      "helpMarkDown": "Should the cross references be updated?",
+      "groupName": "",
+      "options": {
+        "Auto": "Auto",
+        "Yes": "Update",
+        "No": "Do not update"
+      }
+    },
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch",
+        "Classic": "Classic"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Compile X++: $(configurationFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

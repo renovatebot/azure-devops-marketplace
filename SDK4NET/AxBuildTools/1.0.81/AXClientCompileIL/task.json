@@ -1,0 +1,170 @@
+{
+  "id": "C646CEB2-DB16-4E48-83BD-89A7FD26F24A",
+  "name": "AXClientCompileIL",
+  "friendlyName": "AX Client - Compile IL",
+  "description": "Compiles IL of an AX 2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-compile-il)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch",
+        "Classic": "Classic"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "incremental",
+      "type": "boolean",
+      "label": "Incremental",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Should an incremental build done?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "createPackage",
+      "type": "boolean",
+      "label": "Create Package",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the package be created?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "errorLevel",
+      "type": "pickList",
+      "label": "Error level",
+      "defaultValue": "error",
+      "required": true,
+      "options": {
+        "ignore": "Ignore",
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "helpMarkDown": "How should the compiler errors be handled?",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "severeWarningLevel",
+      "type": "pickList",
+      "label": "Severe warning level",
+      "defaultValue": "warning",
+      "required": true,
+      "options": {
+        "ignore": "Ignore",
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "helpMarkDown": "How should the compiler severe warnings be handled?",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "warningLevel",
+      "type": "pickList",
+      "label": "Warning level",
+      "defaultValue": "warning",
+      "required": true,
+      "options": {
+        "ignore": "Ignore",
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "helpMarkDown": "How should the compiler warnings be handled?",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "infoLevel",
+      "type": "pickList",
+      "label": "Information level",
+      "defaultValue": "info",
+      "required": true,
+      "options": {
+        "ignore": "Ignore",
+        "info": "Info",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "helpMarkDown": "How should the compiler informations be handled?",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Compile IL: $(configurationFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

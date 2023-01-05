@@ -1,0 +1,91 @@
+{
+  "id": "48A22E15-81D3-4E05-9A07-2C142A00E9B6",
+  "name": "AXDatabaseBackupRestore",
+  "friendlyName": "AX Database - Backup/Restore",
+  "description": "Creates/Restores a backup of an Microsoft Dynamics AX 2009/2012 database",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-database-ax-2009-2012/ax-database-backup-restore)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 12
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "Backup",
+      "required": true,
+      "helpMarkDown": "Do you want to create or restore a backup?",
+      "groupName": "",
+      "options": {
+        "Backup": "Backup",
+        "Restore": "Restore"
+      }
+    },
+    {
+      "name": "includeModelstoreDatabase",
+      "type": "boolean",
+      "label": "Include modelstore database",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Do you want to include the model store database? (only AX 2012 R2 or higher)",
+      "groupName": ""
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "backupFileName",
+      "type": "filePath",
+      "label": "Backup file path (.bak)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the database backup. (*.bak)",
+      "groupName": ""
+    },
+    {
+      "name": "modelstoreBackupFileName",
+      "type": "filePath",
+      "label": "Model store backup file path (.bak)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the model store database backup. (*.bak)",
+      "visibleRule": "includeModelstoreDatabase = true",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step.",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Database - $(action): $(configurationFileName) - $(backupFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

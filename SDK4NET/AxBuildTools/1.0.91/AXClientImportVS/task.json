@@ -1,0 +1,188 @@
+{
+  "id": "BEFC78CE-C85A-4DD8-BAC8-09FF68920A4B",
+  "name": "AXClientImportVS",
+  "friendlyName": "AX Client - Import VS project",
+  "description": "Imports a VS project into an AX 2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-import-vs-project)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 13
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch"
+      }
+    },
+    {
+      "name": "selectionMode",
+      "type": "pickList",
+      "label": "Selection mode",
+      "defaultValue": "Single",
+      "required": true,
+      "helpMarkDown": "How to select the VS project(s)?",
+      "groupName": "",
+      "options": {
+        "Single": "Single",
+        "Multiple": "Multiple"
+      }
+    },
+    {
+      "name": "vsProjectFileName",
+      "type": "filePath",
+      "label": "VS project file path (.csproj)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the VS project file. (.csproj)",
+      "visibleRule": "selectionMode = Single",
+      "groupName": ""
+    },
+    {
+      "name": "sourcePath",
+      "type": "filePath",
+      "label": "Source path of VS project files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The source path of the VS project files.",
+      "visibleRule": "selectionMode = Multiple",
+      "groupName": ""
+    },
+    {
+      "name": "recurse",
+      "type": "boolean",
+      "label": "Recurse source path",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the source path recursed?",
+      "visibleRule": "selectionMode = Multiple",
+      "groupName": ""
+    },
+    {
+      "name": "include",
+      "type": "string",
+      "label": "Include filter(s)",
+      "defaultValue": "*.csproj",
+      "required": false,
+      "helpMarkDown": "Define multiple include filters. (comma-seperated, optional)",
+      "visibleRule": "selectionMode = Multiple",
+      "groupName": ""
+    },
+    {
+      "name": "exclude",
+      "type": "string",
+      "label": "Exclude filter(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Define multiple exclude filters. (comma-seperated, optional)",
+      "visibleRule": "selectionMode = Multiple",
+      "groupName": ""
+    },
+    {
+      "name": "noErrorOnEmptyWildcardSearch",
+      "type": "boolean",
+      "label": "No Error on empty result",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Should no error thrown if wildcard search result is empty?",
+      "visibleRule": "selectionMode = Multiple",
+      "groupName": ""
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "layerName",
+      "type": "string",
+      "label": "Layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies which layer to open in the AOT. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "layerCode",
+      "type": "string",
+      "label": "Layer code",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the developer license code for developer options. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The \"current model\" is the model where all new AOT elements are created in. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Import VS project: $(configurationFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

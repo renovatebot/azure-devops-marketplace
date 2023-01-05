@@ -1,0 +1,83 @@
+{
+  "id": "5F873230-3CEB-4FAE-9DD9-2FE0F4D4410B",
+  "name": "AXDatabaseExecuteSQL",
+  "friendlyName": "AX Database - Execute SQL",
+  "description": "Executes a sql script on a Microsoft Dynamics AX 2009/2012 database",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-database-ax-2009-2012/ax-database-execute-sql)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 10
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "scriptType",
+      "type": "pickList",
+      "label": "Script type",
+      "defaultValue": "Inline",
+      "required": true,
+      "helpMarkDown": "Do you want to execute a inline statement or sql script file?",
+      "groupName": "",
+      "options": {
+        "Inline": "Inline",
+        "File": "File"
+      }
+    },
+    {
+      "name": "sqlScriptInline",
+      "type": "multiLine",
+      "label": "SQL statement",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The sql statement to execute.",
+      "visibleRule": "scriptType = Inline",
+      "groupName": ""
+    },
+    {
+      "name": "sqlScriptFile",
+      "type": "filePath",
+      "label": "Sql script file (*.sql)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the sql script. (*.sql)",
+      "visibleRule": "scriptType = File",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step.",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Database - Execute SQL: $(scriptType)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

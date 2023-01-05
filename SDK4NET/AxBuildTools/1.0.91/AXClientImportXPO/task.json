@@ -1,0 +1,175 @@
+{
+  "id": "47901F5B-B65B-435B-A19A-17580F900793",
+  "name": "AXClientImportXPO",
+  "friendlyName": "AX Client - Import XPO",
+  "description": "Imports an XPO into an AX 2009/2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-import-xpo)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "xpoFileName",
+      "type": "filePath",
+      "label": "XPO file path (.xpo)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the xpo file.",
+      "groupName": ""
+    },
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch",
+        "Classic": "Classic"
+      }
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "layerName",
+      "type": "string",
+      "label": "Layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies which layer to open in the AOT. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "layerCode",
+      "type": "string",
+      "label": "Layer code",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the developer license code for developer options. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The \"current model\" is the model where all new AOT elements are created in. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "deleteSubElements",
+      "type": "boolean",
+      "label": "Delete subelements",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the subelements deleted?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "importWithIds",
+      "type": "boolean",
+      "label": "Import with ids",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the ids imported?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "suppressCompileErrors",
+      "type": "boolean",
+      "label": "Suppress compile errors",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the compile errors suppressed?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "suppressImportElements",
+      "type": "boolean",
+      "label": "Suppress import elements",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the import elements info suppressed?",
+      "visibleRule": "runMode != Classic",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "noCompileOnImport",
+      "type": "boolean",
+      "label": "No compile on import",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Should the imported xpo compiled?",
+      "visibleRule": "runMode = Classic",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Client - Import XPO: $(configurationFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

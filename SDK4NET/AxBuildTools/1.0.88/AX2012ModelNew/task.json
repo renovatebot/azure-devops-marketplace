@@ -1,0 +1,144 @@
+{
+  "id": "9ACB7AE1-A647-4774-8252-C866073FE55D",
+  "name": "AX2012ModelNew",
+  "friendlyName": "AX 2012 Model - New",
+  "description": "Creates an empty model in a AX 2012 model store",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-models-ax-2012/ax-2012-model-new)",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [
+    {
+      "name": "modelDefinition",
+      "displayName": "Model definition",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the new model.",
+      "groupName": ""
+    },
+    {
+      "name": "targetLayerName",
+      "type": "string",
+      "label": "Target layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The layer to create the model in. (optional)",
+      "groupName": ""
+    },
+    {
+      "name": "definitionMode",
+      "type": "pickList",
+      "label": "Definition mode",
+      "defaultValue": "none",
+      "required": true,
+      "helpMarkDown": "How should the definition of the model be done?",
+      "groupName": "modelDefinition",
+      "options": {
+        "none": "None",
+        "manifestProperties": "Manifest properties",
+        "manifestFile": "Manifest file"
+      }
+    },
+    {
+      "name": "manifestPropertyDisplayName",
+      "type": "string",
+      "label": "Display name (Manifest property)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The display name of the model. (optional)",
+      "visibleRule": "definitionMode = manifestProperties",
+      "groupName": "modelDefinition"
+    },
+    {
+      "name": "manifestPropertyDescription",
+      "type": "string",
+      "label": "Description (Manifest property)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The description of the model. (optional)",
+      "visibleRule": "definitionMode = manifestProperties",
+      "groupName": "modelDefinition"
+    },
+    {
+      "name": "manifestPropertyPublisher",
+      "type": "string",
+      "label": "Publisher (Manifest property)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The publisher of the model. (optional)",
+      "visibleRule": "definitionMode = manifestProperties",
+      "groupName": "modelDefinition"
+    },
+    {
+      "name": "manifestPropertyInstallMode",
+      "type": "pickList",
+      "label": "Install mode (Manifest property)",
+      "defaultValue": "standard",
+      "required": true,
+      "helpMarkDown": "The install mode of the model. (optional)",
+      "visibleRule": "definitionMode = manifestProperties",
+      "groupName": "modelDefinition",
+      "options": {
+        "standard": "Standard",
+        "overwrite": "Overwrite",
+        "conflict": "Conflict"
+      }
+    },
+    {
+      "name": "manifestPropertyVersion",
+      "type": "string",
+      "label": "Version (Manifest property)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The version of the model. (optional, Version is a four-part indicator, in the format Number.Number.Number.Number, for example, 6.0.0.0)",
+      "visibleRule": "definitionMode = manifestProperties",
+      "groupName": "modelDefinition"
+    },
+    {
+      "name": "manifestFileName",
+      "type": "filePath",
+      "label": "Manifest file path (.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies an XML file that identifies a model. Use the \"AX2012 Model - Get Model manifest\" Build step to output a sample manifest file.",
+      "visibleRule": "definitionMode = manifestFile",
+      "groupName": "modelDefinition"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2012 Model - New: $(modelName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

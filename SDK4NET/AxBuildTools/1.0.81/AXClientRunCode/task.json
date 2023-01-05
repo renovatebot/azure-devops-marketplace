@@ -1,0 +1,194 @@
+{
+  "id": "48A1DA17-6A15-43FA-B9A9-A68536DEC84A",
+  "name": "AXClientRunCode",
+  "friendlyName": "AX Client - Run code",
+  "description": "Runs a job, static class method or a menu item of an AX 2009/2012 environment",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-client-ax-2009-2012/ax-client-run-code)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 11
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "runMode",
+      "type": "pickList",
+      "label": "Run mode",
+      "defaultValue": "Direct",
+      "required": true,
+      "helpMarkDown": "How should the step be executed?",
+      "groupName": "",
+      "options": {
+        "Direct": "Direct",
+        "Batch": "Batch"
+      }
+    },
+    {
+      "name": "objectType",
+      "type": "pickList",
+      "label": "Object type",
+      "defaultValue": "Job",
+      "required": true,
+      "helpMarkDown": "What object type should be run?",
+      "groupName": "",
+      "options": {
+        "Job": "Job",
+        "Class": "Static class method",
+        "MenuItem": "Menu item"
+      }
+    },
+    {
+      "name": "jobName",
+      "type": "string",
+      "label": "Job name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the name of the job to execute.",
+      "visibleRule": "objectType = Job",
+      "groupName": ""
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "label": "Class name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the name of the class to run.",
+      "visibleRule": "objectType = Class",
+      "groupName": ""
+    },
+    {
+      "name": "methodName",
+      "type": "string",
+      "label": "Method name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the name of the static method to execute.",
+      "visibleRule": "objectType = Class",
+      "groupName": ""
+    },
+    {
+      "name": "menuItemType",
+      "type": "pickList",
+      "label": "Menu item type",
+      "defaultValue": "Action",
+      "required": true,
+      "helpMarkDown": "What menu item type should be run?",
+      "visibleRule": "objectType = MenuItem",
+      "groupName": "",
+      "options": {
+        "Action": "Action",
+        "Display": "Display",
+        "Output": "Output"
+      }
+    },
+    {
+      "name": "menuItemName",
+      "type": "string",
+      "label": "Method item name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the name of the menu item to run.",
+      "visibleRule": "objectType = MenuItem",
+      "groupName": ""
+    },
+    {
+      "name": "parameters",
+      "type": "string",
+      "label": "Parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify parameters which should be added, for example \"'MyString', 100\".",
+      "visibleRule": "objectType = Class",
+      "groupName": ""
+    },
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Client config file path (.axc)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path of the client configuration file.",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "logFileName",
+      "type": "filePath",
+      "label": "Log file path (*.log)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The file path to save the log file to.",
+      "visibleRule": "runMode = Direct",
+      "groupName": ""
+    },
+    {
+      "name": "layerName",
+      "type": "string",
+      "label": "Layer name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies which layer to open in the AOT. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "layerCode",
+      "type": "string",
+      "label": "Layer code",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the developer license code for developer options. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "modelName",
+      "type": "string",
+      "label": "Model name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The \"current model\" is the model where all new AOT elements are created in. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "symbolsMaximumWaitTime",
+      "type": "string",
+      "label": "Max wait time (min)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number of minutes to wait before failing the step. (optional)",
+      "visibleRule": "runMode != Batch",
+      "groupName": ""
+    },
+    {
+      "name": "autoRunFileName",
+      "type": "filePath",
+      "label": "AutoRun file path (*.xml)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The autorun file to append the build step to.",
+      "visibleRule": "runMode = Batch",
+      "groupName": ""
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX AX Client - Run code: $(configurationFileName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "id": "7AA0509D-11D6-4897-AB4D-96330C48C610",
+  "name": "AX2009FilesCopy",
+  "friendlyName": "AX 2009 Files - Copy",
+  "description": "Copies application, layer or label files to an AX 2009 environment",
+  "helpMarkDown": "[More Information](https://sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-ax-2009-server/ax-2009-files-copy)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 14
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "configurationFileName",
+      "type": "filePath",
+      "label": "Server config file path (.axc)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path to of the server configuration file.",
+      "groupName": ""
+    },
+    {
+      "name": "sourcePath",
+      "type": "filePath",
+      "label": "Source path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The source path of the file(s) to copy.",
+      "groupName": "",
+      "visibleRule": ""
+    },
+    {
+      "name": "direction",
+      "type": "pickList",
+      "label": "Direction",
+      "defaultValue": "Forward",
+      "required": true,
+      "helpMarkDown": "Specifies in which direction the action should be performed.",
+      "groupName": "",
+      "options": {
+        "Forward": "Source path to AX (Standard)",
+        "Reverse": "AX to Source path (Reverse mode)"
+      }
+    },
+    {
+      "name": "copyMode",
+      "type": "pickList",
+      "label": "Copy mode",
+      "defaultValue": "Application",
+      "required": true,
+      "helpMarkDown": "What files should be copied?",
+      "groupName": "",
+      "options": {
+        "Application": "Application files",
+        "Layer": "Layer files",
+        "Label": "Label files"
+      }
+    },
+    {
+      "name": "layerNames",
+      "type": "string",
+      "label": "Layer name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the three-letter name of the Microsoft Dynamics AX layer(s), for example, VAR. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "copyMode = Layer"
+    },
+    {
+      "name": "excludeLayerNames",
+      "type": "string",
+      "label": "Exclude layer name(s)",
+      "defaultValue": "SYS, SYP, GLS, GLP, DIS, DIP, LOS, LOP, HFX, SL1, SL2, SL3",
+      "required": false,
+      "helpMarkDown": "Specifies the three-letter name of the Microsoft Dynamics AX layer(s) to exclude, for example, SYS. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "copyMode = Layer"
+    },
+    {
+      "name": "labelNames",
+      "type": "string",
+      "label": "Label name(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the label name(s) of the Microsoft Dynamics AX label file(s), for example, AHD. (optional, comma-separated)",
+      "groupName": "",
+      "visibleRule": "copyMode = Label"
+    },
+    {
+      "name": "excludeLabelNames",
+      "type": "string",
+      "label": "Exclude layer name(s)",
+      "defaultValue": "SYS, SYP, GLS, GLP, DIS, DIP, LOS, LOP, HFX, SL1, SL2, SL3",
+      "required": false,
+      "helpMarkDown": "Specifies the label name(s) of the Microsoft Dynamics AX label file(s) to exclude, for example, SYS. (comma-separated)",
+      "groupName": "",
+      "visibleRule": "copyMode = Label"
+    },
+    {
+      "name": "labelLanguages",
+      "type": "string",
+      "label": "Label file language(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the language(s) of the Microsoft Dynamics AX label file(s), for example, en-US. (optional, comma-separated)",
+      "groupName": "",
+      "visibleRule": "copyMode = Label"
+    },
+    {
+      "name": "removeIndexes",
+      "type": "boolean",
+      "label": "Remove object and label indexes",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Should the object and label indexes be removed?",
+      "groupName": "",
+      "visibleRule": ""
+    },
+    {
+      "name": "backupMode",
+      "type": "pickList",
+      "label": "Backup mode",
+      "defaultValue": "CleanAndBackup",
+      "required": true,
+      "helpMarkDown": "How should the backup be done?",
+      "groupName": "",
+      "visibleRule": "",
+      "options": {
+        "NoBackup": "No backup",
+        "BackupOnly": "Backup only",
+        "CleanAndBackup": "Clean and backup"
+      }
+    },
+    {
+      "name": "backupFolder",
+      "type": "string",
+      "label": "Backup folder",
+      "defaultValue": "Old",
+      "required": false,
+      "helpMarkDown": "Specifies the backup folder name.",
+      "groupName": "",
+      "visibleRule": "backupMode != NoBackup"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX 2009 Files - Copy: $(configurationFileName) - $(copyMode)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

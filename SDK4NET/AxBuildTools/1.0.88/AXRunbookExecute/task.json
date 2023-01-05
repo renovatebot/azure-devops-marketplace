@@ -1,0 +1,85 @@
+{
+  "id": "EA6F2F43-C8F9-478E-957D-EBA4EE1F1FE3",
+  "name": "AXRunbookExecute",
+  "friendlyName": "AX Runbook - Execute",
+  "description": "Execute an AX runbook",
+  "helpMarkDown": "[More Information](https://www.sdk4net.de/en-us/products/microsoft-dynamics-ax-build-tools/documentation/work-with-deployment-package/ax-runbook-execute)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SDK4NET.de",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 4
+  },
+  "demands": [
+    "DotNetFramework"
+  ],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "axUpdateInstallerFileName",
+      "type": "filePath",
+      "label": "AXUpdateInstaller file path (AXUpdateInstaller.exe)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The file path of the AXUpdateInstaller.exe.",
+      "groupName": ""
+    },
+    {
+      "name": "runbookId",
+      "type": "string",
+      "label": "Runbook id",
+      "defaultValue": "RUNBOOK_VSTS_$(Build.BuildId)",
+      "required": true,
+      "helpMarkDown": "A parameter that is specified by the developer who applies the deployable package.",
+      "groupName": "",
+      "visibleRule": ""
+    },
+    {
+      "name": "executeMode",
+      "type": "pickList",
+      "label": "Execute mode",
+      "defaultValue": "normal",
+      "required": true,
+      "helpMarkDown": "What install mode shoud be used?",
+      "groupName": "",
+      "options": {
+        "normal": "Normal",
+        "complete": "Complete steps",
+        "rerun": "Rerun steps"
+      }
+    },
+    {
+      "name": "versionCheck",
+      "type": "boolean",
+      "label": "Check version",
+      "defaultValue": "False",
+      "required": false,
+      "helpMarkDown": "Should a version mismatch or downgrade be prevented?",
+      "groupName": "",
+      "visibleRule": "executeMode = normal"
+    },
+    {
+      "name": "steps",
+      "type": "string",
+      "label": "Step(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The ids of the step(s). (comma-separated)",
+      "groupName": "",
+      "visibleRule": "executeMode != normal"
+    }
+  ],
+  "instanceNameFormat": "SDK4NET.de - AX Runbook - Execute: $(runbookId)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
