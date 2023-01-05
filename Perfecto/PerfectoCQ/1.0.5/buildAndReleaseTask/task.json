@@ -1,0 +1,76 @@
+{
+  "id": "96096857-0524-4ba7-b20f-0437ab587aa9",
+  "name": "PerfectoCQ",
+  "friendlyName": "Perfecto Mobile Configuration",
+  "description": "Perfecto Mobile Configuration for Web and Device Application Testing",
+  "author": "Uzi Eilon and Eyal Yovel",
+  "helpMarkDown": "Configures and uploads applications [*.apk or *.ipa] to Perfecto Mobile cloud for Testing. [More Information](https://www.perfecto.io/) ",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [ ],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "5"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "PerfectoCQ $(message)",
+  "inputs": [
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "Perfecto Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Perfecto Mobile account details - create new endpoint with your perfecto account"
+    },
+    {
+      "name": "appAction",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "Upload",
+      "required": false,
+      "options": {
+        "Upload": "Upload",
+        "Delete": "Delete"
+      },
+      "helpMarkDown": "Action for Perfecto Mobile. upload - upload the app to perfecto cloud or delete - clean the app from the cloud "
+    },
+
+    {
+      "name": "appName",
+      "type": "string",
+      "label": "APK or IPA file name ",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "name for the APK or the IPA"
+    },
+
+    {
+      "name": "FromLib",
+      "type": "string",
+      "label": "Appilcation Folder",
+      "defaultValue": "$(Agent.BuildDirectory)\\bin",
+      "required": false,
+      "visibleRule": "appAction = Upload",
+      "helpMarkDown": "location of the latest IPA ot APK on the builf machine"
+    },
+    {
+      "name": "ToLib",
+      "type": "string",
+      "label": "Folder in Perfecto Cloud",
+      "defaultValue": "PRIVATE:MS\\",
+      "required": false,
+      "helpMarkDown": "upload folder in perfecto moible repository, can be PUBLIC: or PRIVATE: location, if the folder is not exists the system will create it "
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "perfectoExe.js",
+      "argumentFormat": ""
+    }
+  }
+}
