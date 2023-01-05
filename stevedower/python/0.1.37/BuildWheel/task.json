@@ -1,0 +1,96 @@
+{
+    "id": "1D59D2E4-DD7D-4172-9A13-E519CF2AFCAC",
+    "name": "BuildWheel",
+    "friendlyName": "Build Python wheels (Experimental)",
+    "description": "Creates wheels using all installed copies of Python.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 9
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Build wheels from $(setuppy)",
+    "inputs": [
+        {
+            "name": "setuppy",
+            "type": "filePath",
+            "label": "setup.py file",
+            "defaultValue": "setup.py",
+            "groupName": "packages",
+            "required": true,
+            "helpMarkDown": "Location of your setup.py file."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Output Folder",
+            "defaultValue": "$(Build.BinariesDirectory)\\dist",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where wheels will be written. By default, `$(Build.BinariesDirectory)\\dist` is used."
+        },
+        {
+            "name": "universal",
+            "type": "boolean",
+            "label": "Create a Universal wheel",
+            "defaultValue": false,
+            "groupName": "packages",
+            "helpMarkDown": "Marks the wheel as universal. Only the last found copy of Python will be used to build the wheel."
+        },
+        {
+            "name": "signcmd",
+            "type": "string",
+            "label": "Signing command",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Optional command to execute between `build` and `bdist_wheel`."
+        },
+        {
+            "name": "python",
+            "type": "filePath",
+            "label": "Python",
+            "defaultValue": "$(Build.BinariesDirectory)\\python.exe",
+            "groupName": "advanced",
+            "helpMarkDown": "Search path for installed Python versions. This will be passed to Get-ChildItem and all matches will be used to build, unless building a universal wheel."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "--upgrade pip setuptools wheel cython",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to building wheels."
+        },
+        {
+            "name": "workingdir",
+            "type": "filePath",
+            "label": "Working Folder",
+            "defaultValue": "$(Build.BinariesDirectory)",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where wheels will be written. By default, `$(Build.BinariesDirectory)` is used."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "BuildWheel.ps1"
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "id": "E4E76C18-202B-43D8-BD49-E48623290AD2",
+    "name": "BuildSDist",
+    "friendlyName": "Build a Python sdist",
+    "description": "Creates a sdist using an installed copy of Python.",
+    "helpMarkDown": "The *Build Python sdist* task uses a `setup.py` file to produce a source distribution. It will ensure that `setuptools` and `cython` are installed before running.",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Build a sdist from $(setuppy)",
+    "inputs": [
+        {
+            "name": "setuppy",
+            "type": "filePath",
+            "label": "setup.py file",
+            "defaultValue": "setup.py",
+            "groupName": "packages",
+            "required": true,
+            "helpMarkDown": "Location of your setup.py file."
+        },
+        {
+            "name": "outputdir",
+            "type": "string",
+            "label": "Output Folder",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "groupName": "packages",
+            "helpMarkDown": "Folder where the sdist will be written. The `BuildSDist.dist` output variable is set to this folder."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "setuptools cython",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to building sdists. Prefix with `--upgrade` to ensure you have the latest version."
+        },
+        {
+            "name": "workingdir",
+            "type": "string",
+            "label": "Working Folder",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Working directory for running the build. By default, the directory containing setup.py will be used."
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "dist",
+            "description": "The directory distribution files were written to."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "BuildSDist.ps1"
+        }
+    }
+}

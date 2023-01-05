@@ -1,0 +1,63 @@
+{
+    "id": "213A9B7D-D23B-47E9-BEF8-D6F8EFD56253",
+    "name": "RunNotebook",
+    "friendlyName": "Run Jupyter Notebook (Experimental)",
+    "description": "Runs a Jupyter Notebook and saves the output as HTML.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "notebook",
+            "displayName": "Notebook",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Run $(notebook)",
+    "inputs": [
+        {
+            "name": "notebook",
+            "type": "string",
+            "label": "Notebook",
+            "defaultValue": "*.ipynb",
+            "groupName": "notebook",
+            "helpMarkDown": "Path to the notebook(s) to execute."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Output Directory",
+            "defaultValue": "$(Build.BinariesDirectory)",
+            "groupName": "notebook",
+            "helpMarkDown": "Folder where HTML output will be written."
+        },
+        {
+            "name": "jupyter",
+            "type": "filePath",
+            "label": "Path to Jupyter",
+            "defaultValue": "$(Build.BinariesDirectory)\\env\\Scripts\\jupyter.exe",
+            "groupName": "advanced",
+            "helpMarkDown": "Location of an installed `jupyter.exe` that also includes `nbconvert`."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "RunNotebook.ps1"
+        }
+    }
+}

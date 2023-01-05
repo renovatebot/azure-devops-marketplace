@@ -1,0 +1,111 @@
+{
+    "id": "D1BC1D2E-DE24-4CAD-90C6-59F8704CE090",
+    "name": "PyTest",
+    "friendlyName": "Run Python tests (Experimental)",
+    "description": "Runs tests using PyTest in all available installs of Python.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "tests",
+            "displayName": "Tests",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "PyTest",
+    "inputs": [
+        {
+            "name": "testroot",
+            "type": "filePath",
+            "label": "Root directory",
+            "required": false,
+            "groupName": "tests",
+            "helpMarkDown": "Root directory to run tests from."
+        },
+        {
+            "name": "patterns",
+            "type": "multiLine",
+            "label": "Test file patterns",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Files to execute tests from. If empty, all tests within the root directory are executed."
+        },
+        {
+            "name": "testfilter",
+            "type": "string",
+            "label": "Filter",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Filters tests that should be executed. Passed to PyTest as `-k` option."
+        },
+        {
+            "name": "resultfile",
+            "type": "filePath",
+            "label": "Results File",
+            "defaultValue": "test-results.xml",
+            "groupName": "tests",
+            "helpMarkDown": "Location to store test results in JUnit format. Add a \"Publish Test Results\" task to associate these results with your build."
+        },
+        {
+            "name": "doctests",
+            "type": "boolean",
+            "label": "Run doctests in all modules",
+            "defaultValue": true,
+            "groupName": "tests",
+            "helpMarkDown": "Select to also execute all doctests discovered in test files."
+        },
+        {
+            "name": "python",
+            "type": "filePath",
+            "label": "Python",
+            "defaultValue": "$(Build.BinariesDirectory)\\python.exe",
+            "groupName": "advanced",
+            "helpMarkDown": "Search path for installed Python versions."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "pytest",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to running tests. Prefix with `--upgrade` to ensure you have the latest version."
+        },
+        {
+            "name": "clearcache",
+            "type": "boolean",
+            "label": "Clear PyTest cache at start of run",
+            "defaultValue": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Clears cached data from previous runs."
+        },
+        {
+            "name": "tempdir",
+            "type": "filePath",
+            "label": "Temp directory",
+            "defaultValue": "$(Build.BinariesDirectory)\\test",
+            "groupName": "advanced",
+            "helpMarkDown": "Base temporary directory."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "PyTest.ps1"
+        }
+    }
+}

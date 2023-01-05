@@ -1,0 +1,87 @@
+{
+    "id": "75A63AC0-BAB7-4DAB-93F6-65FD41F51F09",
+    "name": "PythonScript",
+    "friendlyName": "Run Python command",
+    "description": "Runs a Python command line.",
+    "helpMarkDown": "The *Run Python command* task will let you enter any script or command to run with Python.\n\nConsider using the *Python Script* task for inline code.",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "script",
+            "displayName": "Commands",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Run $(script) $(arguments)",
+    "inputs": [
+        {
+            "name": "script",
+            "type": "filePath",
+            "label": "Script",
+            "defaultValue": "",
+            "groupName": "script",
+            "helpMarkDown": "Script file to run. If omitted, the arguments below are passed directly."
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "defaultValue": "",
+            "groupName": "script",
+            "helpMarkDown": "Arguments to Python. This should include at least a script filename, as well as arguments before and after."
+        },
+        {
+            "name": "workingdir",
+            "type": "string",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "groupName": "script",
+            "helpMarkDown": "Folder where Python will be run."
+        },
+        {
+            "name": "abortOnFail",
+            "type": "boolean",
+            "label": "Fail on non-zero exit code",
+            "defaultValue": false,
+            "groupName": "script",
+            "helpMarkDown": "Aborts the build by failing this task if the script returns a non-zero exit code."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to running the script. Prefix with `--upgrade` to ensure you have the latest version."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "PythonScript.ps1"
+        }
+    }
+}

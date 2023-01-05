@@ -1,0 +1,118 @@
+{
+    "id": "EB33011F-0C71-47D4-83C3-359D5D40925F",
+    "name": "UploadPackage",
+    "friendlyName": "Upload Python package (Experimental)",
+    "description": "Uploads built packages to PyPI.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Package",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 7
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "package",
+            "displayName": "Package",
+            "isExpanded": true
+        },
+        {
+            "name": "repository",
+            "displayName": "Repository",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Upload Python packages",
+    "inputs": [
+        {
+            "name": "distdir",
+            "type": "filePath",
+            "label": "Packages path",
+            "defaultValue": "$(Build.BinariesDirectory)\\dist",
+            "required": true,
+            "groupName": "package",
+            "helpMarkDown": "Location of your distribution files."
+        },
+        {
+            "name": "repository",
+            "type": "pickList",
+            "label": "Repository",
+            "defaultValue": "pypi",
+            "required": true,
+            "groupName": "repository",
+            "helpMarkDown": "The name or URL of the repository to upload to",
+            "options": {
+                "pypi": "PyPI",
+                "testpypi": "Test PyPI"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "required": true,
+            "groupName": "repository",
+            "helpMarkDown": "The username to use for authenticating with the index server"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "required": true,
+            "groupName": "repository",
+            "helpMarkDown": "The password to use for authenticating with the index server. To encrypt this value, use a build variable with its lock enabled."
+        },
+        {
+            "name": "python",
+            "type": "filePath",
+            "label": "Python",
+            "defaultValue": "$(Build.BinariesDirectory)\\python.exe",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Search path for installed Python versions. This will be passed to Get-ChildItem and the first match will be used to upload."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "--upgrade twine",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to uploading packages."
+        },
+        {
+            "name": "skipexisting",
+            "type": "boolean",
+            "label": "Continue uploading when a file exists",
+            "defaultValue": "true",
+            "groupName": "advanced",
+            "helpMarkDown": "When unchecked, existing files will abort uploading. Files cannot be overwritten on PyPI."
+        },
+        {
+            "name": "otherargs",
+            "type": "string",
+            "label": "Other arguments",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Other command-line arguments to pass to twine (e.g. --comment)"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "UploadPackage.ps1"
+        }
+    }
+}

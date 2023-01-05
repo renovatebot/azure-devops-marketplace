@@ -1,0 +1,71 @@
+{
+    "id": "AF64316E-74FD-42F1-A0BD-2D7F72404AA6",
+    "name": "PipWheel",
+    "friendlyName": "Build Python wheels (Experimental)",
+    "description": "Creates wheels using all installed copies of Python.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 3
+    },
+    "minimumAgentVersion": "1.103.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Create wheel from $(packages)",
+    "inputs": [
+        {
+            "name": "packages",
+            "type": "string",
+            "label": "Packages",
+            "defaultValue": "\"$(Build.SourcesDirectory)\"",
+            "groupName": "packages",
+            "helpMarkDown": "Packages to build into wheels. By default, builds from sources directory. Used as an argument to `pip wheel`."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Output Folder",
+            "defaultValue": "$(Build.BinariesDirectory)",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where wheels will written. By default, `$(Build.BinariesDirectory)` is used."
+        },
+        {
+            "name": "python",
+            "type": "filePath",
+            "label": "Python",
+            "defaultValue": "$(Build.BinariesDirectory)\\python.exe",
+            "groupName": "advanced",
+            "helpMarkDown": "Search path for installed Python versions."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "--upgrade pip setuptools wheel cython",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to building wheels."
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "PipWheel.ps1"
+        }
+    }
+}

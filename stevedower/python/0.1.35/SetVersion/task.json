@@ -1,0 +1,78 @@
+{
+    "id": "C8A8BC6D-1D6D-4404-BF0C-CDFB64789DC5",
+    "name": "SetVersion",
+    "friendlyName": "Update version variables (Experimental)",
+    "description": "Replaces the `__version__` value in a set of files.",
+    "helpMarkDown": "[More Information](https://aka.ms/python)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 7
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "version",
+            "displayName": "Version",
+            "isExpanded": true
+        },
+        {
+            "name": "files",
+            "displayName": "Files",
+            "isExpanded": true
+        }
+    ],
+    "instanceNameFormat": "Update versions to $(version)",
+    "inputs": [
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Version string",
+            "required": true,
+            "defaultValue": "$(Build.BuildNumber)",
+            "groupName": "version",
+            "helpMarkDown": "Version to insert into files"
+        },
+        {
+            "name": "root",
+            "type": "filePath",
+            "label": "Base directory",
+            "required": false,
+            "groupName": "files",
+            "helpMarkDown": "Base directory to search for files matching the below patterns."
+        },
+        {
+            "name": "patterns",
+            "type": "multiLine",
+            "label": "File patterns",
+            "defaultValue": "setup.py",
+            "groupName": "files",
+            "helpMarkDown": "Files to update the `__version__` variable in. Multiple patterns may be specified"
+        },
+        {
+            "name": "encoding",
+            "type": "pickList",
+            "label": "Output encoding",
+            "defaultValue": "utf8",
+            "options": {
+                "ascii": "ASCII",
+                "utf8": "UTF-8 (without BOM)",
+                "utf8sig": "UTF-8 (with BOM)",
+                "utf16le": "UTF-16 (without BOM)",
+                "utf16sig": "UTF-16 (with BOM)"
+            },
+            "helpMarkDown": "Encoding to use when writing files"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "SetVersion.ps1"
+        }
+    }
+}

@@ -1,0 +1,175 @@
+{
+    "id": "D1BC1D2E-DE24-4CAD-90C6-59F8704CE090",
+    "name": "PyTest",
+    "friendlyName": "Run Python tests",
+    "description": "Runs tests using PyTest.",
+    "helpMarkDown": "The *Run Python tests* task will install and use [PyTest](https://pytest.org) to run your test suite. The [pytest-azurepipelines](https://pypi.org/project/pytest-azurepipelines) plugin is used to publish results. If you enable code coverage, you will need to add a \"Publish Code Coverage Results\" task referencing `coverage.xml` (Cobertura format) and `htmlcov` from this task's working directory.",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "tests",
+            "displayName": "Tests",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Run PyTest",
+    "inputs": [
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Test Run Title",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Title of the test run. Requires the `pytest-azurepipelines` plugin."
+        },
+        {
+            "name": "testroot",
+            "type": "filePath",
+            "label": "Root directory",
+            "required": false,
+            "groupName": "tests",
+            "helpMarkDown": "Root directory to run tests from."
+        },
+        {
+            "name": "patterns",
+            "type": "multiLine",
+            "label": "Test file patterns",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Files to execute tests from. If empty, all tests within the root directory are executed."
+        },
+        {
+            "name": "packages",
+            "type": "string",
+            "label": "Test packages",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Space-separated package names containing tests to run. If specified, the directory and file options above are ignored."
+        },
+        {
+            "name": "testfilter",
+            "type": "string",
+            "label": "Filter",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Filters tests that should be executed. Passed to PyTest as `-k` option."
+        },
+        {
+            "name": "resultfile",
+            "type": "filePath",
+            "label": "Results File",
+            "required": false,
+            "groupName": "tests",
+            "helpMarkDown": "Location to store test results in JUnit format. Add a \"Publish Test Results\" task to associate these results with your build. This is not required when using the `pytest-azurepipelines` plugin."
+        },
+        {
+            "name": "resultprefix",
+            "type": "string",
+            "label": "Results Prefix",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Prefix to add to test names. The `%winver%` variable will contain `sys.winver` from the version of Python being executed."
+        },
+        {
+            "name": "doctests",
+            "type": "boolean",
+            "label": "Run doctests in all modules",
+            "defaultValue": true,
+            "groupName": "tests",
+            "helpMarkDown": "Select to also execute all doctests discovered in test files."
+        },
+        {
+            "name": "pylint",
+            "type": "boolean",
+            "label": "Enable pylint reports",
+            "defaultValue": false,
+            "groupName": "tests",
+            "helpMarkDown": "Select to enable pylint report writing."
+        },
+        {
+            "name": "codecoverage",
+            "type": "string",
+            "label": "Collect coverage on modules",
+            "defaultValue": "",
+            "groupName": "tests",
+            "helpMarkDown": "Space, comma or semicolon separated list of modules to enable the use of `pytest-cov`."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "pytest pytest-azurepipelines",
+            "groupName": "tests",
+            "helpMarkDown": "Space-separated packages to install prior to running tests. Prefix with `--upgrade` to ensure you have the latest version."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "workingdir",
+            "type": "filePath",
+            "label": "Working Folder",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Working directory for running the build. By default, the root source directory will be used."
+        },
+        {
+            "name": "clearcache",
+            "type": "boolean",
+            "label": "Clear PyTest cache at start of run",
+            "defaultValue": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Clears cached data from previous runs."
+        },
+        {
+            "name": "tempdir",
+            "type": "filePath",
+            "label": "Temp directory",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Base temporary directory. Each Python version creates its own subdirectory."
+        },
+        {
+            "name": "otherargs",
+            "type": "string",
+            "label": "Other arguments",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Any other arguments to pass to the PyTest command line."
+        },
+        {
+            "name": "abortOnFail",
+            "type": "boolean",
+            "label": "Abort on failed test result",
+            "defaultValue": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Abort the build if any tests fail."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "PyTest.ps1"
+        }
+    }
+}

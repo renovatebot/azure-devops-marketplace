@@ -1,0 +1,118 @@
+{
+    "id": "1D59D2E4-DD7D-4172-9A13-E519CF2AFCAC",
+    "name": "BuildWheel",
+    "friendlyName": "Build Python wheels",
+    "description": "Creates a wheel using an installed copy of Python.",
+    "helpMarkDown": "The *Build Python wheels* task uses a `setup.py` file to compile wheels. It will ensure that `pip`, `wheel`, `setuptools` and `cython` are installed before running.",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 6
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "packages",
+            "displayName": "Packages",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Build wheels from $(setuppy)",
+    "inputs": [
+        {
+            "name": "setuppy",
+            "type": "filePath",
+            "label": "setup.py file",
+            "defaultValue": "setup.py",
+            "groupName": "packages",
+            "required": true,
+            "helpMarkDown": "Location of your setup.py file."
+        },
+        {
+            "name": "outputdir",
+            "type": "filePath",
+            "label": "Output Folder",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "groupName": "packages",
+            "helpMarkDown": "Folder where wheel will be written. The `BuildWheel.dist` output variable is set to this folder."
+        },
+        {
+            "name": "universal",
+            "type": "boolean",
+            "label": "Create a Universal wheel",
+            "defaultValue": false,
+            "groupName": "packages",
+            "helpMarkDown": "Marks the wheel as universal."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "pip setuptools wheel cython",
+            "groupName": "packages",
+            "helpMarkDown": "Packages to install prior to building wheels. Prefix with `--upgrade` to ensure you have the latest version."
+        },
+        {
+            "name": "usemsbuild",
+            "type": "boolean",
+            "label": "Use MSBuild for building extensions",
+            "defaultValue": false,
+            "groupName": "packages",
+            "helpMarkDown": "Adds the [`pyfindvs`](https://pypi.org/p/pyfindvs) package and uses it to locate and build with MSBuild instead of the built-in module. Recommended for Python 3.5 and later."
+        },
+        {
+            "name": "signcmd",
+            "type": "string",
+            "label": "Signing command",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Optional command to execute between `build` and `bdist_wheel`."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "builddir",
+            "type": "filePath",
+            "label": "Build Folder",
+            "defaultValue": "$(Build.BinariesDirectory)",
+            "groupName": "advanced",
+            "helpMarkDown": "Base directory for temporary build artifacts."
+        },
+        {
+            "name": "workingdir",
+            "type": "string",
+            "label": "Working Folder",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Working directory for running the build. By default, the directory containing setup.py will be used."
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "dist",
+            "description": "The directory distribution files were written to."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "BuildWheel.ps1"
+        }
+    }
+}

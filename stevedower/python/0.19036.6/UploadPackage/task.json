@@ -1,0 +1,125 @@
+{
+    "id": "EB33011F-0C71-47D4-83C3-359D5D40925F",
+    "name": "UploadPackage",
+    "friendlyName": "Upload Python package",
+    "description": "Uploads built packages to PyPI.",
+    "helpMarkDown": "The *Upload Python package* task uses `twine` to upload your built packages to the [Python Package Index](https://pypi.org). You may also select to upload to the test instance.\n\nYour username and password are required. It is recommended to add these as [encrypted build variables](https://docs.microsoft.com/azure/devops/pipelines/build/variables?view=azure-devops&tabs=batch#secret-variables) or a [secured configuration file](https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/download-secure-file?view=azure-devops) rather than adding them directly to the task.",
+    "category": "Package",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Steve Dower",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 10
+    },
+    "minimumAgentVersion": "2.0",
+    "groups": [
+        {
+            "name": "package",
+            "displayName": "Package",
+            "isExpanded": true
+        },
+        {
+            "name": "repository",
+            "displayName": "Repository",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Upload Python packages",
+    "inputs": [
+        {
+            "name": "distdir",
+            "type": "filePath",
+            "label": "Path to publish",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "groupName": "package",
+            "helpMarkDown": "The folder or file path to publish."
+        },
+        {
+            "name": "repository",
+            "type": "pickList",
+            "label": "Repository",
+            "defaultValue": "pypi",
+            "required": true,
+            "groupName": "repository",
+            "helpMarkDown": "The name or URL of the repository to upload to",
+            "options": {
+                "pypi": "PyPI",
+                "pypitest": "Test PyPI"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "groupName": "repository",
+            "helpMarkDown": "The username to use for authenticating with the index server"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "groupName": "repository",
+            "helpMarkDown": "The password to use for authenticating with the index server. To encrypt this value, use a build variable with its lock enabled."
+        },
+        {
+            "name": "pypirc",
+            "type": "filePath",
+            "label": "PyPI Config",
+            "defaultValue": "",
+            "groupName": "repository",
+            "helpMarkDown": "The `.pypirc` file to use for publishing. If this file contains credentials, we recommend using the \"Download Secure File\" task."
+        },
+        {
+            "name": "pythonpath",
+            "type": "string",
+            "label": "Python",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Directory containing the `python.exe` to use. By default, the last install added by either the Install Python or Use Python task will be used."
+        },
+        {
+            "name": "dependencies",
+            "type": "string",
+            "label": "Dependencies",
+            "defaultValue": "--upgrade twine",
+            "groupName": "advanced",
+            "helpMarkDown": "Packages to install prior to uploading packages. Prefix with `--upgrade` to ensure you have the latest version."
+        },
+        {
+            "name": "skipexisting",
+            "type": "boolean",
+            "label": "Continue uploading when a file exists",
+            "defaultValue": true,
+            "groupName": "advanced",
+            "helpMarkDown": "When unchecked, existing files will abort uploading. Files cannot be overwritten on PyPI, and attempting to reupload a file will cause the entire build to fail."
+        },
+        {
+            "name": "otherargs",
+            "type": "string",
+            "label": "Other arguments",
+            "defaultValue": "",
+            "groupName": "advanced",
+            "helpMarkDown": "Other command-line arguments to pass to twine (e.g. --comment)"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "UploadPackage.ps1"
+        }
+    }
+}
