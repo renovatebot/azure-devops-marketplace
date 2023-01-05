@@ -1,0 +1,93 @@
+{
+  "id": "73a20370-a2fb-11ea-96ac-97b82fb4aa76",
+  "name": "DenoRun",
+  "friendlyName": "Deno Run",
+  "description": "Deno Run",
+  "author": "Maciej Maciejewski",
+  "helpMarkDown": "Runs Deno script from local file, URL or inline",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Run Deno",
+  "inputs": [
+    {
+      "name": "targetType",
+      "type": "radio",
+      "label": "Type",
+      "required": false,
+      "defaultValue": "filePath",
+      "helpMarkDown": "Target script type: Path, URL or Inline",
+      "options": {
+        "filePath": "File Path",
+        "inline": "Inline"
+      }
+    },
+    {
+      "name": "scriptPath",
+      "type": "string",
+      "label": "Script Path or URL",
+      "visibleRule": "targetType = filePath",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Path or URL of the script to be executed"
+    },
+    {
+      "name": "script",
+      "type": "multiLine",
+      "label": "Script",
+      "visibleRule": "targetType = inline",
+      "required": true,
+      "defaultValue": "",
+      "properties": {
+          "resizable": "true",
+          "rows": "10",
+          "maxLength": "20000"
+      },
+      "helpMarkDown": "Script content written in JavaScript or TypesScript"
+    },
+    {
+      "name": "permissions",
+      "type": "multiLine",
+      "defaultValue": "",
+      "properties": {
+        "resizable": "true",
+        "rows": "3"
+      },
+      "visibleRule": "",
+      "label": "Permissions",
+      "helpMarkDown": "A list of permissions that are added to the run command, each in separate lines. Ex:<br><br>--allow-read<br>--allow-write=/tmp"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "Arguments",
+      "visibleRule": "",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "List of arguments passed to the Deno script"
+    },
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "label": "Working Directory",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": false,
+      "helpMarkDown": "Working directory of the Deno script"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}
