@@ -1,0 +1,76 @@
+﻿{
+  "id": "9892D4F3-F2FF-4E0D-B943-7738DBD523AF",
+  "name": "QueueNewBuild",
+  "friendlyName": "Queue New Build",
+  "description": "The task queue a new build",
+  "helpMarkDown": "[More Information](http://www.delegen.com)",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "runsOn": [
+    "Agent",
+    "MachineGroup"
+  ],
+  "author": "Delegen Ltd.",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "releaseNotes": "Match pattern consistency.",
+  "demands": [],
+  "groups": [    
+    {
+      "name": "QueuedBuildDetails",
+      "displayName": "Queued Build Details",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "BuildDefinitionToRun",
+      "type": "string",
+      "label": "Build Definition Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The build definition name of the build you want to queue",
+      "groupName": "QueuedBuildDetails"
+    },
+    {
+      "name": "BuildParametersJson",
+      "type": "string",
+      "label": "Build Parameters (JSON)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build parmeters to queue. example: {\"key1\":\"value1\",\"key2\": \"value2\",\"key3\": \"value3\"} ",
+      "groupName": "QueuedBuildDetails"
+    },
+    {
+      "name": "WaitBuildToFinish",
+      "type": "string",
+      "label": "Wait Queued Build",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "(Default is false) Wait till the queued build will be finished",
+      "groupName": "QueuedBuildDetails"
+    },
+    {
+      "name": "SkipTask",
+      "type": "string",
+      "label": "Skip Current Task",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "This parameter help to manage the currnet step and will skip it if needed. (default is false)",
+      "groupName": "QueuedBuildDetails"
+    }
+  ],
+  "instanceNameFormat": "Queue new build of: $(BuildDefinitionToRun)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Delegen.vNext.InvokeBuild.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
