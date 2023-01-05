@@ -1,0 +1,104 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work",
+        "vso.serviceendpoint_manage",
+        "vso.build"
+    ],
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Hdiv console connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "HdivConsole",
+                "displayName": "Hdiv console connection",
+                "url": {
+                    "displayName": "Hdiv console services Url",
+                    "helpText": "Url for the Hdiv console services to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "HdivConsoleDS",
+                        "endpointUrl": "{{endpoint.url}}",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "X-hdiv-console-services-token",
+                                "value": "{{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Api token",
+                                "description": "Access token",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"http://hdivsecurity.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "HdivCheckTaskId",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "HdivCheckTask"
+            }
+        },
+        {
+            "id": "HdivConsoleWidget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                "HdivSecurity.HdivAzureExtension.HdivConsoleWidget.Configuration"
+            ],
+            "properties": {
+                "name": "Hdiv vulnerability graph",
+                "description": "Hdiv vulnerability graph",
+                "catalogIconUrl": "HdivConsoleWidget/img/CatalogIcon.png",
+                "previewImageUrl": "HdivConsoleWidget/img/preview.png",
+                "uri": "HdivConsoleWidget/HdivConsoleWidget.html",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 3,
+                        "columnSpan": 5
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "HdivConsoleWidget.Configuration",
+            "type": "ms.vss-dashboards-web.widget-configuration",
+            "targets": [
+                "ms.vss-dashboards-web.widget-configuration"
+            ],
+            "properties": {
+                "name": "HdivConsoleWidget Configuration",
+                "description": "Configures Hdiv vulnerability graph",
+                "uri": "HdivConsoleWidget/configuration.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
