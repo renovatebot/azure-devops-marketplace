@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "2061c25a-2dbc-4c3a-870d-c480d9ce24f3",
+  "name": "GitGuardChanges",
+  "friendlyName": "GitGuardChanges",
+  "description": "Check if certain files have been changed between two commits",
+  "helpMarkDown": "[Learn more about this task](https://marketplace.visualstudio.com/items?itemName=joachimdalen.gitguard)",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 15
+  },
+  "inputs": [
+    {
+      "name": "sourceCommitHash",
+      "type": "string",
+      "label": "Source Commit Hash",
+      "required": true
+    },
+    {
+      "name": "targetCommitHash",
+      "type": "string",
+      "label": "Target Commit Hash",
+      "required": true,
+      "defaultValue": "HEAD"
+    },
+    {
+      "name": "matchPattern",
+      "type": "string",
+      "label": "Match Pattern",
+      "required": true
+    },
+    {
+      "name": "matchStrategy",
+      "type": "pickList",
+      "label": "Match Strategy",
+      "defaultValue": "all",
+      "required": true,
+      "options": {
+        "all": "All",
+        "single": "Single"
+      }
+    },
+    {
+      "name": "breakOnFailure",
+      "type": "boolean",
+      "label": "Break on failure",
+      "helpMarkDown": "Break the build in addition to setting the result variables",
+      "defaultValue": false
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "outputVariables": [
+    { "name": "gitGuardChangesResult", "description": "Match result" },
+    {
+      "name": "gitGuardChangesCount",
+      "description": "Count of number of matched files that was changed"
+    },
+    {
+      "name": "gitGuardChangesMatches",
+      "description": "List of file paths of files that was changed"
+    }
+  ]
+}
