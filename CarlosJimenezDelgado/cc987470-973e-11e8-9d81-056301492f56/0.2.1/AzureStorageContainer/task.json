@@ -1,0 +1,84 @@
+{
+  "id": "cc987470-973e-11e8-9d81-056301492f56",
+  "name": "azurestoragecontainer",
+  "friendlyName": "Azure Storage Container",
+  "description": "Task for creating azure storage container with a defined public access level inside an existing storage account",
+  "author": "Carlos Jiménez Delgado <mail@carlosjdelgado.com>",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "instanceNameFormat": "Create blob container inside azure storage",
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription where storage are in."
+    },
+    {
+      "name": "StorageName",
+      "type": "pickList",
+      "label": "Storage Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the storage where to create container",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "ContainerName",
+      "type": "string",
+      "label": "Container Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the container"
+    },
+    {
+      "name": "ContainerPublicAccessLevel",
+      "type": "pickList",
+      "label": "Public Access Level",
+      "defaultValue": "Off",
+      "required": true,
+      "helpMarkDown": "Public access level of the container",
+      "options": {
+        "Container": "Blob and Container read access",
+        "Blob": "Blob read access",
+        "Off": "No read access"
+      }
+    },
+    {
+      "name": "ContinueOnExistence",
+      "type": "boolean",
+      "label": "Continue on container existence",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Skip the task when container exists"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "StorageName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageAccountRM"
+    }
+  ],
+  "execution": {
+    "AzurePowerShell": {
+      "target": "$(currentDirectory)\\create-container.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
