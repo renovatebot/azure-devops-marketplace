@@ -2,6 +2,21 @@ $extensions = Get-Content -raw -Path extensions.json | ConvertFrom-Json
 $max = $extensions.Count
 $count = 0
 
+function add-version
+{
+    param (
+        $name,
+        $version
+    )
+
+    if (-not $renovateData."$name")
+    {
+        $renovateData."$name" = @()
+    }
+    
+    $renovateData."$name" = ($renovateData."$name" + @($version)) | Sort-Object -Unique
+}
+
 $renovateData = @{}
 
 foreach ($extension in $extensions) {
@@ -64,10 +79,10 @@ foreach ($extension in $extensions) {
 
                 $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
 
-                $renovateData."$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" += @($versionString)
-                $renovateData."$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" += @($versionString)
-                $renovateData."$($taskManifest.name)" += @($versionString)
-                $renovateData."$($taskManifest.id)" += @($versionString)
+                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
+                add-version -name "$($taskManifest.id)" -version $versionString
+                add-version -name "$($taskManifest.name)" -version $versionString
             }
         } 
     }    
