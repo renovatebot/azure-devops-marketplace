@@ -1,0 +1,78 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "057845f0-8352-446f-a666-cb0e1f1055e3",
+  "name": "EnvTransform",
+  "friendlyName": "EnvTransform",
+  "description": "A task to perform variable replacement for environment files",
+  "helpMarkDown": "[Learn more about this task](https://docs.devops-extensions.dev/docs/extensions/env-transform/tasks/env-transform)",
+  "helpUrl": "https://docs.devops-extensions.dev/docs/extensions/env-transform/tasks/env-transform",
+  "category": "Utility",
+  "author": "Joachim Dalen",
+  "version": {
+    "Major": 0,
+    "Minor": 4,
+    "Patch": 0
+  },
+  "inputs": [
+    {
+      "name": "mode",
+      "type": "pickList",
+      "label": "Mode",
+      "defaultValue": "replace",
+      "required": false,
+      "helpMarkDown": "Mode to process variables for",
+      "options": {
+        "replace": "Replace by keys",
+        "substitute": "Replace by values"
+      }
+    },
+    {
+      "name": "inputType",
+      "type": "pickList",
+      "label": "Input Mode",
+      "defaultValue": "file",
+      "required": true,
+      "helpMarkDown": "Input source for file structure",
+      "options": {
+        "file": "File",
+        "inline": "Inline"
+      }
+    },
+    {
+      "name": "content",
+      "type": "multiLine",
+      "label": "Content",
+      "visibleRule": "inputType = inline",
+      "helpMarkDown": ".env file contents. Required when `inputType = inline`"
+    },
+    {
+      "name": "inputFile",
+      "type": "string",
+      "label": "Input File",
+      "defaultValue": ".env",
+      "helpMarkDown": "Input file to perform transformation on.  Required when `inputType = file`",
+      "required": false,
+      "visibleRule": "inputType = file"
+    },
+    {
+      "name": "outputFile",
+      "type": "string",
+      "label": "Output File",
+      "defaultValue": ".env",
+      "helpMarkDown": "File to write transformed values to",
+      "required": false
+    },
+    {
+      "name": "preserveComments",
+      "type": "boolean",
+      "label": "Preserve Comments",
+      "defaultValue": false,
+      "helpMarkDown": "Preserve comments when reading and writing files"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
