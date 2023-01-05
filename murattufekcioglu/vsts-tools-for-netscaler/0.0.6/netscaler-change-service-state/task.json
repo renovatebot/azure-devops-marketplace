@@ -1,0 +1,134 @@
+{
+  "id": "dc430740-1c3a-11e6-83ce-6ba349ca8939",
+  "name": "NetScalerChangeServiceState",
+  "friendlyName": "Change NetScaler Service State",
+  "description": "Changes the state of services on a Citrix NetScaler",
+  "helpMarkDown": "[More Information](https://github.com/murattufekcioglu/vsts-tools-for-netscaler)",
+  "author": "Murat Tüfekçioğlu",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "68"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "$(Action) $(ServiceNames)",
+  "groups": [
+    {
+      "name": "NSSettings",
+      "displayName": "NetScaler Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "Change",
+      "displayName": "Change",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "NSAddress",
+      "type": "string",
+      "label": "Address",
+      "required": true,
+      "groupName": "NSSettings",
+      "helpMarkDown": "Provide the address of the NetScaler."
+    },
+    {
+      "name": "NSUserName",
+      "type": "string",
+      "label": "User name",
+      "required": true,
+      "groupName": "NSSettings",
+      "helpMarkDown": "Provide the login name with sufficient rights."
+    },
+    {
+      "name": "NSPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "groupName": "NSSettings",
+      "helpMarkDown": "Provide the password for specified login name.<br/>You can define a variable at the Build/Release definition like '$(ns.password)' and mark it as 'Secret' to secure it."
+    },
+    {
+      "name": "NSProtocol",
+      "type": "pickList",
+      "label": "Protocol",
+      "required": true,
+      "helpMarkDown": "Protocol to use to connect to the api endpoint.",
+      "groupName": "NSSettings",
+      "defaultValue": "http",
+      "options": { 
+        "http": "http",
+        "https": "https"
+        }
+    },
+    {
+      "name": "SkipCACheck",
+      "type": "boolean",
+      "label": "Test Certificate",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "NSSettings",
+      "helpMarkDown": "If you're using a self-signed certificate or the address is different than the one from the certificate, checking this prevents a certificate exception."
+    },
+    {
+      "name": "ServiceNames",
+      "type": "multiLine",
+      "label": "Service Names",
+      "required": true,
+      "groupName": "Change",
+      "helpMarkDown": "Names of the services to enable or disable. You can enter multiple service names on seperate lines.",
+      "properties": {
+        "resizable": true,
+        "rows": "6"
+      }
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action",
+      "required": true,
+      "groupName": "Change",
+      "helpMarkDown": "Specify the action.",
+      "options": {
+        "Enable": "Enable",
+        "Disable": "Disable"
+      }
+    },
+    {
+      "name": "GracefulShutdown",
+      "type": "pickList",
+      "label": "GracefulShutdown",
+      "required": false,
+      "groupName": "Change",
+      "helpMarkDown": "Specify if the services will be disabled gracefully.",
+      "defaultValue": "NO",
+      "options": {
+        "YES": "Yes",
+        "NO": "No"
+      },
+      "visibleRule": "Action = Disable"
+    },
+    {
+      "name": "GraceFulShutdownDelay",
+      "type": "string",
+      "label": "GraceFulShutdownDelay",
+      "defaultValue": "1",
+      "required": false,
+      "visibleRule": "GracefulShutdown = YES",
+      "groupName": "Change",
+      "helpMarkDown": "Specify the graceful shutdown delay in seconds."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "NetscalerChangeServiceState.ps1"
+    }
+  }
+}
