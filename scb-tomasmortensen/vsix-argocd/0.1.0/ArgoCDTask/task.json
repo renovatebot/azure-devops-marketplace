@@ -1,0 +1,75 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "bd21f478-3d95-4f48-ae21-7fd1fc8dd22e",
+    "name": "vsix-argocd-task",
+    "friendlyName": "Argo CD Task",
+    "description": "Provides support for extending Azure DevOps pipelines with Argo CD integration.",
+    "helpMarkDown": "",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Tomas Mortensen - Statistics Sweden",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Argo CD Task $(project)",
+    "inputs": [
+        {
+            "name": "ArgoCDService",
+            "type": "connectedService:argocd",
+            "label": "Argo CD server endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Argo CD endpoint to use. If needed, selecton 'manage', and add a new service endpoint of type 'Argo CD server connection'"
+        },
+        {
+            "name": "argocdApplication",
+            "type": "pickList",
+            "label": "Application",
+            "required": true,
+            "helpMarkDown": "Select the Argo CD application to perform tasks on. If no result is displayed please enter the application name manually.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "argocdCommand",
+            "type": "pickList",
+            "label": "Command",
+            "defaultValue": "sync",
+            "required": true,
+            "options": {
+                "sync": "sync"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "helpMarkDown": "Select a Argo CD command."
+        },
+        {
+            "name": "DryRunFlag",
+            "type": "boolean",
+            "label": "DRY RUN",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Set this to be able to test the selected command.<br />By default this command will be executed."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "argocdApplication",
+            "endpointId": "$(ArgoCDService)",
+            "dataSourceName": "ArgoCDApplications",
+            "resultTemplate": "{ Value : \"{{defaultResultKey}}\", DisplayValue : \"{{defaultResultKey}}\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

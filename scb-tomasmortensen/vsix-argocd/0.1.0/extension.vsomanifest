@@ -1,0 +1,87 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/scb-tomasmortensen/vsix-argocd"
+    },
+    "contributions": [
+        {
+            "id": "argocd",
+            "description": "Service endpoint type for Argo CD connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "argocd",
+                "displayName": "Argo CD",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the Argo CD server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "ArgoCDApplications",
+                        "endpointUrl": "{{endpoint.url}}api/v1/applications",
+                        "resultSelector": "jsonpath:$.items[*].metadata.name"
+                    },
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}api/v1/applications",
+                        "resultSelector": "jsonpath:$.items[*].metadata.name"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "ArgoCDTask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
