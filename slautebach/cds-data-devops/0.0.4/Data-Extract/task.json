@@ -1,0 +1,126 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "0B3BDFA0-E983-462C-B2BE-0CE71B2BB474",
+  "name": "CDS-Data-Extract",
+  "friendlyName": "Extract Data from CDS",
+  "description": "Used to extract Data from a CDS to source control so it can be packaged",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Shawn Lautebach",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 4
+  },
+  "groups": [
+    {
+      "name": "CdsConfiguation",
+      "displayName": "CDS Configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "output",
+      "displayName": "Output",
+      "isExpanded": true
+    },
+    {
+      "name": "ExtractDataFiles",
+      "displayName": "Extract data fields as files",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ConnectionString",
+      "type": "string",
+      "label": "CDS Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Connection String to the CDS to extract the data from. For more information on format: https://msdn.microsoft.com/en-gb/library/mt608573.aspx",
+      "groupName": "CdsConfiguation"
+    },
+    {
+      "name": "SharedViewName",
+      "type": "string",
+      "label": "Shared View Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the shared view across all entities to extract.  Note for N2N relationships, create a shared view with this name and postfix it with '-N2N",
+      "groupName": "CdsConfiguation"
+    },
+    {
+      "name": "DataExtractOutputFolder",
+      "type": "string",
+      "label": "Data Extract Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The relative output folder where to extract all the data to in Source Control.",
+      "groupName": "output"
+    },
+    {
+      "name": "ExtractFiledsAsFiles",
+      "type": "boolean",
+      "label": "Extact data fields as files",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This enables the task to extract configured data fields from the extracted data to be additionally extracted to source control.  This is useful if you wish to extract blobs of data for code reviews.  Examples of this is extracting portals javascript, css, webtemplates, etc.",
+      "groupName": "ExtractDataFiles"
+    },
+    {
+      "name": "ExtractFiledsRootFolder",
+      "type": "string",
+      "label": "Source control folder to extract fields to as files.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The root path to extract the data fields to.",
+      "visibleRule": "ExtractFiledsAsFiles = true",
+      "groupName": "ExtractDataFiles"
+    },
+
+    {
+      "name": "ExtractFiledsConfigType",
+      "type": "pickList",
+      "label": "Extract Fields Configuration Type",
+      "defaultValue": "FilePath",
+      "required": true,
+      "helpMarkDown": "The root path to extract the data fields to.",
+      "options": {
+        "InlineScript": "Inline",
+        "FilePath": "File Path"
+      },
+      "visibleRule": "ExtractFiledsAsFiles = true",
+      "groupName": "ExtractDataFiles"
+    },
+    {
+      "name": "ExtractFiledsConfigFile",
+      "type": "filePath",
+      "label": "JSON Configuration to specify what data fields are to be extracted.",
+      "defaultValue": "{'adx_webtemplate':[{'fileextension':'html','fieldname':'adx_source','filenamefield':'adx_name','mimetypefield':'adx_mimetype'}],'adx_webpage':[{'fileextension':'html','fieldname':'adx_copy','filenamefield':'adx_name'},{'fileextension':'css','fieldname':'adx_customcss','filenamefield':'adx_name'},{'fileextension':'js','fieldname':'adx_customjavascript','filenamefield':'adx_name'}],'adx_contentsnippet':[{'fileextension':'txt','fieldname':'adx_value','filenamefield':'adx_name','mimetypefield':'adx_type'}],'adx_entityform':[{'fileextension':'js','fieldname':'adx_registerstartupscript','filenamefield':'adx_name'}],'adx_entitylist':[{'fileextension':'js','fieldname':'adx_registerstartupscript','filenamefield':'adx_name'},{'fileextension':'json','fieldname':'adx_settings','filenamefield':'adx_name','prettify':true}]}",
+      "required": false,
+      "helpMarkDown": "The root path to extract the data fields to.",
+      "groupName": "ExtractDataFiles",
+      "visibleRule": "ExtractFiledsConfigType = Inline"
+    },
+    {
+      "name": "ExtractFiledsConfig",
+      "type": "multiLine",
+      "label": "JSON Configuration to specify what data fields are to be extracted.",
+      "defaultValue": "{'adx_webtemplate':[{'fileextension':'html','fieldname':'adx_source','filenamefield':'adx_name','mimetypefield':'adx_mimetype'}],'adx_webpage':[{'fileextension':'html','fieldname':'adx_copy','filenamefield':'adx_name'},{'fileextension':'css','fieldname':'adx_customcss','filenamefield':'adx_name'},{'fileextension':'js','fieldname':'adx_customjavascript','filenamefield':'adx_name'}],'adx_contentsnippet':[{'fileextension':'txt','fieldname':'adx_value','filenamefield':'adx_name','mimetypefield':'adx_type'}],'adx_entityform':[{'fileextension':'js','fieldname':'adx_registerstartupscript','filenamefield':'adx_name'}],'adx_entitylist':[{'fileextension':'js','fieldname':'adx_registerstartupscript','filenamefield':'adx_name'},{'fileextension':'json','fieldname':'adx_settings','filenamefield':'adx_name','prettify':true}]}",
+      "required": false,
+      "helpMarkDown": "The root path to extract the data fields to.",
+      "groupName": "ExtractDataFiles",
+      "visibleRule": "ExtractFiledsConfigType = Inline"
+    }
+  ],
+  "instanceNameFormat": "Extracting CDS Data using views: $(SharedViewName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ExtractConfigurationData.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
