@@ -1,0 +1,198 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "a4b6bbe8-1976-45f9-9595-444dedb5743f",
+  "name": "TestEngine",
+  "friendlyName": "Run ReadyAPI Projects in TestEngine",
+  "description": "Run your ReadyAPI Projects in TestEngine",
+  "helpUrl": "https://support.smartbear.com/readyapi/docs/integrations/azure/testengine.html",
+  "helpMarkDown": "[Learn more about this task](https://support.smartbear.com/readyapi/docs/integrations/azure/testengine.html)",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "SmartBear Software",
+  "version": {
+    "Major": 1,
+    "Minor": 3,
+    "Patch": 1
+  },
+  "instanceNameFormat": "Run ReadyAPI project in TestEngine",
+  "groups": [
+    {
+      "name": "testengineAccessPoint",
+      "displayName": "TestEngine Connection Settings",
+      "isExpanded": false
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "junitTestResults",
+      "displayName": "JUnit Test Results",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "filePath",
+      "type": "string",
+      "label": "Path to project file or directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the path or URL to your test project file (.xml or .zip) or a directory containing project files"
+    },
+    {
+      "name": "testType",
+      "type": "radio",
+      "label": "Test type",
+      "required": true,
+      "defaultValue": "functionalTest",
+      "helpMarkDown": "Choose what type of test you want to run",
+      "options": {
+        "functionalTest": "Functional test",
+        "securityTest": "Security test"
+      }
+    },
+    {
+      "name": "testSuiteName",
+      "type": "string",
+      "label": "Test suite name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The test suite to run from the project",
+      "visibleRule": "testType = functionalTest"
+    },
+    {
+      "name": "testCaseName",
+      "type": "string",
+      "label": "Test case name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The test case to run from the project",
+      "visibleRule": "testType = functionalTest"
+    },
+    {
+      "name": "securityTestName",
+      "type": "string",
+      "label": "Security test name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The security test to run from the project",
+      "visibleRule": "testType = securityTest"
+    },
+    {
+      "name": "environment",
+      "type": "string",
+      "label": "Active environment",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The environment to use when running the project"
+    },
+    {
+      "name": "callback",
+      "type": "string",
+      "label": "Callback URL",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The result of the test will be posted to this URL when finished"
+    },
+    {
+      "name": "serverUrl",
+      "type": "string",
+      "label": "Server URL",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The URL to the root of the TestEngine, e.g. https://our.testengine.instance:8443",
+      "groupName": "testengineAccessPoint"
+    },
+    {
+      "name": "serverUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The TestEngine username",
+      "groupName": "testengineAccessPoint"
+    },
+    {
+      "name": "serverPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The TestEngine password",
+      "groupName": "testengineAccessPoint"
+    },
+    {
+      "name": "projectPassword",
+      "type": "string",
+      "label": "Project file password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The password used to decrypt the project file (leave empty if it is not encrypted)",
+      "groupName": "advanced"
+    },
+    {
+      "name": "endpoint",
+      "type": "string",
+      "label": "Endpoint",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A string in the format host:port, which will replace the host and port in all HTTP requests sent by the test",
+      "groupName": "advanced"
+    },
+    {
+      "name": "tags",
+      "type": "string",
+      "label": "Tags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A comma separated list of tags to filter test suites and test cases by. Test suites and test cases matching ALL of the provided tags will be executed.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "priorityJob",
+      "type": "boolean",
+      "label": "Priority Job",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Enable this option to skip all non-priority jobs in the queue (requires administrator rights)."
+    },
+    {
+      "name": "publishTestResults",
+      "type": "boolean",
+      "label": "Publish test results",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Publish JUnit test results to Azure Pipelines",
+      "groupName": "junitTestResults"
+    },
+    {
+      "name": "saveReport",
+      "type": "boolean",
+      "label": "Save JUnit Report",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Save JUnit Report under $(System.DefaultWorkingDirectory)",
+      "groupName": "junitTestResults"
+    },
+    {
+      "name": "fileName",
+      "type": "string",
+      "label": "Filename",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Filename of the report to be saved",
+      "groupName": "junitTestResults",
+      "visibleRule": "saveReport = true"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
