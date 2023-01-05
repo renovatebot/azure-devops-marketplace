@@ -1,0 +1,70 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "23e1b115-2add-408e-aad7-a3bd182106b3",
+    "name": "ServiceNow-CICD-App-Rollback",
+    "friendlyName": "ServiceNow CI/CD Rollback App",
+    "description": "Initiate a rollback of a specified application to a specified version.",
+    "helpMarkDown": "",
+    "category": "Package",
+    "author": "ServiceNow",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 7
+    },
+    "instanceNameFormat": "ServiceNow CI/CD Rollback Application",
+    "showEnvironmentVariables": false,
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "type": "connectedService:ServiceNow CICD",
+            "label": "ServiceNow endpoint",
+            "required": true,
+            "helpMarkDown": "ServiceNow endpoint connection"
+        },
+        {
+            "name": "scope",
+            "type": "string",
+            "label": "Scope",
+            "required": false,
+            "helpMarkDown": "Required if sys_id is not specified. The scope name of the application to rollback."
+        },
+        {
+            "name": "sysId",
+            "type": "string",
+            "label": "sys_id",
+            "required": false,
+            "helpMarkDown": "Required if scope is not specified. The sys_id of the application to rollback."
+        },
+        {
+            "name": "autodetectVersion",
+            "type": "radio",
+            "label": "Autodetect roll-back version",
+            "options": {
+                "yes": "Yes, try to roll-back anyway",
+                "no": "No, use only version from previous installation step"
+            },
+            "defaultValue": "no",
+            "required": true,
+            "helpMarkDown": "If yes, then system will determine the previous successfully installed version and will roll-back to it.\n Otherwise, version from field above or from 'Install app' step in the same job will be used."
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Version",
+            "required": false,
+            "helpMarkDown": "Required. Expected rollback version. This version is compared to the version that is contained in the last rollback context, if they don't match, the method returns an error.",
+            "visibleRule": "autodetectVersion=no"
+        }
+    ],
+    "runsOn": [
+        "Agent",
+        "MachineGroup",
+        "Server"
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
