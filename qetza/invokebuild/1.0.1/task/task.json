@@ -1,0 +1,60 @@
+{
+  "id": "4D6F38FB-5232-4E08-A9CC-F7FE34C43B1E",
+  "name": "invoke-build",
+  "friendlyName": "Invoke-Build",
+  "description": "Build with the Invoke-Build build system",
+  "helpMarkDown": "[More Information](https://github.com/psake/vsts-invokebuild-task#readme)",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Guillaume Rouchon",
+  "version": {
+    "Major": 2,
+    "Minor": 14,
+    "Patch": 0
+  },
+  "minimumAgentVersion": "1.92.0",
+  "inputs": [
+    {
+      "name": "buildFile",
+      "type": "filePath",
+      "label": "Build File Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Relative path to the Invoke-Build build script to execute."
+    },
+    {
+      "name": "tasks",
+      "type": "string",
+      "label": "Task(s)",
+      "defaultValue": "",
+      "helpMarkDown": "Optional. A comma-separated list of task names to execute. If not specified, the default task will run.",
+      "required": false
+    },
+    {
+      "name": "parameters",
+      "type": "string",
+      "label": "Parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional. Parameters passed to the build script. Must be named parameters."
+    },
+    {
+      "name": "summary",
+      "type": "boolean",
+      "label": "Summary",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Display summary information after the build."
+    }
+  ],
+  "instanceNameFormat": "Invoke-Build $(tasks) $(buildFile)",
+  "execution": {
+    "PowerShell3": {
+      "target": "run-invokebuild.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
