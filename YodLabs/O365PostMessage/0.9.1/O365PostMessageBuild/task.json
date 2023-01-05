@@ -1,0 +1,134 @@
+{
+    "id": "7ad6b2bf-1c03-4d63-93ed-dccf7d770063",
+    "name": "O365PostMessageBuild",
+    "friendlyName": "Post Message to O365 group/Microsoft Teams",
+    "description": "Posts a message to an office 365 group or a Microsoft Teams chat from Build",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=YodLabs.O365PostMessage) Version 0.9.1",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Yod Labs",
+    "version": {
+        "Major": 0,
+        "Minor": 9,
+        "Patch": 1
+    },
+    "demands": [],
+    "runsOn": [
+        "Agent"
+    ],
+    "minimumAgentVersion": "1.83.0",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "addressType",
+            "type": "pickList",
+            "label": "Address type",
+            "defaultValue": "url",
+            "options": {
+                "url": "Url",
+                "serviceEndpoint": "Service Endpoint"
+            },
+            "required": true,
+            "helpMarkDown": "The type of the webhook address. Chose either you want to use a generic service endpoint (for reuse) or an URL"
+        },
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Webhook url",
+            "defaultValue": "",
+            "visibleRule": "addressType = url",
+            "required": true,
+            "helpMarkDown": "URL for the group or team service connector webhook. [https://dev.outlook.com/Connectors/GetStarted](how to create a connector webhook)"
+        },
+        {
+            "name": "serviceEndpointName",
+            "type": "connectedService:Generic",
+            "label": "Webhook endpoint",
+            "defaultValue": "",
+            "visibleRule": "addressType = serviceEndpoint",
+            "required": true,
+            "helpMarkDown": "service endpoint representing an URL for the group or team service connector webhook. [https://dev.outlook.com/Connectors/GetStarted](how to create a connector webhook)"
+        },
+        {
+            "name": "messageType",
+            "type": "pickList",
+            "label": "Message Type",
+            "defaultValue": "message",
+            "options": {
+                "message": "Message"
+            },
+            "required": true,
+            "helpMarkDown": "Message Type (reserved for future use)"
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Title",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "messageType = message",
+            "helpMarkDown": "A title for the message. Shown at the top."
+        },
+        {
+            "name": "summary",
+            "type": "string",
+            "label": "Summary",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "messageType = message",
+            "helpMarkDown": "A string used for summarizing card content. This will be shown as the message subject. Required field if the Text parameter isn't populated."
+        },
+        {
+            "name": "text",
+            "type": "multiLine",
+            "label": "Text",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "messageType = message",
+            "helpMarkDown": "The main text of the card. This will be rendered below the optional title. Supports markdown formatting"
+        },
+        {
+            "name": "includeLink",
+            "type": "boolean",
+            "label": "Include Link to build detail",
+            "defaultValue": true,
+            "required": true,
+            "visibleRule": "messageType = message",
+            "helpMarkDown": "Indicate if you want to include a clickable link to the build detail on VSTS."
+        },
+        {
+            "name": "linkText",
+            "type": "string",
+            "label": "Build detail link text",
+            "defaultValue": "View Build Detail",
+            "required": true,
+            "visibleRule": "includeLink = true",
+            "helpMarkDown": "The text of the link to the build detail."
+        },
+        {
+            "name": "themeColor",
+            "type": "string",
+            "label": "Theme color",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Accent color used for branding or indicating status in the card. (hex code or HTML color)"
+        },
+        {
+            "name": "failBuildOnError",
+            "type": "boolean",
+            "label": "Fail build on error",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Fail the build if the message posting fails"
+        }
+    ],
+    "instanceNameFormat": "Send message with title $(title)",
+    "execution": {
+        "Node": {
+            "target": "PostMessageBuild.js",
+            "argumentFormat": ""
+        }
+    }
+}
