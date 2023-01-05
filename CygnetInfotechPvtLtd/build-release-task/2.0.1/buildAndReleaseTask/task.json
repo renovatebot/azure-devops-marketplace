@@ -1,0 +1,182 @@
+{
+    "id": "937e4568-749e-40d0-9778-78156ef133d8",
+    "name": "TWExtension",
+    "friendlyName": "Testingwhiz Plugin",
+    "description": "build/release task to Run UI test with Testingwhiz",
+    "helpMarkDown": "Version: 2.0.1 [More information] : (https://www.testing-whiz.com/integrations)",
+    "category": "Utility",
+    "author": "Cygnet Infotech",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "TestingWhiz Plugin",
+    "groups": [{
+        "name": "rbtsettings",
+        "displayName": "RBT Enabled Execution",
+        "isExpanded": true
+    }],
+    "inputs": [{
+            "name": "serverURL",
+            "type": "string",
+            "label": "Server URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "URL of the TestingWhiz Automation server in the format http://host:port/."
+        },
+        {
+            "name": "baseURL",
+            "type": "string",
+            "label": "Base URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "TestingWhiz BASEURL should starts with http://www... or https://www... ."
+        },
+        {
+            "name": "targetType",
+            "type": "pickList",
+            "label": "Script Source",
+            "defaultValue": "filePath",
+            "options": {
+                "filePath": "filePath",
+                "folderPath": "folderPath"
+            },
+            "required": false,
+            "helpMarkDown": "Target script source: File Path or Folder Path."
+        },
+        {
+            "name": "filePath",
+            "type": "filePath",
+            "label": "Script Path",
+            "visibleRule": "targetType = filePath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the TestingWhiz automation script file."
+        },
+        {
+            "name": "folderPath",
+            "type": "filePath",
+            "label": "Folder Path",
+            "visibleRule": "targetType = folderPath",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path of the TestingWhiz automation script Folder."
+        },
+        {
+            "name": "testObject",
+            "type": "string",
+            "label": "Test Object",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter testcase name to run only that testcase"
+        },
+        {
+            "name": "reportDploy",
+            "type": "filePath",
+            "label": "Report Deploy",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Path for to save the TestingWhiz Report."
+        },
+        {
+            "name": "browser",
+            "type": "pickList",
+            "label": "Browser",
+            "defaultValue": "googleChrome",
+            "options": {
+                "googleChrome": "Google Chrome",
+                "mozillaFirefox": "Mozilla Firefox",
+                "internetExplorer": "Internet Explorer",
+                "headlessExecution": "Headless Execution",
+                "edge": "Edge"
+            },
+            "required": false,
+            "helpMarkDown": "Select the browser you wish to run the script on."
+        },
+        {
+            "name": "stepExecutionInterval",
+            "type": "number",
+            "label": "Step Execution Interval",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Interval between steps in milliseconds(to avoid errors if your site is slow)."
+        },
+        {
+            "name": "reportInterval",
+            "type": "number",
+            "label": "Report Interval",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Minimum time taken by any case of this script when executed in TestingWhiz tool. Value should be in milliseconds."
+        },
+        {
+            "name": "passFailPer",
+            "type": "number",
+            "label": "Pass '%'",
+            "defaultValue": 0,
+            "required": false,
+            "helpMarkDown": "Approved Passing Percentage for task to be succeed"
+        },
+        {
+            "name": "captureFailureScreenshot",
+            "type": "boolean",
+            "label": "Capture Failure Screenshot",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "It will capture screenshot of failed Test Step."
+        },
+        {
+            "name": "captureConditionFailureScreenshot",
+            "type": "boolean",
+            "label": "Capture Condition Failure Screenshot",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "It will capture screenshot when conditional test step returns false."
+        },
+        {
+            "name": "mailReport",
+            "type": "boolean",
+            "label": "Mail Report ?",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Send generated report to the mail. Note:- Please use output variable available in Output variable section in this plugin. If Output Variable section is not visible then use ${mailReportPath} to send report to mail."
+        },
+        {
+            "name": "rbtPriorityHigh",
+            "type": "boolean",
+            "label": "High",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes High prioritize test cases"
+        },
+        {
+            "name": "rbtPriorityMedium",
+            "type": "boolean",
+            "label": "Medium",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes Medium mrioritize test cases"
+        },
+        {
+            "name": "rbtPriorityLow",
+            "type": "boolean",
+            "label": "Low",
+            "required": false,
+            "defaultValue": "false",
+            "groupName": "rbtsettings",
+            "helpMarkDown": "Executes Low prioritize test cases"
+        }
+    ],
+    "OutputVariables": [{
+        "name": "reportDeployPath",
+        "description": "storing generated report file path."
+    }],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
