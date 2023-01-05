@@ -1,0 +1,116 @@
+{
+    "id": "9B5EF860-D1EA-4D6E-9446-32487C223E54",
+    "name": "FTPUploader",
+    "friendlyName": "FTP Uploader",
+    "description": "For uploading files using FTP protocol.",
+    "category": "Utility",
+    "author": "januskamphansen",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 29 
+    },
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced Properties",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourcePath",
+            "type": "filePath",
+            "label": "Source Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "File(s) to be uploaded.  Wildcards can be used. For example, `**` for all files in all subfolders."
+        },
+        {
+            "name": "serverName",
+            "type": "string",
+            "label": "FTP Address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the Address where the file(s) will be uploaded to. Eg. ftp://ftp.mysite.com/"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The username for the FTP server. Use anonymous for anonymous login."
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The password for the FTP server. Use your e-mail address for anonymous login."
+        },
+        {
+            "name": "remotePath",
+            "type": "string",
+            "label": "Remote Path",
+            "defaultValue": "/",
+            "required": true,
+            "helpMarkDown": "The folder on the FTP server where the files are to be put."
+        },
+        {
+            "name": "useBinary",
+            "type": "boolean",
+            "label": "Use binary",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Specifies the data type for file transfers.",
+            "groupName": "advanced"
+        },        
+        {
+            "name": "ignoreUnchangedFiles",
+            "type": "boolean",
+            "label": "Ignore Unchanged Files",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Ignore files with same size and older date.",
+            "groupName": "advanced"
+        },        
+        {
+            "name": "excludeFilter",
+            "type": "string",
+            "label": "Exclude files",
+            "defaultValue": "'*.vb','*.vbproj'",
+            "required": false,
+            "helpMarkDown": "List of files or file-type that is not to be uploaded.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "deleteOldFiles",
+            "type": "boolean",
+            "label": "Delete old Files",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Delete old files on FTP server before uploading.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "deploymentFilesOnly",
+            "type": "boolean",
+            "label": "Publish only deployment files",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Will exclude 'Obj' and 'My Project' folder and following extensions: *.vb, *.cs, *.vbproj, *.csproj, *.user and *.vspscc",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Upload $(files) using FTP",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\FTPUpload.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
+
