@@ -1,0 +1,66 @@
+{
+    "id":  "633def46-148b-4100-9d5f-bc74881de42f",
+    "name":  "D365_ExportDocumentTemplates",
+    "friendlyName":  "Export Document Templates",
+    "description":  "Exports document templates to the specified location",
+    "helpMarkDown":  "",
+    "category":  "Build",
+    "author":  "Vikas Rajan",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  1,
+                    "Patch":  6
+                },
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "instanceNameFormat":  "Export Document Templates",
+    "inputs":  [
+                   {
+                       "name":  "connectionstring",
+                       "type":  "string",
+                       "label":  "Connection String",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Please refer [here](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/xrm-tooling/use-connection-strings-xrm-tooling-connect#connection-string-parameters) for the connection string syntax"
+                   },
+                   {
+                       "name":  "retrieverecord",
+                       "type":  "radio",
+                       "label":  "Retrieve Templates",
+                       "required":  true,
+                       "defaultValue":  "alltemplates",
+                       "options":  {
+                                       "alltemplates":  "All Templates",
+                                       "templatesbynames":  "Filter By Names"
+                                   }
+                   },
+                   {
+                       "name":  "templatesbynames",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "2"
+                                      },
+                       "label":  "Template Names",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Array of document template names in the format [\"Template 1\",\"Template 2\",\"Template 3\"]",
+                       "visibleRule":  "retrieverecord = templatesbynames"
+                   },
+                   {
+                       "name":  "destinationfolder",
+                       "type":  "filePath",
+                       "label":  "Output Folder Location",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Absolute folder path to hold the exported templates."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "ExportDocumentTemplates.ps1"
+                                      }
+                  }
+}
