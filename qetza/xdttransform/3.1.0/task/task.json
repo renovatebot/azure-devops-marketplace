@@ -1,0 +1,45 @@
+{
+    "id": "98012758-C053-475D-9D6A-FD0773C39E09",
+    "name": "xdttransform",
+    "friendlyName": "XDT Transform",
+    "description": "Apply XDT transforms on XML files",
+    "helpMarkDown": "v3.1.0 - [More Information](https://github.com/qetza/vsts-xdttransform-task#readme)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Guillaume Rouchon",
+    "version": {
+        "Major": 3,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.92.0",
+    "inputs": [
+        {
+            "name": "workingFolder",
+            "type": "filePath",
+            "label": "Working folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Working directory for relative paths. Defaults to the agent working directory."
+        },
+        {
+            "name": "transforms",
+            "type": "multiLine",
+            "label": "Transformations",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Absolute or relative comma or newline-separated of transformation file rules.<br/>Syntax: {xdt path} => {xml path}[ => {output path}]<br/>Example: 'web.release.config => web.config' will apply web.release.config to web.config and update the file.<br/>Example: 'xdt\\web.release.config => config\\web.config => web.config' will apply xdt\\web.release.config to config\\web.config and save the result in web.config."
+        }
+    ],
+    "instanceNameFormat": "Apply transforms $(transforms)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\transform.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(System.DefaultWorkingDirectory)"
+        }
+    }
+}
