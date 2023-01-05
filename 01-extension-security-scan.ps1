@@ -29,7 +29,7 @@ function Get-Extensions
     return ($result.Content | ConvertFrom-Json).results[0];
 }
 
-& npm install tfx-cli@^0 -g
+& npm install tfx-cli@^0 -g --no-fund
 
 $pageSize= 100;
 $page = 1
