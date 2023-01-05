@@ -1,0 +1,85 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "README.md"
+        },
+        "license": {
+            "path": "LICENSE.txt"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/jimhaMJ/vsts-tfs-trigger-build"
+    },
+    "contributions": [
+        {
+            "id": "BuildTrigger",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        },
+        {
+            "id": "vstsTfsApi-endpoint-type",
+            "description": "Service Endpoint type for vsts/tfs api connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vstsTfsApi",
+                "displayName": "Build Api Access",
+                "url": {
+                    "displayName": "Server Url"
+                },
+                "dataSources": [
+                    {
+                        "name": "collections",
+                        "endpointUrl": "{{endpoint.url}}_apis/projectcollections?api-version=1.0-preview.2",
+                        "resultSelector": "jsonpath:$.value[*].name"
+                    },
+                    {
+                        "name": "projects",
+                        "endpointUrl": "{{endpoint.url}}{{collectionName}}/_apis/projects?api-version=1.0",
+                        "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]"
+                    },
+                    {
+                        "name": "buildDefinitions",
+                        "endpointUrl": "{{endpoint.url}}{{collectionName}}/{{project}}/_apis/build/definitions?api-version=2.0",
+                        "resultSelector": "jsonpath:$.value[?(@.quality=='definition')]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 \"token\" \":\" endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "Personal access token is applicable only for endpoint targeting VSTS account or TFS 2016. Click <a href=\"https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate\" target=\"_blank\">here</a>. for information on how to create Personal Access Token.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

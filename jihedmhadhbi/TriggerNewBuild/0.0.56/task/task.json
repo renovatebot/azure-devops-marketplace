@@ -1,0 +1,90 @@
+{
+	"id": "ccbd79fd-88a5-453d-8fb9-56c69b3a643f",
+	"name": "TriggerNewBuild",
+	"friendlyName": "Trigger new Build",
+	"description": "Trigger a new Build in the same or other project.",
+	"helpMarkDown": "",
+	"category": "Build",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Jihed Mhadhbi",
+	"version": {
+		"Major": "0",
+		"Minor": "0",
+		"Patch": "56"
+	},
+	"minimumAgentVersion": "1.91.0",
+	"instanceNameFormat": "Trigger new Build",
+	"inputs": [
+		{
+			"name": "connection",
+			"type": "connectedService:vstsTfsApi",
+			"label": "Build Api Access",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "The Build Api Access endPoint connection that you created."
+		},
+		{
+			"name": "collectionName",
+			"type": "pickList",
+			"label": "Collection Name",
+			"defaultValue": "DefaultCollection",
+			"required": true,
+			"helpMarkDown": "For VSTS use the default value : DefaultCollection. For TFS choose your collection if it's different."
+		},
+		{
+			"name": "project",
+			"type": "pickList",
+			"label": "Project",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select the name of the team project."
+		},
+		{
+			"name": "buildDefinition",
+			"type": "pickList",
+			"label": "Build Definition",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select the name of the Build to trigger."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "collectionName",
+			"endpointId": "$(connection)",
+			"dataSourceName": "collections"
+		},
+		{
+			"target": "project",
+			"endpointId": "$(connection)",
+			"dataSourceName": "projects",
+			"parameters": {
+				"collectionName": "$(collectionName)"
+			},
+			"resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+		},
+		{
+			"target": "buildDefinition",
+			"endpointId": "$(connection)",
+			"dataSourceName": "buildDefinitions",
+			"parameters": {
+				"collectionName": "$(collectionName)",
+				"project": "$(project)"
+			},
+			"resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+		}
+	],
+	"execution": {
+		"Node": {
+			"target": "index.js"
+		}
+	},
+	"messages": {
+		"couldNotLocateEndPoint": "Could not locate the endPoint : %s",
+		"couldNotFindServerUrl": "Could not find the server url.",
+		"authorizationSchemeNotSupported": "The authorization scheme %s is not supported for this endPoint."
+	}
+}

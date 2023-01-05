@@ -1,0 +1,92 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "BuildTrigger",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        },
+        {
+            "id": "service-endpoint-vsts-api",
+            "description": "Service Endpoint type for vsts connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vstsApi",
+                "displayName": "vsts api connection",
+                "url": {
+                    "displayName": "Server Url"
+                },
+                "dataSources": [
+                    {
+                        "name": "VSTSprojects",
+                        "endpointUrl": "{{endpoint.url}}DefaultCollection/_apis/projects?api-version=1.0",
+                        "resultSelector": "jsonpath:$.value[*].name"
+                    },
+                    {
+                        "name": "ProjectBuild",
+                        "endpointUrl": "{{endpoint.url}}DefaultCollection/$(VSTSprojects)/_apis/build/definitions?api-version=2.0",
+                        "resultSelector": "jsonpath:$.value[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>",
+                "dataSourceBindings": [
+                    {
+                        "target": "VSTSprojects",
+                        "endpointId": "$(ConnectedServiceName)",
+                        "dataSourceName": "VSTSprojects"
+                    },
+                    {
+                        "target": "ProjectBuild",
+                        "endpointId": "$(ConnectedServiceName)",
+                        "dataSourceName": "ProjectBuild",
+                        "parameters": {
+                            "VSTSprojects": "$(VSTSprojects)"
+                        },
+                        "resultTemplate": "{\"Value\":\"{{{id}}}\",\"DisplayValue\":\"{{{name}}}\"}"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
