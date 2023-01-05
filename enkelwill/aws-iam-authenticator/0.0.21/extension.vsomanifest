@@ -1,0 +1,72 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "eks-credentials",
+            "description": "Credentials for tasks invoking AWS services",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "AWS-EKS",
+                "displayName": "AWS EKS",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "AWS homepage.",
+                    "value": "https://aws.amazon.com/",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "AWS-EKS",
+                        "endpointUrl": "{{endpoint.url}}api/projects/index",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Access Key ID",
+                                "description": "The AWS access key ID for signing programmatic requests.\nExample: AKIAIOSFODNN7EXAMPLE",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Secret Access Key",
+                                "description": "The AWS secret access key for signing programmatic requests.\nExample: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html?icmpid=docs_iam_console\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "iamAuthenticator"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
