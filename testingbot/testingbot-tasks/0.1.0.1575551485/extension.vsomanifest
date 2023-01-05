@@ -1,0 +1,112 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.test",
+        "vso.test_write",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "tb-main",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tb-main"
+            }
+        },
+        {
+            "id": "tb-stop-tunnel",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tb-stop-tunnel"
+            }
+        },
+        {
+            "id": "tb-endpoint-type",
+            "description": "TestingBot Credentials",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "testingbot",
+                "displayName": "TestingBot Credentials",
+                "url": "https://api.testingbot.com/v1/",
+                "dataSources": [
+                    {
+                        "resultSelector": "jsonpath:$.status_message",
+                        "name": "getStatus",
+                        "endpointUrl": "https://api.testingbot.com/v1/info/status"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getBuildFullJobs",
+                        "endpointUrl": "https://api.testingbot.com/v1/{{username}}/build/{{build}}/jobs?full=1&vsts=1"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getAuth",
+                        "endpointUrl": "https://api.testingbot.com/v1/users/halkeye/bulk/auth?{{query}}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "key",
+                                "name": "Key",
+                                "description": "Key",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "secret",
+                                "name": "Secret",
+                                "description": "Secret",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Build Results View",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "TestingBot",
+                "uri": "tb-build-info/infoTab.html"
+            }
+        },
+        {
+            "id": "embed-dialog",
+            "type": "ms.vss-web.control",
+            "description": "Embed Dialog",
+            "targets": [],
+            "properties": {
+                "uri": "tb-build-info/embedDialog.html?auth={{auth}}"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
