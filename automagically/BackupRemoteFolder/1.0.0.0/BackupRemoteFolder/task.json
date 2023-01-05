@@ -1,0 +1,107 @@
+{
+  "id": "f6e51d7e-8b51-4569-9782-b6ddb865f4dc",
+  "name": "BackupRemoteFolder",
+  "friendlyName": "Backup Remote File or Folder",
+  "description": "This task allows users to backup remote folder as well as clean up existing backups by only keeping the last X number of backups",
+  "author": "automagically",
+  "helpMarkDown": "This task allows users to backup remote folder as well as clean up existing backups by only keeping the last X number of backups",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [ ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "groups": [
+    {
+      "name": "backupRetention",
+      "displayName": "Retention settings",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "remoteServer",
+      "type": "string",
+      "label": "Remote server",
+      "defaultValue": "$(serverName)",
+      "required": true,
+      "helpMarkDown": "Remote server name or comma separated list of remote server names"
+    },
+    {
+      "name": "remoteUserName",
+      "type": "string",
+      "label": "Remote username",
+      "defaultValue": "$(deployUserName)",
+      "required": true,
+      "helpMarkDown": "Username of user on remote computer."
+    },
+    {
+      "name": "remoteUserPassword",
+      "type": "string",
+      "label": "Remote user password",
+      "defaultValue": "$(deployUserPassword)",
+      "required": true,
+      "helpMarkDown": "Password of the user on remote computer."
+    },
+    {
+      "name": "remoteWinRMProtocol",
+      "type": "radio",
+      "label": "Protocol",
+      "required": true,
+      "defaultValue": "http",
+      "options": {
+        "http": "HTTP",
+        "https": "HTTPS"
+      },
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "sourcePath",
+      "type": "string",
+      "label": "Source",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Source folder path"
+    },
+    {
+      "name": "destinationPath",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Destination folder path"
+    },
+    {
+      "name": "cleanupBackups",
+      "type": "boolean",
+      "label": "Clean up backups",
+      "defaultValue": "false",
+      "required": true,
+      "groupname": "backupRetention",
+      "helpMarkDown": "Remove backups older than X number of days"
+    },
+    {
+      "name": "numberOfBackups",
+      "type": "string",
+      "label": "Days",
+      "defaultValue": "5",
+      "required": true,
+      "groupname": "backupRetention",
+      "helpMarkDown": "How many backups to keep",
+      "visibleRule": "cleanupBackups = true"
+    }
+    ],
+  "instanceNameFormat": "This task allows users to backup remote folder as well as clean up existing backups by only keeping the last X number of backups",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\BackupRemoteFolder.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
