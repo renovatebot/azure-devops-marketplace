@@ -1,0 +1,70 @@
+{
+    "id": "7430578c-beaa-4a26-8df1-474a85f38c3b",
+    "name": "AutoTagger",
+    "friendlyName": "Auto Tag Resources in Resource Group",
+    "description": "Automatically add tags to all resources within a resource group",
+    "helpMarkDown": "Automatically add tags to all resources within a resource group",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Peter Rombouts",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "AutoTagger",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "connectedServiceNameARM",
+            "aliases": ["azureSubscription"],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription for the deployment"
+        },
+        {
+            "name": "resourceGroupName",
+            "type": "string",
+            "label": "Resource Group name",
+            "defaultValue": "resourcegroup",
+            "required": false,
+            "helpMarkDown": "Resource group to which tags will be added"
+        },
+        {
+            "name": "tags",
+            "type": "multiLine",
+            "label": "Tags, one keyvalue pair per line, separated by comma",
+            "defaultValue": "tagName, tagValue",
+            "required": false,
+            "helpMarkDown": "Tag pairs"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(connectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "run-vsts.ps1"
+        }
+    },
+    "messages": {
+        "ScriptReturnCode": "Script exited with return code: %d",
+        "ScriptFailed": "Script failed with error: %s",
+        "UnsupportedEndpointScheme": "Unsupported service connection authorization scheme: Service Principal for AzureRM",
+        "AzureSDKNotFound": "Azure CLI 2.x is not installed on this machine.",
+        "FailedToLogout": "The following error occurred while logging out: %s"
+    }
+}

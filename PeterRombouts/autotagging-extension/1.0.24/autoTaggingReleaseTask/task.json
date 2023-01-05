@@ -1,0 +1,82 @@
+{
+    "id": "7430578c-beaa-4a26-8df1-474a85f38c3b",
+    "name": "AutoTagger",
+    "friendlyName": "Auto Tag Resources in Resource Group",
+    "description": "Automatically add tags to all resources within a resource group",
+    "helpMarkDown": "Automatically add tags to all resources within a resource group",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Peter Rombouts",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 24
+    },
+    "instanceNameFormat": "AutoTagger",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameSelector",
+            "type": "pickList",
+            "label": "Azure Connection Type",
+            "required": true,
+            "helpMarkDown": "",
+            "defaultValue": "ConnectedServiceNameARM",
+            "options": {
+                "ConnectedServiceNameARM": "Azure Resource Manager"
+            }
+        },
+        {
+            "name": "connectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription."
+        },
+        {
+            "name": "resourceGroupName",
+            "type": "string",
+            "label": "Resource Group name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Resource group to which tags will be added"
+        },
+        {
+            "name": "tagPairs",
+            "type": "multiLine",
+            "label": "Tag pairs (comma separated, line separated)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Tags, separated by comma, one pair per line, example 'keyName1,valueName1"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(connectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\run-vsts.ps1"
+        }
+    },
+    "messages": {
+        "ScriptReturnCode": "Script exited with return code: %d",
+        "ScriptFailed": "Script failed with error: %s",
+        "UnsupportedEndpointScheme": "Unsupported service connection authorization scheme: Service Principal for AzureRM",
+        "AzureSDKNotFound": "Azure CLI 2.x is not installed on this machine.",
+        "FailedToLogout": "The following error occurred while logging out: %s"
+    }
+}
