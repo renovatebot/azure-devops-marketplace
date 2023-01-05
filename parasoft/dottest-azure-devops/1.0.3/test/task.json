@@ -1,0 +1,268 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "27723edf-5220-4f9b-8d14-69077c2a0f1a",
+    "name": "RunDotTEST",
+    "friendlyName": "Run Parasoft dotTEST",
+    "instanceNameFormat": "Run Parasoft dotTEST",
+    "description": "Task for running Parasoft dotTEST to ensure code quality and compliance with OWASP, CWE, PCI-DSS and more.",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=parasoft.dottest-azure-devops)",
+    "category": "Test",
+    "author": "Parasoft",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "groups": [
+        {
+            "name": "general",
+            "displayName": "General Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "analysis",
+            "displayName": "Analysis Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "scope",
+            "displayName": "Analysis Scope",
+            "isExpanded": true
+        },
+        {
+            "name": "reporting",
+            "displayName": "Reporting Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "workspace",
+            "displayName": "Workspace Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced Settings",
+            "isExpanded": false
+        },
+        {
+            "name": "other",
+            "displayName": "Other Settings",
+            "isExpanded": false
+        }
+        
+    ],
+    "inputs": [
+        {
+            "name": "workingDir",
+            "type": "string",
+            "label": "dotTEST working directory:",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "A working directory for dotTEST.",
+            "groupName": "general"
+        },
+        {
+            "name": "installDir",
+            "type": "string",
+            "label": "dotTEST installation directory:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify location where dotTEST has been installed on your agent. If not specified, dotTEST will be searched on PATH.",
+            "groupName": "general"
+        },
+        {
+            "name": "solution",
+            "type": "multiLine",
+            "label": "Solution files:",
+            "defaultValue": ".\\**\\*.sln",
+            "required": false,
+            "helpMarkDown": "Enter paths to solution files, each in new line. This setting supports ANT-style wildcards.",
+            "groupName": "scope"
+        },
+        {
+            "name": "project",
+            "type": "multiLine",
+            "label": "Project files:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter path(s) to project file(s), each in new line. This setting supports ANT-style wildcards.",
+            "groupName": "scope"
+        },
+        {
+            "name": "website",
+            "type": "string",
+            "label": "Website project folder:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This setting enables to open a folder with website project when there is no solution file available.",
+            "groupName": "scope"
+        },
+        {
+            "name": "testConfig",
+            "type": "string",
+            "label": "Test configuration:",
+            "defaultValue": "builtin://Recommended .NET Core Rules",
+            "required": false,
+            "helpMarkDown": "Specify URL or path to the test configuration used for analysis",
+            "groupName": "analysis"
+        },
+        {
+            "name": "resource",
+            "type": "multiLine",
+            "label": "Resources:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify solution-relative paths to testable resources. A resource can be a project in a solution, a directory of files in a project, or a file. Specify each in new line. E.g.: Solution/Project/File.cs",
+            "groupName": "scope"
+        },
+        {
+            "name": "include",
+            "type": "multiLine",
+            "label": "Included testables:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "File system paths to resources which can be a project in a solution, a directory of files in a project, or a file to include it in analysis. Specify each in new line. This setting supports ANT-style wildcards.",
+            "groupName": "scope"
+        },
+        {
+            "name": "exclude",
+            "type": "multiLine",
+            "label": "Excluded testables:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "File system paths to resources which can be a project in a solution, a directory of files in a project, or a file to exclude it from analysis. Specify each in new line. This setting supports ANT-style wildcards.",
+            "groupName": "scope"
+        },
+        {
+            "name": "reportDir",
+            "type": "string",
+            "label": "Reports directory:",
+            "defaultValue": "report",
+            "required": false,
+            "helpMarkDown": "Specify where dotTEST should generate report files with analysis results.",
+            "groupName": "reporting"
+        },
+        {
+            "name": "reportFormat",
+            "type": "multiLine",
+            "label": "Report formats:",
+            "defaultValue": "xml\nhtml\nsarif-azure",
+            "required": false,
+            "helpMarkDown": "Specify where dotTEST should generate report files with analysis results.",
+            "groupName": "reporting"
+        },
+        {
+            "name": "publish",
+            "type": "boolean",
+            "label": "Publish to DTP",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Set to true to publish your report to the DTP server. Access to the DTP server should be configured via dotTEST settings.",
+            "groupName": "reporting"
+        },
+        {
+            "name": "property",
+            "type": "multiLine",
+            "label": "Settings:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This parameter allows to Specify single configuration setting in the \"key=value\" format instead of using .properties files. Specify each in new line.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "settings",
+            "type": "multiLine",
+            "label": "Settings files:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide paths to .properties files with dotTEST settings. Specify each in new line.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "nobuild",
+            "type": "boolean",
+            "label": "Disable build",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Enabling this option will skip the build which dotTEST performs prior to analysis. Please make sure that your sources are built before running dotTEST with this option.",
+            "groupName": "analysis"
+        },
+        {
+            "name": "reference",
+            "type": "multiLine",
+            "label": "Additional reference assemblies:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Providing additional assemblies can help dotTEST to resolve missing dependencies. Specify each in new line. This setting supports ANT-style wildcards.",
+            "groupName": "other"
+        },
+        {
+            "name": "testTagFilter",
+            "type": "multiLine",
+            "label": "Tests filter:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Filters tests execution which are tagged with specific issue tracking types/IDs. E.g.: \"Bug=PR-12345\"",
+            "groupName": "scope"
+        },
+        {
+            "name": "solutionConfig",
+            "type": "string",
+            "label": "Solution configuration:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Solution configuration, e.g. \"Debug\". Use when specifying solution file.",
+            "groupName": "workspace"
+        },
+        {
+            "name": "projectConfig",
+            "type": "string",
+            "label": "Project configuration:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Project configuration, e.g. \"Debug\". Use when specifying project file.",
+            "groupName": "workspace"
+        },
+        {
+            "name": "targetPlatform",
+            "type": "string",
+            "label": "Target platform:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Target platform of the solution configuration (e.g.\"Any CPU\") or project configuration (e.g. \"AnyCPU\").",
+            "groupName": "workspace"
+        },
+        {
+            "name": "out",
+            "type": "string",
+            "label": "Console output file:",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Location of a file to which command line output will be written.",
+            "groupName": "other"
+        },
+        {
+            "name": "fail",
+            "type": "boolean",
+            "label": "Exit with fail status",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Fails the command with exit code 2 or 4 if any findings are reported.",
+            "groupName": "analysis"
+        },
+        {
+            "name": "showsettings",
+            "type": "boolean",
+            "label": "Show all settings",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "If set to true, all the settings will get listed in command line output.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
