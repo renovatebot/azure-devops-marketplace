@@ -1,0 +1,66 @@
+{
+    "id": "ee9bfef8-23d5-460f-8147-9f2ed18828f4",
+    "name": "GitHubTag",
+    "friendlyName": "Tag GitHub source code",
+    "description": "Create a Tag in GitHub source code",
+    "helpMarkDown": "Tag your GitHub source code v1.4.0 [More Information](https://github.com/mikaelkrief/GitHub-Tools-vsts-extensions/wiki/Tag-GitHub-source-code)",
+    "releaseNotes": "1.0 Add first version, 1.3 support TLS protocol, 1.4 add autorization header for private repo",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Mikael Krief",
+    "version": {
+        "Major": 1,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "demands": [],
+    "inputs": [
+        {
+            "name": "githubEndpoint",
+            "type": "connectedService:github",
+            "label": "GitHub Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the service endpoint for your GitHub connection. To create one, click the Manage link and create a new service endpoint."
+        },
+        {
+            "name": "repositoryName",
+            "type": "picklist",
+            "label": "Repository",
+            "defaultValue": "$(Build.Repository.Name)",
+            "required": true,
+            "helpMarkDown": "GitHub repository",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "tag",
+            "type": "string",
+            "label": "Tag",
+            "defaultValue": "v$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Tag to associate to commit, default value $(Build.BuildNumber) for tag the commit with the current build number"
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "repositoryName",
+            "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/repositories?serviceEndpointId=$(githubEndpoint)",
+            "selector": "jsonpath:$.value[*].id",
+            "keySelector": "jsonpath:$.value[*].id",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "instanceNameFormat": "Tag GitHub source code",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\GitHubTag.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
