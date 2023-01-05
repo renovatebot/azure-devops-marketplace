@@ -1,0 +1,365 @@
+{
+	"manifestVersion" : "1",
+    "id": "3d840cfe-72af-486a-bbaf-9309cb436640",
+    "name": "BuildConsole",
+    "friendlyName": "IncrediBuild BuildConsole",
+    "description": "Accelerate Visual Studio compilations",
+    "helpMarkDown": "[More Information](https://www.incredibuild.com)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "IncrediBuild Inc.",
+    "version": {
+		"Major": 5,
+		"Minor": 6,
+		"Patch": 7
+    },
+    "demands": [],
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "IncrediBuild BuildConsole $(deploymentName) ($(appName))",
+    "groups": [
+        {
+            "name": "target",
+            "displayName": "Target and configuration",
+            "isExpanded": true
+		}
+		, {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+		, {
+            "name": "distribution",
+            "displayName": "IncrediBuild Distribution control",
+            "isExpanded": false
+        }
+		, {
+            "name": "output",
+            "displayName": "Output and Logging",
+            "isExpanded": false
+        }
+		, {
+            "name": "miscellaneous",
+            "displayName": "Miscellaneous",
+            "isExpanded": false
+        }
+
+    ],
+    "inputs": [
+        {
+            "name": "target",
+            "type": "filePath",
+            "label": "Target Solution File",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "target",
+            "helpMarkDown": "The solution file to be built"
+        }
+		, {
+            "name": "buildType",
+            "type": "pickList",
+            "label": "Build Type",
+            "defaultValue": "/Rebuild",
+            "options": {
+                "/Rebuild": "Rebuild",
+                "/Build": "Build",
+                "/Clean": "Clean"
+			},
+            "required": false,
+            "helpMarkDown": "The type of build to perform."
+        }
+		, {
+            "name": "configuration",
+            "type": "string",
+            "label": "Configuration",
+            "defaultValue": "",
+            "groupName": "target",
+            "helpMarkDown": "Determines the solution configuration to be built. Example:Debug|Win32. Several comma-separated configuration names can be specified: Debug|Win32,Release|Win32"
+        }
+        , {
+            "name": "preset",
+            "type": "string",
+            "label": "Custom Configuration preset",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "target",
+            "helpMarkDown": "Determines the projects/configurations that will be built using a Preset previously saved in the Batch Build dialog. - This option is useful when a complex combination of projects and configurations is required. - The /Preset command option replaces both the /cfg and the /prj options."
+        }
+        , {
+            "name": "Project",
+            "type": "string",
+            "label": "Project",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "target",
+            "helpMarkDown": "Determines a specific project to be built. By default, the dependencies of the project will be built as well."
+        }        
+		, {
+            "name": "noRecurse",
+            "type": "boolean",
+            "label": "Do not build dependencies for the project",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "target",
+            "helpMarkDown": "Builds only the specified project configurations, ignoring any dependencies these configurations may have. When used in conjunction with Clean, this cleans only the specified configurations. When used in conjunction with /Rebuild, this rebuilds only the specified configurations.."
+        }
+        , {
+            "name": "all",
+            "type": "boolean",
+            "label": "Build all projects regardless of errors",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "target",
+            "helpMarkDown": "Makes a solution build continue regardless of specific projects failing to build. Normally, IncrediBuild stops the build when a project fails to build its output file. This option instructs IncrediBuild to continue building the remaining project configurations, regardless of previous projects failing to build.."
+        }        
+        , {
+            "name": "useEnv",
+            "type": "boolean",
+            "label": "useEnv",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Use PATH, INCLUDE, LIBPATH, and LIB environment variables instead of MS Visual C++ IDE paths."
+        }        
+        , {
+            "name": "clAdd",
+            "type": "string",
+            "label": "Add Parameters to cl.exe",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Allows additional compiler options to be added to all calls to cl.exe. Enter one or more commands separated by a space character, as they would appear in the cl.exe command line. For example: /O2 /FA."
+        }        
+        , {
+            "name": "clRemove",
+            "type": "string",
+            "label": "Remove Parameters from cl.exe",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Specifies compiler options that will be removed from all calls to cl.exe. Enter one or more commands separated by a space character, as they would appear in the cl.exe command line. For example: /Z7 /Zd /Zi /ZI."
+        }        
+        , {
+            "name": "vsVersion",
+            "type": "pickList",
+            "label": "Force Visual Studio Version",
+            "defaultValue": "",
+			 "options": {
+				"": "--",
+                "vc8": "vc8 (for VS2005)",
+                "vc9": "vc9 (for VS2008)",
+                "vc10": "vc10 (for VS2010)",
+                "vc11": "vc11 (for VS2012)",
+                "vc12": "vc12 (for VS2013)",
+                "vc14": "vc14 (for VS2015)",
+                "vc141": "vc141 (for VS2017)",
+				},
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Forces a specific version of Visual Studio toolset to be used. This is especially helpful when working with upgraded projects, since Visual Studio sometimes uses the incorrect version to build a solution after it was upgraded.."
+        }        
+        , {
+            "name": "useMsBuild",
+            "type": "boolean",
+            "label": "Use MSBuild instead of Devenv",
+            "defaultValue": "true",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Sets Msbuild as the top build manager instead of devenv.  Use this only if you are expiriencing issues with the default Devenv builds, or if you need to pass arguments to msbuild manually using the MsbuildArgs option."
+        }        
+        , {
+            "name": "msBuildArgs",
+            "type": "string",
+            "label": "Arguments for Msbuild",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Passes additional arguments to MSBuild when using the buildconsole command's UseMsbuild switch."
+        }        
+        , {
+            "name": "profile",
+            "type": "filePath",
+            "label": "Profile.xml file",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "distribution",
+            "helpMarkDown": "The Profile XML file is used to define how Automatic Interception Interface should handle the various processes involved in a distributed job. It is not neccsary for 'Visual Studio' or 'Make and Build tools' builds,  but can be used to provide configuration options if those builds use additional processes that are not included in those packages. it is required to configure distributable processes in 'Dev Tools' builds."
+        }        
+        , {
+            "name": "avoidLocal",
+            "type": "pickList",
+            "label": "Avoid task execution on local machine when possible",
+            "defaultValue": "ON",
+			"options": {
+				"ON": "ON",
+                "OFF": "OFF"			},
+            "required": false,
+            "groupName": "distribution",
+            "helpMarkDown": "Overrides the Agent Settings dialog Avoid task execution on local machine when possible option. This allows to free more resources on the initiator machine and could be beneficial to distribution in scenarios where the initiating machine is bottlenecking the build with High CPU usage."
+        }        
+        , {
+            "name": "maxCPUs",
+            "type": "string",
+            "label": "Maximum CPUs to utilize in the build",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "distribution",
+            "helpMarkDown": "Specifies the maximum amount of remote cores to utilize in the build. Overrides global max. CPUs/Cores in build setting."
+        }        
+        , {
+            "name": "maxWindowsVersion",
+            "type": "pickList",
+            "label": "Newest allowed helper machine OS",
+            "defaultValue": "",
+		"options": {
+				"": "--",
+				"10": "Windows 10",
+				"8": "Windows 8",
+				"7": "Windows 7",
+				"2008": "Windows Server 2008",
+				"VISTA": "Windows Vista",
+				"2003": "Windows Server 2003",
+                "XP": "Windows XP"			},
+            "required": false,
+            "groupName": "distribution",
+            "helpMarkDown": "Specifies the newest  operating system installed on a helper machine to be allowed to participate as helper in the build."
+        }        
+        , {
+            "name": "minWindowsVersion",
+            "type": "pickList",
+            "label": "Oldest allowed helper machine OS",
+            "defaultValue": "",
+		"options": {
+				"": "--",
+				"10": "Windows 10",
+				"8": "Windows 8",
+				"7": "Windows 7",
+				"2008": "Windows Server 2008",
+				"VISTA": "Windows Vista",
+				"2003": "Windows Server 2003",
+                "XP": "Windows XP"			},
+            "required": false,
+            "groupName": "distribution",
+            "helpMarkDown": "Specifies the oldest operating system installed on a helper machine to be allowed to participate as helper in the build."
+        }        
+        , {
+            "name": "title",
+            "type": "string",
+            "label": "Build Title",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Specifies a custom header line which will be displayed in the beginning of the build output text. This title will also be used for the Build History and Build Monitor displays."
+        }        
+        , {
+            "name": "writeToBuildMonitorFile",
+            "type": "string",
+            "label": "Save IncrediBuild monitor file",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Writes a copy of the build progress (.ib_mon) file to the specified location. - If only a folder name is given, IncrediBuild generates a GUID for the file name. - A message containing the location of the saved .ib_mon file is added to the end of the build output."
+        }        
+        , {
+            "name": "silent",
+            "type": "boolean",
+            "label": "Suppress STDOUT",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Does not write anything to the standard output."
+        }        
+        , {
+            "name": "outputToLogFile",
+            "type": "string",
+            "label": "Output Log file",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Writes build output to a file."
+        }        
+        , {
+            "name": "showCmd",
+            "type": "boolean",
+            "label": "Show Commands in output",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Shows, for each file built, the command-line used by IncrediBuild to build the file."
+        }        
+        , {
+            "name": "showAgent",
+            "type": "boolean",
+            "label": "Show Agents in output",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Shows the Agent used to build each file."
+        }        
+        , {
+            "name": "showTime",
+            "type": "boolean",
+            "label": "Show Time in output",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Shows the Start and Finish time for each file built."
+        }        
+        , {
+            "name": "noLogo",
+            "type": "boolean",
+            "label": "Hide IncrediBuild Header in output",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Suppresses the 'IncrediBuild' header in the build output."
+        }        
+        , {
+            "name": "logLevel",
+            "type": "pickList",
+            "label": "Internal IncrediBuild logging level",
+            "defaultValue": "",
+			"options": {
+				"": "",
+				"Minimal": "Minimal",
+				"Extended": "Extended",
+                "Detailed": "Detailed"			},
+            "required": false,
+            "groupName": "output",
+            "helpMarkDown": "Overrides the internal Incredibuild logging level for this build. Does not affect output or any user accessible logging. Used mainly to troubleshoot issues with the help of IncrediBuild support."
+        }        
+        , {
+            "name": "setEnvironmentVariables",
+            "type": "string",
+            "label": "Set an Environment Variable",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "miscellaneous",
+            "helpMarkDown": "Sets or overrides environment variables for the context of the build."
+        }        
+        , {
+            "name": "additionalArguments",
+            "type": "string",
+            "label": "Additional Arguments",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "miscellaneous",
+            "helpMarkDown": "Add additional buildconsole arguments manually. The value of this field will be concatenated to the final buildconsole command line."
+        }        
+
+
+
+    ],
+    "execution": {
+        "Node": {
+            "target": "BuildConsole.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "BuildConsoleNotInstalled": "BuildConsole is not installed globally (or is not in the path of the user the agent is running as)",
+        "BuildConsoleReturnCode": "BuildConsole exited with return code: %d",
+        "BuildConsoleFailed": "BuildConsole failed with error: %s"
+    }
+}
