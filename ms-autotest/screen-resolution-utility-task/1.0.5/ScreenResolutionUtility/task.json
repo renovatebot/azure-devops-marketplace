@@ -1,0 +1,66 @@
+{
+    "id": "D353D6A2-E362-4A8F-8D8C-123BFBB71128",
+    "name": "ScreenResolutionUtility",
+    "friendlyName": "Screen Resolution Utility",
+    "description": "Set the screen resolution of the agent machine. Useful when running UI tests.",
+    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?linkid=865425)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "InteractiveSession"
+    ],
+    "minimumAgentVersion": "2.116.0",
+    "inputs": [
+        {
+            "name": "displaySettings",
+            "type": "pickList",
+            "label": "Display Settings",
+            "defaultValue": "optimal",
+            "required": true,
+            "helpMarkDown": "The task can automatically detect and set the optimal screen resolution supported by the agent machine. You can also specify custom values by providing desired width and height, in pixels.<br>Screen resolution cannot be changed in a remote desktop session. Running this task in an active remote desktop session will have no effect.",
+            "options": {
+                "optimal": "Optimal Resolution",
+                "specific": "Specific Resolution"
+            }
+        },
+        {
+            "name": "width",
+            "type": "string",
+            "label": "Width",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Width in pixels",
+            "visibleRule": "displaySettings = specific"
+        },
+        {
+            "name": "height",
+            "type": "string",
+            "label": "Height",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Height in pixels",
+            "visibleRule": "displaySettings = specific"
+        }
+    ],
+    "instanceNameFormat": "Set Screen Resolution",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\ScreenResolutionUtility.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
