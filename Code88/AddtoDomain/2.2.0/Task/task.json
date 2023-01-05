@@ -1,0 +1,115 @@
+{
+  "id": "c0fcb371-f65e-464f-9b15-393e2d631322",
+  "name": "Cloud Service to a Domain",
+  "friendlyName": "Adding Cloud Service to a Domain",
+  "description": "Automating adding a cloud service to a domain",
+  "author": "code88",
+  "helpMarkDown": "Adds a cloud service to a domain",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "2",
+    "Patch": "0"
+  },
+  
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "AddtoDomain $(message)",
+
+  "groups": [
+        {
+            "name": "ActiveDirectoryDetails",
+            "displayName": "Active Directory Details",
+            "isExpanded": true
+        }
+  ],
+
+  "inputs": [
+     {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure:Certificate,UsernamePassword",
+            "label": "Azure Subscription (Classic)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to target for deployment."
+        },
+     
+       {
+            "name": "ServiceName",
+            "type": "pickList",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+  {
+            "name": "WaitTime",
+             "type": "string",
+            "label": "Wait Time in Seconds",
+          "defaultValue": "60",
+           "required": true,
+      "properties": {
+
+      },
+      "helpMarkDown": "If you are renaming the server, the server has to go through multiple reboots before the name is changed."
+    },
+
+
+  {
+      "name": "Domain",
+      "type": "string",
+      "label": "Domain Details",
+      "defaultValue": "",
+      "groupname":"ActiveDirectoryDetails",
+      "required": true,
+      "properties": {
+
+      },
+      "helpMarkDown": ""
+    },
+    {
+      "name": "dmuser",
+      "type": "string",
+      "label": "Domain User",
+      "groupname":"ActiveDirectoryDetails",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+      },
+      "helpMarkDown": ""
+    },
+    {
+      "name": "dmpwd",
+      "type": "string",
+      "label": "Domain Password",
+      "groupname":"ActiveDirectoryDetails",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+      },
+      "helpMarkDown": ""
+    }
+  ],
+  
+"dataSourceBindings": [
+        {
+            "target": "ServiceName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureHostedServiceNames"
+        }
+],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\sample.ps1"
+    }
+  }
+}
