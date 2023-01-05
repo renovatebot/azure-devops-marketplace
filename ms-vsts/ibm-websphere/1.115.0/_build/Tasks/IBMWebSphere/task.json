@@ -1,0 +1,261 @@
+{
+    "id": "45EEFADD-E59D-43CC-84FF-17B7FCF1FB2E",
+    "name": "IBMWebSphere",
+    "friendlyName": "IBM WebSphere Deployment",
+    "description": "Deploy applications to IBM WebSphere.",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "114",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.3",
+    "instanceNameFormat": "Deploy $(appPath) to IBM WebSphere",
+    "groups": [
+        {
+            "name": "connectionSpec",
+            "displayName": "Connection Options",
+            "isExpanded": true
+        },
+        {
+            "name": "deployTask",
+            "displayName": "Install / Update Deployment Tasks",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced Deployment Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "connType",
+            "type": "pickList",
+            "label": "Connection Method",
+            "defaultValue": "serviceEndpoint",
+            "groupName": "connectionSpec",
+            "helpMarkDown": "",
+            "options": {
+                "serviceEndpoint": "Service Endpoint Connection",
+                "address": "Enter Connection Details"
+            }
+        },
+        {
+            "name": "webSphereEndpoint",
+            "type": "connectedService:ibmwebsphereendpoint",
+            "label": "WebSphere Endpoint",
+            "groupName": "connectionSpec",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Service endpoint for WebSphere.",
+            "visibleRule": "connType = serviceEndpoint"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "connectionSpec",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "connectionSpec",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "ipAddress",
+            "type": "string",
+            "label": "Host Address",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "connectionSpec",
+            "helpMarkDown": "The host name or IP address of the computer on which WebSphere is running. In the Network Deployment (ND) environemnt, it should be the address of the management node.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "port",
+            "type": "string",
+            "label": "Port",
+            "defaultValue": "8879",
+            "required": true,
+            "groupName": "connectionSpec",
+            "helpMarkDown": "The SOAP port on which the wasadmin commmand line connects to manager / admin node.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "Application Name",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is the application name shown under the WebSphere Enterprise Applications."
+        },
+        {
+            "name": "contentPath",
+            "type": "filePath",
+            "label": "Update Content Path",
+            "defaultValue": "**/*.war",
+            "required": true,
+            "groupName": "deployTask",
+            "helpMarkDown": "Path points to the application file."
+        },
+        {
+            "name": "installApplicationIfNotExist",
+            "type": "boolean",
+            "label": "Install Application If Not Exist",
+            "defaultValue": true,
+            "required": true,
+            "groupName": "deployTask",
+            "helpMarkDown": "Check this to install application if it does not exist on the target application server."
+        },
+        {
+            "name": "topologyType",
+            "type": "pickList",
+            "label": "Topology",
+            "defaultValue": "singleServer",
+            "groupName": "deployTask",
+            "helpMarkDown": "Choose the installation topology. It could be a single server or a cluster.",
+            "options": {
+                "singleServer": "Install on a single server",
+                "cluster": "Install on a cluster"
+            },
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "clusterName",
+            "type": "string",
+            "label": "Target Cluster",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is the target cluster for deploying application.",
+            "visibleRule": "installApplicationIfNotExist = true && topologyType = cluster"
+        },
+        {
+            "name": "nodeName",
+            "type": "string",
+            "label": "Target Node",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is the target node name for the deployment application server.",
+            "visibleRule": "installApplicationIfNotExist = true && topologyType = singleServer"
+        },
+        {
+            "name": "appServerName",
+            "type": "string",
+            "label": "Target Application Server",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is the target deployment application server.",
+            "visibleRule": "installApplicationIfNotExist = true && topologyType = singleServer"
+        },
+        {
+            "name": "cellName",
+            "type": "string",
+            "label": "Target Cell",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is the target cell.",
+            "visibleRule": "installApplicationIfNotExist = true && topologyType = singleServer"
+        },
+        {
+            "name": "contextRoot",
+            "type": "string",
+            "label": "Context Root For Web Modules",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This is the context root for application. The default value is set the same as the application name.",
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "webModule",
+            "type": "string",
+            "label": "Web Module",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This is the web module of the application, which is usually defined in the WEB-INF/web.xml.",
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "virtualHost",
+            "type": "string",
+            "label": "Virtual Host",
+            "groupName": "deployTask",
+            "defaultValue": "default_host",
+            "required": false,
+            "helpMarkDown": "This is the virtual host for applications.",
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "uri",
+            "type": "string",
+            "label": "URI",
+            "groupName": "deployTask",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "This is the URI for applications. One example is deepspace.war,WEB-INF/web.xml",
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "startApplication",
+            "type": "boolean",
+            "label": "Start Application",
+            "groupName": "deployTask",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Check this to start application after its installation.",
+            "visibleRule": "installApplicationIfNotExist = true"
+        },
+        {
+            "name": "installOptions",
+            "type": "string",
+            "label": "More Install Options",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Any additional install options in 'wsadmin -c' command."
+        },
+        {
+            "name": "updateOptions",
+            "type": "string",
+            "label": "More Update Options",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Any additional update options in 'wsadmin -c' command."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "websphere-deploy.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "InvalidFile": "The update content file is invalid.",
+        "NoFilesFound": "No content file found using pattern: %s.",
+        "MultipleFilesFound": "More than one content file found using pattern: %s.",
+        "NotFoundApp": "Not found app %s, install.",
+        "FoundApp": "Found existing app %s, update.",
+        "ExtractInfo": "Automatically extract Web Module: %s, Virtual hosts: %s, URI: %s.",
+        "SuccessfullyPublished": "Successfully installed / updated the application on the WebSphere application server."
+    }
+}
