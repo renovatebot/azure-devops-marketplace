@@ -1,0 +1,377 @@
+{
+	"id": "50938938-BF74-4ACD-B7AB-3A7CFC801D8A",
+	"name": "DataStarCmdLine",
+	"friendlyName": "DataStar Command Line Utility",
+	"description": "Executes the DataStar Command Line Utility",
+	"helpMarkDown": "[More Information](https://datastar.software/content/azuredevops/CmdLine/)",
+	"category": "DataStar",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Absolute Technology Limited",
+	"version": {
+	  "Major": 2,
+	  "Minor": 0,
+	  "Patch": 5
+	},
+  "groups": [
+    {
+      "name": "DatabaseConnectionSettings",
+      "displayName": "Database Connection Settings",
+      "isExpanded": false
+    },
+	{
+	  "name": "ReversalOptions",
+	  "displayName": "Reversal Options",
+	  "isExpanded": false,
+	  "visibleRule": "ModeType = Deployment || ModeType = Reversal"
+	},
+	{
+	  "name": "AuditOptions",
+	  "displayName": "Auditing Options",
+	  "isExpanded": false,
+	  "visibleRule": "ModeType = Deployment || ModeType = Reversal"
+	},
+	{
+	  "name": "GenerateOptions",
+	  "displayName": "Generate Options",
+	  "isExpanded": false,
+	  "visibleRule": "ModeType = Generate"
+	},
+	{
+	  "name": "HistoryOptions",
+	  "displayName": "History Options",
+	  "isExpanded": false,
+	  "visibleRule": "ModeType = History"
+	},
+    {
+      "name": "LicenseSettings",
+      "displayName": "License Settings",
+      "isExpanded": false
+    },
+	{
+	  "name": "Advanced",
+	  "displayName": "Advanced Settings",
+	  "isExpanded": false
+	}
+  ],
+  "inputs": [
+    {
+      "name": "ModeType",
+      "type": "pickList",
+      "label": "Mode",
+      "defaultValue": "Deployment",
+      "options": {
+        "Deployment": "Deployment",
+        "Reversal": "Reversal",
+        "Generate": "Generate",
+        "History": "History"
+      },
+      "required": true,
+      "helpMarkDown": "Select the mode type depending on whether you want to deploy, reverse, generate or extract history."
+    },
+    {
+      "name": "ManifestDir",
+      "type": "string",
+      "label": "Manifest Directory",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "ModeType = Deployment || ModeType = Reversal",
+      "helpMarkDown": "The location of the package (i.e. the parent folder of the manifest file)"
+    },
+	{
+	  "name": "WithReversal",
+	  "type": "boolean",
+	  "label": "With Reversal",
+	  "defaultValue": "false",
+	  "groupName":  "ReversalOptions",
+	  "required": false,
+	  "helpMarkDown": "The optional with reversal switch, to generate reversal scripts."
+	},
+    {
+      "name": "TemplateDir",
+      "type": "string",
+      "label": "TemplateDir",
+      "groupName": "ReversalOptions",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "WithReversal = true",
+      "helpMarkDown": "The optional templates directory, only required if generating reversal scripts."
+    },
+    {
+      "name": "OutputDir",
+      "type": "string",
+      "label": "Output Directory",
+      "groupName": "ReversalOptions",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "WithReversal = true",
+      "helpMarkDown": "The optional output directory, only required if generating reversal scripts."
+    },
+    {
+      "name": "Artifacts",
+      "type": "string",
+      "label": "Artifacts",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "ModeType = Deployment || ModeType = Reversal",
+      "helpMarkDown": "The optional manifest files to include, defaults to wildcard."
+    },
+    {
+      "name": "HistoryId",
+      "type": "string",
+      "label": "HistoryId",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "ModeType = Reversal || ModeType = History",
+      "helpMarkDown": "The optional id of the deployment being reversed, used in reversal mode."
+    },
+    {
+      "name": "WorkItem",
+      "type": "string",
+      "label": "Work Item Reference",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "ModeType = Deployment || ModeType = Reversal || ModeType = History",
+      "helpMarkDown": "The optional work item reference."
+    },
+	{
+	  "name": "Version",
+	  "type": "string",
+	  "label": "Version Reference",
+	  "defaultValue": "",
+	  "required": false,
+	  "visibleRule": "ModeType = Deployment || ModeType = Reversal",
+	  "helpMarkDown": "The optional version reference."
+	},
+	{
+	  "name": "HO-WithReversal",
+	  "type": "boolean",
+	  "label": "With Reversal Scripts",
+	  "defaultValue": "false",
+	  "groupName":  "HistoryOptions",
+	  "required": false,
+	  "helpMarkDown": "Check this box to extract the reversal scripts."
+	},
+	{
+	  "name": "HO-WithLogOutput",
+	  "type": "boolean",
+	  "label": "With Log Output",
+	  "defaultValue": "true",
+	  "groupName":  "HistoryOptions",
+	  "required": false,
+	  "helpMarkDown": "Check this box to extract logs."
+	},
+	{
+	  "name": "HO-OutputDir",
+	  "type": "string",
+	  "label": "Output Directory",
+	  "groupName": "HistoryOptions",
+	  "defaultValue": "",
+	  "required": true,
+	  "helpMarkDown": "The output directory"
+	},
+	{
+	  "name": "HO-AuditTable",
+	  "type": "string",
+	  "label": "Audit Table Name",
+	  "defaultValue": "",
+	  "groupName": "HistoryOptions",
+	  "required": false,
+	  "helpMarkDown": "Optional override for the audit database table name."
+	},
+	{
+	  "name": "HO-ReversalTable",
+	  "type": "string",
+	  "label": "Reversal Table Name",
+	  "defaultValue": "",
+	  "groupName": "HistoryOptions",
+	  "required": false,
+	  "helpMarkDown": "Optional override for the reversal database table name."
+	},
+    {
+      "name": "LicenseKey",
+      "type": "connectedService:dlksecert",
+      "label": "License Key",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "LicenseSettings",
+      "helpMarkDown": "The required license key."
+    },
+    {
+      "name": "DataSource",
+      "type": "string",
+      "label": "Data Source",
+      "defaultValue": "",
+      "required": false,
+      "groupName":  "DatabaseConnectionSettings", 
+      "helpMarkDown": "The database server and instance"
+    },
+    {
+      "name": "Database",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "",
+      "required": false,
+      "groupName":  "DatabaseConnectionSettings", 
+      "helpMarkDown": "The database name."
+    },
+    {
+      "name": "Username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "groupName": "DatabaseConnectionSettings",
+      "required": false,
+      "helpMarkDown": "Optional username if not using default credentials"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "groupName": "DatabaseConnectionSettings",
+      "required": false,
+      "helpMarkDown": "Optional password if not using default credentials. **Use a Variable to encrypt the Password.**"
+    },
+	{
+      "name": "Timeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "-1",
+      "groupName": "DatabaseConnectionSettings",
+      "required": false,
+      "helpMarkDown": "Optional timeout for the database statement execution, the default for SqlServer is 600 seconds"
+    },
+    {
+      "name": "Audit",
+      "type": "boolean",
+      "label": "Enable Auditing",
+      "defaultValue": "true",
+	  "groupName":  "AuditOptions",
+      "required": false,
+      "helpMarkDown": "The enable auditing switch, to generate audit records in the target database."
+    },
+    {
+      "name": "AuditTable",
+      "type": "string",
+      "label": "Audit Table Name",
+      "defaultValue": "",
+      "groupName": "AuditOptions",
+      "required": false,
+      "visibleRule": "Audit = true",
+      "helpMarkDown": "Optional override for the audit database table name."
+    },
+    {
+      "name": "ReversalTable",
+      "type": "string",
+      "label": "Reversal Table Name",
+      "defaultValue": "",
+      "groupName": "AuditOptions",
+      "required": false,
+      "visibleRule": "Audit = true",
+      "helpMarkDown": "Optional override for the reversal database table name."
+    },
+	{
+	  "name": "SummaryTable",
+	  "type": "string",
+	  "label": "Summary Table Name",
+	  "defaultValue": "",
+	  "groupName": "AuditOptions",
+	  "required": false,
+	  "visibleRule": "Audit = true",
+	  "helpMarkDown": "Optional override for the summary database table name."
+	},
+	{
+	  "name": "GO-TemplateDir",
+	  "type": "string",
+	  "label": "Template Directory",
+	  "defaultValue": "",
+	  "groupName": "GenerateOptions",
+	  "required": true,
+	  "helpMarkDown": "The directory containing the DataStar template(s)."
+	},
+	{
+	  "name": "GO-TemplateName",
+	  "type": "string",
+	  "label": "Template Name",
+	  "defaultValue": "",
+	  "groupName": "GenerateOptions",
+	  "required": true,
+	  "helpMarkDown": "The name of the DataStar template to use."
+	},
+	{
+	  "name": "GO-DynamicQuery",
+	  "type": "multiLine",
+	  "label": "Dynamic Query",
+	  "defaultValue": "",
+	  "groupName": "GenerateOptions",
+	  "required": false,
+	  "helpMarkDown": "The optional override to the dynamic query in the template."
+	},
+	{
+	  "name": "GO-FormattingOptions",
+	  "type": "multiLine",
+	  "label": "Formatting Options",
+	  "defaultValue": "",
+	  "groupName": "GenerateOptions",
+	  "required": false,
+	  "helpMarkDown": "The optional formatting rules for the component file names, this can be specified as XML as per the <FormattingRules> element defined in the DataStar UI workspace file or as a JSON string."
+	},
+	{
+	  "name": "GO-OutputDir",
+	  "type": "string",
+	  "label": "Output Directory",
+	  "defaultValue": "",
+	  "groupName": "GenerateOptions",
+	  "required": true,
+	  "helpMarkDown": "The output directory where the scripts should be generated."
+	},
+	{
+	  "name": "GO-DeleteCheck",
+	  "type": "boolean",
+	  "label": "Include Delete Check",
+	  "defaultValue": "true",
+	  "groupName": "GenerateOptions",
+	  "required": false,
+	  "helpMarkDown": "If this is true any additional files (i.e. those not identified in the template dynamic queries) will be re-extracted using the parameters contained in those files."
+	},
+	{
+	  "name": "BasePath",
+	  "type": "string",
+	  "label": "Base Path",
+	  "groupName": "Advanced",
+	  "required": false,
+	  "helpMarkDown": "The optional path to the DataStar.CmdLine Executable, if not specified the working directory is used."
+	},
+	{
+	  "name": "MaxDop",
+	  "type": "string",
+	  "label": "Max Degree of Parallelism",
+	  "defaultValue": "",
+	  "groupName": "Advanced",
+	  "required": false,
+	  "helpMarkDown": "Controls the maximum number of concurrent threads allowed when extracting components."
+	},
+    {
+      "name": "FailOnStderr",
+      "type": "boolean",
+      "label": "Fail on Standard Error",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If this is true, this task will fail if any errors are written to the StandardError stream.",
+      "groupName": "Advanced"
+    }
+  ],
+	"instanceNameFormat": "Execute the DataStar Command Line Utility",
+	"execution": {
+		"PowerShell3": {
+			"target": "powershell.ps1",
+			"platforms": [
+				"windows"
+			]
+		}
+	},
+	"messages": {}
+}
