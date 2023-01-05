@@ -1,0 +1,114 @@
+﻿{
+    "id":  "84110c9d-d8df-43a1-8d53-672b6bf34663",
+    "name":  "PublishToCMP",
+    "friendlyName":  "Publish to Orckestra\u0027s Cloud Management Platform",
+    "description":  "Publish deployment packages to Orckestra\u0027s Cloud Management Platform.",
+    "author":  "Orckestra Technologies Inc.",
+    "helpMarkDown":  "See [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#task-publishtocmp).",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  "1",
+                    "Minor":  "0",
+                    "Patch":  "50"
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Publish deployment packages to Orckestra\u0027s Cloud Management Platform",
+    "groups":  [
+                   {
+                       "name":  "cmpDetails",
+                       "displayName":  "Cloud Management Platform",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "cmpUrl",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP URL",
+                       "defaultValue":  "$(CMP.Url)",
+                       "helpMarkDown":  "The URL to CMP. Invariably, https://api.orckestra.cloud"
+                   },
+                   {
+                       "name":  "cmpUsername",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP username",
+                       "defaultValue":  "$(CMP.UserName)",
+                       "helpMarkDown":  "The username used to access CMP. See also [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#cmp-connection)."
+                   },
+                   {
+                       "name":  "cmpPassword",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP password",
+                       "defaultValue":  "$(CMP.Password)",
+                       "helpMarkDown":  "The password associated with the CMP username."
+                   },
+                   {
+                       "name":  "cmpClientCode",
+                       "type":  "string",
+                       "required":  true,
+                       "label":  "Client Code",
+                       "defaultValue":  "$(CMP.ClientCode)",
+                       "helpMarkDown":  "The code of the client in CMP for which uploaded packages will be available. See also [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#pubcmp-clientcode)."
+                   },
+                   {
+                       "name":  "cmpPackageFolder",
+                       "type":  "filePath",
+                       "required":  true,
+                       "label":  "Packages Folder",
+                       "helpMarkDown":  "Folder where to search for packages to upload to CMP."
+                   },
+                   {
+                       "name":  "cmpStability",
+                       "type":  "string",
+                       "required":  true,
+                       "label":  "Package stability (Release, PreRelease, Develop)",
+                       "defaultValue":  "$(Stability)",
+                       "helpMarkDown":  "Sets the CMP feed where packages are uploaded. Recognized values: Release, PreRelease, Develop."
+                   },
+                   {
+                       "name":  "cmpPackagesList",
+                       "type":  "multiLine",
+                       "required":  true,
+                       "label":  "Packages to upload",
+                       "helpMarkDown":  "Specifies which files to upload. See [syntax specification](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#pubcmp-packages-filter)."
+                   },
+                   {
+                       "name":  "cmpPackagesListFilterType",
+                       "type":  "pickList",
+                       "required":  true,
+                       "label":  "Packages list filter type",
+                       "defaultValue":  "FilePattern",
+                       "options":  {
+                                       "FilePattern":  "File Pattern (wildcard ? or *)",
+                                       "RegEx":  "Regular expression"
+                                   },
+                       "helpMarkDown":  "The format used for each line of the package list. See [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#pubcmp-packages-filter-type)."
+                   },
+                   {
+                       "name":  "currentBuildNumber",
+                       "type":  "string",
+                       "required":  true,
+                       "defaultValue":  "$(Build.BuildNumber)",
+                       "label":  "This build\u0027s version",
+                       "helpMarkDown":  "If any \u0027optional version target\u0027 is specified in parameter \u0027Packages to upload\u0027 above, this build version is compared against it to determine whether the package should be uploaded or not. It must be in a format `\\d+\\.\\d+.*`\n\nYou can use the value `$(Build.BuildNumber)` when this task is in a release pipeline and `$(GitVersion.NuGetVersion)` when the task is in a build pipeline. You can hardcode a version (e.g.: 0.0) if you cannot use a build variable."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "run.ps1"
+                                      }
+                  }
+}

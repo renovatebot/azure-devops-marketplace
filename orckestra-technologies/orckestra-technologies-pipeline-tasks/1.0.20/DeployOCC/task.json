@@ -1,0 +1,183 @@
+﻿{
+    "id":  "05c13e1b-f362-43f2-bdc1-c0f6ac474b95",
+    "name":  "DeployOCC",
+    "friendlyName":  "Deploy OrckestraCommerce Cloud Platform",
+    "description":  "Deploy an Orckestra Commerce Cloud environment using Orckestra\u0027s Cloud Management Platform",
+    "author":  "Orckestra Technologies Inc.",
+    "helpMarkDown":  "Contact your Orckestra Technologies support specialist for help with this task",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  0,
+                    "Patch":  58
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Deploy $(environment) Platform",
+    "groups":  [
+                   {
+                       "name":  "cmpDetails",
+                       "displayName":  "Cloud Management Platform",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "environmentLocation",
+                       "type":  "pickList",
+                       "label":  "Package source",
+                       "required":  true,
+                       "defaultValue":  "MicrosoftAzure",
+                       "helpMarkDown":  "The location of the deployment (Inline, Desired Installer)",
+                       "options":  {
+                                       "MicrosoftAzure":  "Inline",
+                                       "MicrosoftAzureDesiredInstaller":  "Desired Installer"
+                                   }
+                   },
+                   {
+                       "name":  "cmpClientCode",
+                       "type":  "string",
+                       "required":  true,
+                       "label":  "Client Code",
+                       "defaultValue":  "$(CMP.ClientCode)",
+                       "helpMarkDown":  "The code of the client in CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
+                   },
+                   {
+                       "name":  "environment",
+                       "type":  "string",
+                       "label":  "Environment",
+                       "required":  true,
+                       "defaultValue":  "INT",
+                       "helpMarkDown":  "The environment to deploy (INT, QA, etc.)"
+                   },
+                   {
+                       "name":  "bannerCode",
+                       "type":  "string",
+                       "label":  "Banner Code",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The optional banner code of the site to deploy"
+                   },
+                   {
+                       "name":  "bannerRegionCode",
+                       "type":  "string",
+                       "label":  "Banner Region Code",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The optional banner region code of the site to deploy"
+                   },
+                   {
+                       "name":  "cmpUrl",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP url",
+                       "defaultValue":  "$(CMP.Url)",
+                       "helpMarkDown":  "The url to CMP"
+                   },
+                   {
+                       "name":  "cmpUsername",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP username",
+                       "defaultValue":  "$(CMP.UserName)",
+                       "helpMarkDown":  "The username used to access CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
+                   },
+                   {
+                       "name":  "cmpPassword",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP password",
+                       "defaultValue":  "$(CMP.Password)",
+                       "helpMarkDown":  "The password used to access CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
+                   },
+                   {
+                       "name":  "desiredInstallerFile",
+                       "type":  "filePath",
+                       "visibleRule":  "environmentLocation = MicrosoftAzureDesiredInstaller",
+                       "required":  true,
+                       "label":  "Path to desired installer file",
+                       "helpMarkDown":  "File (build artifact) that contains the packages to be deployed"
+                   },
+                   {
+                       "name":  "deploymentType",
+                       "type":  "pickList",
+                       "required":  true,
+                       "label":  "Deployment type",
+                       "defaultValue":  "Full",
+                       "helpMarkDown":  "Control how the execution of the deployment.",
+                       "options":  {
+                                       "Full":  "Full deployment",
+                                       "Prepare":  "Prepare",
+                                       "Execute":  "Execute"
+                                   }
+                   },
+                   {
+                       "name":  "deploymentFolder",
+                       "type":  "string",
+                       "visibleRule":  "deploymentType = Execute",
+                       "required":  true,
+                       "label":  "Deployment folder",
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The folder containing the prepared installation file"
+                   },
+                   {
+                       "name":  "cmpComponents",
+                       "type":  "pickList",
+                       "label":  "Components to deploy",
+                       "required":  true,
+                       "defaultValue":  "All",
+                       "helpMarkDown":  "The components to deploy.",
+                       "properties":  {
+                                          "MultiSelectFlatList":  "true"
+                                      },
+                       "options":  {
+                                       "All":  "All",
+                                       "ooe":  "Engine",
+                                       "osa-cd":  "SolrAdministrationCD",
+                                       "osa-cm":  "SolrAdministrationCM",
+                                       "oco":  "Orchestrator",
+                                       "oa":  "OvertureAgent",
+                                       "azf":  "AzureFunction",
+                                       "ocs-cd":  "CommerceServicesCD",
+                                       "ocs-cm":  "CommerceServicesCM",
+                                       "solr-cd":  "SearchCD",
+                                       "solr-cm":  "SearchCM",
+                                       "wfe-cd":  "WebCD",
+                                       "wfe-cm":  "WebCM",
+                                       "msf":  "MobileStoreFulfillment",
+                                       "db-oltp":  "Transactional Databases",
+                                       "db-olap":  "Archive Databases",
+                                       "db-datawarehouse":  "Warehouse Database",
+                                       "rpt-all":  "Reports",
+                                       "etl-olap":  "ETL Olap",
+                                       "mirror-oltp":  "Mirror Databases"
+                                   }
+                   },
+                   {
+                       "name":  "desiredState",
+                       "type":  "multiLine",
+                       "visibleRule":  "environmentLocation = MicrosoftAzure",
+                       "label":  "Desired State",
+                       "properties":  {
+                                          "resizable":  "true",
+                                          "rows":  "30",
+                                          "maxLength":  "50000"
+                                      },
+                       "helpMarkDown":  "The desired state to use. For the version property, the keyword \u0027Current\u0027 can be used in order to use the current build number for the packages or \u0027Latest\u0027 to use the latest version of the package available in CMP"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "run.ps1"
+                                      }
+                  }
+}

@@ -1,0 +1,183 @@
+﻿{
+    "id":  "05c13e1b-f362-43f2-bdc1-c0f6ac474b95",
+    "name":  "DeployOCC",
+    "friendlyName":  "Deploy OrckestraCommerce Cloud Platform",
+    "description":  "Deploy an Orckestra Commerce Cloud environment using Orckestra\u0027s Cloud Management Platform.",
+    "author":  "Orckestra Technologies Inc.",
+    "helpMarkDown":  "See [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#task-deployocc).",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  0,
+                    "Patch":  60
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Deploy $(environment) Platform",
+    "groups":  [
+                   {
+                       "name":  "cmpDetails",
+                       "displayName":  "Cloud Management Platform",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "environmentLocation",
+                       "type":  "pickList",
+                       "label":  "Deployment manifest location",
+                       "required":  true,
+                       "defaultValue":  "MicrosoftAzure",
+                       "helpMarkDown":  "Selects whether the list of OCC packages to be deployed is:\n- specified inline, within the pipeline parameters, or;\n- read from a file available via the build artifacts.",
+                       "options":  {
+                                       "MicrosoftAzure":  "Inline",
+                                       "MicrosoftAzureDesiredInstaller":  "Desired Installer"
+                                   }
+                   },
+                   {
+                       "name":  "cmpClientCode",
+                       "type":  "string",
+                       "required":  true,
+                       "label":  "Client Code",
+                       "defaultValue":  "$(CMP.ClientCode)",
+                       "helpMarkDown":  "The code of the client in CMP. See also [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#deployocc-clientcode)."
+                   },
+                   {
+                       "name":  "environment",
+                       "type":  "string",
+                       "label":  "Environment",
+                       "required":  true,
+                       "defaultValue":  "INT",
+                       "helpMarkDown":  "The CMP code of the environment on which to deploy (int, qa, etc.). See alsoÂ [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#deployocc-environment)."
+                   },
+                   {
+                       "name":  "bannerCode",
+                       "type":  "string",
+                       "label":  "Banner Code",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "[Optional] \nThe banner code of the site to deploy. \nThis only applies to purpose-made \u0027banner\u0027 environments on Azure. \nBanners are supported by OCC version 5.4.0 and above."
+                   },
+                   {
+                       "name":  "bannerRegionCode",
+                       "type":  "string",
+                       "label":  "Banner Region Code",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "[Optional] \nThe banner region code of the site to deploy. \nThis only applies to purpose-made \u0027banner\u0027 environments on Azure. \nBanners are supported by OCC version 5.4.0 and above."
+                   },
+                   {
+                       "name":  "cmpUrl",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP URL",
+                       "defaultValue":  "$(CMP.Url)",
+                       "helpMarkDown":  "The URL to CMP. Invariably, https://api.orckestra.cloud"
+                   },
+                   {
+                       "name":  "cmpUsername",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP username",
+                       "defaultValue":  "$(CMP.UserName)",
+                       "helpMarkDown":  "The username used to access CMP. See also [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#cmp-connection)."
+                   },
+                   {
+                       "name":  "cmpPassword",
+                       "type":  "string",
+                       "groupName":  "cmpDetails",
+                       "required":  true,
+                       "label":  "CMP password",
+                       "defaultValue":  "$(CMP.Password)",
+                       "helpMarkDown":  "The password associated with the CMP username."
+                   },
+                   {
+                       "name":  "desiredInstallerFile",
+                       "type":  "filePath",
+                       "visibleRule":  "environmentLocation = MicrosoftAzureDesiredInstaller",
+                       "required":  true,
+                       "label":  "Path to desired installer file",
+                       "helpMarkDown":  "File (build artifact) that lists the packages to be deployed. See [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#deployocc-path-to-desired-installer-file)."
+                   },
+                   {
+                       "name":  "deploymentType",
+                       "type":  "pickList",
+                       "required":  true,
+                       "label":  "Deployment type",
+                       "defaultValue":  "Full",
+                       "helpMarkDown":  "Specifies whether the deployment should be prepared, executed, or both. See also [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#deployocc-deploymenttype).",
+                       "options":  {
+                                       "Full":  "Full deployment",
+                                       "Prepare":  "Prepare",
+                                       "Execute":  "Execute"
+                                   }
+                   },
+                   {
+                       "name":  "deploymentFolder",
+                       "type":  "string",
+                       "visibleRule":  "deploymentType = Execute",
+                       "required":  true,
+                       "label":  "Deployment folder",
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The folder containing the prepared installation file."
+                   },
+                   {
+                       "name":  "cmpComponents",
+                       "type":  "pickList",
+                       "label":  "Components to deploy",
+                       "required":  true,
+                       "defaultValue":  "All",
+                       "helpMarkDown":  "The OCC platform component(s) to deploy.",
+                       "properties":  {
+                                          "MultiSelectFlatList":  "true"
+                                      },
+                       "options":  {
+                                       "All":  "All",
+                                       "ooe":  "Engine",
+                                       "osa-cd":  "SolrAdministrationCD",
+                                       "osa-cm":  "SolrAdministrationCM",
+                                       "oco":  "Orchestrator",
+                                       "oa":  "OvertureAgent",
+                                       "azf":  "AzureFunction",
+                                       "ocs-cd":  "CommerceServicesCD",
+                                       "ocs-cm":  "CommerceServicesCM",
+                                       "solr-cd":  "SearchCD",
+                                       "solr-cm":  "SearchCM",
+                                       "wfe-cd":  "WebCD",
+                                       "wfe-cm":  "WebCM",
+                                       "msf":  "MobileStoreFulfillment",
+                                       "db-oltp":  "Transactional Databases",
+                                       "db-olap":  "Archive Databases",
+                                       "db-datawarehouse":  "Warehouse Database",
+                                       "rpt-all":  "Reports",
+                                       "etl-olap":  "ETL Olap",
+                                       "mirror-oltp":  "Mirror Databases"
+                                   }
+                   },
+                   {
+                       "name":  "desiredState",
+                       "type":  "multiLine",
+                       "visibleRule":  "environmentLocation = MicrosoftAzure",
+                       "label":  "Desired State",
+                       "properties":  {
+                                          "resizable":  "true",
+                                          "rows":  "30",
+                                          "maxLength":  "50000"
+                                      },
+                       "helpMarkDown":  "The list of packages to be deployed. See [documentation](https://docs.orckestra.com/developer-documentation/getting-started/setting-up-your-platform/undersanding-the-project-template/azure-devops-pipeline-tasks#deployocc-desired-state)."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "run.ps1"
+                                      }
+                  }
+}
