@@ -1,0 +1,57 @@
+﻿{
+  "id": "3abefe9e-cc71-4670-b17e-688fcbb49860",
+  "name": "HockeyApp UWP",
+  "friendlyName": "HockeyApp UWP",
+  "description": "Deploy your alpha and beta builds of UWP to HockeyApp",
+  "author": "Vitaliy Leschenko",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Deploy",
+  "targets": [
+    {"id": "Microsoft.VisualStudio.Services"}
+  ],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": ["powershell"],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "11"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Deploy $(binaryPath) to HockeyApp",
+  "inputs": [
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:HockeyApp",
+      "label": "HockeyApp Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the HockeyApp endpoint"
+    },
+    {
+      "name": "appID",
+      "type": "string",
+      "label": "App ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The ID of the app you'd like to upload a new build for. Leave empty to allow HockeyApp to infer the app ID automatically"
+    },
+    {
+      "name": "binaryPath",
+      "type": "filePath",
+      "label": "Binary Folder Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Relative path from the repo root to the appxupload files you want to publish"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\UploadUWPToHockeyApp.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
