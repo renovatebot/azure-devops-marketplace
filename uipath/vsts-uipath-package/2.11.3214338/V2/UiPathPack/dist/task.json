@@ -1,0 +1,132 @@
+{
+    "id":  "33265b4a-5861-41e6-a42c-83efecec0002",
+    "name":  "UiPathPack",
+    "friendlyName":  "UiPath Pack",
+    "description":  "Packages an existing UiPath project into a NuGet package.",
+    "author":  "UiPath",
+    "category":  "Package",
+    "preview":  false,
+    "version":  {
+                    "Major":  2,
+                    "Minor":  11,
+                    "Patch":  "3214338"
+                },
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+                    "npm"
+                ],
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "UiPath Pack",
+    "inputs":  [
+                   {
+                       "name":  "versionType",
+                       "type":  "pickList",
+                       "label":  "Choose versioning method",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "UiPath package versions can be generated automatically, manually from a specified version, or read from the project file. Auto-generating the version works similarly to how Studio performs the versioning when publishing a package.",
+                       "options":  {
+                                       "AutoVersion":  "Auto generate the package version",
+                                       "CurrentVersion":  "Use the version specified in the project file",
+                                       "ManualVersion":  "Define custom package versioning"
+                                   }
+                   },
+                   {
+                       "name":  "version",
+                       "type":  "string",
+                       "label":  "Version",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Specifying the package version manually provides the possibility of tracking the built packages and their source versioning more efficiently. For example, the Microsoft assembly pattern can be utilized to build the NuGet package version: [Major].[Minor].[BuildNumber].[RevisionNumber]",
+                       "visibleRule":  "versionType = ManualVersion"
+                   },
+                   {
+                       "name":  "projectJsonPath",
+                       "type":  "filePath",
+                       "label":  "Project(s) Path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The location of the project(s) to be packaged. It can be a direct path to a project.json file or a directory with one or multiple projects. In the latter case, each level one project is packaged individually."
+                   },
+                   {
+                       "name":  "outputType",
+                       "type":  "pickList",
+                       "label":  "Choose output type",
+                       "defaultValue":  "None",
+                       "required":  false,
+                       "helpMarkDown":  "We can pack a project in several ways. Pick the method you want.",
+                       "options":  {
+                                       "Process":  "Pack a process project",
+                                       "Library":  "Pack a library project",
+                                       "Tests":  "Pack a tests project",
+                                       "Objects":  "Pack an objects project",
+                                       "None":  "Output type of the project"
+                                   }
+                   },
+                   {
+                       "name":  "orchestratorConnection",
+                       "type":  "connectedService:vsts-uipath-orchestrator",
+                       "label":  "Orchestrator connection",
+                       "required":  false,
+                       "helpMarkDown":  "A service connection to a Orchestrator instance that has on it\u0027s feed dependencies of the project(s) to be packed. Usually used for packing libraries. The Orchestrator must be 20.4 or higher."
+                   },
+                   {
+                       "name":  "outputPath",
+                       "type":  "filePath",
+                       "label":  "Output Path",
+                       "defaultValue":  "$(Build.ArtifactStagingDirectory)\\Output",
+                       "required":  true,
+                       "helpMarkDown":  "Path to a folder, where the created package should be placed."
+                   },
+                   {
+                       "name":  "runWorkflowAnalysis",
+                       "type":  "boolean",
+                       "label":  "Run workflow analysis",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Run the workflow analysis before packing and fail in case of errors. (default false)"
+                   },
+                   {
+                       "name":  "traceLevel",
+                       "type":  "pickList",
+                       "label":  "Trace Level",
+                       "defaultValue":  "None",
+                       "required":  false,
+                       "helpMarkDown":  "The trace logging level. (default None)",
+                       "options":  {
+                                       "None":  "None",
+                                       "Critical":  "Critical",
+                                       "Error":  "Error",
+                                       "Warning":  "Warning",
+                                       "Information":  "Information",
+                                       "Verbose":  "Verbose"
+                                   }
+                   }
+               ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "UiPathPack.js",
+                                     "argumentFormat":  ""
+                                 }
+                  },
+    "messages":  {
+                     "AccountName":  "Account name: %s",
+                     "AccountNameForApp":  "Account name for external application: %s",
+                     "Authorization":  "Authorization: %s",
+                     "CliFolderPath":  "Cli folder path: %s",
+                     "ErrorPackagingProject":  "Error packaging project: %s",
+                     "Language":  "Language: %s",
+                     "OrchestratorUrl":  "Orchestrator url: %s",
+                     "OrchestratorFolder":  "Orchestrator folder: %s",
+                     "RunWorkflowAnalysis":  "Run workflow analysis: %s",
+                     "Scope(s)":  "Scope(s): %s",
+                     "Tenant":  "Tenant: %s",
+                     "TraceLevel":  "Trace level: %s",
+                     "UipcliArgsContents":  "Uipcli args contents: %s",
+                     "Username":  "User name: %s"
+                 },
+    "helpMarkDown":  ""
+}

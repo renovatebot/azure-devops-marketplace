@@ -1,0 +1,197 @@
+{
+    "id":  "0e237901-8ece-4bc9-bedf-05ed7f0e98d5",
+    "name":  "UiPathPackage",
+    "friendlyName":  "UiPath Package (Deprecated)",
+    "description":  "[DEPRECATED] Creates UiPath process package from the source folder or deploys the already built packages into UiPath Orchestrator. Uses UiRobot.exe so it depends on UiPath Studio to be installed on the build agent machine. The installation is being handled by the task itself.",
+    "author":  "UiPath",
+    "category":  "Utility",
+    "deprecated":  true,
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+                    "npm"
+                ],
+    "version":  {
+                    "Major":  "1",
+                    "Minor":  "0",
+                    "Patch":  3214338
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "UiPath $(packageAction)",
+    "groups":  [
+                   {
+                       "name":  "packGroup",
+                       "displayName":  "Pack details",
+                       "visibleRule":  "packageAction = pack",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "deployGroup",
+                       "displayName":  "Deploy details",
+                       "visibleRule":  "packageAction = deploy",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "authDetails",
+                       "displayName":  "Authentication details",
+                       "visibleRule":  "packageAction = deploy",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "packageAction",
+                       "type":  "pickList",
+                       "label":  "Package action",
+                       "required":  true,
+                       "defaultValue":  "pack",
+                       "options":  {
+                                       "pack":  "Pack",
+                                       "deploy":  "Deploy"
+                                   }
+                   },
+                   {
+                       "name":  "versioningType",
+                       "type":  "radio",
+                       "label":  "Choose the versioning method",
+                       "helpMarkDown":  "Choose how to generate the version of your NuGet package",
+                       "defaultValue":  "autoversion",
+                       "required":  true,
+                       "groupName":  "packGroup",
+                       "options":  {
+                                       "autoversion":  "Auto generate the package version",
+                                       "userversion":  "Specify the package version"
+                                   }
+                   },
+                   {
+                       "name":  "version",
+                       "type":  "string",
+                       "label":  "Package version",
+                       "helpMarkDown":  "Version of the generated package",
+                       "groupName":  "packGroup",
+                       "visibleRule":  "versioningType = userversion"
+                   },
+                   {
+                       "name":  "platformVersion",
+                       "type":  "string",
+                       "label":  "UiPath Version",
+                       "defaultValue":  "18.3.2",
+                       "required":  false,
+                       "helpMarkDown":  "The UiPath Studio version to be installed on the agent machine and to be used to pack your artifacts. The download is not triggered if the indicated version is already deployed on the target machine.",
+                       "groupName":  "packGroup"
+                   },
+                   {
+                       "name":  "msiLocation",
+                       "type":  "string",
+                       "label":  "MSI download path",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The URL from which to download the UiPath Studio installer. If left blank, the official UiPath address is used and downloads the version specified in the UiPath Version field.",
+                       "groupName":  "packGroup"
+                   },
+                   {
+                       "name":  "uninstallOption",
+                       "type":  "radio",
+                       "label":  "Uninstall existing version",
+                       "required":  true,
+                       "defaultValue":  "ifany",
+                       "options":  {
+                                       "never":  "Never",
+                                       "ifany":  "Any version",
+                                       "ifdifferent":  "Different versions"
+                                   },
+                       "helpMarkDown":  "Never - If any version of UiPath Studio is installed on the target machine, the Pack task skips this step and proceeds with packing your artifact. If Studio is not installed on the agent, the version specified above is installed. \u003cbr/\u003e      Any Version - If any version of UiPath Studio is present on the agent machine, it is uninstalled and the one specified in UiPath Version is put in place. If Studio is not installed on the agent machine, the version specified above is installed.\u003cbr/\u003e      Different Version - UiPath Studio is installed on the target machine only if there is a mismatch between the version specified in the UiPath Version field and what is already installed. ",
+                       "groupName":  "packGroup"
+                   },
+                   {
+                       "name":  "studioInstallPath",
+                       "type":  "string",
+                       "label":  "UiPath Studio installation folder",
+                       "defaultValue":  "",
+                       "helpMarkDown":  "The Pack Task will try to run UiRobot.exe from this folder in order to perform the packaging operation.",
+                       "groupName":  "packGroup"
+                   },
+                   {
+                       "name":  "projectJsonPath",
+                       "type":  "filePath",
+                       "label":  "Project json path",
+                       "groupName":  "packGroup"
+                   },
+                   {
+                       "name":  "outputFolder",
+                       "type":  "string",
+                       "label":  "Output folder",
+                       "helpMarkDown":  "Output folder for package",
+                       "groupName":  "packGroup",
+                       "defaultValue":  "$(Build.ArtifactStagingDirectory)"
+                   },
+                   {
+                       "name":  "packagePath",
+                       "type":  "string",
+                       "label":  "Package path",
+                       "helpMarkDown":  "The path to the folder where packages to be sent to Orchestrator are located. All nuget packages from this folder will be shipped to Orchestrator.",
+                       "groupName":  "deployGroup"
+                   },
+                   {
+                       "name":  "orchAddress",
+                       "type":  "string",
+                       "label":  "Orchestrator address",
+                       "helpMarkDown":  "The UiPath Orchestrator address to which the package will be sent.",
+                       "groupName":  "deployGroup"
+                   },
+                   {
+                       "name":  "orchTenant",
+                       "type":  "string",
+                       "label":  "Orchestrator tenant",
+                       "helpMarkDown":  "The tenant of the Orchestrator instance on which this package will be deployed.",
+                       "groupName":  "deployGroup"
+                   },
+                   {
+                       "name":  "authType",
+                       "type":  "pickList",
+                       "label":  "Authentication type",
+                       "required":  true,
+                       "helpMarkDown":  "Type of authentication for connecting to the specified Orchestrator instance",
+                       "options":  {
+                                       "UserPass":  "User \u0026 Password",
+                                       "AD":  "AD"
+                                   },
+                       "properties":  {
+                                          "EditableOptions":  "False"
+                                      },
+                       "groupName":  "authDetails",
+                       "defaultValue":  "UserPass"
+                   },
+                   {
+                       "name":  "orchUsername",
+                       "type":  "string",
+                       "label":  "Username",
+                       "required":  true,
+                       "helpMarkDown":  "The name of the user under which the API call to Orchestrator will be made on behalf of. It is used for authentication. It is strongly recommended to keep the username as a variable and to utilize the variable here, i.e. $(Username).",
+                       "visibleRule":  "authType = UserPass",
+                       "groupName":  "authDetails"
+                   },
+                   {
+                       "name":  "orchPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "required":  true,
+                       "helpMarkDown":  "The password of the user under which the API call to Orchestrator will be made on behalf of. It is used for authentication. It is strongly recommended to keep the password as a variable and to utilize the variable here, i.e. $(Password).",
+                       "visibleRule":  "authType = UserPass",
+                       "groupName":  "authDetails"
+                   }
+               ],
+    "sourceDefinitions":  [
+
+                          ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "UiPathPackage.ps1",
+                                          "platforms":  [
+                                                            "windows"
+                                                        ]
+                                      }
+                  }
+}

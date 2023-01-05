@@ -1,0 +1,54 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://uipath.visualstudio.com/_git/UiPathPackage"
+    },
+    "contributions": [
+        {
+            "id": "vsts-eventlog-to-tests",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "UiPathPackage"
+            }
+        },
+        {
+            "id": "uipath-service-endpoint",
+            "description": "UiPath servide endpoint to connect to the UiPath platform versions",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-service.endpont-types"
+            ],
+            "properties": {
+                "name": "uipath",
+                "displayName": "UiPath Platform",
+                "icon": "/UiPathPackage/icon.png",
+                "url": {
+                    "displayName": "UiPath",
+                    "value": "https://download.uipath.com",
+                    "helpMarkDown": "UiPath platform versions https://download.uipath.com/versions.json"
+                },
+                "dataSources": [
+                    {
+                        "name": "VersionsConnection",
+                        "endpointUrl": "{{endpoint.url}}/versions.json",
+                        "resultSelector": "jsonpath:$.versions[*].version"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkdown": "<a href=\"https://www.uipath.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

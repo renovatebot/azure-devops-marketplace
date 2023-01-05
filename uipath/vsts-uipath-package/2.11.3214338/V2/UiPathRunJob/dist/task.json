@@ -1,0 +1,201 @@
+{
+    "id":  "aef39911-3d63-40d6-bdef-909edadf0005",
+    "name":  "UiPathRunJob",
+    "friendlyName":  "UiPath Run Job",
+    "description":  "Runs a UiPath process onto UiPath Orchestrator.",
+    "author":  "UiPath",
+    "category":  "Package",
+    "preview":  false,
+    "version":  {
+                    "Major":  2,
+                    "Minor":  11,
+                    "Patch":  "3214338"
+                },
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+                    "npm"
+                ],
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "UiPath Run Job",
+    "inputs":  [
+                   {
+                       "name":  "orchestratorConnection",
+                       "type":  "connectedService:vsts-uipath-orchestrator",
+                       "label":  "Orchestrator connection",
+                       "required":  true,
+                       "helpMarkDown":  "A service connection to the Orchestrator instance on which we will run the jobs."
+                   },
+                   {
+                       "name":  "processName",
+                       "type":  "string",
+                       "label":  "Process",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Process name."
+                   },
+                   {
+                       "name":  "parametersFilePath",
+                       "type":  "string",
+                       "label":  "Input parameters",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify the full path to a json input file, e.g. Input\\jobParameters.json."
+                   },
+                   {
+                       "name":  "priority",
+                       "type":  "pickList",
+                       "label":  "Priority",
+                       "defaultValue":  "Normal",
+                       "required":  false,
+                       "helpMarkDown":  "The job run priority. (default Normal)",
+                       "options":  {
+                                       "Low":  "Low",
+                                       "Normal":  "Normal",
+                                       "High":  "High"
+                                   }
+                   },
+                   {
+                       "name":  "folderName",
+                       "type":  "string",
+                       "label":  "Orchestrator folder",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Specify the folder to deploy to. For clasic folders, you can use specific robot names. For modern folders, you can use specific user and machine names."
+                   },
+                   {
+                       "name":  "strategy",
+                       "type":  "pickList",
+                       "label":  "Strategy",
+                       "defaultValue":  "Dynamically",
+                       "required":  false,
+                       "helpMarkDown":  "Specify the job run strategy, dynamically allocated job(s) or robot specific job(s).",
+                       "options":  {
+                                       "Dynamically":  "Dynamically",
+                                       "Specific":  "Specific"
+                                   }
+                   },
+                   {
+                       "name":  "jobType",
+                       "type":  "pickList",
+                       "label":  "Job Type",
+                       "defaultValue":  "Unattended",
+                       "required":  false,
+                       "helpMarkDown":  "This feature is available only on modern folders! Choose the license model of the runtime under which the job is to be executed.",
+                       "options":  {
+                                       "Unattended":  "Unattended",
+                                       "NonProduction":  "NonProduction",
+                                       "TestAutomation":  "Test"
+                                   }
+                   },
+                   {
+                       "name":  "jobCount",
+                       "type":  "integer",
+                       "label":  "No. of jobs",
+                       "defaultValue":  "1",
+                       "required":  false,
+                       "helpMarkDown":  "The number of job runs. (default 1)",
+                       "visibleRule":  "strategy = Dynamically"
+                   },
+                   {
+                       "name":  "user",
+                       "type":  "string",
+                       "label":  "User",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The name of the user. This feature is available only on modern folders! This should be a machine user, not an orchestrator user. For local users, the format should be MachineName\\UserName",
+                       "visibleRule":  "strategy = Dynamically"
+                   },
+                   {
+                       "name":  "machine",
+                       "type":  "string",
+                       "label":  "Machine",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The name of the machine. This feature is available only on modern folders!",
+                       "visibleRule":  "strategy = Dynamically"
+                   },
+                   {
+                       "name":  "robotsIds",
+                       "type":  "string",
+                       "label":  "Robot names",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Comma-separated list of specific robot names.",
+                       "visibleRule":  "strategy = Specific"
+                   },
+                   {
+                       "name":  "resultFilePath",
+                       "type":  "string",
+                       "label":  "Output",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify the output full path of the job results, e.g. Output\\testResults.json. The results are output in json format. If not specified, the results are output to the artifact staging directory as UiPathResults.json. The output is in json format."
+                   },
+                   {
+                       "name":  "timeout",
+                       "type":  "string",
+                       "label":  "Timeout (seconds)",
+                       "defaultValue":  "1800",
+                       "required":  false,
+                       "helpMarkDown":  "Specify the job run(s) timeout in seconds."
+                   },
+                   {
+                       "name":  "failWhenJobFails",
+                       "type":  "boolean",
+                       "label":  "Fail task when job fails",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "The task fails when at least one job fails. (default true)"
+                   },
+                   {
+                       "name":  "waitForJobCompletion",
+                       "type":  "boolean",
+                       "label":  "Wait for job completion",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "Wait for job run(s) completion. (default true)"
+                   },
+                   {
+                       "name":  "traceLevel",
+                       "type":  "pickList",
+                       "label":  "Trace Level",
+                       "defaultValue":  "None",
+                       "required":  false,
+                       "helpMarkDown":  "The trace logging level. (default None)",
+                       "options":  {
+                                       "None":  "None",
+                                       "Critical":  "Critical",
+                                       "Error":  "Error",
+                                       "Warning":  "Warning",
+                                       "Information":  "Information",
+                                       "Verbose":  "Verbose"
+                                   }
+                   }
+               ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "UiPathRunJob.js",
+                                     "argumentFormat":  ""
+                                 }
+                  },
+    "messages":  {
+                     "AccountName":  "Account name: %s",
+                     "AccountNameForApp":  "Account name for app: %s",
+                     "Authorization":  "Authorization: %s",
+                     "ErrorsOcurred":  "One or more errors occurred while running the jobs(s).",
+                     "ErrorRunningJobs":  "Error running jobs: %s.",
+                     "InternalErrors":  "Internal error, did not find job(s) results output file on the agent.",
+                     "InvalidTimeout":  "Invalid timeout, defaulting to 1h.",
+                     "Language":  "Language: %s",
+                     "OrchestratorConnection":  "Orchestrator connection: %s",
+                     "OrchestratorUrl":  "Orchestrator url: %s",
+                     "Scope(s)":  "Scope(s): %s",
+                     "Username":  "User name: %s",
+                     "Tenant":  "Tenant: %s",
+                     "TraceLevel":  "Trace level: %s"
+                 },
+    "helpMarkDown":  ""
+}
