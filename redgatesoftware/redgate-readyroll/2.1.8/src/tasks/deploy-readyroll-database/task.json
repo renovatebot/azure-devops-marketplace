@@ -1,0 +1,168 @@
+{
+    "id": "34B3194A-2F58-4844-A8C3-655CC2802E84",
+    "name": "DeployReadyRollDatabase",
+    "friendlyName": "ReadyRoll Deploy Database Package",
+    "description": "Deploy a database package built by ReadyRoll",
+    "helpMarkDown": "[More Information](https://www.red-gate.com/readyroll)",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 0,
+        "Minor": 7,
+        "Patch": 8
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "ReadyRoll Deploy Database",
+    "inputs": [
+        {
+            "name": "PackagePath",
+            "type": "filePath",
+            "label": "Package to deploy (.ps1)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path of the '.ps1' PowerShell script contained in the build artifact. This should be a fully qualified path or relative to the default working directory."
+        },
+        {
+            "name": "ReleaseVersion",
+            "type": "string",
+            "label": "Release version",
+            "defaultValue": "$(Release.ReleaseName)",
+            "required": false,
+            "helpMarkDown": "Release number to store against deployed migrations within the [dbo].[__MigrationLog] table."
+        },
+        {
+            "name": "TargetTypeOption",
+            "type": "radio",
+            "label": "Target type",
+            "defaultValue": "generic",
+            "options": {
+                "generic": "SQL Server",
+                "azure": "Azure SQL Database"
+            }
+        },
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "Select the Azure subscription.",
+            "required": true
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Azure Resource Group",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "Select the Azure Resource Group, which contains the Azure SQL Server instance, which in turn contains the Azure SQL Database you wish to deploy to.",
+            "required": true
+        },
+        {
+            "name": "AzureTargetServer",
+            "type": "pickList",
+            "label": "Target Azure SQL Server instance",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "The fully qualified Azure SQL Server instance name for the target database.",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "AzureTargetDatabase",
+            "type": "pickList",
+            "label": "Target Azure SQL Database name",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "The name of the Azure SQL Database to deploy to.",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "DatabaseServer",
+            "type": "string",
+            "label": "Target SQL Server instance",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = generic",
+            "required": true,
+            "helpMarkDown": "The fully qualified SQL Server instance name for the target database."
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+            "label": "Target database name",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = generic",
+            "helpMarkDown": "Optional. The name of the database to deploy to. ReadyRoll will create a new database if it does not exist.",
+            "required": false
+        },
+        {
+            "name": "UseWindowsAuth",
+            "type": "boolean",
+            "label": "Use Windows Authentication",
+            "visibleRule": "TargetTypeOption = generic",
+            "defaultValue": "true",
+            "helpMarkDown": "If you check this field, Windows Authentication will be used to connect, using the account that runs the agent. Otherwise, SQL Server Authentication will be used and you will need to specify a username and password below.",
+            "required": false
+        },
+        {
+            "name": "DatabaseUserName",
+            "type": "string",
+            "label": "Target username",
+            "defaultValue": "",
+            "visibleRule": "UseWindowsAuth = false || TargetTypeOption = azure",
+            "helpMarkDown": "The SQL Server username used to connect to the database.",
+            "required": false
+        },
+        {
+            "name": "DatabasePassword",
+            "type": "string",
+            "label": "Target password (add in the Variables tab)",
+            "defaultValue": "$(TargetPassword)",
+            "visibleRule": "UseWindowsAuth = false || TargetTypeOption = azure",
+            "helpMarkDown": "The SQL Server password used to connect to the database. If you want to make this secret, add the TargetPassword variable in the Variables tab, and then click its padlock to make it secret.",
+            "required": false
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "AzureTargetServer",
+            "endpointId": "$(ConnectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/resources?api-version=2017-05-10",
+            "resultSelector": "jsonpath:$.value[?(@.type == 'Microsoft.Sql/servers')]",
+            "resultTemplate": "{ \"Value\": \"{{{name}}}\", \"DisplayValue\": \"{{{name}}}.database.windows.net\" }",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)"
+            }
+        },
+        {
+            "target": "AzureTargetDatabase",
+            "endpointId": "$(ConnectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/resources?$filter=substringof('$(AzureTargetServer)/', name)&api-version=2017-05-10",
+            "resultSelector": "jsonpath:$.value[?(@.type == 'Microsoft.Sql/servers/databases')]",
+            "resultTemplate": "{ \"Value\": \"{{{ #regex ([^/]*$) name }}}\", \"DisplayValue\": \"{{{ #regex ([^/]*$) name }}}\" }",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)",
+                "AzureTargetServer" : "$(AzureTargetServer)"
+            }
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\DeployReadyRollDatabase.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

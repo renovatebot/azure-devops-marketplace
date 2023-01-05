@@ -1,0 +1,84 @@
+{
+    "id": "48C25102-90F9-4DE6-891C-0269407FF3BA",
+    "name": "RunDatabaseTests",
+    "friendlyName": "ReadyRoll Run tSQLt Tests",
+    "description": "Run and output tSQLt database unit tests",
+    "helpMarkDown": "[More Information](https://www.red-gate.com/readyroll)",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 0,
+        "Minor": 7,
+        "Patch": 8
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "Run tSQLt Tests on $(DatabaseServer)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "OutputPath",
+            "type": "string",
+            "label": "Test results output path",
+            "defaultValue": "tsqlt-test-results.xml",
+            "helpMarkDown": "Optional. Path of the test results output file. This should be a fully qualified path or relative to the default working directory. If not specified then tsqlt-test-results.xml is used.",
+            "required": false
+        },
+        {
+            "name": "DatabaseServer",
+            "type": "string",
+            "label": "Target SQL Server instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified SQL Server instance name for the target database."
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+            "label": "Target database name",
+            "defaultValue": "",
+            "helpMarkDown": "The name of the database to deploy to.",
+            "required": true
+        },
+        {
+            "name": "UseWindowsAuth",
+            "type": "boolean",
+            "label": "Use Windows Authentication",
+            "defaultValue": "true",
+            "helpMarkDown": "If you check this field, Windows Authentication will be used to connect, using the account that runs the agent. Otherwise, SQL Server Authentication will be used and you will need to specify a username and password below.",
+            "required": false
+        },
+        {
+            "name": "DatabaseUserName",
+            "type": "string",
+            "label": "Target username",
+            "defaultValue": "",
+            "visibleRule": "UseWindowsAuth = false",
+            "helpMarkDown": "The SQL Server username used to connect to the database.",
+            "required": true
+        },
+        {
+            "name": "DatabasePassword",
+            "type": "string",
+            "label": "Target password (add in the Variables tab)",
+            "defaultValue": "$(TargetPassword)",
+            "visibleRule": "UseWindowsAuth = false",
+            "helpMarkDown": "The SQL Server password used to connect to the database. If you want to make this secret, add the TargetPassword variable in the Variables tab, and then click its padlock to make it secret.",
+            "required": true
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\RunDatabaseTests.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

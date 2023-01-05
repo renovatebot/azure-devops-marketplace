@@ -1,0 +1,172 @@
+{
+	"id": "41DB18D0-777B-11E7-AEE3-499DF2C158AC",
+	"name": "SetTargetDatabase",
+	"friendlyName": "ReadyRoll Set Target Database",
+	"description": "Set ReadyRoll target database name and login credentials",
+	"helpMarkDown": "[More Information](https://www.red-gate.com/readyroll)",
+	"category": "Build",
+	"visibility": [
+		"Build"
+	],
+	"author": "Redgate Software",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 8
+	},
+	"minimumAgentVersion": "1.91.0",
+	"instanceNameFormat": "Set Target Database",
+	"groups": [
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+        {
+            "name": "TargetTypeOption",
+            "type": "radio",
+            "label": "Target type",
+            "defaultValue": "generic",
+            "options": {
+                "generic": "SQL Server",
+                "azure": "Azure SQL Database"
+            }
+        },
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "Select the Azure subscription.",
+            "required": true
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Azure Resource Group",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "Select the Azure Resource Group, which contains the Azure SQL Server instance, which in turn contains the Azure SQL Database you wish to deploy to.",
+            "required": true
+        },
+        {
+            "name": "AzureTargetServer",
+            "type": "pickList",
+            "label": "Target Azure SQL Server instance",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "The fully qualified Azure SQL Server instance name for the target database.",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "AzureTargetDatabase",
+            "type": "pickList",
+            "label": "Target Azure SQL Database name",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = azure",
+            "helpMarkDown": "The name of the Azure SQL Database to deploy to.",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "TargetServer",
+            "type": "string",
+            "label": "Target SQL Server instance",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = generic",
+            "required": true,
+            "helpMarkDown": "The fully qualified SQL Server instance name for the target database."
+        },
+        {
+            "name": "TargetDatabase",
+            "type": "string",
+            "label": "Target database name",
+            "defaultValue": "",
+            "visibleRule": "TargetTypeOption = generic",
+            "helpMarkDown": "The name of the database to deploy to.",
+            "required": true
+        },
+        {
+            "name": "UseWindowsAuth",
+            "type": "boolean",
+            "label": "Use Windows Authentication",
+            "visibleRule": "TargetTypeOption = generic",
+            "defaultValue": "true",
+            "helpMarkDown": "If you check this field, Windows Authentication will be used to connect, using the account that runs the agent. Otherwise, SQL Server Authentication will be used and you will need to specify a username and password below.",
+            "required": false
+        },
+        {
+            "name": "TargetUserName",
+            "type": "string",
+            "label": "Target username",
+            "defaultValue": "",
+            "visibleRule": "UseWindowsAuth = false || TargetTypeOption = azure",
+            "helpMarkDown": "The SQL Server username used to connect to the database.",
+            "required": true
+        },
+        {
+            "name": "TargetPassword",
+            "type": "string",
+            "label": "Target password (add in the Variables tab)",
+            "defaultValue": "$(TargetPassword)",
+            "visibleRule": "UseWindowsAuth = false || TargetTypeOption = azure",
+            "helpMarkDown": "The SQL Server password used to connect to the database. If you want to make this secret, add the TargetPassword variable in the Variables tab, and then click its padlock to make it secret.",
+            "required": true
+        },
+        {
+            "name": "ShadowServerOption",
+            "type": "radio",
+            "label": "Shadow server",
+            "defaultValue": "localdb",
+            "groupName": "advanced",
+            "options": {
+            "localdb": "Use (localdb)",
+            "sameAsTarget": "Use target server",
+            "variables": "Use custom server (set in the Variables tab)"
+            },
+            "helpMarkDown": "SQL Server instance where the shadow database will be deployed. \n\n ### If 'custom server' is selected \n Add the following variable in the Variables tab: \n * ShadowServer \n\n Also, if you want to use SQL Server Authentication, then add the additional following variables in the Variables tab: \n * ShadowUserName \n * ShadowPassword"
+        }
+	],
+	"dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "AzureTargetServer",
+            "endpointId": "$(ConnectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/resources?api-version=2017-05-10",
+            "resultSelector": "jsonpath:$.value[?(@.type == 'Microsoft.Sql/servers')]",
+            "resultTemplate": "{ \"Value\": \"{{{name}}}\", \"DisplayValue\": \"{{{name}}}.database.windows.net\" }",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)"
+            }
+        },
+        {
+            "target": "AzureTargetDatabase",
+            "endpointId": "$(ConnectedServiceName)",
+            "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/resources?$filter=substringof('$(AzureTargetServer)/', name)&api-version=2017-05-10",
+            "resultSelector": "jsonpath:$.value[?(@.type == 'Microsoft.Sql/servers/databases')]",
+            "resultTemplate": "{ \"Value\": \"{{{ #regex ([^/]*$) name }}}\", \"DisplayValue\": \"{{{ #regex ([^/]*$) name }}}\" }",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)",
+                "AzureTargetServer" : "$(AzureTargetServer)"
+            }
+        }
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\SetTargetDatabase.ps1",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

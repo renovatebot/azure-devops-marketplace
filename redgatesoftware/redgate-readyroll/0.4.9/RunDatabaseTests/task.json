@@ -1,0 +1,85 @@
+{
+    "id": "48C25102-90F9-4DE6-891C-0269407FF3BA",
+    "name": "RunDatabaseTests",
+    "friendlyName": "Run tSQLt tests",
+    "description": "Run and output tSQLt database unit tests",
+    "helpMarkDown": "[More Information](http://www.red-gate.com/products/sql-development/readyroll/)",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Redgate Software",
+    "version": {
+        "Major": 0,
+        "Minor": 5,
+        "Patch": 11
+    },
+    "minimumAgentVersion": "1.91.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "Build",
+    "inputs": [
+        {
+            "name": "OutputPath",
+            "type": "string",
+            "label": "Test results output path",
+            "defaultValue": "",
+            "helpMarkDown": "Optional. Path of the test results output file. This should be a fully qualified path or relative to the default working directory. If not specified then tsqlt-test-results.xml is used.",
+            "required": false
+        },
+        {
+            "name": "DatabaseServer",
+            "type": "string",
+            "label": "Target SQL Server instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The fully qualified SQL Server instance name for the target database."
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+            "label": "Target database name",
+            "defaultValue": "",
+            "helpMarkDown": "Optional.  The name of the database to deploy to.  ReadyRoll will create a new database if it does not exist.",
+            "required": false
+        },
+        {
+            "name": "UseWindowsAuth",
+            "type": "boolean",
+            "label": "Use Windows authentication",
+            "defaultValue": "false",
+            "helpMarkDown": "If you check this field, Windows authentication will be used to connect, using the account that runs the agent.  Otherwise, SQL Server authentication will be used and you will need to specify a username and password below.",
+            "required": false
+        },
+        {
+            "name": "DatabaseUserName",
+            "type": "string",
+            "label": "Database username",
+            "defaultValue": "",
+            "visibleRule": "UseWindowsAuth = false",
+            "helpMarkDown": "The SQL Server username used to connect to the database.",
+            "required": false
+        },
+        {
+            "name": "DatabasePassword",
+            "type": "string",
+            "label": "Database password",
+            "defaultValue": "",
+            "visibleRule": "UseWindowsAuth = false",
+            "helpMarkDown": "The SQL Server password used to connect to the database.",
+            "required": false
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\RuntSQLt.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
