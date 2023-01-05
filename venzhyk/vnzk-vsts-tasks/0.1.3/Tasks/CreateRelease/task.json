@@ -1,0 +1,139 @@
+{
+  "id": "3a7613e0-380c-11e8-b960-2bb8288bde3a",
+  "name": "CreateRelease",
+  "friendlyName": "Create Release",
+  "description": "Creates new release as part of current release pipe line",
+  "author": "Ihor Venzhyk",
+  "helpMarkDown": "[More Information](https://github.com/Venzhyk/vsts-tasks)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "3",
+    "Patch": "17"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "CreateRelease $(message)",
+  "groups": [
+    {
+        "name": "advanced",
+        "displayName": "Advanced",
+        "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "LinkedReleaseDefinitionVSTSConnectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "VSTS endpoint",
+      "defaultValue": "",
+      "helpMarkDown": "Generic Service Connection to current instance of VSTS. (https://<InstanceName>.vsrm.visualstudio.com/<ProjectName>/)",
+      "required": true
+    },
+    {
+      "name": "LinkedReleaseDefinition",
+      "type": "pickList",
+      "label": "Linked Release Definition",
+      "required": true,
+      "helpMarkDown": "Pick release that should be created"
+    },
+    {
+      "name": "LinkedReleaseDefinitionEnvironment",
+      "type": "pickList",
+      "label": "Envronment",
+      "required": false,
+      "helpMarkDown": "Pick envronment for deployment. For all other environments trigger will be changed from automated to manual."
+    },
+    {
+      "name": "artifactsSource",
+      "label": "Where to get artifacts for new release",
+      "helpMarkDown": "You can either use latest artifacts version from linked release definition or pick artifacts from current release definition, matching it by name (artifact alias)",
+      "type": "radio",
+      "options": {
+        "useLatest": "Use latest artifacts version",
+        "matchParent": "Pick current release artifacts"
+      },
+      "required": true,
+      "defaultValue": "useLatest"
+    },
+    {
+      "name": "isDraft",
+      "type": "boolean",
+      "label": "Create Draft Release",
+      "defaultValue": "false",
+      "required": true
+    },
+    {
+      "name": "releaseDescription",
+      "type": "string",
+      "label": "Release Description",
+      "helpMarkDown":"This text will be added to Release Description",
+      "required": false
+    },
+    {
+      "name": "waitForLinkedRelease",
+      "type": "boolean",
+      "label": "Wait linked release finish",
+      "helpMarkDown":"Wait until linked release finish and check its status. If linked release has failed, fail current release too. \n\n ** NB! Task will wait until child release finish and keep agent queue slot. If the same agent serves both releases, this option might couse deadlock! **",
+      "defaultValue": "false",
+      "required": false,
+      "groupName":"advanced"
+    },
+    {
+      "name": "LinkedReleaseWaitTimeout",
+      "type": "number",
+      "label": "Timeout (minutes)",
+      "helpMarkDown":"If linked release doesn't finish after timeout, treat it as failure",
+      "defaultValue": "5",
+      "required": false,
+      "groupName":"advanced"
+    },
+    {
+      "name": "slidingTimeoutForLinkedRelease",
+      "type": "boolean",
+      "label": "Double timeout if linked release is in progress",
+      "defaultValue": "true",
+      "required": false,
+      "groupName":"advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "LinkedReleaseDefinition",
+      "endpointId": "$(LinkedReleaseDefinitionVSTSConnectedServiceName)",
+      "endpointUrl": "{{endpoint.url}}/_apis/release/definitions",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    },
+    {
+      "target": "LinkedReleaseDefinitionEnvironment",
+      "endpointId": "$(LinkedReleaseDefinitionVSTSConnectedServiceName)",
+      "endpointUrl": "{{endpoint.url}}/_apis/release/definitions/$(LinkedReleaseDefinition)",
+      "resultSelector": "jsonpath:$.environments[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "createReleaseTask.ps1"
+    }
+  },
+  "files": [
+    {
+      "path": "ps_modules",
+      "addressable": true,
+      "packagePath": "ps_modules"
+    },
+    {
+      "path": "utils.ps1",
+      "addressable": true
+    }
+  ]
+}
