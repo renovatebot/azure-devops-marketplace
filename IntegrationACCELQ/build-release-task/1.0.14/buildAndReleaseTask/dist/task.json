@@ -1,0 +1,109 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "9384d99e-89c8-48b3-a904-ff80258f5b58",
+    "name": "aqciconnect",
+    "friendlyName": "ACCELQ Azure CI Connect",
+    "description": "Execute Automation tests in ACCELQ",
+    "helpMarkDown": "Use this task to execute CI Jobs in ACCELQ",
+    "category": "Build",
+    "author": "IntegrationACCELQ",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "groups": [
+        {
+            "name": "aqconnect",
+            "displayName": "ACCELQ CI Connect",
+            "isExpanded": true
+        }, {
+            "name": "aqconnectadv",
+            "displayName": "ACCELQ CI Connect Advanced Options",
+            "isExpanded": true
+        }
+    ],
+    "instanceNameFormat": "Automation Test Step",
+    "inputs": [
+        {
+            "name": "appURL",
+            "type": "string",
+            "groupName": "aqconnect",
+            "label": "ACCELQ App URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your ACCELQ Application URL in the exact following format: https://&lt;hostname&gt;:&lt;port_num&gt;"
+        }, {
+            "name": "userName",
+            "type": "string",
+            "groupName": "aqconnect",
+            "label": "ACCELQ User ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your ACCELQ User ID"
+        }, {
+            "name": "apiKey",
+            "type": "string",
+            "groupName": "aqconnect",
+            "label": "API Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "API key available in Profile section of ACCELQ"
+        }, {
+            "name": "tenantCode",
+            "type": "string",
+            "groupName": "aqconnect",
+            "label": "Tenant Code",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Tenant Code displayed in the Profile section of ACCELQ"
+        }, {
+            "name": "jobId",
+            "type": "string",
+            "groupName": "aqconnect",
+            "label": "ACCELQ CI Job ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This ID should come from the CI job you saved in ACCELQ application"
+        }, {
+            "name": "runParam",
+            "groupName": "aqconnectadv",
+            "type": "string",
+            "label": "Run Parameters (optional)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Run Params(optional) should be JSON string form example: <strong>{\"username\": \"John Todd\", \"password\": \"bxW&=UVw\"}</strong>"
+        }, {
+            "name": "proxyHost",
+            "groupName": "aqconnectadv",
+            "type": "string",
+            "label": "Proxy Host (optional)",
+            "defaultValue": "",
+            "required": false
+        },  {
+            "name": "proxyPort",
+            "groupName": "aqconnectadv",
+            "type": "string",
+            "label": "Proxy Port (optional)",
+            "defaultValue": "",
+            "required": false
+        }, {
+            "name": "stepFailureThreshold",
+            "groupName": "aqconnectadv",
+            "type": "string",
+            "label": "Step Failure threshold (optional)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Percentage ACCELQ test case failure, beyond which this Step in the Pipeline will be marked as a failure. If this is zero, even a single failed test will cause the Step to fail. If you never want to fail the Pipeline Step due to failing Automation tests, input -1.<br/><strong>Input a valid integer between 0 and 100 or, -1.</strong>"
+        }
+    ],
+    "outputVariables": [{
+        "name": "ACCELQ_Job_ID",
+        "description": "ID of the ACCELQ automation job."
+    }],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
