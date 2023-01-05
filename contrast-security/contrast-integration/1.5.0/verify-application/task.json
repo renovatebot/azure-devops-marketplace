@@ -1,0 +1,134 @@
+{
+  "id": "1f1b8087-fa9d-4de7-9fe1-498cbcdf4a9f",
+  "name": "ContrastIntegration",
+  "friendlyName": "Contrast Assess - Application Vulnerability Detection",
+  "description": "Verifies if the amount of vulnerabilities per severity for the selected app is below the configured limits.",
+  "helpUrl": "",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "ServerGate",
+    "Server"
+  ],
+  "author": "contrast-security",
+  "version": {
+    "Major": 2,
+    "Minor": 3,
+    "Patch": 0
+  },
+  "preview": false,
+  "inputs": [
+    {
+      "name": "ContrastService",
+      "type": "connectedService:Contrast",
+      "label": "Contrast Service Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Contrast connection to use."
+    },
+    {
+      "name": "Application",
+      "type": "pickList",
+      "label": "Application",
+      "required": true,
+      "helpMarkDown": "The application that will be used to evaluate the vulnerabilities conditions."
+    },
+    {
+      "name": "StatusFilter",
+      "type": "pickList",
+      "label": "Allowed Status",
+      "required": false,
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "The vulnerability statuses that are included in the evaluation task. If no status is selected, all vulnerabilities are included.",
+      "options": {
+        "Reported" : "(Open) Reported",
+        "Suspicious" : "(Open) Suspicious",
+        "Confirmed" : "(Open) Confirmed",
+        "NotAProblem" : "(Closed) Not a Problem",
+        "Remediated" : "(Closed) Remediated",
+        "AutoRemediated" : "(Closed) Remediated - Auto-Verified",
+        "Fixed" : "(Closed) Fixed"
+      },
+      "properties": {
+        "MultiSelectFlatList": "True",
+        "EditableOptions": "False"
+      }
+    },
+    {
+      "name": "AppVersionFilter",
+      "type": "string",
+      "label": "Build Number",
+      "required": false,
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "The build number to filter the vulnerabilities results."
+    },
+    {
+      "name": "CriticalLimit",
+      "type": "string",
+      "label": "Critical",
+      "required": true,
+      "defaultValue": "0",
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "Set the maximum amount of vulnerabilities for the critical severity."
+    },
+    {
+      "name": "HighLimit",
+      "type": "string",
+      "label": "High",
+      "required": true,
+      "defaultValue": "0",
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "Set the maximum amount of vulnerabilities for the high severity."
+    },
+    {
+      "name": "MediumLimit",
+      "type": "string",
+      "label": "Medium",
+      "required": true,
+      "defaultValue": "0",
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "Set the maximum amount of vulnerabilities for the medium severity."
+    },
+    {
+      "name": "LowLimit",
+      "type": "string",
+      "label": "Low",
+      "required": true,
+      "defaultValue": "0",
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "Set the maximum amount of vulnerabilities for the low severity."
+    },
+    {
+      "name": "NoteLimit",
+      "type": "string",
+      "label": "Note",
+      "required": true,
+      "defaultValue": "0",
+      "visibleRule": "Application != \"\"",
+      "helpMarkDown": "Set the maximum amount of vulnerabilities for the note severity."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "Application",
+      "endpointId": "$(ContrastService)",
+      "EndpointUrl": "{{endpoint.url}}Contrast/api/ng/{{endpoint.orgId}}/applications?expand=skip_links&filterServers=&filterTechs=&includeArchived=false&includeMerged=true",
+      "resultSelector": "jsonpath:$.applications[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{app_id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "$(ContrastService)",
+        "EndpointUrl": "$(endpoint.url)Contrast/api/ng/$(endpoint.orgId)/applications/$(Application)/breakdown/trace?status=$(StatusFilter)&appversion=$(AppVersionFilter)&onlyOpenStatuses=false",
+        "Method": "GET",
+        "Expression": "and(or(eq($(CriticalLimit), -1), le(jsonpath('$.trace_breakdown.criticals')[0], $(CriticalLimit))), or(eq($(HighLimit), -1), le(jsonpath('$.trace_breakdown.highs')[0], $(HighLimit))), or(eq($(MediumLimit), -1), le(jsonpath('$.trace_breakdown.meds')[0], $(MediumLimit))), or(eq($(LowLimit), -1), le(jsonpath('$.trace_breakdown.lows')[0], $(LowLimit))), or(eq($(NoteLimit), -1), le(jsonpath('$.trace_breakdown.notes')[0], $(NoteLimit))))"
+      }
+    }
+  }
+}
