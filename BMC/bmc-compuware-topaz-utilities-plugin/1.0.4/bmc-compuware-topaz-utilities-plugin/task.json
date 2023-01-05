@@ -1,0 +1,124 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7e39beb7-ef8f-431e-94e4-7052d978705a",
+    "name": "bmc-compuware-topaz-utilities-plugin",
+    "friendlyName": "BMC Compuware Topaz Utilities",
+    "description": "This plugin provides access to various BMC Compuware Topaz (R) utilities, such as submitting Jobs on the mainframe.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "BMC Software",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "instanceNameFormat": "BMC Compuware Topaz Utilities",
+    "inputs": [
+        {
+            "name": "connectionId",
+            "type": "pickList",
+            "label": "Host Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This field specifies the host connection to use to submit a measurement.Host connections can be configured in the Common Configuration Extension."
+        }
+		,
+        {
+            "name": "userId",
+            "type": "string",
+            "label": "User Id",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Host Connection Userid."
+        },
+        {
+            "name": "credentialId",
+            "type": "string",
+            "label": "Azure Vault Secret Name(For Password)",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Vault Secret Name(to retrieve Password used for host connections)"
+        },
+        {
+            "name": "maxConditionCode",
+            "type": "string",
+            "label": "Maximum Condition Code",
+		    "defaultValue": "4",
+            "required": true,
+            "helpMarkDown": "Enter a maximum condition code where the submitting of JCL jobs will terminate if any job's return code is greater than the maximum condition code."
+        },
+        {
+            "name": "windowsTopazWorkbenchCliHome",
+            "type": "pickList",
+            "label": "Windows Topaz Workbench CLI Home",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "linuxTopazWorkbenchCliHome",
+            "type": "pickList",
+            "label": "Linux Topaz Workbench CLI Home",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "jclFormat",
+            "type": "pickList",
+            "label": "Select Jcl Format",
+            "required": true,
+            "defaultValue": "",
+            "options": {
+                "topazSubmitFreeFormJcl": "Free Form JCL",
+                "topazSubmitJclMembers": "JCL Members"
+            },
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "JCL",
+            "type": "multiLine",
+            "label": "Jcl",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Enter free-form jcl.",
+            "visibleRule": "jclFormat == topazSubmitFreeFormJcl"
+        },
+        {
+            "name": "DatasetMember",
+            "type": "multiLine",
+            "label": "Dataset(Member)",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "List JCL Dataset(Member)s, each on a separate line.",
+            "visibleRule": "jclFormat == topazSubmitJclMembers"
+        }       
+    ],
+	 "dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "connectionId",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/%24settings/Documents/hostconnection",
+            "resultSelector": "jsonpath:$.value[*]",
+			"resultTemplate": "{\"Value\":\"{{{host}}}#{{{protocol}}}#{{{code_page}}}\",\"DisplayValue\":\"{{{description}}}\"}"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "windowsTopazWorkbenchCliHome",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/windows_CLI",
+            "resultSelector": "jsonpath:$.value"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "linuxTopazWorkbenchCliHome",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/windows_CLI",
+            "resultSelector": "jsonpath:$.value"
+        }
+        
+    ],	
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
