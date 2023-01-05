@@ -1,0 +1,47 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7f7ecba7-8f4d-41b6-8eb6-07ec40195954",
+    "name": "mvnDependencyResolver",
+    "friendlyName": "Maven ING Dependency Resolver",
+    "description": "ING Maven dependency resolver",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Arvin Aboque",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 51
+    },
+    "instanceNameFormat": "Maven Dependency Resolver",
+    "inputs": [
+        {
+            "name": "mavenPOMFile",
+            "type": "filePath",
+            "label": "Maven POM file",
+            "defaultValue": "pom.xml",
+            "required": true,
+            "helpMarkDown": "Relative path from the repository root to the Maven POM file."
+        },
+        {
+            "name": "publishFeed",
+            "label": "Target registry",
+            "helpMarkDown": "Select a registry hosted in this account. You must have Azure Artifacts installed and licensed to select a registry here.",
+            "type": "pickList",
+            "required": true
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "publishFeed",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

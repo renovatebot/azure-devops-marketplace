@@ -1,0 +1,72 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7f7ecba7-8f4d-41b6-8eb6-07ec40195954",
+    "name": "mvnDependencyResolver",
+    "friendlyName": "Maven ING Dependency Resolver",
+    "description": "ING Maven dependency resolver",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Arvin Aboque",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 103
+    },
+    "instanceNameFormat": "Maven Dependency Resolver",
+    "groups": [
+        {
+            "name": "advancedSettings",
+            "displayName": "Advanced Settings",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "mavenPOMFile",
+            "type": "filePath",
+            "label": "Maven POM file",
+            "defaultValue": "pom.xml",
+            "required": true,
+            "helpMarkDown": "Relative path from the repository root to the Maven POM file."
+        },
+        {
+            "name": "targetFeed",
+            "type": "string",
+            "label": "Target Feed Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Target Azure Artifacts Feed Name"
+        },
+        {
+            "name": "targetFeedUrl",
+            "type": "string",
+            "label": "Target Feed Url",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Target Azure Artifacts Feed Url for Maven"
+        },
+        {
+            "name": "dependencyFilter",
+            "type": "string",
+            "label": "Dependency Filter",
+            "defaultValue": "ing",
+            "required": true,
+            "groupName": "advancedSettings",
+            "helpMarkDown": "The string filter for the dependency names. e.g. 'ing'"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "publishFeed",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{#if project}}{{{project.id}}}\\/{{/if}}{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
