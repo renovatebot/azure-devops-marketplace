@@ -1,0 +1,91 @@
+{
+  "id": "2a49ad8a-c090-4c72-89ef-57fb483286e3",
+  "name": "CertInstaller",
+  "friendlyName": "Certificate Installer",
+  "description": "Automated Certificate installation for a cloud service",
+  "author": "code88",
+  "helpMarkDown": "Install a Certificate to a Classic Cloud Service",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "CertInstaller $(message)",
+
+  "groups": [
+        {
+            "name": "CertDetails",
+            "displayName": "Certificate Details",
+            "isExpanded": true
+        }
+  ],
+
+  "inputs": [
+     {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure:Certificate,UsernamePassword",
+            "label": "Azure Subscription (Classic)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to target for deployment."
+        },
+     
+       {
+            "name": "ServiceName",
+            "type": "pickList",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+  {
+      "name": "CertificateLocation",
+      "type": "filePath",
+      "label": "Certificate Location",
+      "defaultValue": "",
+      "groupname":"CertDetails",
+      "required": true,
+      "properties": {
+
+      },
+      "helpMarkDown": "The location of the certificate"
+    },
+    {
+      "name": "CertificatePassword",
+      "type": "string",
+      "label": "Certifcate Password",
+      "groupname":"CertDetails",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+      },
+      "helpMarkDown": "Enter the password for the certificate"
+    }
+  ],
+  
+"dataSourceBindings": [
+        {
+            "target": "ServiceName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureHostedServiceNames"
+        }
+],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\sample.ps1"
+    }
+  }
+}
