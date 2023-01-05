@@ -1,0 +1,101 @@
+{
+    "id": "f419de1c-8b6f-47cb-a9b4-c4cfe1d0624e",
+    "name": "ChangelogFromCommits",
+    "friendlyName": "Changelog from git commits",
+    "description": "This task will help you to generate changelog from git commit messages.",
+    "helpMarkDown": "../README.md",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Tigran Hambardzumyan",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 4
+    },
+    "instanceNameFormat": "Generate changelog",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "option",
+            "type": "pickList",
+            "label": "Option",
+            "defaultValue": "last-tag",
+            "required": true,
+            "helpMarkDown": "An option how to determine the range of commits",
+            "options": {
+                "last-tag": "Since last tag",
+                "between": "Between Revisions"
+            }
+        },
+        {
+            "name": "from_rev",
+            "type": "string",
+            "label": "From revision",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Tag name or revision hash of start commit",
+            "visibleRule": "option = between"
+        },
+        {
+            "name": "to_rev",
+            "type": "string",
+            "label": "To revision",
+            "defaultValue": "HEAD",
+            "required": true,
+            "helpMarkDown": "Tag name or revision hash of last commit",
+            "visibleRule": "option = between"
+        },
+        {
+            "name": "pretty",
+            "type": "string",
+            "label": "Pretty",
+            "defaultValue": "%B",
+            "required": true,
+            "helpMarkDown": "The format applied to each commit while generating the collected value"
+        },
+        {
+            "name": "date_format",
+            "type": "string",
+            "label": "Date format",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The date format applied to each commit while generating the collected value"
+        },
+        {
+            "name": "include_merges",
+            "type": "boolean",
+            "label": "Include Merges",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Whether or not to include any commits that are merges."
+        }
+    ],
+    "OutputVariables": [
+        {
+        "name" : "CHANGELOG",
+        "description" : "This is the variable where generated changelog will be saved."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "TaskFailed": "Task failed with error: %s",
+        "GitFailed": "Git failed with error: %s"
+    }
+}
