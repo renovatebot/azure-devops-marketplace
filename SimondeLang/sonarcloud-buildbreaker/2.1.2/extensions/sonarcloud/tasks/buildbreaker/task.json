@@ -1,0 +1,61 @@
+{
+    "id": "6eaeb60a-450c-4c55-b8f7-ac6dce9a4d16",
+    "name": "sonarcloud-buildbreaker",
+    "friendlyName": "SonarCloud build breaker",
+    "description": "Break the build when the quality gate fails.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Simon de Lang",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 2,
+        "Minor": 1,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Break build on quality gate failure",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SonarCloud",
+            "type": "connectedService:sonarcloud",
+            "label": "SonarCloud Service Endpoint",
+            "required": true,
+            "helpMarkDown": "Select the SonarCloud endpoint for your project. To create one, click the Manage link and create a new SonarCloud Service Endpoint, then enter your SonarCloud account token."
+        },
+        {
+            "name": "organization",
+            "type": "pickList",
+            "label": "Organization",
+            "required": true,
+            "helpMarkDown": "Select the name of your Organization",
+            "properties": {
+              "EditableOptions": "True"
+            }
+        }
+    ],
+    "dataSourceBindings": [
+        {
+          "target": "organization",
+          "endpointId": "$(SonarCloud)",
+          "endpointUrl": "{{endpoint.url}}/api/organizations/search?member=true",
+          "resultSelector": "jsonpath:$.organizations[*]",
+          "resultTemplate":
+            "{ \"Value\" : \"{{{key}}}\", \"DisplayValue\" : \"{{{name}}} ({{{key}}})\" }"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "dist/task.js",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
