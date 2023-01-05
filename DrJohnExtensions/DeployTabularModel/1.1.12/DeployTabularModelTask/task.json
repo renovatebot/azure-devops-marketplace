@@ -1,0 +1,135 @@
+{
+    "id": "aab8fda5-b933-4ce2-a9a9-4f357b8e2cb4",
+    "name": "DeployTabularModelTask",
+    "friendlyName": "Deploy SSAS tabular cube model",
+    "description": "Publish a tabular cube model to an SSAS instance",
+    "helpMarkDown": "[More Information](https://github.com/DrJohnT/AzureDevOpsExtensionsForSqlServer/tree/master/extensions/DeployTabularModel)",
+    "author": "Dr. John Tunnicliffe",
+    "preview": false,
+    "deprecated": false,
+    "showEnvironmentVariables": false,
+    "category": "Utility",
+    "groups": [
+        {
+            "name": "DeploymentOptions",
+            "displayName": "Deployment options",
+            "isExpanded": false
+        }
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.95.0",
+    "version": {
+        "Major": "1",
+        "Minor": "1",
+        "Patch": "12"
+    },
+    "instanceNameFormat": "Deploy SSAS tabular model $(CubeDatabaseName)",
+    "inputs": [
+		{
+            "name": "AsDatabasePath",
+            "type": "filePath",
+            "label": "Path to .asdatabase file",
+            "required": true,
+            "helpMarkDown": "Relative path from repo root to the AsDatabase file to publish.  Wildcards can be used.  Note that the repo root is held in the variable $(System.DefaultWorkingDirectory)"
+        },
+		{
+            "name": "AsServer",
+            "type": "string",
+            "label": "SSAS Server Name or IP address",
+            "required": true,
+            "helpMarkDown": "SSAS Server Name or IP address.  Include the instance name and port if necessary (e.g. myserver\\myinstance,myport)"
+        },
+		{
+            "name": "CubeDatabaseName",
+            "type": "string",
+            "label": "The name of the cube as it should be deployed on the target server",
+            "required": true,
+            "helpMarkDown": "The name of the cube as it should be deployed on the target server"
+        },
+		{
+            "name": "PreferredVersion",
+            "type": "pickList",
+            "label": "Version of Microsoft.AnalysisServices.Deployment.exe to use for the deployment",
+            "required": false,
+            "helpMarkDown": "If the preferred version cannot be found, the deployment will fail. Please use safe option 'Latest' unless sure what is installed on your build server.",
+            "defaultValue": "latest",
+            "options": {
+                "latest": "Latest",
+                "15": "SQL Server 2019",
+                "14": "SQL Server 2017",
+                "13": "SQL Server 2016",
+                "12": "SQL Server 2014",
+                "11": "SQL Server 2012"
+            },
+            "groupName": "DeploymentOptions"
+        },
+        {
+			"name": "TransactionalDeployment",
+			"type": "pickList",
+			"label": "Transactional deployment",
+            "defaultValue": "false",
+            "options": {
+                "false": "False",
+                "true": "True"
+            },
+			"helpMarkDown": "Perform the deployment in one transaction",
+			"groupName": "DeploymentOptions"
+        },
+        {
+			"name": "PartitionDeployment",
+			"type": "pickList",
+			"label": "Partition deployment",
+			"defaultValue": "DeployPartitions",
+			"required": true,
+			"options": {
+				"DeployPartitions": "Deploy partitions",
+				"RetainPartitions": "Retain partitions"
+			},
+			"helpMarkDown": "Deploy partitions: Any existing partition will be replaced\nRetain partitions: Partitions for new measure groups will be deployed, but partitions for existing measure groups will be unaffected",
+			"groupName": "DeploymentOptions"
+        },
+        {
+			"name": "RoleDeployment",
+			"type": "pickList",
+			"label": "Role deployment",
+			"defaultValue": "DeployRolesRetainMembers",
+			"required": true,
+			"options": {
+				"DeployRolesRetainMembers": "Deploy roles and retain members",
+				"DeployRolesAndMembers": "Deploy roles and members",
+				"RetainRoles":  "Retain roles and members"
+			},
+			"helpMarkDown": "Deploy roles and retain members: Roles will be deployed along with their members for new roles. Members for existing roles will be retained.\nDeploy roles and members: Any existing roles and members will be replaced\nRetain roles and members: The roles and members will not be deployed",
+			"groupName": "DeploymentOptions"
+        },
+        {
+			"name": "ConfigurationSettingsDeployment",
+			"type": "pickList",
+			"label": "Retain configuration settings for existing objects",
+			"defaultValue": "Deploy",
+			"helpMarkDown": "Retain configuration settings for existing objects or deploy new ones",
+			"options": {
+				"Retain": "Retain configuration settings for existing objects",
+				"Deploy": "Deploy all configuration settings"
+			},
+			"groupName": "DeploymentOptions"
+        },
+        {
+			"name": "OptimizationSettingsDeployment",
+			"type": "pickList",
+			"label": "Retain optimization settings for existing objects",
+			"defaultValue": "Deploy",
+			"helpMarkDown": "Retain optimization settings for existing objects or deploy new ones",
+			"options": {
+				"Retain": "Retain optimization settings for existing objects",
+				"Deploy": "Deploy all optimization settings"
+			},
+			"groupName": "DeploymentOptions"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\PublishTabularModel.ps1"
+        }
+    }
+}
