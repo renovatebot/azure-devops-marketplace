@@ -1,0 +1,90 @@
+{
+  "id": "eed2b097-2542-44b7-8571-ade45e1a0c52",
+  "name": "RemoveAzureCloudServiceDeploymentSlot",
+  "friendlyName": "Remove Azure Cloud Service Deployment Slot",
+  "description": "Removes a specified deployment slot, delete VHD option (if applicable).  Helps reduce costs by removing unncessary/unused deployments past a build or release",
+  "author": "Polaris Solutions",
+  "helpMarkDown": "Removes specified deployment slot for a cloud service.  Select the service, select the slot, choose if you want to delete the associated VHD.  ",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "Remove Deployment Slot $(Slot) for $(ServiceName)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure:Certificate,UsernamePassword",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure subscription to target for deployment."
+    },
+    {
+      "name": "ServiceName",
+      "type": "pickList",
+      "label": "Service Name",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "StorageAccount",
+      "type": "pickList",
+      "label": "Storage Account",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select a classic storage account.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "Slot",
+      "type": "pickList",
+      "label": "Slot",
+      "required": true,
+      "defaultValue": "Staging",
+      "options": {
+        "Production": "Production",
+        "Staging": "Staging"
+      },
+      "helpMarkDown": "If checked, the cloud service configuration (.cscfg) will also be swapped between deployment slots"
+    },
+    {
+      "name": "DeleteVHD",
+      "type": "boolean",
+      "label": "Delete VHD",
+      "required": false,
+      "defaultValue": "false",
+      "helpMarkDown": "If checked, the associated VHD with this cloud service will be deleted."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ServiceName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureHostedServiceNames"
+    },
+    {
+      "target": "StorageAccount",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageServiceNames"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Remove-AzureCloudServiceDeployment.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
