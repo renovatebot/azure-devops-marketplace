@@ -1,0 +1,85 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "77cddfaf-4a15-4453-b441-6d62e6a4661a",
+    "name": "UniversalGitTag",
+    "friendlyName": "Universal Git Tag",
+    "description": "Tag a commit",
+    "helpMarkDown": "* [Extension Page](https://marketplace.visualstudio.com/items?itemName=cloudpup.universaltags) \n * [Source](https://github.com/cloudpups/universal-git-tags)",
+    "category": "Utility",
+    "author": "CloudPup",
+    "version": {
+        "Major": 0,
+        "Minor": 100,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Universal Git Tag",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "credentials",
+            "type": "connectedService:credentials",
+            "label": "Credentials",
+            "required": true,
+            "helpMarkDown": "The credentials to use to setup and push the tag."
+        },
+        {
+            "name": "repoId",
+            "type": "string",
+            "label": "Repository Identifier",
+            "required": true,
+            "helpMarkDown": "The URL part used to identify the Git Repo that the Tag will be pushed to. For example, `cloudpups/universal-git-tags`.\n* **Please note** that some source control tools (e.g. Azure DevOps, GitLab) require this to be formatted a specific way.\n* Check out the [systems document](https://github.com/cloudpups/universal-git-tags/blob/main/docs/VerifiedSystems.md) for more details."
+        },
+        {
+            "name": "commitHash",
+            "type": "string",
+            "label": "Commit Hash",
+            "defaultValue": "$(Build.SourceVersion)",
+            "required": true,
+            "helpMarkDown": "The hash of the commit to tag, defaults to `$(Build.SourceVersion)`, fails if not set and `$(Build.SourceVersion)` is empty."
+        },
+        {
+            "name": "tagName",
+            "type": "string",
+            "label": "Name",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "The name of the tag (e.g. Dev, v1.0). Defaults to `$(Build.BuildNumber)`. Fails if empty."
+        },
+        {
+            "name": "tagMessage",
+            "type": "multiLine",
+            "label": "Message",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "The message of the tag (e.g. Dev, v1.0). Defaults to `$(Build.BuildNumber)`. Fails if empty."
+        },
+        {
+            "name": "forcePush",
+            "type": "boolean",
+            "label": "Force Push",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Setting this to true will cause this task to overwrite existing tags."
+        },
+        {
+            "name": "workingDirectory",
+            "type": "string",
+            "label": "Working Directory",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)/universal-tagging-prep-currenttime",
+            "required": true,
+            "helpMarkDown": "The directory that Universal Git Tags will run its commands. Defaults to `$(Build.ArtifactStagingDirectory)/universal-tagging-prep-currenttime` (where `currenttime` is [`Date.now()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now)) so as to not interfere with any existing git repositories.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "task.js"
+        }
+    }
+}
