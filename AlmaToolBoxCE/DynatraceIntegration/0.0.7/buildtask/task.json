@@ -1,0 +1,67 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EC1",
+    "name": "DynatraceIntegration",
+    "friendlyName": "Dynatrace Integration",
+    "description": "Integration with Dynatrace server",
+    "helpMarkDown": "This task allow to create and manage classes on dynatrace",
+    "author": "Almatoolbox",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "DynatraceIntegration",
+    "groups": [],
+    "inputs": [
+		{
+		  "name": "DynatraceService",
+		  "type": "connectedService:dynatraceendpoint",
+		  "label": "dynatraceendpoint service/server end point",
+		  "defaultValue": "",
+		  "required": true,
+		  "helpMarkDown": "Insert the Dynatrace endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Dynatrace connection'"
+		},
+		{
+            "name": "apimethod",
+            "type": "string",
+            "label": "Dynatrace apimethod",
+            "defaultValue": "problem/feed",
+            "required": true,
+            "helpMarkDown": "Dynatrace apimethod"
+        },
+		{
+            "name": "timeRange",
+            "type": "string",
+            "label": "Dynatrace timeRange",
+            "defaultValue": "3days",
+            "required": true,
+            "helpMarkDown": "Dynatrace timeRange"
+        },
+		{
+            "name": "tag",
+            "type": "string",
+            "label": "Dynatrace tag",
+            "defaultValue": "Azure:Portale BDC",
+            "required": true,
+            "helpMarkDown": "Dynatrace tag"
+        }
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "getproblems.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+
+}

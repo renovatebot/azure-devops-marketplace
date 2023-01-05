@@ -1,0 +1,71 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EC2",
+    "name": "DynatraceIntegrationSetMetrics",
+    "friendlyName": "Dynatrace Integration Set Metrics",
+    "description": "Integration with Dynatrace server to set metrics",
+    "helpMarkDown": "Integration with Dynatrace server to set metrics",
+    "author": "Almatoolbox",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 39
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "Dynatrace Integration Set Metrics",
+    "groups": [],
+    "inputs": [
+		{
+		  "name": "DynatraceService",
+		  "type": "connectedService:dynatraceendpoint",
+		  "label": "dynatraceendpoint service/server end point",
+		  "defaultValue": "",
+		  "required": true,
+		  "helpMarkDown": "Insert the Dynatrace endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Dynatrace connection'"
+		},
+		{
+            "name": "apimethod",
+            "type": "string",
+            "label": "Dynatrace apimethod",
+            "defaultValue": "anomalyDetection/metricEvents",
+            "required": true,
+            "helpMarkDown": "Dynatrace apimethod"
+        },
+		{
+            "name": "name",
+            "type": "string",
+            "label": "Metric Name",
+            "required": true,
+            "helpMarkDown": "the name of the metric to set in the anomaly detection file"
+        },
+		{
+            "name": "appservicename",
+            "type": "string",
+            "label": "Dynatrace appservicename",
+            "required": false,
+            "helpMarkDown": "Dynatrace appservicename"
+        },
+        {
+            "name": "jsonMetricFile",
+            "type": "filePath",
+            "label": "JSON anomaly detection file",
+            "required": true,
+            "helpMarkDown": "The file that contains the anomaly detection"
+        }
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "dynatraceSetMetrics.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+}

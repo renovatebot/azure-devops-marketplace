@@ -1,0 +1,64 @@
+{
+    "id": "D57AB29A-BE69-431F-8523-E4BD1B170EC4",
+    "name": "DynatraceIntegrationCreateEvents",
+    "friendlyName": "Dynatrace Integration Create Events",
+    "description": "Integration with Dynatrace server to create events",
+    "helpMarkDown": "Integration with Dynatrace server to create events",
+    "author": "Almatoolbox",
+    "category": "Test",
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [
+        "DotNetFramework"
+    ],
+    "instanceNameFormat": "Dynatrace Integration Create Events",
+    "groups": [],
+    "inputs": [
+		{
+		  "name": "DynatraceService",
+		  "type": "connectedService:dynatraceendpoint",
+		  "label": "dynatraceendpoint service/server end point",
+		  "defaultValue": "",
+		  "required": true,
+		  "helpMarkDown": "Insert the Dynatrace endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Dynatrace connection'"
+		},
+		{
+            "name": "apimethod",
+            "type": "string",
+            "label": "Dynatrace apimethod",
+            "defaultValue": "events",
+            "required": true,
+            "helpMarkDown": "Dynatrace apimethod"
+        },
+		{
+            "name": "appservicename",
+            "type": "string",
+            "label": "substitution element in json file",
+            "required": false,
+            "helpMarkDown": "Dynatrace appservicename"
+        },
+        {
+            "name": "jsonEventFile",
+            "type": "filePath",
+            "label": "JSON event file",
+            "required": true,
+            "helpMarkDown": "The file json that contains the event description"
+        }
+    ],
+    "execution": {
+         "PowerShell3": {
+            "target": "dynatraceCreateEvent.ps1",          
+            "failOnStandardError": "$(failOnStandardError)"
+        }
+    }
+}
