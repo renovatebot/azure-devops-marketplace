@@ -1,0 +1,87 @@
+﻿{
+  "id": "2cb2da35-4dce-4d9a-8883-7cb213eb6da5",
+  "name": "Verify Code Coverage",
+  "friendlyName": "Verify Code Coverage",
+  "description": "Get Code Coverage data",
+  "author": "canarysautomationspvtltd",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "runsOn": [
+    "ServerGate"
+  ],
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Verify Code Coverage",
+  "groups": [],
+  "inputs": [
+    {
+      "name": "buildId",
+      "type": "pickList",
+      "label": "Artifact",
+      "required": true,
+      "defaultValue": "",
+      "properties": {
+        "DisableManageLink": "True",
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Build Artifacts"
+    },
+    {
+      "name": "module",
+      "type": "string",
+      "label": "Module",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Name of the module or dll to evaluate"
+    },
+    {
+      "name": "Type",
+      "type": "radio",
+      "label": "Code Coverage Type",
+      "required": false,
+      "defaultValue": "linesNotCovered",
+      "options": {
+        "linesNotCovered": "Line",
+        "blocksNotCovered": "Block"
+      }
+    },
+    {
+      "name": "threshold",
+      "type": "string",
+      "label": "Coverage Threshold",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Set the maximum threshold for line or blocks to pass the gate"
+    }   
+  ],
+  "dataSourceBindings": [   
+    {
+      "target": "buildId",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/build/builds?api-version=5.0",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{buildNumber}}} \" }"
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "",
+        "EndpointUrl": "$(system.teamFoundationCollectionUri)$(system.teamProjectId)/_apis/test/codecoverage?buildId=$(BuildId)&flags=1&api-version=5.0-preview.1",
+        "Method": "GET",
+        "Headers": "{\"Content-Type\":\"application/json\", \"Authorization\":\"Bearer $(system.accesstoken)\", \"Accept\":\"application/json\"}",
+        "parameters": {
+          "BuildId":"$(buildId)"
+        },
+        "WaitForCompletion": "false",
+        "Expression": "lt(jsonpath('$.value[0].modules[?(@.name==''$(module)'')].statistics[''$(Type)'']')[0], $(threshold))"
+      }
+    }
+  }
+}
