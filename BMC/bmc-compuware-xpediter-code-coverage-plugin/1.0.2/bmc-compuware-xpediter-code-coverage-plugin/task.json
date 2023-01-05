@@ -1,0 +1,110 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f8b65b7d-54e2-4ab4-aeeb-ca3db08cc6ed",
+    "name": "bmc-compuware-xpediter-code-coverage-plugin",
+    "friendlyName": "BMC  Xpediter Code Coverage Plugin",
+    "description": "The Xpediter Code Coverage plugin allows Azure Devops users to extract code coverage results for COBOL source from a BMC Compuware Code Coverage repository. These results can then be viewed in SonarQube.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "BMC Software",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "BMC Compuware Xpediter Code Coverage Plugin",
+    "inputs": [
+        {
+            "name": "connectionId",
+            "type": "pickList",
+            "label": "Host Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This field specifies the host connection to use to submit a measurement.Host connections can be configured in the Common Configuration Extension."
+        },	
+        {
+            "name": "userId",
+            "type": "string",
+            "label": "User ID",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Host Connection Userid."
+        },
+        {
+            "name": "credentialId",
+            "type": "string",
+            "label": "Azure Vault Secret Name(to retrieve Password)",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Vault Secret Name(to retrieve Password used for host connections)"
+        },
+        {
+            "name": "targetFolder",
+            "type": "string",
+            "label": "targetFolder",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "targetFolder"
+        },
+        {
+            "name": "windowsTopazWorkbenchCliHome",
+            "type": "pickList",
+            "label": "Windows Topaz Workbench CLI Home",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "linuxTopazWorkbenchCliHome",
+            "type": "pickList",
+            "label": "Linux Topaz Workbench CLI Home",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "This field specifies the path of installed Topaz Workbench CLI. This can be configured in the Common Configuration Extension."
+        },
+        {
+            "name": "m_analysisPropertiesPath",
+            "type": "string",
+            "label": "Analysis Properties Path",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Analysis Properties Path"
+        },
+        {
+            "name": "m_analysisProperties",
+            "type": "string",
+            "label": "Analysis Properties",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Analysis Properties"
+        }
+       
+    ],
+	 "dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "connectionId",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/%24settings/Documents/hostconnection",
+            "resultSelector": "jsonpath:$.value[*]",
+			"resultTemplate": "{\"Value\":\"{{{host}}}#{{{protocol}}}#{{{code_page}}}\",\"DisplayValue\":\"{{{description}}}\"}"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "windowsTopazWorkbenchCliHome",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/windows_CLI",
+            "resultSelector": "jsonpath:$.value"
+        },
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "linuxTopazWorkbenchCliHome",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/$settings/Documents/windows_CLI",
+            "resultSelector": "jsonpath:$.value"
+        }
+        
+    ],	
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
