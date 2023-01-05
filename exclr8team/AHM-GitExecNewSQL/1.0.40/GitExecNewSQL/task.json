@@ -1,0 +1,92 @@
+{
+  "id": "486deda6-0cae-4d20-918b-94d6cdfab789",
+  "name": "GitExecNewSQL",
+  "friendlyName": "Git Exec New SQL",
+  "description": "A task that executes new SQL files in between two commits.",
+  "author": "Alexander Mehlhorn (Exclr8)",
+  "helpMarkDown": "executes SQL files that are new between two commits on the respective databases ### Prerequisites * Repository must be Git. * Allow scripts to access Oauth must be **Enabled**",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+	"Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "2",
+    "Patch": "41"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "GitExecNewSQL $(message)",
+  "inputs": [
+    {
+      "name": "workingdir",
+      "type": "string",
+      "label": "Working Directory",
+      "defaultValue": "$(SYSTEM.DEFAULTWORKINGDIRECTORY)",
+      "required": true,
+      "helpMarkDown": "The working directory (The git root)."
+    },
+    {
+      "name": "currentcommit",
+      "type": "string",
+      "label": "Current commit",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The current commit id. If not set the HEAD will be use."
+    },
+    {
+      "name": "destination",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "$(SYSTEM.ARTIFACTSDIRECTORY)",
+      "required": true,
+      "helpMarkDown": "The directory where files should be placed."
+    },
+    {
+      "name": "gittag",
+      "type": "string",
+      "label": "Tag",
+      "defaultValue": "$(build.buildNumber)",
+      "required": true,
+      "helpMarkDown": "Tag for given commit, the commit is used for finding the diff between the new one. Can be hashid."
+    },
+    {
+      "name": "flatten",
+      "type": "boolean",
+      "label": "Flatten",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Flatten directory structure (all files to same directory)"
+    },
+    {
+      "name": "branchAsRoot",
+      "type": "string",
+      "label": "Use branch as root",
+      "defaultValue": "origin/master",
+      "required": false,
+      "helpMarkDown": "Use this branch as root if old commit (gittag) not found."
+    },
+    {
+      "name": "maskOfFilesToExecute",
+      "type": "string",
+      "label": "SQL File Mask",
+      "defaultValue": "\\SQL\\**_ebservices_*.sql",
+      "required": true,
+      "helpMarkDown": "The mask to apply to locate files to execute."
+    },
+	{
+      "name": "dbConnString",
+      "type": "string",
+      "label": "SQL Connection String",
+      "defaultValue": "t",
+      "required": true,
+      "helpMarkDown": "The connection to use for the execution of the SQL file content."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "ReleaseInfo.ps1"
+    }
+  }
+}
