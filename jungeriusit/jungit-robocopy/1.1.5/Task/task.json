@@ -1,0 +1,119 @@
+{
+	"id": "7db26114-8ee0-4460-b1e6-e5fbd3a9a583",
+	"name": "Robocopy",
+	"friendlyName": "File System - Robocopy",
+	"description": "Use Robocopy to perform a copy action.",
+	"author": "Jungerius IT",
+	"helpMarkDown": "",
+	"category": "Utility",
+	"visibility": ["Build", "Release"],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "1",
+		"Patch": "5"
+	},
+	"minimumAgentVersion": "1.83.0",
+	"groups": [{
+		"name": "options",
+		"displayName": "Options",
+		"isExpanded": false
+	}],
+	"instanceNameFormat": "Copy to $(destination)",
+	"inputs": [{
+		"name": "source",
+		"type": "filePath",
+		"label": "Source",
+		"defaultValue": "",
+		"required": true,
+		"helpMarkDown": "The source where files or folders will be copied from"
+	}, {
+		"name": "destination",
+		"type": "string",
+		"label": "Destination",
+		"defaultValue": "",
+		"required": true,
+		"helpMarkDown": "The destination where the files or folders will be copied to."
+	}, {
+		"name": "files",
+		"type": "string",
+		"label": "Files to copy",
+		"defaultValue": "",
+		"required": false,
+		"helpMarkDown": "Specifies the file or files to be copied. You can use wildcard characters (* or ?), if you want. If the File parameter is not specified, *.* is used as the default value. Multiple items separated by comma."
+	}, {
+		"name": "copySubDirs",
+		"type": "boolean",
+		"label": "Copy subdirectories (non empty)",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Copies subdirectories. Note that this option excludes empty directories. (/s)"
+	}, {
+		"name": "copySubDirsAll",
+		"type": "boolean",
+		"label": "Copy all subdirectories",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Copies subdirectories. Note that this option includes empty directories. (/e)"
+	}, {
+		"name": "purge",
+		"type": "boolean",
+		"label": "Purge destination",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Deletes destination files and directories that no longer exist in the source. (/purge)"
+	}, {
+		"name": "move",
+		"type": "boolean",
+		"label": "Move files and directories",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Moves files and directories, and deletes them from the source after they are copied. (/move)"
+	}, {
+		"name": "createtree",
+		"type": "boolean",
+		"label": "Create directory tree only",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Creates a directory tree and zero-length files only. (/create)"
+	}, {
+		"name": "excludeFiles",
+		"type": "string",
+		"label": "Exclude files",
+		"defaultValue": "",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Excludes files that match the specified names or paths. Note that FileName can include wildcard characters (* and ?). (/xf)"
+	}, {
+		"name": "excludeDirs",
+		"type": "string",
+		"label": "Exclude directories",
+		"defaultValue": "",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Excludes directories that match the specified names and paths. (/xd)"
+	}, {
+		"name": "retries",
+		"type": "string",
+		"label": "Number of retries",
+		"defaultValue": "",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Specifies the number of retries on failed copies. The default value of N is 1,000,000 (one million retries). (/r:<N>)"
+	}, {
+		"name": "copyOptions",
+		"type": "string",
+		"label": "Other Robocopy options",
+		"defaultValue": "",
+		"required": false,
+		"groupname": "options",
+		"helpMarkDown": "Robocopy accepts a few command line options (e.g. /S /E /Z)."
+	}],
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\robocopytask.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
