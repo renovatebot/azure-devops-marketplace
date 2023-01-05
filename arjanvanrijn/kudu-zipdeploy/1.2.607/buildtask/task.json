@@ -1,0 +1,121 @@
+{
+	"id": "77776534-b78a-41ab-8ea1-cf56732327ae",
+	"name": "KuduZipApiDeploy",
+	"friendlyName": "Kudu ZipDeploy",
+	"description": "Upload a zip package to the Kudu zip deployment api",
+	"author": "Arjan van Rijn",
+	"helpMarkDown": "Kudu Zip Deploy uses the Kudu Sync deployment engine for updating files",
+	"category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"demands": [
+		"azureps"
+	],
+	"version": {
+		"Major": 1,
+		"Minor": 2,
+		"Patch": 607
+	},
+	"minimumAgentVersion": "1.95.0",
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:AzureRM",
+			"label": "AzureRM Subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
+		},
+		{
+			"name": "WebAppName",
+			"type": "pickList",
+			"label": "Web App Name",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			},
+			"helpMarkDown": "Enter or Select the name of an existing AzureRM Web Application."
+		},
+		{
+			"name": "ManageSlotFlag",
+			"type": "boolean",
+			"label": "Manage Slot",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "Select the option to Manage an existing slot other than the Production slot. If this option is not selected the Task is executed against the Production slot."
+		},
+		{
+			"name": "ResourceGroupName",
+			"type": "pickList",
+			"label": "Resource Group",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			},
+			"helpMarkDown": "Enter or Select the Azure Resource Group that contains the AzureRM Web App specified above.",
+			"visibleRule": "ManageSlotFlag = true"
+		},
+		{
+			"name": "SlotName",
+			"type": "pickList",
+			"label": "Slot",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			},
+			"helpMarkDown": "Enter or Select an existing Slot other than the Production slot.",
+			"visibleRule": "ManageSlotFlag = true"
+		},
+		{
+			"name": "InputFilePath",
+			"type": "string",
+			"label": "Zip FilePath",
+			"required": true,
+			"helpMarkDown": "The Zip package to upload"
+		},
+		{
+			"name": "IsAsync",
+			"type": "boolean",
+			"label": "Is Async",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "The task will complete after the Zip file is uploaded. Kudu will continue to run the deployment asynchronously."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "WebAppName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureRMWebAppNames"
+		},
+		{
+			"target": "ResourceGroupName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureRMWebAppResourceGroup",
+			"parameters": {
+				"WebAppName": "$(WebAppName)"
+			}
+		},
+		{
+			"target": "SlotName",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureRMWebAppSlotsId",
+			"parameters": {
+				"WebAppName": "$(WebAppName)",
+				"ResourceGroupName": "$(ResourceGroupName)"
+			},
+			"resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+		}
+	],
+	"instanceNameFormat": "Kudu zipdeploy $(WebAppName) $(SlotName)",
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\New-KuduZipDeploy.ps1"
+		}
+	}
+}
