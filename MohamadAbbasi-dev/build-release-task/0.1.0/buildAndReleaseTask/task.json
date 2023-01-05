@@ -1,0 +1,55 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "14313546-35f0-46a3-9a5b-51a200db1837",
+    "name": "yamltovariable",
+    "friendlyName": "YAML to Variable",
+    "description": "Yaml to variable(s) build assist",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Mohamad Abbasi",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "YAML to Variable",
+    "inputs": [
+        {
+            "name": "samplestring",
+            "type": "string",
+            "label": "Sample String",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A sample string"
+        },
+		{
+            "name": "jsonFile",
+            "type": "filePath",
+            "label": "Json File (full path)",
+            "required": true,
+            "helpMarkDown": "The location to load the JSON file from."
+        },
+        {
+            "name": "shouldPrefixVariables",
+            "type": "boolean",
+            "label": "Should Add prefix to variable name",
+            "required": true,
+            "defaultValue": true,
+            "helpMarkDown": "Allows you to control if the task adds a prefix to the start of the variable names.  When using multiple tasks in the same build/release this will help keep things clear as to which file the variable originated."
+        },
+        {
+            "name": "variablePrefix",
+            "type": "string",
+            "label": "Variable Name Prefix",
+            "required": false,
+            "visibleRule":"shouldPrefixVariables==true",
+            "helpMarkDown": "A Name to prefix the variables output by this task.  Set this to different values if you are using this task multiple times to keep things clear.",
+            "defaultValue": "json"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "./dist/json2variable.js"
+        }
+    }
+}
