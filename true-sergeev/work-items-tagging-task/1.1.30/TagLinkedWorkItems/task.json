@@ -1,0 +1,92 @@
+{
+    "id": "5d203600-ac29-495a-931f-04b26bb91a4f",
+    "name": "Tag Linked Work Items",
+    "friendlyName": "Tag Linked Work Items",
+    "description": "Automatically add specified tag to all work items associated with build or release",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Artem Sergeev",
+    "version": {
+        "Major": 0,
+        "Minor": 40,
+        "Patch": 0
+    },
+    "inputs": [
+        {
+            "name": "pipelineType",
+            "type": "pickList",
+            "label": "Specify type of pipeline",
+            "helpMarkDown": "Specify whether task is used for build or release",
+            "required": true,
+            "defaultValue": "Build",
+            "options": {
+                "Build": "Build",
+                "Release": "Release"
+            }
+        },
+        {
+            "name": "tagToAdd",
+            "type": "string",
+            "label": "Tag to add to work items",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify a tag that will be added to work items"
+        },
+        {
+            "name": "enableAreaFiltering",
+            "type": "boolean",
+            "label": "Enable area filtering",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If you continue with area filtering the following rules are to be considered:\n 1. If you specify only root area only work items from root area will be tagged \n 2. If you specify one of child area only work items for `rootArea\\childArea` will be tagged"
+        },
+        {
+            "name": "rootArea",
+            "type": "pickList",
+            "label": "Select the root area",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "enableAreaFiltering = true",
+            "helpMarkDown": "Select the root area \n\n Press refresh to load available areas \n\n",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "childArea",
+            "type": "pickList",
+            "label": "Child area for filtering tasks for tagging",
+            "defaultValue": "",
+            "options": {
+                "": ""
+            },
+            "properties": {
+                "DisableManageLink": "True"
+            },
+            "visibleRule": "enableAreaFiltering = true",
+            "required": false,
+            "helpMarkDown": "Specify a value of a child area field of work item to filter work items for tagging \n\n Press refresh to load available areas \n\n If doesn't specified tagging will be applied to all work items with root area value (previous input)"
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "rootArea",
+            "endpoint": "/$(system.teamProject)/_apis/wit/classificationNodes/areas?$depth=2&api-version=1.0",
+            "selector": "jsonpath:$.name",
+            "keySelector": "jsonpath:$.name",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "childArea",
+            "endpoint": "/$(system.teamProject)/_apis/wit/classificationNodes/areas?$depth=2&api-version=5.1",
+            "selector": "jsonpath:$.children[*].name",
+            "keySelector": "jsonpath:$.children[*].name",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "dist/index.js"
+        }
+    }
+}
