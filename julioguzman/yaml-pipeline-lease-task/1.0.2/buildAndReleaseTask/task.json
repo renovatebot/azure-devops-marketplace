@@ -1,0 +1,62 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "48bfb870-9aca-4027-a30f-fc326b961845",
+    "name": "azdoLeaseGen",
+    "friendlyName": "Pipeline Lock - Lease",
+    "description": "Create leases for pipeline runs, will add a manual retention to avoid unintentional deletion",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Julio Guzman",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Echo $(samplestring)",
+    "inputs": [
+        {
+            "name": "daysValid",
+            "type": "int",
+            "label": "Lease valid days",
+            "defaultValue": "30",
+            "required": true,
+            "helpMarkDown": "The number of days to consider the lease valid"
+        },
+        {
+            "name": "protectPipeline",
+            "type": "boolean",
+            "label": "Protect Pipeline",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Prevent the pipeline from being deleted while the lease is still valid"
+        },
+        {
+            "name": "leaseType",
+            "type": "pickList",
+            "label": "Lease (Lock) Type",
+            "defaultValue": "begin",
+            "required": true,
+            "helpMarkDown": "Begin: Will create a temporary lease to protect from deletion between stages, ex: if you are waiting for manual validations it will not allow deletions \n, End: Will delete temporary Begin leases (if any) and will set a new one to mark it as complete, ex: you want to retain the last complete runs from a definition and not just the last executed",
+            "options": {
+                "begin": "Begin",
+                "end": "End"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "maxNumberLeases",
+            "type": "int",
+            "label": "Maximum number of leases per complete run",
+            "defaultValue": "3",
+            "required": true,
+            "helpMarkDown": "Number of completed runs to retain, it will automatically clean up old active leases and will leave just the latest number specified here. \n *** Only applies to End Lease (lock) type."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
