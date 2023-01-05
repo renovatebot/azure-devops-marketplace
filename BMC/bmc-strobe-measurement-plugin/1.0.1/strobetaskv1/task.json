@@ -1,0 +1,186 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "827b3576-c766-4996-84ba-cefba0325ee8",
+    "name": "bmc-strobe-measurement-plugin",
+    "friendlyName": "BMC Strobe Measurement Task",
+    "description": "Strobe, the leading mainframe application performance management solution, is traditionally used by Operations teams to pinpoint and resolve application performance problems found in production.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "BMC Software",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "BMC Strobe Measurement Task",
+    "inputs": [
+        {
+            "name": "connectionId",
+            "type": "pickList",
+            "label": "Host Connection",
+            "defaultValue": "",
+		    "required": true,
+            "helpMarkDown": "This field specifies the host connection to use to submit a measurement.Host connections can be configured in the Common Configuration Extension."
+        }
+		,
+		{
+            "name": "credentialsId",
+            "type": "string",
+            "label": "Azure Vault Secret Name(To Retrieve Token)",
+		    "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The available CES secret token key(stored in azure key vault) to perform Strobe Measurement actions for Rest API call."
+        },
+		{
+            "name": "requestType",
+            "type": "pickList",
+            "label": "Request Type",
+			"options": {
+                "addActive": "Active",
+                "addQueue": "Queued"
+            },
+            "defaultValue": "addQueue",
+            "required": true,
+            "helpMarkDown": "What type of request you want for the measurement. Select active if the job is currently running or Queued if the job will be running later."
+        },
+		{
+            "name": "jobName",
+            "type": "string",
+            "label": "Job Name",
+            "defaultValue": "",
+            "required": true,
+			"properties": {
+                "maxLength": "8"
+            },
+            "helpMarkDown": "Name of the job you want to measure."
+        },
+		{
+            "name": "tags",
+            "type": "string",
+            "label": "Tags",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Tags to be assigned to profile"
+        },
+		{
+            "name": "profileName",
+            "type": "string",
+            "label": "Profile Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The name of the profile. It defaults to the job name."
+        },
+		{
+            "name": "emailto",
+            "type": "string",
+            "label": "Email To Address",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "SMTP e-mail address to notify when the measurement is complete and the profile is ready to view. You will need to configure your email settings in the Web Server Settings page in CES for this to work."
+        },
+		{
+            "name": "duration",
+            "type": "string",
+            "label": "Duration (minutes)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Estimated minimum measurement time in minutes. Acceptable values 1 to 1440."
+        },
+		{
+            "name": "samples",
+            "type": "string",
+            "label": "Samples",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The target number of samples to take during the measurement session. Acceptable values 1000 to 150000."
+        },
+		{
+            "name": "limit",
+            "type": "string",
+            "label": "Limit",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Suspends sampling when the target number of samples is reached. Acceptable values 1 to 99. Must be 1 when using Final Action of Continue."
+        },
+				{
+            "name": "finalAction",
+            "type": "pickList",
+            "label": "Final Action",
+			"options": {
+                "quit": "quit",
+                "stop": "stop",
+				"nolimit":"nolimit"
+            },
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Controls the measurement session when the final dataset has been completed. The value can be either Quit, Stop, or Continue. See the Strobe User Guide for details. NOLIMIT is created from the limit = 1 and Continue."
+        },
+				{
+            "name": "hlq",
+            "type": "string",
+            "label": "High Level Qualifier",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "High Level Qualifier. DSNAME High level qualifier - Temporary dataset prefix."
+        },
+				{
+            "name": "transactionId",
+            "type": "string",
+            "label": "Transaction Id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "May occur up to 5 times. Used for transaction profiling, the tranids are transaction ID masks used to specify the transactions to be measured. Length is limited to 4 characters. You can use a wildcard character (*) after a string of one or more characters in the Detail by Transaction field to measure transactions that meet the specified search criteria.* For Queue the additional elements are available: step — Optional, program — Optional, stringData — Optional."
+        },
+				{
+            "name": "method",
+            "type": "pickList",
+			"options": {
+                "Post": "POST",
+                "Get": "GET",
+				"Put":"PUT",
+				"Delete":"DELETE"
+            },
+            "label": "Method",
+            "defaultValue": "Get",
+            "required": false,
+            "helpMarkDown": "method"
+        },
+						{
+            "name": "url",
+            "type": "string",
+            "label": "Url",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "URL for the HTTP request. Leave blank if you do not want to do an HTTP callback"
+        },
+					{
+            "name": "headers",
+            "type": "string",
+            "label": "HTTP Headers",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The HTTP headers of the callback. Should be colon and semicolon separated like for example, k1:v1;k2:v2;k3:v3"
+        },
+							{
+            "name": "body",
+            "type": "string",
+            "label": "Body",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The body of the callback. Can leave blank if no body is needed."
+        }
+    ],
+	 "dataSourceBindings": [
+        {
+            "endpointId": "tfs:teamfoundation",
+            "target": "connectionId",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/BMC/common-config-extension/Data/Scopes/Default/Current/Collections/%24settings/Documents/hostconnection",
+            "resultSelector": "jsonpath:$.value[*]",
+			"resultTemplate": "{\"Value\":\"{{{description}}}#{{{ces_url}}}\",\"DisplayValue\":\"{{{description}}}\"}"
+        }],	
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
