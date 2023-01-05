@@ -1,0 +1,86 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f8e1465d-f48f-48c5-860b-b04778e7cc9e",
+    "name": "update-build-pipeline-variable",
+    "friendlyName": "update-build-pipeline-variable",
+    "description": "Update Build Pipeline Variable",
+    "helpMarkDown": "[More Info.](https://marketplace.visualstudio.com/items?itemName=imsherlock01.update-pipeline-variable)",
+    "category": "Build",
+    "author": "imsherlock01",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 9
+    },
+    "instanceNameFormat": "Update Pipeline Variable $(variableName) Value",
+    "inputs": [
+        {
+            "name": "variableName",
+            "type": "string",
+            "label": "Variable Name :",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of variable that you want to update. like 'revisionVersion'"
+        },
+        {
+            "name": "variableDataType",
+            "type": "pickList",
+            "label": "Type of Data Stored in Variable :",
+            "defaultValue": "int",
+            "required": true,
+            "helpMarkDown": "",
+            "options": {
+                "int" : "Number (should not contain decimal values)",
+                "string" : "String"
+            }
+        },
+        {
+            "name": "newVariableValueInInt",
+            "type": "int",
+            "label": "Increment Value By :",
+            "defaultValue": "1",
+            "required": true,
+            "helpMarkDown": "",
+            "visibleRule": "variableDataType = int"
+        },
+        {
+            "name": "newVariableValue",
+            "type": "string",
+            "label": "New Variable Value :",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "",
+            "visibleRule": "variableDataType != int"
+        },
+        {
+            "name": "pipelineUpdateComment",
+            "type": "string",
+            "label": "Save Comment :",
+            "defaultValue": "[AutoUpdate] : Update Pipeline Variable Task",
+            "required": true,
+            "helpMarkDown": "Pipeline update comment"
+        },
+        {
+            "name": "usePAT",
+            "type": "boolean",
+            "label": "Use Personal Access Token(PAT)?",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Use PAT instead of OAuth token of pipeline."
+        },
+        {
+            "name": "patValue",
+            "type": "string",
+            "label": "Personal Access Token(PAT) value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "[Steps to Generate PAT](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=preview-page)",
+            "visibleRule": "usePAT = true"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "update-build-pipeline-variable.ps1"
+        }
+    }
+}
