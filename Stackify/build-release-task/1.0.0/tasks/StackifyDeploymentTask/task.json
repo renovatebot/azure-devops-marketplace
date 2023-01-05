@@ -1,0 +1,110 @@
+{
+    "id": "574f4e45-56f1-4b37-bf2e-d32f59389970",
+    "name": "stackifyDeployment",
+    "friendlyName": "Stackify Retrace Deployment Recorder",
+    "description": "Record deployments in Stackify Retrace",
+    "helpMarkDown": "https://support.stackify.com/deployment-tracking/",
+    "category": "Deploy",
+    "author": "Stackify",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Stackify Deployment Task",
+    "groups": [
+        {
+            "name": "preconfiguredParameters",
+            "displayName": "Additional Parameters",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "stackifyApiKey",
+            "type": "string",
+            "label": "Stackify API Key",
+            "defaultValue": "$(Stackify.ApiKey)",
+            "required": true,
+            "helpMarkDown": "The Activation Key from your Retrace Account"
+        },
+        {
+            "name": "stackifyAppName",
+            "type": "string",
+            "label": "Stackify App Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The discovered name of your app in Retrace"
+        },
+        {
+            "name": "version",
+            "type": "string",
+            "label": "Version",
+            "defaultValue": "$(Release.ReleaseId)",
+            "required": true,
+            "helpMarkDown": "Release version"
+        },
+        {
+            "name": "environment",
+            "type": "string",
+            "label": "Environment",
+            "defaultValue": "$(Release.EnvironmentName)",
+            "required": true,
+            "helpMarkDown": "The name of your environment as defined in Retrace"
+        },
+        {
+            "name": "action",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "complete",
+            "required": true,
+            "helpMarkDown": "The action type for your deployment",
+            "options":  {
+                "complete": "complete",
+                "start": "start",
+                "cancel": "cancel"
+            }
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "label": "Name",
+            "defaultValue": "$(Release.ReleaseName)",
+            "required": false,
+            "helpMarkDown": "The name of your deployment"
+        },
+        {
+            "name": "commit",
+            "type": "string",
+            "label": "Commit",
+            "defaultValue": "$(Build.SourceVersion)",
+            "required": false,
+            "helpMarkDown": "",
+            "groupName": "preconfiguredParameters"
+        },
+        {
+            "name": "branch",
+            "type": "string",
+            "label": "Branch",
+            "defaultValue": "$(Build.SourceBranchName)",
+            "required": false,
+            "helpMarkDown": "",
+            "groupName": "preconfiguredParameters"
+        },
+        {
+            "name": "uri",
+            "type": "string",
+            "label": "URI",
+            "defaultValue": "$(Release.EnvironmentUri)",
+            "required": false,
+            "helpMarkDown": "Link to your deployment pipeline results",
+            "groupName": "preconfiguredParameters"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task.js",
+            "argumentFormat": ""
+        }
+    }
+}
