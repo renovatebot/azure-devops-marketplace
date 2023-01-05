@@ -1,0 +1,125 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "overview.md"
+        },
+        "license": {
+            "path": "license.txt"
+        }
+    },
+    "contributions": [
+        {
+            "id": "habitat-origin",
+            "description": "Habitat Origin",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "habitatoriginendpoint",
+                "displayName": "Habitat Origin",
+                "url": {
+                    "displayName": "Habitat Depot URL",
+                    "helpText": "URL to the Habitat depot that will be used to deploy to"
+                },
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Origin Name",
+                                "description": "Name of the Habitat origin",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "revision",
+                                "name": "Revision",
+                                "description": "Revision of the origin to use",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "publickey",
+                                "name": "Public Key",
+                                "description": "Public item of the origin key pair",
+                                "inputMode": "textarea",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Signing Key",
+                                "description": "Signing item of the origin key pair",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "githubauthtoken",
+                                "name": "GitHub Auth Token",
+                                "description": "Authentication token for GitHub for publishing Habitat packages.",
+                                "inputMode": "textbox",
+                                "isConfidential": "true",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide the requested information so that Habitat packages can be built and deployed. The GitHub authentication token requires `user:email` and `read:org` scopes"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_install"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-build",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_build"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-signing-key",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_signing_key"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

@@ -1,0 +1,62 @@
+{
+    "id": "431c62fb-3fb4-4a34-892f-6c0ccb6daa89",
+    "name": "vsts-habitat-build",
+    "friendlyName": "Build Plan (Habitat)",
+    "description": "Build a Habitat plan",
+    "helpMarkDown": "[More information](https://chef-partners.github.io/azuredevops-habitat/build-plan.html)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 74
+    },
+    "instanceNameFormat": "Build Habitat plan",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "habitatOrigin",
+            "type": "connectedService:habitatoriginendpoint",
+            "label": "Habitat Origin",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select or create new Habitat Origin endpoint. This is so that the HAB_AUTH_TOKEN is set for the build."
+        },
+        {
+            "name": "habitatSrcPath",
+            "type": "string",
+            "label": "Source Path",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Set the source path in which Habitat should work in"
+        },
+        {
+            "name": "habitatPlanContext",
+            "type": "string",
+            "label": "Plan Context",
+            "defaultValue": "habitat",
+            "required": true,
+            "helpMarkDown": "A directory containing a `plan.sh` file or a `habitat/` directory which contains the `plan.sh` file"
+        },
+        {
+            "name": "habitatArguments",
+            "type": "string",
+            "label": "Habitat Command Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra arguments to be applied to the end of the Habitat command line",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "habitat_build.js"
+        }
+    }
+}

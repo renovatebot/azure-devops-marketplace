@@ -1,0 +1,193 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "habitat-origin",
+            "description": "Habitat Origin",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "habitatoriginendpoint",
+                "displayName": "Habitat Origin",
+                "url": {
+                    "displayName": "Habitat Depot URL",
+                    "helpText": "URL to the Habitat depot that will be used to deploy to"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "originName",
+                        "name": "Origin Name",
+                        "description": "Name of the Habitat origin",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "revision",
+                        "name": "Revision",
+                        "description": "Revision of the origin to use",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "publicKey",
+                        "name": "Public Key",
+                        "description": "Public item of the origin key pair",
+                        "inputMode": "textarea",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "useSudo",
+                        "name": "Use Sudo",
+                        "description": "Use sudo on habitat commands",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "useSudoValues",
+                            "defaultValue": "1",
+                            "possibleValues": [
+                                {
+                                    "value": "1",
+                                    "displayValue": "True"
+                                },
+                                {
+                                    "value": "0",
+                                    "displayValue": "False"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "signingKey",
+                                "name": "Signing Key",
+                                "description": "Signing item of the origin key pair",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "authToken",
+                                "name": "Habitat Auth Token",
+                                "description": "Authentication token for publishing Habitat packages.",
+                                "inputMode": "textbox",
+                                "isConfidential": "true",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide the requested information so that Habitat packages can be built and deployed. The Habitat Auth Token should be created from your profile at https://bldr.habitat.sh/#/profile"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_install"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-build",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_build"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-signing-key",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_signing_key"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-pkg-upload",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_pkg_upload"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-pkg-export",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_pkg_export"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-pkg-install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/habitat_pkg_install"
+            }
+        },
+        {
+            "id": "vsts-habitat-tasks-docker-tag",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/docker_tag_image"
+            }
+        },
+        {
+            "id": "vsts-expose-habitat-build-vars",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/expose_habitat_build_vars"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

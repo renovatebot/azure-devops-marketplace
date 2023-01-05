@@ -1,0 +1,62 @@
+{
+    "id": "61a14025-0b60-4ac4-9f50-0b69a5e44ad4",
+    "name": "vsts-habitat-pkg-upload",
+    "friendlyName": "Package Upload (Habitat)",
+    "description": "Upload package to a depot",
+    "helpMarkDown": "[More information](https://chef-partners.github.io/azuredevops-habitat/package-upload.html)",
+    "category": "Deploy",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 74
+    },
+    "instanceNameFormat": "Package Upload",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "habitatOrigin",
+            "type": "connectedService:habitatoriginendpoint",
+            "label": "Habitat Origin",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select or create new Habitat Origin endpoint"
+        },
+        {
+            "name": "habitatPackagePath",
+            "type": "filePath",
+            "label": "Package Path",
+            "defaultValue": "$(Build.SourcesDirectory)/results/$(pkg_artifact)",
+            "required": true,
+            "helpMarkDown": "Path to the built Habitat package"
+        },
+        {
+            "name": "habitatPackageChannel",
+            "type": "string",
+            "label": "Package Channel",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Channel that the package will be put into in the Depot. If not 'unstable' will be used"
+        },
+        {
+            "name": "habitatArguments",
+            "type": "string",
+            "label": "Habitat Command Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra arguments to be applied to the end of the Habitat command line",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "habitat_pkg_upload.js"
+        }
+    }
+}

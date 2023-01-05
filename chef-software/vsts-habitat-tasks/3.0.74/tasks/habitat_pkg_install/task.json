@@ -1,0 +1,62 @@
+{
+    "id": "85c833cc-4ccd-420c-b007-2a150acdce78",
+    "name": "vsts-habitat-pkg-install",
+    "friendlyName": "Package Install (Habitat)",
+    "description": "Install a package from a local source",
+    "helpMarkDown": "[More information](https://chef-partners.github.io/azuredevops-habitat/package-install.html)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 74
+    },
+    "instanceNameFormat": "Package Install",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "habitatOrigin",
+            "type": "connectedService:habitatoriginendpoint",
+            "label": "Habitat Origin",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select or create new Habitat Origin endpoint"
+        },
+        {
+            "name": "habitatArtifactFolder",
+            "type": "string",
+            "label": "Drop Folder",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/$(System.TeamProject)-CI/drop",
+            "required": true,
+            "helpMarkDown": "Set the directory in which the built hart file can be found"
+        },
+        {
+            "name": "habitatLastBuildEnvPath",
+            "type": "string",
+            "label": "Last Build Environment File",
+            "defaultValue": "$(System.DefaultWorkingDirectory)/$(System.TeamProject)-CI/drop/last_build.env",
+            "required": true,
+            "helpMarkDown": "File to be read to set environment variable such as the artifact name"
+        },
+        {
+            "name": "habitatArguments",
+            "type": "string",
+            "label": "Habitat Command Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra arguments to be applied to the end of the Habitat command line",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "habitat_pkg_install.js"
+        }
+    }
+}

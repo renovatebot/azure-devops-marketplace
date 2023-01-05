@@ -1,0 +1,79 @@
+{
+    "id": "a8cfe066-e65f-4946-a181-bd9f13d65235",
+    "name": "vsts-habitat-pkg-export",
+    "friendlyName": "Package Export (Habitat)",
+    "description": "Export a package to the specified format",
+    "helpMarkDown": "[More information](https://chef-partners.github.io/azuredevops-habitat/package-export.html)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 74
+    },
+    "instanceNameFormat": "Package Export",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "habitatOrigin",
+            "type": "connectedService:habitatoriginendpoint",
+            "label": "Habitat Origin",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select or create new Habitat Origin endpoint"
+        },
+        {
+            "name": "habitatExportFormat",
+            "type": "pickList",
+            "label": "Export Format",
+            "defaultValue": "docker",
+            "required": true,
+            "helpMarkDown": "Select the export format",
+            "options": {
+                "aci": "aci",
+                "docker": "docker",
+                "helm": "helm",
+                "kubernetes": "kubernetes",
+                "mesos": "mesos",
+                "tar": "tar"
+            }
+        },
+        {
+            "name": "habitatPackagePath",
+            "type": "filePath",
+            "label": "Package Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the built Habitat package"
+        },
+        {
+            "name": "habitatPackageChannel",
+            "type": "string",
+            "label": "Package Channel",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Channel that packages will be downloaded from when creating the exported image. If not set `stable` will be used",
+            "groupName": "advanced"
+        },
+        {
+            "name": "habitatArguments",
+            "type": "string",
+            "label": "Habitat Command Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Extra arguments to be applied to the end of the Habitat command line",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "habitat_pkg_export.js"
+        }
+    }
+}
