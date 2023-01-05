@@ -1,0 +1,109 @@
+{
+    "id": "9d34bd56-d7dc-41d6-ab8f-e8d6329793c3",
+    "name": "CreateStorageAccount",
+    "friendlyName": "Create Storage Account",
+    "description": "Create Storage Account and/or table storage",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Paweł Ruciński - github.com/meanin <meanin@wp.pl>",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Create $(StorageAccountName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+          "name": "ConnectedServiceName",
+          "type": "connectedService:AzureRM",
+          "label": "Azure Subscription",
+          "defaultValue": "",
+          "required": true,
+          "helpMarkDown": "Azure Resource Manager subscription where storage is."
+        },
+        {
+            "name": "StorageAccountName",
+            "type": "string",
+            "label": "Storage Account name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Storage Account name"
+        },
+        {
+            "name": "Location",
+            "type": "pickList",
+            "label": "Location",
+            "required": false,
+            "helpMarkDown": "Selected location for storage account, if not selected resource group location will be used",
+            "defaultValue": "",
+            "options": {
+                "": "Inherited from Resource Group",
+                "eastasia": "East Asia",
+                "southeastasia": "Southeast Asia",
+                "centralus": "Central US",
+                "eastus": "East US",
+                "eastus2": "East US 2",
+                "westus": "West US",
+                "northcentralus": "North Central US",
+                "southcentralus": "South Central US",
+                "northeurope": "North Europe",
+                "westeurope": "West Europe",
+                "japanwest": "Japan West",
+                "japaneast": "Japan East",
+                "brazilsouth": "Brazil South",
+                "australiaeast": "Australia East",
+                "australiasoutheast": "Australia Southeast",
+                "southindia": "South India",
+                "centralindia": "Central India",
+                "westindia": "West India",
+                "canadacentral": "Canada Central",
+                "canadaeast": "Canada East",
+                "uksouth": "UK South",
+                "ukwest": "UK West",
+                "westcentralus": "West Central US",
+                "westus2": "West US 2",
+                "koreacentral": "Korea Central",
+                "koreasouth": "Korea South",
+                "francecentral": "France Central"
+            }
+        },
+        {
+            "name": "Sku",
+            "type": "pickList",
+            "label": "Sku",
+            "required": true,
+            "helpMarkDown": "Specifies the SKU name of the Storage account that this cmdlet creates",
+            "defaultValue": "Standard_LRS",
+            "options":{
+                "Standard_LRS": "Locally-redundant storage",
+                "Standard_ZRS": "Zone-redundant storage",
+                "Standard_GRS": "Geo-redundant storage",
+                "Standard_RAGRS": "Read access geo-redundant storage",
+                "Premium_LRS": "Premium locally-redundant storage"
+            }
+        },
+        {
+            "name": "TableName",
+            "type": "string",
+            "label": "Table name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Selected table name, if empty, table won't be created"
+        }
+    ],
+    "execution": {
+        "AzurePowerShell": {
+          "target": "createstorageaccount.ps1"
+        }
+    }
+}
