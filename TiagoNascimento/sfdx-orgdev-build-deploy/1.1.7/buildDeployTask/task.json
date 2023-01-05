@@ -1,0 +1,127 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "2179ea1f-a2c3-494f-bfd1-ac1c6f5274fa",
+    "name": "sfdx-orgdev-build-deploy",
+    "friendlyName": "SFDX Org Development Model - Build & Deploy",
+    "description": "An Azure Devops extension to perform some tricks with SFDX. Once executed will download and install the latest version of Salesforce CLI, authenticate in a target destionation using an JWT Oauth grant and execute one or more deploys, including destructive changes and possibly anonymous apex execution.",
+    "helpMarkDown": "You can find help here: https://github.com/tiagonnascimento/azuredevops-sfdx-orgdev-build-deploy",
+    "category": "Utility",
+    "author": "Tiago Nascimento",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 7
+    },
+    "instanceNameFormat": "Echo $(username)",
+    "inputs": [
+        {
+            "name": "type",
+            "type": "string",
+            "label": "Type of destination org (production vs sandbox)",
+            "defaultValue": "sandbox",
+            "required": true,
+            "helpMarkDown": "Type of deployment, could be one of the two: production or sandbox (default)"
+        },
+        {
+            "name": "privateKeyPath",
+            "type": "string",
+            "label": "Private Key Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path for the encrypted private key to be used on force:auth:jwt:grant"
+        },
+        {
+            "name": "decryptionKey",
+            "type": "string",
+            "label": "Decryption Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Decryption key to be used to decrypt the private key"
+        },
+        {
+            "name": "decryptionIV",
+            "type": "string",
+            "label": "Decryption IV",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Decryption IV to be used to decrypt the private key"
+        },
+        {
+            "name": "clientID",
+            "type": "string",
+            "label": "Client ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Client ID / Consumer Key of a connected app to the target destination"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Username to be used to connect in the target destination"
+        },
+        {
+            "name": "checkonly",
+            "type": "boolean",
+            "label": "Checkonly Deploy",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Flag that will indicate whether the deploy is a checkonly deploy or not. If is a checkonly, on force:source:deploy command the option -c will be appended"
+        },
+        {
+            "name": "manifestFiles",
+            "type": "string",
+            "label": "Manifest Files",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Comma separated list of manifest files (package.xmls) to be used on deployments"
+        },
+        {
+            "name": "deployWaitTime",
+            "type": "string",
+            "label": "Deploy Wait Time",
+            "defaultValue": "10",
+            "required": false,
+            "helpMarkDown": "Number of minutes for wait time for deployment to finish. Default is 10"
+        },
+        {
+            "name": "preDestructivePath",
+            "type": "string",
+            "label": "Destructive Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path for the pre destructive changes manifest file"
+        },
+        {
+            "name": "postDestructivePath",
+            "type": "string",
+            "label": "Destructive Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path for post destructive changes manifest file"
+        },
+        {
+            "name": "anonymousApex",
+            "type": "string",
+            "label": "Anonymous Apex",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Anonymous Apex to be executed after deployment / destructive changes"
+        },
+        {
+            "name": "artifactPath",
+            "type": "string",
+            "label": "Artifact Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "To be used on release pipelines - path where the repo can be found"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
