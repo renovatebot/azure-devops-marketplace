@@ -1,0 +1,166 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.test",
+        "vso.test_write",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "sod-main",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "sod-main"
+            }
+        },
+        {
+            "id": "eyal-endpoint-type",
+            "description": "Eyal Sauce Credentials",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "eyal-sauce",
+                "displayName": "Eyal Sauce Labs Credentials",
+                "url": "https://saucelabs.com/rest/",
+                "dataSources": [
+                    {
+                        "resultSelector": "jsonpath:$.status_message",
+                        "name": "getStatus",
+                        "endpointUrl": "https://saucelabs.com/rest/v1/info/status"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getBuildFullJobs",
+                        "endpointUrl": "https://{{sauceEndpoint}}/rest/v1/{{username}}/build/{{build}}/jobs?full=1&vsts=1"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getAuth",
+                        "endpointUrl": "https://sauce-for-vsts.saucelabs.com/rest/v1/users/halkeye/bulk/auth?{{query}}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "datacenter",
+                                "name": "Data Center",
+                                "description": "SauceLabs data center",
+                                "inputMode": "combo",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "dataCenterValues",
+                                    "possibleValues": [
+                                        {
+                                            "value": "us-west-1",
+                                            "displayValue": "US West 1"
+                                        },
+                                        {
+                                            "value": "eu-central-1",
+                                            "displayValue": "EU Central 1"
+                                        },
+                                        {
+                                            "value": "us-east-1",
+                                            "displayValue": "US East 1 (headless)"
+                                        }
+                                    ],
+                                    "isLimitedToPossibleValues": true
+                                }
+                            },
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API Token",
+                                "description": "API Token Found on your saucelabs account page",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Eyal Custom Tab",
+                "uri": "infoTab.html"
+            }
+        },
+        {
+            "id": "build-info-tab-2",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Sauce Labs",
+                "uri": "sod-build-info/infoTab.html"
+            }
+        },
+        {
+            "id": "embed-dialog",
+            "type": "ms.vss-web.control",
+            "description": "Embed Dialog",
+            "targets": [],
+            "properties": {
+                "uri": "sod-build-info/embedDialog.html?auth={{auth}}"
+            }
+        },
+        {
+            "id": "HelloWorldWidget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog"
+            ],
+            "properties": {
+                "name": "Hello World Widget",
+                "description": "My first widget",
+                "catalogIconUrl": "images/icon.png",
+                "previewImageUrl": "images/saucelabs-icon.png",
+                "uri": "sod-hello-world/hello-world.html",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 2
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
