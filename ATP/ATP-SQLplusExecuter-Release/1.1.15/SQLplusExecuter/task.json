@@ -1,0 +1,59 @@
+{
+	"id": "1c24c71a-71b3-4641-97c1-aff959307114",
+	"name": "SQLplusExecuter-Release",
+	"friendlyName": "SQLplus Executer - Release Edition",
+	"description": "Task that execute sql-files using SQLplus",
+	"author": "ATP P&I IT",
+	"helpMarkDown": "Execute SQL-files in for working sorted by name. ### Prerequisites * Allow scripts to access Oauth must be **Enabled**",
+	"category": "Utility",
+	"visibility": [
+		"Release"
+	],
+	"demands": [],
+	"version": {
+		"Major": "1",
+		"Minor": "1",
+		"Patch": "15"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "SQLplusExecuter $(message)",
+	"inputs": [
+	{
+		"name": "workingdir",
+		"type": "string",
+		"label": "File or folder",
+		"defaultValue": "$(SYSTEM.DEFAULTWORKINGDIRECTORY)",
+		"required": true,
+		"helpMarkDown": "Execute file or if folder it will execute files sorted by name."
+	},
+	{
+		"name": "includefiles",
+		"type": "array",
+		"label": "Type of files to executed",
+		"defaultValue": "[\".sql\",\".txt\"]",
+		"required": true,
+		"helpMarkDown": "Type of files the task will execute"
+	},
+	{
+		"name": "logfilesfolder",
+		"type": "string",
+		"label": "Log Folder",
+		"defaultValue": "$(SYSTEM.DEFAULTWORKINGDIRECTORY)",
+		"required": true,
+		"helpMarkDown": "Folder where to put log-files."
+	},
+	{
+		"name": "failIfNothing",
+		"type": "string",
+		"label": "Fail if no files to process",
+		"defaultValue": "Yes",
+		"required": true,
+		"helpMarkDown": "Check this option if you want the build to fail in case of no files to process."
+	}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "executer.ps1"
+		}
+	}
+}
