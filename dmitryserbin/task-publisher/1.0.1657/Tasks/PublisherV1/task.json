@@ -1,0 +1,105 @@
+{
+  "id": "606088f2-4618-4497-846e-dd42544f2fec",
+  "name": "taskpublisher",
+  "friendlyName": "Task Publisher",
+  "instanceNameFormat": "Publish Task",
+  "description": "Publish custom Azure DevOps pipeline task using managed service endpoint",
+  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-task-publisher> project repository.",
+  "category": "Deploy",
+  "author": "Dmitry Serbin",
+  "preview": false,
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1657
+  },
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "npm"
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "EndpointType",
+      "type": "radio",
+      "label": "Azure DevOps endpoint type",
+      "helpMarkDown": "Select endpoint type to connect Azure DevOps: \nService = user-defined personal access token (PAT) service endpoint \n\nNote: requires 'Extensions' and 'Agent Pools' read & manage permissions; \nIntegrated = default 'SystemVssConnection' service endpoint for 'Project Collection Build Service' user account.",
+      "required": true,
+      "defaultValue": "service",
+      "options": {
+        "service": "Service Endpoint",
+        "integrated": "Integrated Endpoint"
+      }
+    },
+    {
+      "name": "ConnectedService",
+      "type": "connectedService:ExternalTfs",
+      "label": "Service endpoint",
+      "helpMarkDown": "Select service endpoint for Azure DevOps account",
+      "visibleRule": "EndpointType = service",
+      "required": true
+    },
+    {
+      "name": "TaskPath",
+      "type": "filePath",
+      "label": "Path to task",
+      "helpMarkDown": "Path to directory containing task",
+      "required": true
+    },
+    {
+      "name": "Replace",
+      "type": "boolean",
+      "label": "Replace existing task",
+      "helpMarkDown": "Remove existing task entirely before publishing new version",
+      "groupName": "advanced",
+      "defaultValue": false,
+      "required": false
+    },
+    {
+      "name": "Patch",
+      "type": "boolean",
+      "label": "Update patch version",
+      "helpMarkDown": "Update task patch version with current build or release ID (use Release.ReleaseId or Build.BuildId variable)",
+      "groupName": "advanced",
+      "defaultValue": false,
+      "required": false
+    },
+    {
+      "name": "Preview",
+      "type": "boolean",
+      "label": "Publish preview version",
+      "helpMarkDown": "Publish preview version of the task",
+      "groupName": "advanced",
+      "defaultValue": false,
+      "required": false
+    },
+    {
+      "name": "ArtifactsPath",
+      "type": "filePath",
+      "label": "Path to artifacts directory",
+      "helpMarkDown": "Specify path to directory containing task artifacts",
+      "groupName": "advanced",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "required": true
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  },
+  "modules": [
+    "VstsTaskSdk"
+  ]
+}
