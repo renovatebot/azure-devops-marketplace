@@ -1,0 +1,97 @@
+{
+  "id": "06080acf-39fa-4208-8831-79d275b29061",
+  "name": "StartSandbox",
+  "friendlyName": "Start Sandbox",
+  "description": "Starts a sandbox with Torque",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Quali",
+  "version": {
+    "Major": 0,
+    "Minor": 3,
+    "Patch": 1
+  },
+  "runsOn": [
+    "Agent"
+  ],
+  "instanceNameFormat": "Start Sandbox",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "torqueEndpoint",
+      "type": "connectedService:torqueServiceEndpoint",
+      "label": "Service Connection",
+      "required": true,
+      "helpMarkDown": "This is the name of the connection that you entered when you created the \"Torque service connection\" during the plugin configuration."
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "20",
+      "helpMarkDown": "Set the timeout for this step (in minutes), if your sandbox will not be ready when the timeout is reached, Torque will abort the deployment.",
+      "required": true
+    },
+    {
+      "name": "space",
+      "type": "string",
+      "label": "Space name",
+      "required": true,
+      "helpMarkDown": "Enter a name for your Torque space."
+    },
+    {
+      "name": "blueprint",
+      "type": "string",
+      "label": "Blueprint name",
+      "required": true,
+      "helpMarkDown": "Enter the name of the blueprint you would like to use for creating this sandbox. NOTE: To specify one of Torque’s sample blueprints, use a [sample] prefix, i.e: [sample]Java Spring."
+    },
+    {
+      "name": "sandbox",
+      "type": "string",
+      "label": "Sandbox name",
+      "required": true,
+      "helpMarkDown": "Enter a name for the sandbox."
+    },
+    {
+      "name": "Inputs",
+      "type": "multiLine",
+      "label": "Inputs",
+      "required": false,
+      "helpMarkDown": "If this blueprint has inputs, you may specify them in a comma/semi-comma/newline separated list of input names and their values. e.g., input1 name=value1, input2 name=value2"
+    },
+    {
+      "name": "duration",
+      "type": "string",
+      "label": "duration",
+      "defaultValue": "120",
+      "helpMarkDown": "Set the duration (in minutes), after which Torque will stop the deployment. if omitted no duration is set.",
+      "required": false
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "Sandbox_Details",
+      "description": "All the sandbox details including instances' IP addresses, ports and other infrastructure details required to properly run your tests. You may query this parameter to get the required information."
+    },
+    {
+      "name": "Sandbox_Id",
+      "description": "The identifier of the created sandbox. You will use this identifier to end your sandbox when needed."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}
