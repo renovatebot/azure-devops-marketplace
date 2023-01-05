@@ -1,0 +1,80 @@
+{
+    "id": "90b72646-ef1a-4bfa-8b87-7a229b831f9d",
+    "name": "talis-fetch-build-artifact",
+    "friendlyName": "Talis Fetch Build Artifacts",
+    "description": "Talis Fetch build artifacts from the server or a file share",
+    "helpMarkDown": "Requires **Allow Scripts to Access OAuth Token** to be **enabled**.<br/>.",
+    "category": "Utility",
+    "author": "Talis modified original (Bool (by Sigma))",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+    "instanceNameFormat": "Fetch Artifact: $(artifactName)",
+    "inputs": [
+        {
+            "name": "project",
+            "type": "pickList",
+            "label": "Project",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Project from where to fetch the build artifact.",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "buildDefinitionId",
+            "type": "pickList",
+            "label": "Build Definition",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Build definition from where to fetch build artifact.",
+            "properties": {
+                "DisableManageLink": "True"
+            },
+            "visibleRule": "project != \"\""
+        },
+        {
+            "name": "artifactName",
+            "type": "string",
+            "label": "Build Artifact Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the artifact to fetch, eg. 'drop'.",
+            "visibleRule": "buildDefinitionId != \"\""
+        },
+        {
+            "name": "targetDirectory",
+            "type": "filePath",
+            "label": "Target Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The directory where to download the artifact. Leaving it blank defaults to source root directory and is equal to using <code>$(Build.SourcesDirectory)</code>.",
+            "visibleRule": "buildDefinitionId != \"\""
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "project",
+            "endpoint": "/_api/_wit/teamProjects?__v=5",
+            "selector": "jsonpath:$.projects[*].name",
+            "keySelector": "jsonpath:$.projects[*].guid",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "buildDefinitionId",
+            "endpoint": "/$(project)/_apis/build/Definitions?queryOrder=3",
+            "selector": "jsonpath:$.value[*].name",
+            "keySelector": "jsonpath:$.value[*].id",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js",
+            "argumentFormat": ""
+        }
+    }
+}
