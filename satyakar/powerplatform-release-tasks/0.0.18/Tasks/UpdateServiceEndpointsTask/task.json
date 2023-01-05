@@ -1,0 +1,79 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ae7d39e8-4fbb-4fc6-8fa6-e6cb48b3ba87",
+    "name": "UpdateServiceEndpoints",
+    "friendlyName": "Update Service Endpoints",
+    "description": "Update service endpoints in the Power Platform / Dataverse environment.",
+    "helpMarkDown": "Reads a json array of serviceendpointid and configValue, and update the service endpoints details",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "Satya Kar",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Update Service Endpoints",
+    "inputs": [
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Dataverse URL",
+            "defaultValue": "$(dataverseUrl)",
+            "required": true,
+            "helpMarkDown": "The URL for the target Dataverse environment"
+        },
+        {
+            "name": "clientId",
+            "type": "string",
+            "label": "Client Id",
+            "defaultValue": "$(clientId)",
+            "required": true,
+            "helpMarkDown": "The registered clientId for User from Azure AD"
+        },
+        {
+            "name": "clientSecret",
+            "type": "string",
+            "label": "Client Secret",
+            "defaultValue": "$(clientSecret)",
+            "required": true,
+            "helpMarkDown": "The generated secret for the clientId"
+        },
+        {
+            "name": "useAzureKeyVaultSecret",
+            "type": "boolean",
+            "label": "Use of Azure KeyVault Secret",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "If true, the task will get the service endpoint connection string from Power Platform environment variable referencing a secret stored in Azure Key Vault."
+        },
+        {
+            "name": "serviceEndpointConfig",
+            "type": "multiLine",
+            "visibleRule": "useAzureKeyVaultSecret = true",
+            "label": "Config (A json array of serviceendpointid & environment variable name)",
+            "required": true,
+            "helpMarkDown": "FORMAT: [{'serviceEndpointid':'<serviceEndpointid>','configValue':'<envVariableName>'}]"
+        },
+        {
+            "name": "serviceEndpointConfig1",
+            "type": "multiLine",
+            "visibleRule": "useAzureKeyVaultSecret = false",
+            "label": "Config (A json array of serviceendpointid & service endpoint connectionstring(sb://))",
+            "required": true,
+            "helpMarkDown": "FORMAT: [{'serviceEndpointid':'<serviceEndpointid>','configValue':'<connectionstring(sb://)>'}]"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "UpdateServiceEndpoints.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)",
+            "platforms": [
+              "windows"
+            ]
+        }
+    }
+}
