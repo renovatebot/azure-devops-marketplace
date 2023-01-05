@@ -1,0 +1,154 @@
+{
+    "id": "b69d19a0-7f6d-11e5-a86a-c199aa7a6cf0",
+    "name": "CodePushRelease",
+    "friendlyName": "CodePush - Release",
+    "description": "Release an update to a CodePush app deployment",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "2",
+        "Patch": "2"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Release update to $(deploymentName) ($(appName))",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Update Metadata",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "authType",
+            "type": "pickList",
+            "label": "Authentication Method",
+            "defaultValue": "AccessKey",
+            "helpMarkDown": "",
+            "options": {
+                "AccessKey": "Access Key",
+                "ServiceEndpointCodePush": "Service Endpoint (CodePush)",
+                "ServiceEndpointHockeyApp": "Service Endpoint (HockeyApp)"
+            }
+        },
+        {
+            "name": "accessKey",
+            "type": "string",
+            "label": "Access Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Access key used to authenticate with the CodePush service.",
+            "visibleRule": "authType = AccessKey"
+        },
+        {
+            "name": "serviceEndpointCodePush",
+            "type": "connectedService:codepush-auth-key",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "CodePush service endpoint that is configured with your account credentials.",
+            "visibleRule": "authType = ServiceEndpointCodePush"
+        },
+        {
+            "name": "serviceEndpointHockeyApp",
+            "type": "connectedService:HockeyApp",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "HockeyApp service endpoint that is configured with your account credentials.",
+            "visibleRule": "authType = ServiceEndpointHockeyApp"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "App Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the app you want to release the update for."
+        },
+        {
+            "name": "deploymentName",
+            "type": "pickList",
+            "label": "Deployment",
+            "defaultValue": "Staging",
+            "required": false,
+            "helpMarkDown": "Name of the deployment you want to release the update to.",
+            "options": {
+                "Production": "Production",
+                "Staging": "Staging"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "packagePath",
+            "type": "filePath",
+            "label": "Update Contents Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the file or directory that contains the update you want to release."
+        },
+        {
+            "name": "appStoreVersion",
+            "type": "string",
+            "label": "Target Binary Version",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Semver expression that specifies the binary app version(s) this release is targetting (e.g. 1.1.0, ~1.2.3)."
+        },
+        {
+            "name": "rollout",
+            "type": "string",
+            "label": "Rollout",
+            "defaultValue": "100%",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Percentage of users this release should be immediately available to."
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "label": "Description",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Description of the changes made to the app in this release.<br />Note: This can be set to **$(Release.ReleaseDescription)** if being run within a release definition, and you want to inherit the release's description."
+        },
+        {
+            "name": "isMandatory",
+            "type": "boolean",
+            "label": "Mandatory",
+            "defaultValue": false,
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Whether this release should be considered mandatory."
+        },
+        {
+            "name": "isDisabled",
+            "type": "boolean",
+            "label": "Disabled",
+            "defaultValue": false,
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Whether this release should be immediately downloadable."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "codepush-release.js",
+            "argumentFormat": ""
+        },
+        "PowerShell": {
+            "target": "$(currentDirectory)\\codepush-release.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

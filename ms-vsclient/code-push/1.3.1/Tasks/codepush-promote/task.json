@@ -1,0 +1,184 @@
+{
+    "id": "4e901d0e-189b-4403-a030-1d06ff8a3b28",
+    "name": "CodePushPromote",
+    "friendlyName": "CodePush - Promote",
+    "description": "Promote the latest CodePush release from one app deployment to another",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "2",
+        "Patch": "2"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Promote $(sourceDeploymentName) to $(targetDeploymentName) ($(appName))",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Update Metadata",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "authType",
+            "type": "pickList",
+            "label": "Authentication Method",
+            "defaultValue": "AccessKey",
+            "helpMarkDown": "",
+            "options": {
+                "AccessKey": "Access Key",
+                "ServiceEndpointCodePush": "Service Endpoint (CodePush)",
+                "ServiceEndpointHockeyApp": "Service Endpoint (HockeyApp)"
+            }
+        },
+        {
+            "name": "accessKey",
+            "type": "string",
+            "label": "Access Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Access key used to authenticate with the CodePush service.",
+            "visibleRule": "authType = AccessKey"
+        },
+        {
+            "name": "serviceEndpointCodePush",
+            "type": "connectedService:codepush-auth-key",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "CodePush service endpoint that is configured with your account credentials.",
+            "visibleRule": "authType = ServiceEndpointCodePush"
+        },
+        {
+            "name": "serviceEndpointHockeyApp",
+            "type": "connectedService:HockeyApp",
+            "label": "Service Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "HockeyApp service endpoint that is configured with your account credentials.",
+            "visibleRule": "authType = ServiceEndpointHockeyApp"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "App Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the app you want to promote a release for."
+        },
+        {
+            "name": "sourceDeploymentName",
+            "type": "pickList",
+            "label": "Source Deployment",
+            "defaultValue": "Staging",
+            "required": true,
+            "helpMarkDown": "Name of the deployment you want to promote the latest release from.",
+            "options": {
+                "Production": "Production",
+                "Staging": "Staging"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "targetDeploymentName",
+            "type": "pickList",
+            "label": "Destination Deployment",
+            "defaultValue": "Production",
+            "required": true,
+            "helpMarkDown": "Name of the deployment you want to promote the release to.",
+            "options": {
+                "Production": "Production",
+                "Staging": "Staging"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "rollout",
+            "type": "string",
+            "label": "Rollout",
+            "defaultValue": "100%",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Percentage of users this release should be immediately available to. Note that the rollout property will not be inherited from the release being promoted."
+        },
+        {
+            "name": "description",
+            "type": "pickList",
+            "label": "Description",
+            "defaultValue": "Inherit",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Description of the changes made to the app in this release. Selecting \"Inherit\" will use the description from the release being promoted.<br />Note: This can be set to **$(Release.ReleaseDescription)** if being run within a release definition, and you want to inherit the release's description.",
+            "options": {
+                "Inherit": "Inherit"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "appStoreVersion",
+            "type": "pickList",
+            "label": "Target Binary Version",
+            "defaultValue": "Inherit",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Semver expression that specifies the binary app version(s) this release is targeting (e.g. 1.1.0, ~1.2.3). Selecting \"Inherit\" will use the target binary version from the release being promoted.",
+            "options": {
+                "Inherit": "Inherit"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "isMandatory",
+            "type": "pickList",
+            "label": "Mandatory",
+            "defaultValue": "Inherit",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Whether this release should be considered mandatory. Selecting \"Inherit\" will use the mandatory attribute from the release being promoted.",
+            "options": {
+                "Inherit": "Inherit",
+                "false": "No",
+                "true": "Yes"
+            }
+        },
+        {
+            "name": "isDisabled",
+            "type": "pickList",
+            "label": "Disabled",
+            "defaultValue": "Inherit",
+            "required": true,
+            "groupName": "advanced",
+            "helpMarkDown": "Whether this release should be immediately downloadable. Selecting \"Inherit\" will use the disabled attribute from the release being promoted.",
+            "options": {
+                "Inherit": "Inherit",
+                "false": "No",
+                "true": "Yes"
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "codepush-promote.js",
+            "argumentFormat": ""
+        },
+        "PowerShell": {
+            "target": "$(currentDirectory)\\codepush-promote.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
