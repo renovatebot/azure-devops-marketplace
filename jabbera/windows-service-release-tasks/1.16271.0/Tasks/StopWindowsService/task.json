@@ -1,0 +1,111 @@
+{
+    "id": "601CD43E-B65D-49B7-B118-091333BD5B9F",
+    "name": "StopWindowsService",
+    "friendlyName": "Stop Windows Service",
+    "description": "Stop a windows service.",
+    "helpMarkDown": "Version: 1.16271.0 [More Information](https://github.com/jabbera/my-vsts-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Michael Barry",
+    "version": {
+        "Major": "1",
+        "Minor": "16271",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",	
+    "inputs": [
+        {
+            "name": "ServiceNames",
+            "type": "multiLine",
+            "label": "Service Names",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the windows service to stop. Comma separate to stop multiple." 
+        },
+        {
+            "name": "EnvironmentName",
+            "type": "multiLine",
+            "label": "Machines",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide a comma separated list of machine IP addresses or FQDNs. <br>Eg: dbserver.fabrikam.com,192.168.12.34 <br>Or provide output variable of other tasks. Eg: $(variableName)"
+        },
+        {
+            "name": "AdminUserName",
+            "type": "string",
+            "label": "Admin Login",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Administrator login for the target machines."
+        },
+        {
+            "name": "AdminPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Password for administrator login for the target machines. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+        },
+		{
+		  "name": "StartupType",
+		  "type": "radio",
+		  "label": "Service Startup Type",
+		  "required": false,
+		  "defaultValue": "Disabled",
+		  "options": {
+			"Disabled": "Disabled",
+			"Manual": "Manual",
+			"Automatic": "Automatic"
+		  },
+		  "helpMarkDown": "Select the startup type for the service."
+		},
+		{
+            "name": "WaitTimeoutInSeconds",
+            "type": "string",
+            "label": "Wait timeout",
+            "defaultValue": "120",
+            "required": true,
+            "helpMarkDown": "Amount of time in seconds to wait for the service to start"
+        },
+		{
+            "name": "protocol",
+            "type": "radio",
+            "label": "Protocol",
+            "required": true,
+            "defaultValue": "Http",
+            "options": {
+                "Http": "HTTP",
+                "Https": "HTTPS"
+            },
+            "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTPS."
+        },
+        {
+            "name": "TestCertificate",
+            "type": "boolean",
+            "label": "Test Certificate",
+            "defaultValue": "true",
+            "visibleRule": "protocol = Https",
+            "required": false,
+            "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol."
+        },
+        {
+            "name": "KillIfTimedOut",
+            "type": "boolean",
+            "label": "Kill service if stop fails",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Select this option for force terminate the service if the stop fails."
+        }
+    ],
+    "instanceNameFormat": "Stop Windows Service: $(ServiceNames)",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\StopWindowsService.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
