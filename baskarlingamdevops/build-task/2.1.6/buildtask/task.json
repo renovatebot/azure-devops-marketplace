@@ -1,0 +1,87 @@
+{
+  "id": "3356988a-91b9-40ee-871b-273f35ee5f6e",
+  "name": "ReplaceVariables",
+  "friendlyName": "Replace Variables",
+  "description": "Replace variables in any type of file readable by .net framework",
+  "author": "Baskar Lingam Ramachandran <bskr.psgtech@gmail.com; baskisumi@hotmail.com>",
+  "helpMarkDown": "Use this task to replace variables in any kind of file readable by .net framework",
+  "category": "Utility",
+  "visibility": [
+    "Release",
+	"Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "1",
+    "Patch": "6"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Replace Variables",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PathToFolder",
+      "type": "multiLine",
+      "label": "Folder path",
+      "required": true,
+      "defaultValue": "F:\\FolderPath",
+	  "helpMarkDown": "Enter the folder path"
+    },
+    {
+      "name": "FilePattern",
+      "type": "multiLine",
+      "label": "FilePattern",
+      "required": true,
+      "defaultValue": "*.config",
+	  "helpMarkDown": "In each line enter the wildcard pattern. For example, *.config will match all .config files."
+    },
+    {
+      "name": "ReplaceUndefined",
+      "type": "boolean",
+      "label": "Replace Undefined variables with empty values?",
+      "required": true,
+      "defaultValue": "true",
+	  "helpMarkDown": "Choose true if the undefined variables in the files should be replaced with empty values."
+    },
+    {
+      "name": "Recursive",
+      "type": "boolean",
+      "label": "Recursive?",
+      "required": true,
+      "defaultValue": "true",
+	  "helpMarkDown": "Check this to search for the given file/file pattern in all sub folders of the given folder.",
+	  "groupName": "advanced"
+    },
+	{
+      "name": "RegexPattern",
+      "type": "multiLine",
+      "label": "Regex Pattern",
+      "required": true,
+      "defaultValue": "__(\\w+[\\.\\w+]*)__\r\n__(\\w+)__",
+	  "helpMarkDown": "Enter the Regex Pattern to use. Multiple values are supported. Enter 1 pattern in each line. Use \\_\\_(\\w+)\\_\\_ if you want to search for words without any special character in them.",
+	  "groupName": "advanced"
+    },
+	{
+      "name": "SecretVariables",
+      "type": "multiLine",
+      "label": "Secret Variables",
+      "required": false,
+      "defaultValue": "Obsolete field. NO NEED TO KEEP ANYTHING IN THIS FIELD. This field will be removed in future version.",
+	  "helpMarkDown": "Obsolete field. NO NEED TO KEEP ANYTHING IN THIS FIELD. This field will be removed in future version.",
+	  "groupName": "advanced"
+    }
+  ],
+  "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\task.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
