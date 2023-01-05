@@ -1,0 +1,86 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "85e4cb23-720e-4547-b915-a996f214c64b",
+  "name": "ChangedFilesMultibranch",
+  "friendlyName": "Check Changed Files Multibranch",
+  "description": "Pipeline task to check if some files changed since last build and support multibranch",
+  "helpUrl": "https://marketplace.visualstudio.com/items?itemName=mohamedelhabib.vsts-changed-files-multibranch",
+  "helpMarkDown": "[More Information about this task](https://marketplace.visualstudio.com/items?itemName=mohamedelhabib.vsts-changed-files-multibranch)",
+  "category": "Utility",
+  "author": "MohamedElhabib",
+  "version": {
+    "Major": 2,
+    "Minor": 4,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Check changed files: $(variable)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "rules",
+      "type": "multiLine",
+      "label": "Filter rules",
+      "defaultValue": "**",
+      "helpMarkDown": "A glob value per line to filter files that needs to be checked. Also allows to define multiple variables."
+    },
+    {
+      "name": "variable",
+      "type": "string",
+      "groupName": "advanced",
+      "label": "Default variable",
+      "defaultValue": "HasChanged",
+      "required": true,
+      "helpMarkDown": "The name of the default output variable to set to be available in next steps/jobs/stages."
+    },
+    {
+      "name": "isOutput",
+      "type": "boolean",
+      "groupName": "advanced",
+      "label": "Is output",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "Are variables available in next stages?"
+    },
+    {
+      "name": "refBranch",
+      "type": "string",
+      "label": "Reference branch",
+      "required": true,
+      "helpMarkDown": "The branch that will be used as reference to compare in case of multi branches pipeline"
+    },
+    {
+      "name": "forceToTrue",
+      "type": "boolean",
+      "groupName": "advanced",
+      "label": "Force to true",
+      "required": true,
+      "helpMarkDown": "If set to true all variables will be set to true. If should be a dynamic value computed based on pipeline parameters for example."
+    },
+    {
+      "name": "cwd",
+      "type": "filePath",
+      "groupName": "advanced",
+      "label": "Working directory",
+      "helpMarkDown": "Change the current working directory."
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "groupName": "advanced",
+      "label": "Verbose logging",
+      "defaultValue": false,
+      "helpMarkDown": "Enable verbose logging."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
