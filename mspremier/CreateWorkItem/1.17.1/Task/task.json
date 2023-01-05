@@ -1,0 +1,424 @@
+{
+    "id": "92979e78-16ed-4e27-b008-001d2d58bf74",
+    "name": "CreateWorkItem",
+    "friendlyName": "Create Work Item",
+    "description": "Creates a new work item from a build or release.",
+    "author": "Microsoft",
+    "helpMarkDown": "[[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "17",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "Create work item",
+    "groups": [
+        {
+            "name": "linking",
+            "displayName": "Linking",
+            "isExpanded": false
+        },
+        {
+            "name": "attachments",
+            "displayName": "Attachments",
+            "isExpanded": false
+        },
+        {
+            "name": "duplicates",
+            "displayName": "Duplicates",
+            "isExpanded": false
+        },
+        {
+            "name": "outputs",
+            "displayName": "Outputs",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "teamProject",
+            "type": "pickList",
+            "label": "Team Project",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "DisableManageLink": "true",
+                "EditableOptions": "true"
+            },
+            "helpMarkDown": "Select the team project in which to create the new work item or leave empty to use the current project. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#teamProject)"
+        },
+        {
+            "name": "workItemType",
+            "type": "string",
+            "label": "Work Item Type",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "editorExtension": "mspremier.CreateWorkItem.WorkItemTypePicker"
+            },
+            "helpMarkDown": "Enter the work item type to create. To select one from the available types, click the button. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#workItemType)"
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Title",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter a value for the work item title field. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#title)"
+        },
+        {
+            "name": "assignedTo",
+            "type": "string",
+            "label": "Assigned To",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter an identity to assign the new work item to. The identity must be in the form **\"{display name} <{login email}>\"** (e.g., John Doe <johnd@contoso.com>) or the identity ID (e.g., $(Build.RequestedForId). [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#assignedTo)"
+        },
+        {
+            "name": "areaPath",
+            "type": "string",
+            "label": "Area Path",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "editorExtension": "mspremier.CreateWorkItem.ClassificationNodePicker"
+            },
+            "helpMarkDown": "Enter the area path for the work item. If you are unsure about the value, click the button and select an existing area path. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#areaPath)"
+        },
+        {
+            "name": "iterationPath",
+            "type": "string",
+            "label": "Iteration Path",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "editorExtension": "mspremier.CreateWorkItem.ClassificationNodePicker"
+            },
+            "helpMarkDown": "Enter the iteration path for the work item. If you are unsure about the value, click the button and select an existing iteration path. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#iterationPath)"
+        },
+        {
+            "name": "fieldMappings",
+            "type": "multiLine",
+            "label": "Additional Fields",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "editorExtension": "mspremier.CreateWorkItem.FieldMappingHelper"
+            },
+            "helpMarkDown": "Enter field-value mappings (one per line) in the format **<field name>=<field value>** (without angle brackets) to set additional work item fields. Click the button to easily select fields and enter values. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#fieldMappings)"
+        },
+        {
+            "name": "associate",
+            "type": "boolean",
+            "label": "Associate Work Item With Current Build or Release",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Enable this option to associate the newly created work item with the current build or release environment. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#associate)"
+        },
+        {
+            "name": "associationType",
+            "type": "pickList",
+            "label": "Association Type",
+            "defaultValue": "build",
+            "required": false,
+            "helpMarkDown": "Select the association type that should be used when linking work items to the current build or release. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#associationType)",
+            "options": {
+                "build": "Build",
+                "foundInBuild": "Found in build",
+                "integratedInBuild": "Integrated in build"
+            },
+            "visibleRule": "associate = true"
+        },
+        {
+            "name": "linkWorkItems",
+            "type": "boolean",
+            "label": "Link Work Items",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate to link the new work item to an existing one. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#linkWorkItems)",
+            "groupName": "linking"
+        },
+        {
+            "name": "linkType",
+            "type": "pickList",
+            "label": "Link Type",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "DisableManageLink": "true",
+                "EditableOptions": "true"
+            },
+            "helpMarkDown": "Select the link type that should be used for linking other work items. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#linkType)",
+            "groupName": "linking",
+            "visibleRule": "linkWorkItems = true"
+        },
+        {
+            "name": "linkTarget",
+            "type": "radio",
+            "label": "Link Target",
+            "defaultValue": "id",
+            "required": true,
+            "helpMarkDown": "Select **ID** to link to a work item with a specific ID, **Query** to link to all work items matching a work item query, or **Associated Work Items** to link to the work items associated with the current build or release. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#linkTarget)",
+            "groupName": "linking",
+            "options": {
+                "id": "ID",
+                "wiql": "Query",
+                "associate": "Associated Work Items"
+            },
+            "visibleRule": "linkWorkItems = true"
+        },
+        {
+            "name": "targetId",
+            "type": "string",
+            "label": "Target ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the ID of the work item to which the new item should be linked. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#targetId)",
+            "groupName": "linking",
+            "visibleRule": "linkWorkItems = true && linkTarget = id"
+        },
+        {
+            "name": "targetWiql",
+            "type": "string",
+            "label": "Target Query",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify a work item query (WIQL syntax) so select the work items to which the new item should be linked. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#targetWiql)",
+            "groupName": "linking",
+            "visibleRule": "linkWorkItems = true && linkTarget = wiql"
+        },
+        {
+            "name": "limitWorkItemLinksToSameProject",
+            "type": "boolean",
+            "label": "Prevent Links to Other Projects",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to prevent creating links to work items in a different project than the one the new work item was created in. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#limitWorkItemLinksToSameProject)",
+            "groupName": "linking"
+        },
+        {
+            "name": "linkPR",
+            "type": "boolean",
+            "label": "Link to Pull Request",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "If this pipeline is initiated as part of a Pull Request validation and this checkbox is checked, the work item will be linked to the Pull Request. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#linkPR)",
+            "groupName": "linking"
+        },
+        {
+            "name": "linkCode",
+            "type": "boolean",
+            "label": "Link to Code",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Enable this option to link the work item to specific commits or changesets. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#linkCode)",
+            "groupName": "linking"
+        },
+        {
+            "name": "commitsAndChangesets",
+            "type": "multiLine",
+            "label": "Commit and Changesets",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "List the commits and/or changesets to link to (one per line). Use the format *&lt;project name or ID&gt;:&lt;repository name or ID&gt;:&lt;commit hash&gt;* for commits or *CS&lt;changeset ID&gt;* for changesets. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#commitsAndChangesets)",
+            "groupName": "linking",
+            "visibleRule": "linkCode = true"
+        },
+        {
+            "name": "addAttachments",
+            "type": "boolean",
+            "label": "Add Attachments",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to add attachments to the new or updated work item. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#addAttachments)",
+            "groupName": "attachments"
+        },
+        {
+            "name": "attachmentsFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Root folder in which to search for attachments. If you leave this empty, the task looks for files in the default working directory (same as if you had specified `$(System.DefaultWorkingDirectory)`). [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#attachmentsFolder)",
+            "groupName": "attachments",
+            "visibleRule": "addAttachments = true"
+        },
+        {
+            "name": "attachments",
+            "type": "multiLine",
+            "label": "Attachments",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Files to attach to the work item. Supports multiple lines of match patterns. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#attachments)",
+            "groupName": "attachments",
+            "visibleRule": "addAttachments = true"
+        },
+        {
+            "name": "preventDuplicates",
+            "type": "boolean",
+            "label": "Prevent Duplicates",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate to prevent creation of duplicate work items. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#preventDuplicates)",
+            "groupName": "duplicates"
+        },
+        {
+            "name": "keyFields",
+            "type": "multiLine",
+            "label": "Key Fields",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify a list of key fields (one per line) that are used to find possible duplicates. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#keyFields)",
+            "groupName": "duplicates",
+            "visibleRule": "preventDuplicates = true"
+        },
+        {
+            "name": "updateDuplicates",
+            "type": "boolean",
+            "label": "Update Duplicate",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate to update a possible duplicate work item. **Note:** If multiple duplicate work items are found, the task only updates the one that was last created (i.e., the item with the highest ID). [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#updateDuplicates)",
+            "groupName": "duplicates",
+            "visibleRule": "preventDuplicates = true"
+        },
+        {
+            "name": "updateRules",
+            "type": "multiLine",
+            "label": "Update Rules",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify one ore more field update rules (one per line). See [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#updateRules) for more information.",
+            "groupName": "duplicates",
+            "visibleRule": "preventDuplicates = true && updateDuplicates = true"
+        },
+        {
+            "name": "createOutputs",
+            "type": "boolean",
+            "label": "Create Output Variables",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate this option to create output variables based on the newly created work item. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#createOutputs)",
+            "groupName": "outputs"
+        },
+        {
+            "name": "outputVariables",
+            "type": "multiLine",
+            "label": "Output Variables",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter variable-value mappings (one per line) in the format **<variable name>=<work item value>** (without angle brackets) to create a set of output variables with work item values. To get the URL of the new work item, map the value **CWI.WorkItemUrl**. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#outputVariables)",
+            "groupName": "outputs",
+            "visibleRule": "createOutputs = true"
+        },
+        {
+            "name": "authToken",
+            "type": "string",
+            "label": "Auth Token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a Personal Access Token (PAT) to use for authentication to Azure DevOps in pull request builds from forked repositories. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#authToken)",
+            "groupName": "advanced"
+        },
+        {
+            "name": "allowRedirectDowngrade",
+            "type": "boolean",
+            "label": "Allow Downgrade Redirects",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Enable this option to allow redirects to downgrade from HTTPS to HTTP. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/CreateWorkItem/en-US/overview.md#allowRedirectDowngrade)",
+            "groupName": "advanced"
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "teamProject",
+            "endpoint": "/_apis/projects?$top=1000&api-version=3.0",
+            "selector": "jsonpath:$.value[*].name",
+            "keySelector": "jsonpath:$.value[*].name",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "linkType",
+            "endpoint": "/_apis/wit/workitemrelationtypes?api-version=3.2",
+            "selector": "jsonpath:$.value[*].name",
+            "keySelector": "jsonpath:$.value[*].referenceName",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "WorkItemLinkingSucceeded",
+            "description": "Set to `true` if work item linking was enabled and no errors occurred during linking. If there was an error (e.g., target work item not found), the variable is set to `false`. **Note:** The variable is not created at all if work item linking is not enabled."
+        },
+        {
+            "name": "WorkItemLinksFiltered",
+            "description": "Set to `true` if work item links have been filtered to the current project, `false` otherwise. **Note:** the variable is only generated if work item linking and the option 'Prevent Links to Other Projects' are enabled."
+        },
+        {
+            "name": "LinksFiltered",
+            "description": "(deprecated) This variable will be removed in a future version. Use *WorkItemLinksFiltered* instead."
+        },
+        {
+            "name": "CodeLinkingSucceeded",
+            "description": "Set to `true` if code linking was enabled and no errors occurred during linking. If ther was an error (e.g., target commit/changeset not found), the variable is set to `false`. **Note:** The variable is not created at all if code linking is not enabled."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "task.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "TargetIdNotANumber": "The configured work item target ID (%s) is not a number!",
+        "InvalidIdentityValue": "The configured value for the 'Assigned To' field (%s) is invalid! Please use the format '{Display Name} <{Login Email}>' (without curly brackets) or the identity ID from one of the RequestedForId variables (e.g., *$(Build.RequestedForId)*).",
+        "IdentityResolveError": "There was an error resolving identity for ID %s: %s",
+        "IdentityNotFound": "The identity with ID %s could not be found.",
+        "WorkItemIdNotFound": "A work item with ID %d could not be found.",
+        "FinalWiqlQuery": "Final WIQL query: %s",
+        "InvalidQuerySyntax": "The WIQL query string (%s) is invalid!",
+        "ErrorQueryingWorkItems": "There was an error while querying work items.",
+        "ErrorCreatingWorkItem": "There was an error while creating the work item.",
+        "WorkItemCreated": "Successfully created new work item with ID %d.",
+        "DuplicateWorkItemsFound": "Found duplicate work items with IDs %s. Using work item with ID %d for subsequent actions.",
+        "ErrorUpdatingDuplicate": "There was an error while updating the duplicate work item.",
+        "NoTargetWorkItemsFound": "Could not find any target work items with the specified criteria",
+        "SkippedTargetWorkItems": "%d target work item(s) is/are not linked because it/they belong(s) to a different project.",
+        "WorkItemLinked": "Successfully linked work item with ID %d to work item(s) %s",
+        "PullRequestLinked": "Successfully linked work item with ID %d to pull request %s",
+        "NonPullRequestBuild": "Current build has not been triggered by a pull request. Skip linking pull request.",
+        "CodeLinked": "Successfully added %s code links to work item with ID %d",
+        "ErrorLinkingCode": "There was an error while linking commits and changeset.",
+        "ProjectNotFound": "A project with name or ID '%s' could not be found. Skip linking all commits for this project.",
+        "RepositoryNotFound": "A repository with name or ID '%s' could not be found in project '%s'. Skip linking all commits for this repository.",
+        "CommitNotFound": "A commit with ID '%s' could not be found in repository '%s' in project '%s'. Skip linking commit.",
+        "ChangesetNotFound": "A changeset with ID %d could not be found. Skip linking changeset.",
+        "InvalidCommitOrChangeset": "The value '%s' is neither a valid commit nor changeset. Skipping.",
+        "ErrorAssociatingPipeline": "There was an error while associating the work item with the current pipeline.",
+        "ErrorLinkingWorkItems": "There was an error while linking the work items.",
+        "ErrorLinkingPullRequest": "There was an error while linking the pull request.",
+        "NoCurrentIteration": "The selected team does not have a current iteration. Falling back to default iteration.",
+        "NoDefaultIteration": "The selected team does not have a current/default iteration. Falling back to backlog iteration.",
+        "NoFilesToAttach": "Could not find any matching files to attach.",
+        "ErrorAttachingFiles": "There was an error while attaching files to the work item.",
+        "CreatingAttachment": "Creating attachment for file '%s'.",
+        "FilesAttached": "Successfully attached %d file(s) to work item %d.",
+        "InvalidProject": "A team project with name '%s' could not be found.",
+        "InvalidWorkItemType": "A work item type with name '%s' could not be found.",
+        "InvalidLinkTarget": "Invalid value '%s' for parameter 'Link Target (linkTarget)'. Work item linking disabled.",
+        "NotSupportedInForkPRBuild": "Due to security restrictions this task cannot run on pull request builds from forked repositories. Configure the Auth Token (authToken) parameter if you really need to run the task.",
+        "HttpDowngradeRisk": "Redirects from HTTPS to HTTP are enabled. Be aware that this poses a security risk!"
+    }
+}
