@@ -1,0 +1,130 @@
+{
+    "id": "25D52C82-C978-4743-BE00-A5C13CB01D96",
+    "name": "IBMIntegrationBusCommand",
+    "friendlyName": "IBM Integration Bus Management Command",
+    "description": "Run IBM Integration Bus commands",
+    "author": "Microsoft Corporation",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "113",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.3",
+    "instanceNameFormat": "Run $(cmd) on IBM Integration Bus.",
+    "inputs": [
+        {
+            "name": "connType",
+            "type": "pickList",
+            "label": "Connection Method",
+            "defaultValue": "serviceEndpoint",
+            "helpMarkDown": "",
+            "options": {
+                "serviceEndpoint": "Service Endpoint Connection",
+                "address": "Enter Connection Details",
+                "file": "Use .broker File"
+            }
+        },
+        {
+            "name": "iibEndpoint",
+            "type": "connectedService:ibmintegrationbusendpoint",
+            "label": "Integration Bus Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Service endpoint for IBM Integration Bus.",
+            "visibleRule": "connType = serviceEndpoint"
+        },
+        {
+            "name": "integrationNodeName",
+            "type": "string",
+            "label": "Integration Node Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This parameter identifies the name of a specified integration node.  This is called Broker in prior versions.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "password",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "ipAddress",
+            "type": "string",
+            "label": "Hostname / IP Address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Hostname or the IP address of the Integration Node.  Do not prefix with protocol names such as 'tcp' or 'https'.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "port",
+            "type": "string",
+            "label": "Port",
+            "defaultValue": "4414",
+            "required": false,
+            "helpMarkDown": "The port on which the web user interface HTTP connection listener is listening.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "queueManager",
+            "type": "string",
+            "label": "Queue Manager",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The name of the broker's queue manager.",
+            "visibleRule": "connType = address"
+        },
+        {
+            "name": "configFile",
+            "type": "filePath",
+            "label": ".broker File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path of a file that contains the connetion details. If you want to run a command that uses SSL to administer a remote broker over a secured channel, you can define a variable IBM_JAVA_OPTIONS in the variables tab and specify the keystore and truststore password for the connection.",
+            "visibleRule": "connType = file"
+        },
+        {
+            "name": "cmd",
+            "type": "string",
+            "label": "Command",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "args",
+            "type": "string",
+            "label": "Arguments",
+            "defaultValue": "",
+            "required": true
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "iib-command.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "NoFilesFound": "No file found using pattern: %s",
+        "MultipleFilesFound": "More than one file found using pattern: %s",
+        "CommandSuccessful": "Command finished successfully."
+    }
+}
