@@ -1,0 +1,113 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b5c1011f-0211-4c66-93f3-2427d59f0da9",
+    "name": "sslazurewebappcertgenerator",
+    "friendlyName": "Ssl Azure WebApp Certificate Generator",
+    "description": "",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Greg Margol",
+    "version": {
+        "Major": 3,
+        "Minor": 5,
+        "Patch": 0
+    },
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "instanceNameFormat": "Echo $(samplestring)",
+    "inputs": [
+      {
+        "name": "ConnectedServiceName",
+        "aliases": [
+            "azureSubscription"
+        ],
+        "type": "connectedService:AzureRM",
+        "label": "Azure subscription",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the Azure Resource Manager subscription"
+    },
+    {
+        "name": "appName",
+        "type": "pickList",
+        "label": "App Service name",
+        "defaultValue": "",
+        "required": true,
+        "properties": {
+            "EditableOptions": "True"
+        },
+        "helpMarkDown": "Enter or Select the name of an existing Azure App Service"
+    },
+    {
+        "name": "resourceGroupName",
+        "type": "pickList",
+        "label": "Resource group",
+        "defaultValue": "",
+        "required": true,
+        "properties": {
+            "EditableOptions": "True"
+        },
+        "helpMarkDown": "Enter or Select the Azure Resource Group that contains the Azure App Service specified above"
+    },
+    {
+        "name": "slotName",
+        "type": "pickList",
+        "label": "Slot",
+        "defaultValue": "production",
+        "required": false,
+        "properties": {
+            "EditableOptions": "True"
+        },
+        "helpMarkDown": "Enter or Select an existing Slot. If no slot is selected, changes will be made to production."
+    },
+    {
+      "name": "hostNames",
+      "type": "pickList",
+      "label": "Domain",
+      "required": true,
+      "properties": {
+          "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select an existing Slot. If no slot is selected, changes will be made to production."
+  }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "appName",
+        "endpointId": "$(ConnectedServiceName)",
+        "dataSourceName": "AzureRMWebAppNames"
+      },
+      {
+          "target": "resourceGroupName",
+          "endpointId": "$(ConnectedServiceName)",
+          "dataSourceName": "AzureRMWebAppResourceGroup",
+          "parameters": {
+              "WebAppName": "$(appName)"
+          }
+      },
+      {
+          "target": "slotName",
+          "endpointId": "$(ConnectedServiceName)",
+          "dataSourceName": "AzureRMWebAppSlotsId",
+          "parameters": {
+              "WebAppName": "$(appName)",
+              "ResourceGroupName": "$(resourceGroupName)"
+          },
+          "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+      },
+      {
+          "target": "hostNames",
+          "endpointId": "$(ConnectedServiceName)",
+          "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(appName)/hostNameBindings?api-version=2019-08-01",
+          "resultSelector": "jsonpath:$.value[?(@.name =~ /^(.(?!azurewebsites\\.net$))+$/gmi)].name"
+      }
+        
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "GenerateCert.ps1"
+        }
+    }
+}

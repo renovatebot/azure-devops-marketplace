@@ -1,0 +1,141 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b5c1011f-0211-4c66-93f3-2427d59f0da9",
+    "name": "sslazurewebappcertgenerator",
+    "friendlyName": "Ssl Azure WebApp Certificate Generator",
+    "description": "",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Cogworks",
+    "version": {
+        "Major": 46,
+        "Minor": 8,
+        "Patch": 2
+    },
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "instanceNameFormat": "Ssl cert $(hostName)",
+    "inputs": [
+      {
+        "name": "connectedServiceName",
+        "type": "connectedService:AzureRM",
+        "label": "Azure subscription",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the Azure Resource Manager subscription"
+    },
+    {
+        "name": "appName",
+        "type": "pickList",
+        "label": "App Service name",
+        "defaultValue": "",
+        "required": true,
+        "properties": {
+            "EditableOptions": "True"
+        },
+        "helpMarkDown": "Enter or Select the name of an existing Azure App Service"
+    },
+    {
+        "name": "resourceGroupName",
+        "type": "pickList",
+        "label": "Resource group",
+        "defaultValue": "",
+        "required": true,
+        "properties": {
+            "EditableOptions": "True"
+        },
+        "helpMarkDown": "Enter or Select the Azure Resource Group that contains the Azure App Service specified above"
+    },
+    {
+      "name": "hostName",
+      "type": "pickList",
+      "label": "Domain",
+      "required": true,
+      "properties": {
+          "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select an existing Slot. If no slot is selected, changes will be made to production."
+    },
+    {
+        "name": "email",
+        "type": "string",
+        "label": "Issuer email",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "This email is used only to identify issuer of certificate by Let's encrypt"
+    },
+    {
+        "name": "publicPath",
+        "type": "string",
+        "label": "Public files path on server",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "It's needed to let certificate authority to validate you're owner of the domain."
+    },
+    {
+        "name": "pfxPassword",
+        "type": "string",
+        "label": "Certificate password",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Password used to generate pfx file"
+    },
+    {
+        "name": "cwd",
+        "aliases": [
+            "workingDirectory"
+        ],
+        "type": "filePath",
+        "label": "Working Directory",
+        "defaultValue": "",
+        "required": false,
+        "visibleRule": "appName == test"
+    }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "appName",
+        "endpointId": "$(connectedServiceName)",
+        "dataSourceName": "AzureRMWebAppNames"
+      },
+      {
+          "target": "resourceGroupName",
+          "endpointId": "$(connectedServiceName)",
+          "dataSourceName": "AzureRMWebAppResourceGroup",
+          "parameters": {
+              "WebAppName": "$(appName)"
+          }
+      },
+      {
+          "target": "hostName",
+          "endpointId": "$(connectedServiceName)",
+          "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.Web/sites/$(appName)/hostNameBindings?api-version=2019-08-01",
+          "resultSelector": "jsonpath:$.value[?(@.name =~ /^(.(?!azurewebsites\\.net$))+$/gmi)].name"
+      }
+        
+    ],
+    "execution": {
+        "Node": {
+            "target": "azureclitask.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "ScriptReturnCode": "Script exited with return code: %d",
+        "ScriptFailed": "Script failed with error: %s",
+        "UnsupportedEndpointScheme": "Unsupported service connection authorization scheme: Service Principal for AzureRM",
+        "AzureSDKNotFound": "Azure CLI 2.x is not installed on this machine.",
+        "FailedToLogout": "The following error occurred while logging out: %s",
+        "LoginFailed": "Azure login failed",
+        "MSILoginFailed": "Azure login failed using Managed Service Identity",
+        "AuthSchemeNotSupported": "Auth Scheme %s is not supported",
+        "ErrorInSettingUpSubscription": "Error in setting up subscription",
+        "SettingAzureConfigDir": "Setting AZURE_CONFIG_DIR env variable to: %s",
+        "SettingAzureCloud": "Setting active cloud to: %s",
+        "JS_InvalidFilePath": "Invalid file path '%s'.",
+        "JS_InvalidErrorActionPreference": "Invalid ErrorActionPreference '%s'. The value must be one of: 'Stop', 'Continue', or 'SilentlyContinue'",
+        "GlobalCliConfigAgentVersionWarning": "For agent version < 2.115.0, only global Azure CLI configuration can be used"
+    }
+}
