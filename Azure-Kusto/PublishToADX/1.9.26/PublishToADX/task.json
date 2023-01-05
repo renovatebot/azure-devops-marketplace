@@ -1,0 +1,308 @@
+{
+  "id": "a7cd4ea2-0b83-49cb-887a-b529e5d80db7",
+  "name": "PublishToADX",
+  "friendlyName": "Run Azure Data Explorer Command",
+    "description": "Run admin command Kusto (ADX) databases",
+    "helpMarkDown": "[Contact Us](mailto:kustoops@microsoft.com)",
+    "category": "Utility",
+    "author": "Microsoft Corporation",
+    "version": {
+      "Major": 1,
+      "Minor": 9,
+      "Patch": 26
+    },
+    "instanceNameFormat": "Kusto Command",
+    "groups": [
+      {
+          "name": "advanced",
+          "displayName": "Advanced",
+          "isExpanded": false
+      }
+    ],
+    "inputs": [
+      {
+        "name": "targetType",
+        "type": "radio",
+        "label": "Type",
+        "required": false,
+        "defaultValue": "filePath",
+        "helpMarkDown": "Target script type: File Path or Inline",
+        "options": {
+            "filePath": "File Path",
+            "inline": "Inline",
+            "git": "Git Repository"
+        }
+      },
+      {
+        "name": "files",
+        "type": "multiLine",
+        "label": "Files",
+        "defaultValue": "**/*.csl",
+        "required": true,
+        "visibleRule": "targetType = filePath",
+        "properties": {
+          "resizable": "true",
+          "rows": "5",
+          "maxLength": "1000"
+      },
+        "helpMarkDown": "Kusto scripts to execute. See [file matching patterns](https://docs.microsoft.com/en-us/vsts/build-release/tasks/file-matching-patterns?view=vsts) for syntax, (multiple paterns should be semi-column \";\" separated)."
+      },
+      {
+        "name": "script",
+        "type": "multiLine",
+        "label": "Script",
+        "visibleRule": "targetType = inline",
+        "required": false,
+        "defaultValue": "# Write your command here.\n.show version \n# Use the environment variables input below to pass secret variables to this script.\n# Do not add empty lines, supports only single command",
+        "properties": {
+            "resizable": "true",
+            "rows": "5",
+            "maxLength": "5000"
+        },
+        "helpMarkDown": ""
+      },
+      {
+        "name": "teamProject",
+        "type": "pickList",
+        "label": "Project",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Project name in which the Repository exists.",
+        "visibleRule": "targetType = git",
+        "properties": {
+            "EditableOptions": "True",
+            "DisableManageLink": "True",
+            "IsSearchable": "True"
+        }
+      },
+      {
+        "name": "repositoryName",
+        "type": "pickList",
+        "label": "Repository name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Repository name in which query file exists.",
+        "visibleRule": "targetType = git",
+        "properties": {
+            "EditableOptions": "True",
+            "DisableManageLink": "True",
+            "IsSearchable": "True"
+        }
+      },
+      {
+        "name": "branchName",
+        "type": "string",
+        "label": "Branch name",
+        "defaultValue": "master",
+        "required": true,
+        "helpMarkDown": "Branch name in which query file exists. example, master",
+        "visibleRule": "targetType = git"
+      },
+      {
+        "name": "queryFileFullPath",
+        "type": "string",
+        "label": "Query file full path",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Query (csl) file full path in the given branch. example, /MyKustoQueries/KustoQuery.csl",
+        "visibleRule": "targetType = git"
+      },
+      {
+        "name": "singleCommand",
+        "type": "boolean",
+        "label": "Single Kusto command per file",
+        "defaultValue": false,
+        "required": false,
+        "visibleRule": "targetType != inline",
+        "helpMarkDown": "When checked, empty lines are considered part of commands and each script file must only contain a single command. When unchecked, empty lines are treated as command separators and multiple commands can appear in script files. "
+      },
+      {
+        "name": "keepFormatting",
+        "type": "boolean",
+        "label": "Keep csl formatting, indentation and comments",
+        "defaultValue": false,
+        "required": false,
+        "visibleRule": "targetType != inline",
+        "helpMarkDown": "When checked, the runner will not trim the line indentation or remove comments from the csl file (independent comments or comments before a command will still be ignored)"
+      },
+      {
+        "name": "parallelCommands",
+        "type": "boolean",
+        "label": "Commands are called in parallel",
+        "defaultValue": true,
+        "required": false,
+        "helpMarkDown": "When checked, commands in the script execute in parallel. When unchecked, commands are call sequencialy (one-by-one)."
+      },
+      {
+        "name": "waitForOperation",
+        "type": "boolean",
+        "label": "Wait for long Async Admin commands to complete (polling \".show operations <Guid>\")",
+        "defaultValue": false,
+        "required": false,
+        "helpMarkDown": "When checked, empty lines are considered part of commands and each script file must only contain a single command. When unchecked, empty lines are treated as command separators and multiple commands can appear in script files. "
+      },
+      {
+        "name": "waitTimeout",
+        "type": "string",
+        "label": "Wait Timeout",
+        "defaultValue": "0",
+        "required": false,
+        "helpMarkDown": "Maximum time to wait for long running commands (0 = no timeout)."
+      },
+      {
+        "name": "kustoUrls",
+        "type": "string",
+        "label": "Endpoint URLs",
+        "defaultValue": "https://[YourCluster].kusto.windows.net:443?DatabaseName=[YourDatabase]",
+        "required": true,
+        "helpMarkDown": "Semicolon-separated list of URLs of the Kusto clusters and databases to deploy to, each formatted as 'https://[YourCluster].kusto.windows.net:443?DatabaseName=[YourDatabase]'."
+      },
+      {
+        "name": "customAuth",
+        "type": "boolean",
+        "label": "Use Service Endpoint",
+        "defaultValue": false,
+        "required": true,
+        "helpMarkDown": "Use Kusto Service Endpoint."
+      },
+      {
+        "name": "connectedServiceName",
+        "type": "connectedService:AzureDataExplorer",
+        "label": "Service Endpoint",
+        "required": false,
+        "helpMarkDown": "Use an Existing Kusto Service endpoint, or create a new one",
+        "visibleRule": "customAuth = true"
+      },
+      {
+        "name": "aadClientId",
+        "type": "string",
+        "label": "AAD App Id",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "The GUID of the AAD App authorized to run admin commands on the Kusto database.",
+        "visibleRule": "customAuth = false"
+      },
+      {
+        "name": "ResourceURI",
+        "type": "string",
+        "label": "Resource URI",
+        "defaultValue": "https://[YourCluster].kusto.windows.net",
+        "required": false,
+        "helpMarkDown": "The Resource providing the OAuth token for the command (base url of your cluster) .",
+        "visibleRule": "customAuth = false"
+      },
+      {
+        "name": "aadClientSecret",
+        "type": "string",
+        "label": "AAD App Key",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "The client secret used to authenticate with AAD.",
+        "visibleRule": "customAuth = false"
+      },
+      {
+        "name": "tenantId",
+        "type": "string",
+        "label": "AAD Tenant Id",
+        "defaultValue": "microsoft.onmicrosoft.com",
+        "required": false,
+        "helpMarkDown": "The AAD Tenant ID (<Org>.onmicrosoft.com or tenantID Guid)",
+        "visibleRule": "customAuth = false"
+      },
+      {
+        "name": "OutputVariable",
+        "type": "string",
+        "label": "Output Variable",
+        "defaultValue": "",
+        "helpMarkDown": "Provide the variable name for the (last) command response output \nwhen \"last response only\" in unchecked multiple variables will be created \nin the format of <VariableName>_<index>\n(to use in downstream tasks - value is in JSON format)",
+        "groupName": "advanced"
+      },
+      {
+        "name": "OutputFile",
+        "type": "string",
+        "label": "Output File",
+        "defaultValue": "",
+        "helpMarkDown": "Provide the File name for the (last) command response output \nwhen \"last response only\" in unchecked multiple variables will be created \nin the format of <VariableName>_<index>\n(to use in downstream tasks - value is in JSON format)",
+        "groupName": "advanced"
+      },
+      {
+        "name": "LastResponse",
+        "type": "boolean",
+        "label": "Save last response only",
+        "defaultValue": true,
+        "helpMarkDown": "Save last response to the output variable: \nif unchecked task will create multiple variables,\none for each command for each endpoint",
+        "groupName": "advanced"
+      },
+      {
+        "name": "serialDelay",
+        "type": "string",
+        "label": "Serial Execution Delay",
+        "defaultValue": "0",
+        "helpMarkDown": "Delay (in milliseconds, 0 - 5000) between serial execution",
+        "groupName": "advanced"
+      },
+      {
+        "name": "pollingInterval",
+        "type": "string",
+        "label": "Polling Interval (Sec.)",
+        "defaultValue": "30",
+        "helpMarkDown": "Long Running Operation Polling Interval (in Seconds, 15 - 900)",
+        "groupName": "advanced"
+      },
+      {
+        "name": "workDir",
+        "type": "filePath",
+        "label": "Working Directory",
+        "defaultValue": "$(System.DefaultWorkingDirectory)",
+        "helpMarkDown": "Root Path to search the *.csl files",
+        "groupName": "advanced"
+      },
+      {
+        "name": "skipValidation",
+        "type": "boolean",
+        "label": "Insert 'skipvalidation'",
+        "defaultValue": true,
+        "helpMarkDown": "Insert 'skipvalidation' flag to all comands to avoid \nfailures due to unmet dependencies.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "ShouldRetry",
+        "type": "boolean",
+        "label": "Retry Unsuccessful Long Running Operation",
+        "defaultValue": false,
+        "helpMarkDown": "Retry Operation based on status",
+        "groupName": "advanced",
+        "visibleRule": "waitForOperation = true"
+      },
+      {
+        "name": "MaxRetry",
+        "type": "string",
+        "label": "Maximum Retries",
+        "defaultValue": "3",
+        "helpMarkDown": "Maximum number of times to Retry Operation (0 = retry forever)",
+        "groupName": "advanced",
+        "visibleRule": "ShouldRetry = true"
+      }
+    ],
+    "dataSourceBindings": [
+      {
+        "target": "teamProject",
+        "endpointId": "tfs:teamfoundation",
+        "endpointUrl": "{{endpoint.url}}/_apis/projects?$top=500",
+        "resultSelector": "jsonpath:$.value[*].name",
+        "resultTemplate": ""
+      },
+      {
+        "target": "repositoryName",
+        "endpointId": "tfs:teamfoundation",
+        "endpointUrl": "{{endpoint.url}}/$(teamProject)/_apis/git/Repositories",
+        "resultSelector": "jsonpath:$.value[*].name",
+        "resultTemplate": ""
+      }
+    ],
+    "execution": {
+      "Node": {
+        "target": "src/index.js"
+      }
+    }
+  }

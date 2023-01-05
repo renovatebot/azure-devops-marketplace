@@ -1,0 +1,185 @@
+{
+  "id": "b9d0ee30-142e-11ea-b309-132d895d3f8b",
+  "name": "ADXQueryGate",
+  "friendlyName": "Azure Data Explorer Query Gate",
+  "description": "Executes a ADX query in csl file or inline.",
+  "helpMarkDown": "Executes a ADX query in csl file or inline, provide expected min/max rows for expected result.",
+  "category": "Deploy",
+  "author": "Microsoft Corporation",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Server",
+    "ServerGate"
+  ],
+  "version": {
+    "Major": 1,
+    "Minor": 9,
+    "Patch": 26
+  },
+  "instanceNameFormat": "ADX Query Gate",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "kustoServiceEndpoint",
+      "type": "connectedService:AzureDataExplorer",
+      "label": "Service endpoint",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "Select a Kusto endpoint that should be used to connect to Kusto, to execute the query."
+    },
+    {
+      "name": "kustoDatabaseName",
+      "type": "picklist",
+      "label": "Database name",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "database name to run the query.",
+      "properties": {
+        "EditableOptions": "True",
+        "IsSearchable": "True"
+      }
+    },
+    {
+      "name": "queryType",
+      "type": "pickList",
+      "label": "Type",
+      "defaultValue": "inlineQuery",
+      "required": true,
+      "helpMarkDown": "Query can be taken from a repository file path or inline.",
+      "options": {
+        "inlineQuery": "Inline query",
+        "filePath": "File path"
+      }
+    },
+    {
+      "name": "inlineQuery",
+      "type": "multiLine",
+      "label": "Inline query",
+      "defaultValue": "// You can write your query here. \n ProductTrace | limit 1 \n",
+      "required": true,
+      "visibleRule": "queryType = inlineQuery",
+      "helpMarkDown": "You can write your Kusto query. <a href='https://kusto.azurewebsites.net/docs/queryLanguage/query_language.html' rel='noopener noreferrer' target='_blank'>More info on Kusto query language</a>",
+      "properties": {
+        "resizable": "true",
+        "rows": "10",
+        "maxLength": "4000"
+      }
+    },
+    {
+      "name": "teamProject",
+      "type": "pickList",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Project name in which the Repository exists.",
+      "visibleRule": "queryType = filePath",
+      "properties": {
+          "EditableOptions": "True",
+          "DisableManageLink": "True",
+          "IsSearchable": "True"
+      }
+    },
+    {
+      "name": "repositoryName",
+      "type": "pickList",
+      "label": "Repository name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Repository name in which query file exists.",
+      "visibleRule": "queryType = filePath",
+      "properties": {
+          "EditableOptions": "True",
+          "DisableManageLink": "True",
+          "IsSearchable": "True"
+      }
+    },
+    {
+      "name": "branchName",
+      "type": "string",
+      "label": "Branch name",
+      "defaultValue": "master",
+      "required": true,
+      "helpMarkDown": "Branch name in which query file exists. example, master",
+      "visibleRule": "queryType = filePath"
+    },
+    {
+      "name": "queryFileFullPath",
+      "type": "string",
+      "label": "Query file full path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Query (csl) file full path in the given branch. example, /MyKustoQueries/KustoQuery.csl",
+      "visibleRule": "queryType = filePath"
+    },
+    {
+      "name": "maxThreshold",
+      "type": "string",
+      "label": "Maximum threshold",
+      "defaultValue": "0",
+      "required": "true",
+      "helpMarkDown": "The maximum number of rows from the query result.",
+      "properties": {
+        "isNonNegativeNumber": "true"
+      }
+    },
+    {
+      "name": "minThreshold",
+      "type": "string",
+      "label": "Minimum threshold",
+      "defaultValue": "0",
+      "required": "true",
+      "groupName": "advanced",
+      "helpMarkDown": "The minimum number of rows from the query result.",
+      "properties": {
+        "isNonNegativeNumber": "true"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "kustoDatabaseName",
+      "endpointId": "$(kustoServiceEndpoint)",
+      "endpointUrl": "{{endpoint.url}}/v1/rest/mgmt",
+      "requestVerb": "Post",
+      "requestContent": "{\"csl\":\".show databases | project DatabaseName\"}",
+      "resultSelector": "jsonpath:$.Tables[0].Rows[*][0]",
+      "resultTemplate": ""
+    },
+    {
+      "target": "teamProject",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/_apis/projects?$top=500",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "resultTemplate": ""
+    },
+    {
+      "target": "repositoryName",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/$(teamProject)/_apis/git/Repositories",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "resultTemplate": ""
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "$(kustoServiceEndpoint)",
+        "EndpointUrl": "$(endpoint.url)v1/rest/query",
+        "Method": "POST",
+        "Body": "{\"db\":\"{{kustoDatabaseName}}\", \"csl\":\"{{#equals queryType 'filePath' 1}}{{{ getFileContent { 'url' : '$(system.teamFoundationCollectionUri)/$(system.teamProjectId)/_apis/git/repositories/$(repositoryName)/items?scopePath=$(queryFileFullPath)&versionType=Branch&version=$(branchName)', 'authToken' : '$(system.accessToken)' } }}}{{else}}{{{ #jsonEscape inlineQuery}}}{{/equals}}\"}",
+        "Headers": "{\"Content-Type\":\"application/json\"}",
+        "WaitForCompletion": "false",
+        "Expression": "and(eq(count(jsonpath('Exceptions[*]')), 0), le(count(jsonpath('Tables[0].Rows[*]')), $(maxThreshold)), ge(count(jsonpath('Tables[0].Rows[*]')), $(minThreshold)))"
+      }
+    }
+  }
+}
