@@ -1,0 +1,101 @@
+{
+    "id": "5164728d-cfca-4576-a066-bde89930bf2b",
+    "name": "MqttPublisher",
+    "friendlyName": "MQTT Publisher",
+    "description": "Publishes data to MQTT",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Koen Boutsen",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 18
+    },
+    "instanceNameFormat": "Publishes data to MQTT",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "mqttEndpoint",
+            "type": "string",
+            "label": "MQTT endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the url of the MQTT broker"
+        },
+        {
+            "name": "mqttUsername",
+            "type": "string",
+            "label": "MQTT username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the username for your MQTT broker"
+        },
+        {
+            "name": "mqttTopic",
+            "type": "string",
+            "label": "MQTT topic",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the MQTT topic"
+        },
+        {
+            "name": "totalSteps",
+            "type": "string",
+            "label": "Total steps",
+            "defaultValue": "5",
+            "required": true,
+            "helpMarkDown": "Enter the number of steps/jobs in this pipeline"
+        },
+        {
+            "name": "stepState",
+            "type": "pickList",
+            "label": "Step state",
+            "defaultValue": "awaiting",
+            "options": {
+                "awaiting": "Awaiting",
+                "running": "Running",
+                "failed": "Failed",
+                "finished": "Finished",
+                "cancelled": "Cancelled",
+                "skipped": "Skipped"
+            },
+            "required": true,
+            "helpMarkDown": "Enter the state of this step"
+        },
+        {
+            "name": "stepType",
+            "type": "pickList",
+            "label": "Step type",
+            "defaultValue": "compile",
+            "options": {
+                "compile": "Compile",
+                "test": "Test",
+                "deploy": "Deploy"
+            },
+            "required": true,
+            "helpMarkDown": "Enter the type of this step"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
