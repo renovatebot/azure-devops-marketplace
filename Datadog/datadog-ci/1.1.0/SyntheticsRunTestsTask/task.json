@@ -1,0 +1,115 @@
+{
+  "id": "60b18503-c6d6-4e4b-a6b2-52fc6fb3d525",
+  "name": "SyntheticsRunTests",
+  "author": "Datadog",
+  "friendlyName": "Datadog Synthetic Tests",
+  "description": "Run Datadog Synthetic tests as part of your Azure pipelines",
+  "releaseNotes": "Run Datadog Synthetics CI tests as part of your Azure pipelines",
+  "category": "Test",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "preview": true,
+  "instanceNameFormat": "Run Datadog Synthetics CI tests",
+  "inputs": [
+    {
+      "name": "authenticationType",
+      "type": "radio",
+      "label": "Choose an authentication method",
+      "defaultValue": "apiAppKeys",
+      "required": true,
+      "options": {
+        "connectedService": "Use a Service Connection",
+        "apiAppKeys": "Use API & Application keys"
+      }
+    },
+    {
+      "name": "connectedService",
+      "type": "connectedService:datadog-ci",
+      "label": "Datadog CI service connection",
+      "defaultValue": "",
+      "helpMarkDown": "Select a Datadog CI service connection.",
+      "required": true,
+      "visibleRule": "authenticationType = connectedService"
+    },
+    {
+      "name": "apiKey",
+      "type": "string",
+      "label": "Datadog API key",
+      "defaultValue": "",
+      "helpMarkDown": "Your Datadog API key. This key is created by your [Datadog organization](https://docs.datadoghq.com/account_management/api-app-keys/) and will be accessed as an environment variable.",
+      "required": true,
+      "visibleRule": "authenticationType = apiAppKeys"
+    },
+    {
+      "name": "appKey",
+      "type": "string",
+      "label": "Datadog Application key",
+      "defaultValue": "",
+      "helpMarkDown": "Your Datadog application key. This key is created by your [Datadog organization](https://docs.datadoghq.com/account_management/api-app-keys/) and will be accessed as an environment variable.",
+      "required": true,
+      "visibleRule": "authenticationType = apiAppKeys"
+    },
+    {
+      "name": "datadogSite",
+      "type": "string",
+      "label": "Datadog Site",
+      "defaultValue": "datadoghq.com",
+      "helpMarkDown": "The [Datadog site](https://docs.datadoghq.com/getting_started/site/)",
+      "visibleRule": "authenticationType = apiAppKeys"
+    },
+    {
+      "name": "subdomain",
+      "type": "string",
+      "label": "Custom subdomain",
+      "defaultValue": "app",
+      "helpMarkDown": "The name of the custom subdomain set to access your Datadog application. If the URL used to access Datadog is `myorg.datadoghq.com`, this value needs to be set to `myorg`.",
+      "visibleRule": "authenticationType = apiAppKeys"
+    },
+    {
+      "name": "publicIds",
+      "type": "multiLine",
+      "label": "Synthetic test IDs",
+      "defaultValue": "",
+      "helpMarkDown": "String of tests IDs separated by commas for Synthetic tests you want to trigger. If no value is provided, the task will look for files named with `synthetics.json`."
+    },
+    {
+      "name": "testSearchQuery",
+      "type": "string",
+      "label": "Test search query",
+      "defaultValue": "",
+      "helpMarkDown": "Trigger tests corresponding to a [search](https://docs.datadoghq.com/synthetics/search/#search) query. This can be useful if you are tagging your test configurations. See [best practices](https://docs.datadoghq.com/developers/guide/what-best-practices-are-recommended-for-naming-metrics-and-tags/#rules-and-best-practices-for-naming-tags) for more information on tagging."
+    },
+    {
+      "name": "files",
+      "type": "multiLine",
+      "label": "Synthetic test config files",
+      "defaultValue": "{,!(node_modules)/**/}*.synthetics.json",
+      "helpMarkDown": "Glob pattern to detect Synthetic tests config files."
+    },
+    {
+      "name": "configPath",
+      "type": "filePath",
+      "label": "Global JSON configuration",
+      "defaultValue": "",
+      "helpMarkDown": "The global JSON configuration is used when launching tests. See the [example configuration](https://docs.datadoghq.com/synthetics/cicd_integrations/configuration/?tabs=npm#setup-a-client) for more details."
+    },
+    {
+      "name": "variables",
+      "type": "multiLine",
+      "label": "Variables",
+      "defaultValue": "",
+      "helpMarkDown": "Comma-separated list of global variables to use for Synthetic tests. For example: `START_URL=https://example.org,MY_VARIABLE=My title`."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "task.node10.js"
+    },
+    "Node16": {
+      "target": "task.js"
+    }
+  }
+}
