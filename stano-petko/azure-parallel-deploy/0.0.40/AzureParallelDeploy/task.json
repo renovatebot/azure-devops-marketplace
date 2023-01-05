@@ -1,0 +1,107 @@
+{
+	"$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+	"id": "0477968a-4686-4790-bb4a-e1213a2e58a9",
+	"name": "AzureParallelDeploy",
+	"friendlyName": "Azure Parallel Deploy",
+	"description": "Minimize service deploy time by deploying multiple services to Azure Portal in parallel.",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+	"author": "Stano Peťko",
+	"version": {
+		"Major": 0,
+		"Minor": 0,
+		"Patch": 40
+	},
+	"instanceNameFormat": "Deploy services",
+	"execution": {
+		"Node": {
+			"target": "AzureParallelDeploy.js"
+		}
+	},
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:AzureRM",
+			"label": "Azure subscription",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Select an Azure resource manager subscription for the deployment.",
+			"properties": {
+				"EndpointFilterRule": "ScopeLevel != ManagementGroup"
+			}
+		},
+		{
+			"name": "Services",
+			"type": "multiLine",
+			"label": "Services",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Logical name of the services, one name per line."
+		},
+		{
+			"name": "ResourceGroup",
+			"type": "pickList",
+			"label": "Resource group",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "True"
+			},
+			"helpMarkDown": "Resource group name in Azure Portal."
+		},
+		{
+			"name": "ArtifactsPath",
+			"type": "filePath",
+			"label": "Artifacts path",
+			"defaultValue": "$(System.DefaultWorkingDirectory)",
+			"required": true,
+			"helpMarkDown": "Base path for services' source files. Service is deployed as ZIP file."
+		},
+		{
+			"name": "AppNameFormat",
+			"type": "string",
+			"label": "Format string for application name",
+			"defaultValue": "{0}-api",
+			"required": true,
+			"helpMarkDown": "Format string for creating app service name in Azure Portal. Format string accepts one parameter `{0}`, which will be replace by the logical name of the service. For example if format string is `prod-{0}-api` and logical service name is `forecast`, the service will be deployed to `prod-forecast-api` app service."
+		},
+		{
+			"name": "AppPathFormat",
+			"type": "string",
+			"label": "Format string for application source",
+			"defaultValue": "{0}/{1}.zip",
+			"required": true,
+			"helpMarkDown": "Format string for path to source ZIP file for services. Every service is deployed as ZIP file. The format string accepts two parameters. Parameter `{0}` is replaced by artifacts path, parameter `{1}` is replaced by logical service name. For example if format string is `{0}/publish/Company.{1}.zip` and logical service name is `forecast`, deployed file path will be `.../publish/Company.forecast.zip`. The three dots will be the path set in *Artifacts path*."
+		}
+	],
+	"dataSourceBindings": [
+		{
+			"target": "ResourceGroup",
+			"endpointId": "$(ConnectedServiceName)",
+			"dataSourceName": "AzureRMWebAppResourceGroup"
+		}
+	],
+	"messages": {
+		"AuthSchemeNotSupported": "Auth Scheme %s is not supported",
+		"AzureSDKNotFound": "Azure CLI 2.x is not installed on this machine.",
+		"ErrorInSettingUpSubscription": "Error in setting up subscription",
+		"FailedToLogout": "The following error occurred while logging out: %s",
+		"GlobalCliConfigAgentVersionWarning": "For agent version < 2.115.0, only global Azure CLI configuration can be used",
+		"LoginFailed": "Azure login failed",
+		"MSILoginFailed": "Azure login failed using Managed Service Identity",
+		"SettingAzureCloud": "Setting active cloud to: %s",
+		"SettingAzureConfigDir": "Setting AZURE_CONFIG_DIR env variable to: %s",
+
+		"ScriptReturnCode": "Script exited with return code: %d",
+		"ScriptFailed": "Script failed with error: %s",
+		"ScriptFailedWithExitCode": "Script failed with exit code: %d",
+		"JS_InvalidFilePath": "Script file could not be found at specified script location: '%s'. Please verify the script exists at the specified path. If you want to use inline script, specify input `Script Location` as `inlineScript`.",
+		"JS_InvalidErrorActionPreference": "Invalid ErrorActionPreference '%s'. The value must be one of: 'Stop', 'Continue', or 'SilentlyContinue'",
+		"UnacceptedScriptLocationValue": "%s is not a valid value for task input 'Script Location' (scriptLocation in YAML). Value can either be'inlineScript' or 'scriptPath'",
+		"UnsupportedEndpointScheme": "Unsupported service connection authorization scheme: Service Principal for AzureRM"
+	}
+}
