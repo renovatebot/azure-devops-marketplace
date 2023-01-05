@@ -1,0 +1,180 @@
+{
+    "id": "D6BBB775-026A-4DB7-82B3-13A30B0D8398",
+    "name": "tokenreplacer",
+    "friendlyName": "Replace Tokens",
+    "description": "Replace tokens in files",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Utkarsh Chauhan",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Token replacer in $(targetFiles)",
+    "minimumAgentVersion": "2.105.0",
+    "groups": [
+        {
+            "name": "missing",
+            "displayName": "Missing variables",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "rootDirectory",
+            "type": "filePath",
+            "label": "Root directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Base directory for searching files. If not specified the default working directory will be used."
+        },
+        {
+            "name": "variablesFilePath",
+            "type": "filePath",
+            "label": "Variables File Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "File path of which holds all the variable values"
+        },
+        {
+            "name": "targetFiles",
+            "type": "multiLine",
+            "label": "Target files",
+            "defaultValue": "**/*.config",
+            "required": true,
+            "helpMarkDown": "Absolute or relative comma or newline-separated paths to the files to replace tokens. Wildcards can be used.<br/>Eg: `**/*.config` for all config files in all sub folders."
+        },
+        {
+            "name": "encoding",
+            "type": "pickList",
+            "label": "Files encoding",
+            "defaultValue": "auto",
+            "required": true,
+            "options": {
+                "auto": "auto",
+                "ascii": "ascii",
+                "utf-7": "utf-7",
+                "utf-8": "utf-8",
+                "utf-16le": "utf-16",
+                "utf-16be": "utf-16 (big endian)",
+                "win1252": "windows 1252",
+                "iso88591": "iso 8859-1"
+            },
+            "helpMarkDown": "Specify the files encoding.<br/>The 'auto' value will determine the encoding based on the Byte Order Mark (BOM) if present; otherwise it will use ascii."
+        },
+        {
+            "name": "writeBOM",
+            "type": "boolean",
+            "label": "Write unicode BOM",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If checked writes an unicode Byte Order Mark (BOM).",
+            "visibleRule": "encoding != ascii && encoding != win1252 && encoding != iso88591"
+        },
+        {
+            "name": "escapeType",
+            "type": "pickList",
+            "defaultValue": "auto",
+            "label": "Escape values type",
+            "helpMarkDown": "Specify how to escape variable values.",
+            "options": {
+                "auto": "auto",
+                "none": "no escaping",
+                "json": "json",
+                "xml": "xml",
+                "custom": "custom"
+            }
+        },
+        {
+            "name": "escapeChar",
+            "type": "string",
+            "label": "Escape character",
+            "visibleRule": "escapeType == custom",
+            "helpMarkDown": "The escape character to use when escaping characters in the variable values."
+        },
+        {
+            "name": "charsToEscape",
+            "type": "string",
+            "label": "Characters to escape",
+            "visibleRule": "escapeType == custom",
+            "helpMarkDown": "Characters in variable values to escape before replacing tokens."
+        },
+        {
+            "name": "verbosity",
+            "type": "pickList",
+            "label": "Verbosity",
+            "defaultValue": "normal",
+            "options": {
+                "normal": "normal",
+                "detailed": "detailed",
+                "off": "off"
+            },
+            "helpMarkDown": "Specify the logs verbosity level. (error and system debug are always on)"
+        },
+        {
+            "name": "actionOnMissing",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "warn",
+            "groupName": "missing",
+            "required": true,
+            "options": {
+                "continue": "silently continue",
+                "warn": "log warning",
+                "fail": "fail"
+            },
+            "helpMarkDown": "Specify the action on a missing variable."
+        },
+        {
+            "name": "keepToken",
+            "type": "boolean",
+            "label": "Keep token",
+            "defaultValue": "false",
+            "groupName": "missing",
+            "required": true,
+            "helpMarkDown": "If checked tokens with missing variables will not be replaced by empty string."
+        },
+        {
+            "name": "tokenPrefix",
+            "type": "string",
+            "label": "Token prefix",
+            "defaultValue": "#{",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The prefix of the tokens to search in the target files."
+        },
+        {
+            "name": "tokenSuffix",
+            "type": "string",
+            "label": "Token suffix",
+            "defaultValue": "}#",
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "The suffix of the tokens to search in the target files."
+        },
+        {
+            "name": "emptyValue",
+            "type": "string",
+            "label": "Empty value",
+            "defaultValue": "(empty)",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "The variable value which will be replaced by an empty string."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "helpMarkDown": "v1.0.0 - undefined"
+}
