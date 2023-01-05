@@ -1,0 +1,83 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "3986ac27-61a2-4e3e-94fb-f5cd746082e3",
+    "name": "GetAzureFunctionKey",
+    "friendlyName": "Get azure function authorization key",
+    "description": "Gets either the host or function key needed to authenticate and call the given azure function",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "Ensilog",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Get the $(functionfarm) $(functionname) key",
+    "inputs": [
+        {
+            "name": "connectedServiceNameARM",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "required": true,
+            "helpMarkDown": "Select an Azure resource manager subscription for the deployment",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "resourceGroup",
+            "type": "string",
+            "label": "Resource group to use",
+            "required": true
+        },
+        {
+            "name": "hostOrFunctionKey",
+            "type": "pickList",
+            "label": "Key level to get",
+            "required": true,
+            "options": {
+                "function": "Function",
+                "host": "Host"
+            },
+            "defaultValue": "function"
+        },
+        {
+            "name": "azureServerFarm",
+            "type": "pickList",
+            "label": "Azure function",
+            "properties": {
+                "editableOptions": "True"
+            },
+            "required": true,
+            "helpMarkDown": "Select a root Azure function to get the key from"
+        },
+        {
+            "name": "azureFunctionName",
+            "type": "string",
+            "label": "Name of the function",
+            "required": true,
+            "helpMarkDown": "Select a root Azure function to get the key from",
+            "visibleRule": "hostOrFunctionKey = function"
+        },
+        {
+            "name": "outputVariableName",
+            "type": "string",
+            "label": "Variable name",
+            "required": true,
+            "helpMarkDown": "Name of the environment variables that will be set with the key",
+            "defaultValue": "functionKey"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "azureServerFarm",
+            "endpointId": "$(connectedServiceNameARM)",
+            "dataSourceName": "AzureFunctionRM"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
