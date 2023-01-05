@@ -1,0 +1,62 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e96fd8a2-8a8e-4ff3-9d3e-1685f2d0abee",
+    "name": "AppCheckCheckScanStatus",
+    "friendlyName": "AppCheck: Check Scan Status",
+    "description": "Check the status of a scan",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "AppCheck-NG",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "ServerGate"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "inputs": [
+        {
+            "name": "AppcheckService",
+            "type": "connectedService:Appcheck",
+            "label": "AppCheck Service Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AppCheck connection to use"
+        },
+        {
+            "name": "ScanID",
+            "type": "string",
+            "label": "Scan ID",
+            "required": true,
+            "helpMarkDown": "The task will check the scan that has this ID"
+        },
+        {
+            "name": "FailureCondition",
+            "type": "pickList",
+            "label": "Failure condition",
+            "defaultValue": "LOW",
+            "required": true,
+            "options": {
+                "LOW": "At least one LOW vulnerability was found",
+                "MEDIUM": "At least one MEDIUM vulnerability was found",
+                "HIGH": "At least one HIGH vulnerability was found",
+                "BAD_STATUS": "The scan failed or was aborted"
+            }
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+          "Execute": {
+            "Method": "GET",
+            "EndpointId": "$(AppcheckService)",
+            "EndpointUrl": "$(endpoint.url)api/v1/$(endpoint.apitoken)/scan/$(ScanID)/checkPipelineScanStatus?failure_condition=$(FailureCondition)",
+            "Expression": "and(eq(root['success'], true), eq(root['failure_condition_passed'], true))"
+          }
+        }
+    }
+}
