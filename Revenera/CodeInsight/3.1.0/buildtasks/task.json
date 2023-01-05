@@ -1,0 +1,120 @@
+{
+    "id": "b35a84b6-16c3-4d53-9593-53e8ff6e28ca",
+    "name": "Code Insight Scan",
+    "friendlyName": "Code Insight Scan",
+    "description": "Scan for OSS components, licenses, and security vulnerabilities using Code Insight.",
+    "helpMarkDown": "[More Information](https://www.revenera.com/)",
+    "category": "Build",
+    "isShellCommand": true,
+    "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass"
+    ],
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Revenera",
+    "version": {
+        "Major": 3,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "demands": ["java"],
+    "minimumAgentVersion": "1.92.0",
+  
+    "inputs": [
+        {
+            "name": "URL",
+            "type": "string",
+            "label": "Code Insight Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the server URL in the format – http or https://<Server_Host>:<Port>/codeinsight. Ensure that the URL is publicly accessible and that the port is opened up."
+        },
+        {
+            "name": "Token",
+            "type": "string",
+            "label": "Authentication Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter user access token for Code Insight. This can be obtained/generated from the 'Preferences' page in Code Insight server."        
+        },
+        {
+            "name": "ProjectName",
+            "type": "string",
+            "label": "Code Insight Project Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the project name created in Code Insight"
+        },
+         {
+            "name": "Alias",
+            "type": "string",
+            "label": "Alias",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the unique alias value for your project. The alias represents a container in which all the files scanned in this instance will be shown."
+        },
+        {
+            "name": "ScanFolders",
+            "type": "string",
+            "label": "Folder(s) to Scan",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": false,
+            "helpMarkDown": "Enter a comma separated list of paths of folders to scan."
+        },
+		{
+            "name": "Host",
+            "type": "string",
+            "label": "Host",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A user-defined name for the instance where the scan-agent plugin is configured to run agent scans. This is required value for scan running in a dynamic host environment.(Note that this property along with the alias property will remain unchanged for each subsequent rescan)"
+        }
+
+     
+    ],
+    "instanceNameFormat": "Code Insight Scan",
+   
+    "execution": {
+        "Node": {
+            "target": "codeInsightTask.js",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    },
+
+    "messages": {
+        "DownloadFromAzureBlobStorage":"Downloading artifacts from Azure blob storage, Container Name: %s",
+        "SuccessFullyFetchedItemList": "Successfully fetched list of items",
+        "StorageAccountDoesNotExist": "Failed to get azure storage account with name %s.",
+        "UnzipExtractFile": "Extracting file: %s",
+        "SevenZipExtractFile": "Extracting file: %s",
+        "TarExtractFile": "Extracting file: %s",
+        "ExtractFileFailedMsg": "Extraction failed for file: %s \ncode: %d \nstdout: %s \nstderr: %s \nerror: %s;",
+        "ExtractNonExistFile": "Extraction failed for file: %s because it does not exist.",
+        "ExtractDirFailed": "Extraction failed for file: %s because it is a directory.",
+        "CreateTempDir": "Creating temp folder: %s to decompress: %s",
+        "TempDir": "tempFolder = %s",
+        "DecompressedTempTar": "Decompressed temporary tar from: %s to: %s",
+        "RemoveTempDir": "Removing temp folder: %s",
+        "ExtractFailedCannotCreate": "Extraction failed for file: %s because temporary location could not be created: %s",
+        "CleanDestDir": "Cleaning destination folder before extraction: %s",
+        "CreateDestDir": "Creating destination folder: %s",
+        "RetrievingJdkFromAzure": "Retrieving the JDK from Azure blob storage.",
+        "RetrievingJdkFromLocalPath": "Retrieving the JDK from local path.",
+        "SucceedMsg": "Successfully extracted all files.",
+        "SetJavaHome": "JAVA_HOME is being set to: %s",
+        "SetExtendedJavaHome": "%s is being set to: %s",
+        "UnsupportedFileExtension": "Specified JDK source file does not have a supported file extension.",
+        "CouldNotFetchAccessTokenforAzureStatusCode": "Could not fetch access token for Azure. Status code: %s, status message: %s",
+        "CouldNotFetchAccessTokenforMSIDueToMSINotConfiguredProperlyStatusCode": "Could not fetch access token for Managed Service Principal. Please configure Managed Service Identity (MSI) for virtual machine 'https://aka.ms/azure-msi-docs'. Status code: %s, status message: %s",
+        "CouldNotFetchAccessTokenforMSIStatusCode": "Could not fetch access token for Managed Service Principal. Status code: %s, status message: %s"
+    }
+}
