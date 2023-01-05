@@ -1,0 +1,188 @@
+{
+    "id": "7609a96a-13e3-4fc4-85cf-0ffecfc47d41",
+    "name": "turtlesystems-azure-storage",
+    "friendlyName": "Upload to Azure Storage",
+    "description": "Upload files to the named storage container and optionally create SAS token",
+    "helpMarkDown": "[More Information](https://github.com/turtlesystems/vsts-azure-storage/wiki",
+    "category": "Build",
+    "releaseNotes": "",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Turtlesystems Consulting Ltd",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "demands": [],
+    "instanceNameFormat": "Upload files to Azure Storage container",
+    "groups": [
+        {
+            "name": "AzureStorageDetails",
+            "displayName": "Azure Storage Details",
+            "isExpanded": true
+        },
+        {
+            "name": "UploadFiles",
+            "displayName": "Upload Files",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "AzureStorageDetails",
+            "helpMarkDown": "Select the Azure Resource Manager to use"
+        },
+        {
+            "name": "action",
+            "type": "picklist",
+            "label": "Action",
+            "defaultValue": "create",
+            "required": true,
+            "groupName": "AzureStorageDetails",
+            "helpMarkDown": "Action for this task to perform",
+            "options": {
+                "create": "Create Resource Group and Storage Account",
+                "delete": "Remove Resource Group and Storage Account"
+            }
+        },
+        {
+            "name": "resourceGroupName",
+            "type": "picklist",
+            "label": "Resource Group",
+            "required": true,
+            "groupName": "AzureStorageDetails",
+            "helpMarkDown": "Provide the name of the resource group in which the storage account exists or should be created",
+            "properties": {
+                "EditableOptions": true
+            }
+        },
+        {
+            "name": "location",
+            "type": "picklist",
+            "label": "Location",
+            "required": true,
+            "helpMarkDown": "Location for deploying the resource group and storage account. If the they already exists in the subscription, then this value will be ignored.",
+            "groupName": "AzureStorageDetails",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "storageAccountName",
+            "type": "string",
+            "label": "Storage Account Name",
+            "required": true,
+            "helpMarkDown": "Name of the storage account to create. This must be globally unique",
+            "groupName": "AzureStorageDetails",
+            "defaultValue": ""
+        },
+        {
+            "name": "containerName",
+            "type": "string",
+            "label": "Container",
+            "required": true,
+            "helpMarkDown": "Name of the container to create within the specified storage account",
+            "groupName": "AzureStorageDetails",
+            "defaultValue": "upload"
+        },
+        {
+            "name": "uploadDirectory",
+            "type": "filepath",
+            "label": "Upload Directory",
+            "required": true,
+            "helpMarkDown": "Directory containing the files to upload",
+            "groupName": "UploadFiles"
+        },
+        {
+            "name": "sasTokenStartTime",
+            "type": "string",
+            "label": "SAS Token Start Time",
+            "required": true,
+            "defaultValue": "1m",
+            "helpMarkDown": "State when the start time of the token should be. Accepts relative values from now, such as 2m or 4 hours for example, to create a date in the past. This is useful to help avoid clock drift on machines.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "sasTokenExpiryTime",
+            "type": "string",
+            "label": "SAS Token Expiry Time",
+            "required": true,
+            "defaultValue": "1h",
+            "helpMarkDown": "Set the expiry time of the SAS token. Accepts relative values from now, such as 1 hr or 4 hours, which will allow the token to be used for the next 4 hours.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "vstsSasTokenVariableName",
+            "type": "string",
+            "label": "VSTS SAS Token Variable Name",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "If specified the SAS token will be set in the specified VSTS variable for subsequent tasks to make use of.",
+            "groupName": "advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "location",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureLocations"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "upload_files.js"
+        }
+    },
+    "messages": {
+        "ASTP_ConstructorFailed": "Task failed while initializing. Error: %s",
+        "InvalidAction": "Invalid action: %s. If you are seeing this it is a bug, please raise an issue at https://github.com/turtlesystems/vsts-azure-storage/issues",
+        "CheckResourceGroupExists": "Checking if resource group exists: %s",
+        "ResourceGroupStatusFetchFailed": "Failed to check the resource group status. Error: %s",
+        "ResourceGroupStatus": "Resource group exists: %s",
+        "CreatingNewRG": "Creating resource Group: %s",
+        "DeletingRG": "Deleting resource Group: %s",
+        "CreatedRG": "Resource Group created successfully",
+        "DeletedRG": "Resource Group deleted successfully",
+        "ResourceGroupCreationFailed": "Failed to create the resource group. Error: %s",
+        "ResourceGroupDeletionFailed": "Failed to delete the resource group. Error: %s",
+        "CheckStorageAccountExists": "Checking if storage account exists: %s",
+        "StorageAccountStatusFetchFailed": "Failed to check the resource group status. Error: %s",
+        "StorageAccountStatus": "Storage account available: %s (%s)",
+        "CreatingNewSA": "Creating storage account: %s",
+        "CreatedSA": "Storage Account created successfully",
+        "StorageAccountCreationFailed": "Failed to create the storage account. Error: %s",
+        "CheckStorageAccountContainerExists": "Checking if storage account container exists: %s",
+        "StorageAccountContainerListFailed": "Failed to return list of storage account containers: %s",
+        "ContainerStatus": "Container exists: %s",
+        "CreatingContainer": "Creating container: %s",
+        "ContainerCreationFailed": "Failed to create the container. Error: %s",
+        "CreatedContainer": "Container created successfully",
+        "UploadFileToContainerFailed": "Error uploading file to container: %s",
+        "BlobUploaded": "Blob upload completed: %s",
+        "BlobUploadComplete": "All files have been uploaded: %s",
+        "SASTokenStart": "SAS Token start time: %s",
+        "SASTokenExpiry": "SAS Token expiry time: %s",
+        "SASToken": "SAS Token: %s"
+    }
+}
