@@ -1,0 +1,188 @@
+{
+	"id": "406f4a5c-0823-4881-87cd-008b5aa90bc5",
+	"name": "update-assembly-info",
+	"friendlyName": "Update Assembly Info",
+	"description": "Update assembly info of one or multiple projects",
+	"helpMarkDown": "Having Problems? Please [create an issue on our Github](https://github.com/BoolBySigma/UpdateAssemblyInfo/issues) and we will try to help you.",
+	"category": "Utility",
+	"author": "Bool (by Sigma)",
+	"version": {
+		"Major": 2,
+		"Minor": 0,
+		"Patch": 19
+	},
+	"instanceNameFormat": "Update Assembly: $(assemblyInfoFiles)",
+	"groups": [
+		{
+			"name": "fileVersion",
+			"displayName": "File Version",
+			"isExpanded": true
+		},
+		{
+			"name": "assemblyVersion",
+			"displayName": "Assembly Version",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "assemblyInfoFiles",
+			"type": "filePath",
+			"label": "Assembly Info",
+			"defaultValue": "**\\*AssemblyInfo.*",
+			"required": true,
+			"helpMarkDown": "Relative path from repo root of the assembly info file(s). Variables can be used, eg. `$(Build.SourcesDirectory)`. You can also use wildcards, eg. `\\*\\*\\AssemblyInfo.\\*` for all AssemblyInfo.* files in all sub folders."
+		},
+		{
+			"name": "ensureAttribute",
+			"type": "boolean",
+			"label": "Add Missing Attributes",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Adds attribute to assembly info file if it is missing. If the attribute is not specified in this task it will not be added."
+		},
+		{
+			"name": "description",
+			"type": "string",
+			"label": "Description",
+			"defaultValue": "Build: $(Build.BuildNumber) - Commit: $(Build.SourceVersion)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used including these task-specific variables:<ul><li>`$(Assembly.Company)`: The value provided for Company.</li><li>`$(Assembly.Product)`: The value provided for Product.</li></ul>Use the `$(Date:{...})` variable to generate date value. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "configuration",
+			"type": "string",
+			"label": "Configuration",
+			"defaultValue": "$(BuildConfiguration)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(BuildConfiguration)`. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "company",
+			"type": "string",
+			"label": "Company",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used. Use the `$(Date:{...})` variable to generate date value. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "product",
+			"type": "string",
+			"label": "Product",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used. Use the `$(Date:{...})` variable to generate date value. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "copyright",
+			"type": "string",
+			"label": "Copyright",
+			"defaultValue": "Copyright © $(Assembly.Company) $(Date:yyyy)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, including these task-specific variables:<ul><li>`$(Assembly.Company)`: The value provided for Company.</li><li>`$(Assembly.Product)`: The value provided for Product.</li></ul>Use the `$(Date:{...})` variable to generate date value. Used togeather this could produce \"Copyright © YourCompanyName 2017\".</br></br>Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "trademark",
+			"type": "string",
+			"label": "Trademark",
+			"defaultValue": "$(Assembly.Company)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, including these task-specific variables:<ul><li>`$(Assembly.Company)`: The value provided for Company.</li><li>`$(Assembly.Product)`: The value provided for Product.</li></ul>Use the `$(Date:{...})` variable to generate date value. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "informationalVersion",
+			"type": "string",
+			"label": "Informational Version",
+			"defaultValue": "$(Assembly.FileVersion)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, inlcuding these task-specific variables:<ul><li>`$(Assembly.FileVersion)`: The assembly file version value.</li><li>`$(Assembly.FileVersionMajor)`: The assembly file version major value. Requires Major to be specified.</li><li>`$(Assembly.FileVersionMinor)`: The assembly file version minor value. Requires Minor to be specified.</li><li>`$(Assembly.FileVersionBuild)`: The assembly file version build value. Requires Build to be specified.</li><li>`$(Assembly.FileVersionRevision)`: The assembly file version revision value. Requires Revision to be specified.</li><li>`$(Assembly.AssemblyVersion)`: The assembly version value.</li><li>`$(Assembly.AssemblyVersionMajor)`: The assembly version major value. Requires Major to be specified.</li><li>`$(Assembly.AssemblyVersionMinor)`: The assembly version minor value. Requires Minor to be specified.</li><li>`$(Assembly.AssemblyVersionBuild)`: The assembly version build value. Requires Build to be specified.</li><li>`$(Assembly.AssemblyVersionRevision)`: The assembly version revision value. Requires Revision to be specified.</li></ul>Use the `$(Date:{...})` variable to generate date value. Use `$(Invalid)` to throw error and force the user to change the value to something useful."
+		},
+		{
+			"name": "comVisible",
+			"type": "boolean",
+			"label": "Com Visible",
+			"defaultValue": false,
+			"required": false,
+			"helpMarkDown": ""
+		},
+		{
+			"name": "fileVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "$(Build.BuildId)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "assemblyVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`. Use the `$(Date:{...})` variable to generate date value (must generate a numeric value). Use `$(Invalid)` to throw error and force the user to change the value to something useful.",
+			"groupName": "assemblyVersion"
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\update.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

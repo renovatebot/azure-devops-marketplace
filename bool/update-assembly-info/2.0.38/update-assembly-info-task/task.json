@@ -1,0 +1,233 @@
+{
+	"id": "406f4a5c-0823-4881-87cd-008b5aa90bc5",
+	"name": "update-assembly-info",
+	"friendlyName": "Update Assembly Info",
+	"description": "Update assembly info of one or multiple projects",
+	"helpMarkDown": "Having Problems? Please [create an issue on our Github](https://github.com/BoolBySigma/UpdateAssemblyInfo/issues) and we will try to help you.",
+	"category": "Utility",
+	"author": "Bool (by Sigma)",
+	"version": {
+		"Major": 2,
+		"Minor": 0,
+		"Patch": 38
+	},
+	"instanceNameFormat": "Update Assembly: $(assemblyInfoFiles)",
+	"groups": [
+		{
+			"name": "fileVersion",
+			"displayName": "File Version",
+			"isExpanded": true
+		},
+		{
+			"name": "assemblyVersion",
+			"displayName": "Assembly Version",
+			"isExpanded": false
+		},
+		{
+			"name": "customAttributes",
+			"displayName": "Custom Attributes",
+			"isExpanded": false
+		}
+	],
+	"inputs": [
+		{
+			"name": "assemblyInfoFiles",
+			"type": "filePath",
+			"label": "Assembly Info",
+			"defaultValue": "**\\*AssemblyInfo.*",
+			"required": true,
+			"helpMarkDown": "Relative path from repo root of the assembly info file(s). Variables can be used, eg. `$(Build.SourcesDirectory)`. You can also use wildcards, eg. `\\*\\*\\AssemblyInfo.\\*` for all AssemblyInfo.* files in all sub folders."
+		},
+		{
+			"name": "ensureAttribute",
+			"type": "boolean",
+			"label": "Add Missing Attributes",
+			"defaultValue": true,
+			"required": false,
+			"helpMarkDown": "Adds attribute to assembly info file if it is missing. If the attribute is not specified in this task it will not be added."
+		},
+		{
+			"name": "description",
+			"type": "string",
+			"label": "Description",
+			"defaultValue": "Build: $(Build.BuildNumber) - Commit: $(Build.SourceVersion)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "configuration",
+			"type": "string",
+			"label": "Configuration",
+			"defaultValue": "$(BuildConfiguration)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(BuildConfiguration)`."
+		},
+		{
+			"name": "company",
+			"type": "string",
+			"label": "Company",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "product",
+			"type": "string",
+			"label": "Product",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "copyright",
+			"type": "string",
+			"label": "Copyright",
+			"defaultValue": "Copyright © $(Assembly.Company) $(Date:yyyy)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "trademark",
+			"type": "string",
+			"label": "Trademark",
+			"defaultValue": "$(Assembly.Company)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "culture",
+			"type": "string",
+			"label": "Culture",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "informationalVersion",
+			"type": "string",
+			"label": "Informational Version",
+			"defaultValue": "$(Assembly.FileVersion)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used."
+		},
+		{
+			"name": "comVisible",
+			"type": "radio",
+			"label": "Com Visible",
+			"defaultValue": "none",
+			"options": {
+				"none": "Do Not Update",
+				"true": "True",
+				"false": "False"
+			},
+			"required": false,
+			"helpMarkDown": "Select value for Com Visible."
+		},
+		{
+			"name": "clsCompliant",
+			"type": "radio",
+			"label": "CLS Compliant",
+			"defaultValue": "none",
+			"options": {
+				"none": "Do Not Update",
+				"true": "True",
+				"false": "False"
+			},
+			"required": false,
+			"helpMarkDown": "Select value for CLS Compliant."
+		},
+		{
+			"name": "fileVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "fileVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "$(Build.BuildId)",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "fileVersion"
+		},
+		{
+			"name": "assemblyVersionMajor",
+			"type": "string",
+			"label": "Major",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionMinor",
+			"type": "string",
+			"label": "Minor",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionBuild",
+			"type": "string",
+			"label": "Build",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "assemblyVersionRevision",
+			"type": "string",
+			"label": "Revision",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Left blank, the value is not updated. Variables can be used, eg. `$(Build.BuildId)`.",
+			"groupName": "assemblyVersion"
+		},
+		{
+			"name": "customAttributes",
+			"type": "multiLine",
+			"label": "Custom Attributes",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Input custom attribute and value in format `AttributeName=AttributeValue`. Use a new line for each new custom attribute.</br></br>Example:</br>`AttributeName1=AttributeValue1`</br>`AttributeName2=AttributeValue2`</br>`AttributeName3=AttributeValue3`</br></br>If using attribute values 'True', 'true', 'False' or 'false' the custom attribute will be treated as a boolean attribute. Left blank, no custom attributes are added. Variables can be used.",
+			"groupName": "customAttributes",
+			"properties": {
+				"resizable": "true",
+				"rows": "5",
+				"maxLength": "500"
+			}
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\update.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
