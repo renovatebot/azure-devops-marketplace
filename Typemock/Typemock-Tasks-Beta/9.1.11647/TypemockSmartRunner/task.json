@@ -1,0 +1,188 @@
+{
+  "id": "72AAD460-F3DD-469A-95B8-F36027CDCEA1",
+  "name": "TypemockSmartRunner",
+  "friendlyName": "Typemock SmartRunner",
+  "description": "Run unit tests with Typemock SmartRunner",
+  "helpMarkDown": "[More Information](http://www.typemock.com/proxy/redirect.php?id=srtask)",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Typemock",
+  "version": {
+    "Major": 9,
+    "Minor": 1,
+    "Patch": 11647
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+    {
+      "name": "executionOptions",
+      "displayName": "Execution Options",
+      "isExpanded": true
+    },
+    {
+      "name": "reportingOptions",
+      "displayName": "Reporting Options",
+      "isExpanded": false
+    },
+    {
+      "name": "coverageOptions",
+      "displayName": "Coverage Options",
+      "isExpanded": true
+    },
+    {
+      "name": "advancedExecutionOptions",
+      "displayName": "Advanced Execution Options",
+      "isExpanded": false
+    },
+    {
+      "name": "typemock",
+      "displayName": "Typemock",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "testAssembly",
+      "type": "string",
+      "label": "Test Assembly",
+      "defaultValue": "**\\$(BuildConfiguration)\\*tests*.dll;-:**\\obj\\**",
+      "required": true,
+      "helpMarkDown": "Test binaries to run tests on.  Wildcards can be used.  For example, `**\\*test*.dll;-:**\\obj\\**` for all dlls with test in name while excluding files in any sub-directory named obj.",
+      "groupName": "executionOptions"
+    },
+    {
+      "name": "testFiltercriteria",
+      "type": "string",
+      "label": "Test Names",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional criteria to filter tests from Test assemblies. For example: `MyTestMethod, MyTestClass, AnotherTestClass.TestMethod`",
+      "groupName": "executionOptions"
+    },
+    {
+      "name": "testRunTitle",
+      "type": "string",
+      "label": "Test Run Title",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide a name for the Test Run.",
+      "groupName": "reportingOptions"
+    },
+    {
+      "name": "testOutputFormat",
+      "type": "pickList",
+      "label": "Results Format",
+      "defaultValue": "MsTest",
+      "required": false,
+      "helpMarkDown": "Specifies a format for Tests Results.",
+      "groupName": "reportingOptions",
+      "options": {
+        "MsTest": "MsTest",
+        "NUnit": "NUnit"
+      }
+    },
+    {
+      "name": "platform",
+      "type": "string",
+      "label": "Platform",
+      "defaultValue": "$(BuildPlatform)",
+      "required": false,
+      "helpMarkDown": "Platform against which the tests should be reported. If you have defined a variable for platform in your build task, use that here.",
+      "groupName": "reportingOptions"
+    },
+    {
+      "name": "configuration",
+      "type": "string",
+      "label": "Configuration",
+      "defaultValue": "$(BuildConfiguration)",
+      "required": false,
+      "helpMarkDown": "Configuration against which the tests should be reported. If you have defined a variable for configuration in your build task, use that here.",
+      "groupName": "reportingOptions"
+    },
+    {
+      "name": "codeCoverageEnabled",
+      "type": "boolean",
+      "label": "[NEW] Code Coverage Enabled",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "Toggle to enable code coverage",
+      "groupName": "coverageOptions"
+    },
+    {
+      "name": "coverageAssembly",
+      "type": "string",
+      "label": "Coverage Assembly",
+      "defaultValue": "**\\$(BuildConfiguration)\\*.dll;-:**\\*test*.dll;-:**\\obj\\**",
+      "required": false,
+      "helpMarkDown": "Assembly that will be checked by Coverage",
+      "groupName": "coverageOptions",
+      "visibleRule": "codeCoverageEnabled=true"
+    },
+    {
+      "name": "coverageReportType",
+      "type": "pickList",
+      "label": "Code Coverage Report Format",
+      "defaultValue": "Html",
+      "required": false,
+      "helpMarkDown": "Code Coverage Report available in next formats.",
+      "groupName": "coverageOptions",
+      "options": {
+        "Csv": "Csv",
+        "Html": "Html",
+        "Text": "Txt",
+        "Xml": "Xml",
+        "OpenCover": "OpenCover",
+        "NCover": "NCover"
+      },
+      "visibleRule": "codeCoverageEnabled=true"
+    },
+    {
+      "name": "licenseName",
+      "type": "string",
+      "label": "Company",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of the license provided by Typemock (will run as Basic by default)",
+      "groupName": "typemock"
+    },
+    {
+      "name": "licenseKey",
+      "type": "string",
+      "label": "Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "License key provided by Typemock (will run as Basic by default)",
+      "groupName": "typemock"
+    },
+    {
+      "name": "logMocking",
+      "type": "boolean",
+      "label": "Log Mocking Diagnostics",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Log Mocking Diagnostics",
+      "groupName": "advancedExecutionOptions"
+    },
+    {
+      "name": "logRunner",
+      "type": "boolean",
+      "label": "Log SmartRunner Diagnostics",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Log SmartRunner Diagnostics",
+      "groupName": "advancedExecutionOptions"
+    }
+  ],
+  "instanceNameFormat": "Typemock SmartRunner Test Assemblies $(testAssembly)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\SmartRunner.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
