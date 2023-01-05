@@ -1,0 +1,45 @@
+{
+    "id": "e94e50f1-f06a-4d82-b20f-2978bd5e3c45",
+    "name": "EA_Run",
+    "friendlyName": "EA execution service",
+    "description": "Running entities on XPLUS EA system",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "XPLUS SA",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Run on Executive Automats system",
+    "inputs": [
+        {
+            "name": "EA",
+            "type": "connectedService:EA",
+            "label": "EA api service",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the EA endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Service endpoint type for EA api connections'"
+          },
+          {
+            "name": "entity",
+            "type": "pickList",
+            "label": "EA executable to run",
+            "required": true,
+            "helpMarkDown": "Select the EA executable entity to run."
+          }
+    ],
+    "dataSourceBindings": [
+        {
+          "target": "entity",
+          "endpointId": "$(EA)",
+          "dataSourceName": "EA Entities",
+          "resultTemplate": "{ \"Value\" : \"{{id}};{{host}};{{type}};{{token}}\", \"DisplayValue\": \"{{displayName}}\"}"
+        }
+      ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
