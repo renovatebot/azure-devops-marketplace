@@ -1,0 +1,96 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/maikvandergaag/msft-extensions/tree/master/azuredevops/triggerpipeline"
+    },
+    "contributions": [
+        {
+            "id": "TriggerPipeline",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "TriggerPipeline"
+            }
+        },
+        {
+            "id": "azuredevops-endpoint-type",
+            "description": "Service Endpoint for a Azure DevOps API connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "azuredevopsAPI",
+                "displayName": "Azure DevOps API",
+                "url": {
+                    "displayName": "Organization Url",
+                    "value": "https://dev.azure.com/[organization]"
+                },
+                "dataSources": [
+                    {
+                        "name": "projects",
+                        "endpointUrl": "{{endpoint.url}}/_apis/projects",
+                        "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]"
+                    },
+                    {
+                        "name": "buildDefinitions",
+                        "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/build/definitions",
+                        "resultSelector": "jsonpath:$.value[?(@.quality=='definition')]"
+                    },
+                    {
+                        "name": "releaseDefinitions",
+                        "endpointUrl": "{{endpoint.releaseUrl}}/{{project}}/_apis/release/definitions",
+                        "resultSelector": "jsonpath:$.value[?(@.isDeleted==false)]"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "releaseUrl",
+                        "name": "Release API Url",
+                        "description": "The url of the release API",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "releaseUrlInput",
+                            "defaultValue": "https://vsrm.dev.azure.com/[organization]"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 \"token\" \":\" endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "Personal access token.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
