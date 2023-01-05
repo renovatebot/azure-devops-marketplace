@@ -1,0 +1,314 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "6a05eda6-b456-11ea-b3de-0242ac130004",
+    "name": "QualysCSConnector",
+    "friendlyName": "Scan container images with Qualys CS",
+    "description": "Scan container images for vulnerabilities",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Qualys",
+    "version": {
+        "Major": 4,
+        "Minor": 3,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Scan container images with Qualys CS",
+  "groups": [
+        {
+            "name": "apiDetails",
+            "displayName": "Qualys Configuration",
+            "isExpanded": true
+        },
+		{
+            "name": "dataCollection",
+            "displayName": "Data Collection",
+            "isExpanded": true
+        },
+		{
+            "name": "failureConditions",
+            "displayName": "Build Failure Conditions",
+            "isExpanded": true
+        },
+        {
+            "name": "excludeConditions",
+            "displayName": "Exclude Conditions",
+            "isExpanded": true
+        },
+        {
+            "name": "advancedSettings",
+            "displayName": "Advanced Settings",
+            "isExpanded": true
+        } 		
+    ],
+    "inputs": [
+        {
+            "name": "QualysApiServer",
+            "type": "string",
+            "label": "Qualys API Server",
+			"groupName": "apiDetails",
+            "required": true, 
+            "helpMarkDown": 'URL of your Qualys Platform. For example, qualysapi.<your POD URL>. <a target="_blank"	href="https://www.qualys.com/platform-identification/" >What is my platform?</a>'
+        },
+        {
+            "name": "QualysApiUsername",
+            "type": "string",
+            "label": "Qualys Username",
+			"groupName": "apiDetails",
+            "required": true,
+            "helpMarkDown": "Your Qualys username."
+        },
+        {
+            "name": "QualysApiPassword",
+            "type": "string",
+            "label": "Qualys Password",
+			"groupName": "apiDetails",
+            "required": true,
+            "helpMarkDown": "Your Qualys password."
+        },
+		{
+            "name": "useProxy",
+            "type": "boolean",
+            "label": "Use Proxy",
+            "defaultValue": "false",
+			"groupName": "apiDetails",
+            "required": false
+        },
+		{
+            "name": "proxyServer",
+            "type": "string",
+            "label": "Proxy Server",
+			"groupName": "apiDetails",
+			"visibleRule": "useProxy = true",
+            "required": true,
+            "helpMarkDown": "Proxy server without protocol for example: 10.15.201.155, corp.proxyserver.company.com"
+        },
+		{
+            "name": "proxyPort",
+            "type": "string",
+            "label": "Proxy Port",
+			"groupName": "apiDetails",
+			"visibleRule": "useProxy = true",
+            "required": true
+        },
+		{
+            "name": "proxyUsername",
+            "type": "string",
+            "label": "Proxy Username",
+			"groupName": "apiDetails",
+			"visibleRule": "useProxy = true",
+            "required": false
+        },
+		{
+            "name": "proxyPassword",
+            "type": "string",
+            "label": "Proxy Password",
+			"groupName": "apiDetails",
+			"visibleRule": "useProxy = true",
+            "required": false
+        },
+		{
+            "name": "imageID",
+            "type": "string",
+            "label": "Image ID/Image Name",
+			"groupName": "apiDetails",
+            "required": true,
+            "helpMarkDown": "A container image Id/name to fetch the vulnerability results for. This field accepts a valid image ID (short 12 chars or 64 chars sha256 hex value) or image name (in repo:tag format)."
+        },
+		{
+            "name": "polling",
+            "type": "string",
+            "label": "How frequently to check for data in seconds",
+            "defaultValue": "30",
+			"groupName": "dataCollection",
+            "required": false,
+            "helpMarkDown": "The polling interval in seconds. It is the time to wait between subsequent API calls. This can be set as a number (in seconds) or an expression like these: 2*60*60 for 2 hrs or 2*60 = 2 minutes. Default value is 30 secs."
+        },
+		{
+            "name": "timeout",
+            "type": "string",
+            "label": "How long to wait for fetching vulnerability data in seconds",
+            "defaultValue": "600",
+			"groupName": "dataCollection",
+            "required": false,
+            "helpMarkDown": "The timeout period for fetching scanned vulnerabilities data. The Qualys task will end after the timeout period. This can be set as a number (in seconds) or an expression like these: 2*60*60 for 2 hrs or 2*60 = 2 minutes. Default value is 10 minutes."
+        },
+        {
+            "name": "failBySeverity",
+            "type": "boolean",
+            "label": "Fail if severe vulnerabilities found",
+            "defaultValue": "false",
+            "required": false,
+			"groupName": "failureConditions",
+            "helpMarkDown": "If set, the build will fail if severe vulnerabilities are found on target image."           
+        },
+		{
+			"name": "severity",
+			"type": "pickList",
+			"label": "Fail when any vulnerability found with this severity or above",
+			"defaultValue": "1",
+			"required": true,
+			"groupName": "failureConditions",
+			"visibleRule": "failBySeverity = true",
+			"helpMarkDown": "Select Severity level.",
+			"options": {
+				"1": 1,
+				"2": 2,
+				"3": 3,
+				"4": 4,
+				"5": 5
+			}
+        },
+		{
+            "name": "failByQids",
+            "type": "boolean",
+            "label": "Fail when any of these QIDs found",
+            "defaultValue": "false",
+			"groupName": "failureConditions",
+            "required": false,
+            "helpMarkDown": "Enter Qids"
+        },
+		{
+            "name": "Qids",
+            "type": "string",
+            "label": "QIDs",
+			"groupName": "failureConditions",
+			"visibleRule": "failByQids = true",
+            "required": true,
+            "helpMarkDown": "Enter QIDs"
+        },
+		{
+            "name": "failByCves",
+            "type": "boolean",
+            "label": "Fail when any of these CVEs found",
+            "defaultValue": "false",
+			"groupName": "failureConditions",
+            "required": false,
+            "helpMarkDown": "Enter CVEs"
+        },
+		{
+            "name": "Cves",
+            "type": "string",
+            "label": "CVEs",
+			"groupName": "failureConditions",
+			"visibleRule": "failByCves = true",
+            "required": true,
+            "helpMarkDown": "Enter CVEs"
+        },
+		{
+            "name": "failBySoftware",
+            "type": "boolean",
+            "label": "Fail when any of these Software found",
+            "defaultValue": "false",
+			"groupName": "failureConditions",
+            "required": false,
+            "helpMarkDown": "Enter software"
+        },
+		{
+            "name": "software",
+            "type": "string",
+            "label": "Software list",
+			"groupName": "failureConditions",
+			"visibleRule": "failBySoftware = true",
+            "required": true,
+            "helpMarkDown": "Enter Software"
+        },
+        {
+            "name": "failByCvss",
+            "type": "boolean",
+            "label": "Fail build if CVSS score(more than configured) found",
+            "defaultValue": "false",
+			"groupName": "failureConditions",
+            "required": false,
+            "helpMarkDown": "The build will fail if vulnerabilities falling under CVSS base score greater than or equal to the configured score."
+        },
+        {
+			"name": "cvssVersion",
+			"type": "pickList",
+			"label": "CVSS Version",
+			"defaultValue": "2",
+            "required": false,
+            "visibleRule": "failByCvss = true",
+			"groupName": "failureConditions",
+			"options": {
+				"2": 2,
+				"3": 3
+			}
+        },
+        {
+            "name": "cvssScore",
+            "type": "string",
+            "label": "CVSS Score",
+            "visibleRule": "failByCvss = true",
+			"groupName": "failureConditions",
+            "required": true
+        },
+		{
+            "name": "isPotential",
+            "type": "boolean",
+            "label": "Apply above fail conditions to Potential vulnerabilities as well",
+            "defaultValue": "false",
+			"groupName": "failureConditions",
+            "required": false
+        },
+        {
+			"name": "excludeCondition",
+			"type": "pickList",
+			"label": "Exclude Conditions",
+			"defaultValue": "None",
+			"required": false,
+			"groupName": "excludeConditions",
+			"helpMarkDown": "Configure either QIDs or CVEs in below fields which should be ignored while evaluating failure conditions.",
+			"options": {
+                "None" : "None",
+				"QID": "QID",
+				"CVE": "CVE"
+			}
+        },
+        {
+            "name": "excludedCVE",
+            "type": "string",
+            "label": "CVEs",
+			"groupName": "excludeConditions",
+            "required": true,
+            "visibleRule": "excludeCondition = CVE",
+			"helpMarkDown": "A comma separated list of CVEs to be ignored while evaluating Failure Conditions"
+        },
+        {
+            "name": "excludedQID",
+            "type": "string",
+            "label": "QIDs",
+			"groupName": "excludeConditions",
+            "required": true,
+            "visibleRule": "excludeCondition = QID",
+			"helpMarkDown": "A comma separated list of QIDs/range of QIDs to be ignored while evaluating Failure Conditions"
+        },
+		{
+            "name": "dockerUrl",
+            "type": "string",
+            "label": "Docker URL",
+            "defaultValue": "unix:///var/run/docker.sock",
+			"groupName": "advancedSettings",
+            "required": true,
+			"helpMarkDown": "Docker daemon URL e.g. unix://[docker_socket_path] or tcp://[host]:[port]"
+        },
+		{
+            "name": "dockerCert",
+            "type": "string",
+            "label": "Docker Cert file path",
+			"groupName": "advancedSettings",
+            "required": false
+        }
+		
+    ],
+    "OutputVariables": [
+        {
+            "name": "imageScanSummary",
+            "description": "This variable contains result of evaluation of the image vulnerabilities data against the build failure conditions.\n Note: Configure reference name to access and use this output variable to fetch image data"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
