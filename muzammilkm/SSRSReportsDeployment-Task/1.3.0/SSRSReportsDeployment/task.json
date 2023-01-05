@@ -1,0 +1,175 @@
+{
+  "id": "53ec2990-18eb-11ec-b0d8-c9ac45f6d352",
+  "name": "SSRSReportsDeployment",
+  "friendlyName": "SSRS Reports Deployment",
+  "description": "Deploy Reports to Sql Server Report Server",
+  "author": "Muzammil Khaja Mohammed",
+  "helpUrl": "https://github.com/muzammilkm/Nahl.AzurePipeline.Tasks",
+  "helpMarkDown": "[Learn more about this task](https://github.com/muzammilkm/Nahl.AzurePipeline.Tasks)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "3",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "SSRS Reports Deployment",
+  "groups": [
+    {
+      "name": "dataSource",
+      "displayName": "Data Source",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "sourceFolder",
+      "type": "filePath",
+      "label": "Reports Folder Path:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide folder path containing rdl & rds files."
+    },
+    {
+      "name": "reportServerUrl",
+      "type": "string",
+      "label": "Report Server Url:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide SSRS Server url excluding /ReportService2010.asmx"
+    },
+    {
+      "name": "reportServerAuthenticationMode",
+      "type": "pickList",
+      "label": "Report Server Authenticate Mode:",
+      "defaultValue": "default",
+      "required": true,
+      "options": {
+        "default": "Default",
+        "windows": "Windows Credentials"
+      },
+      "helpMarkDown": "Used to Connect SSRS Server to perform operations."
+    },
+    {
+      "name": "reportServerAdminUserName",
+      "type": "string",
+      "label": "Report Server Admin Login:",
+      "visibleRule": "reportServerAuthenticationMode=windows",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide Administrator login for Reporting Server to connect."
+    },
+    {
+      "name": "reportServerAdminPassword",
+      "type": "string",
+      "label": "Report Server Admin Password:",
+      "visibleRule": "reportServerAuthenticationMode=windows",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide password for administrator login for Reporting Server."
+    },
+    {
+      "name": "targetFolder",
+      "type": "string",
+      "label": "Target Folder:",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Provide folder name in which files to be uploaded."
+    },
+    {
+      "name": "dataSourceName",
+      "type": "string",
+      "label": "Data Source Name:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide data source name to be created and assigned to uploaded reports.",
+      "groupName": "dataSource"
+    },
+    {
+      "name": "dataSourceAuthenticationMode",
+      "type": "pickList",
+      "label": "Data Source Authentication Mode:",
+      "defaultValue": "sqlServer",
+      "options": {
+        "windows": "Windows Authentication",
+        "sqlServer": "Sql Server Authentication"
+      },
+      "required": true,
+      "helpMarkDown": "Provide data source authentication mode.",
+      "groupName": "dataSource"
+    },
+    {
+      "name": "dataSourceConnectString",
+      "type": "multiLine",
+      "label": "Data Source Connection String:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide connection string data source.",
+      "groupName": "dataSource"
+    },
+    {
+      "name": "dataSourceUserName",
+      "type": "string",
+      "label": "Data Source Username:",
+      "visibleRule": "dataSourceAuthenticationMode=sqlServer",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide data source username.",
+      "groupName": "dataSource"
+    },
+    {
+      "name": "dataSourcePassword",
+      "type": "string",
+      "label": "Data Source Password:",
+      "visibleRule": "dataSourceAuthenticationMode=sqlServer",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide data source password.",
+      "groupName": "dataSource"
+    },
+    {
+      "name": "useTLS12",
+      "type": "boolean",
+      "label": "Use TLS 1.2",
+      "required": false,
+      "defaultValue": true,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable TLS 1.2 while connecting SSRS."
+    },
+    {
+      "name": "cleanUpload",
+      "type": "boolean",
+      "label": "Clean Upload",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Delete existing reports before uploading."
+    },
+    {
+      "name": "useVerbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable verbose logging"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "SSRSReportsDeployment.ps1",
+      "argumentFormat": "",
+      "workingDirectory": ""
+    }
+  }
+}
