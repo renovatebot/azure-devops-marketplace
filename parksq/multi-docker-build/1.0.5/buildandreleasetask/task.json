@@ -1,0 +1,99 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "0a3b12a2-9178-482b-9bf3-ff9af4ce9a3c",
+    "name": "MultiDockerBuild",
+    "friendlyName": "Multi Docker Build",
+    "description": "Build docker images from any number of dockerfiles in your code repo. Configurable dockerfile paths, image names and tags. Use secrets for repository credentials, to keep everything 'service connection' free!",
+	"helpUrl": "https://www.parksq.co.uk/azure-dev-ops/multi-docker-build",
+	"helpMarkDown": "[Learn more about this task](https://www.parksq.co.uk/azure-dev-ops/multi-docker-build-extension)",
+    "category": "Azure Pipelines",
+	"visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Park Square Consulting Ltd",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "instanceNameFormat": "Docker Build $(configPath)",
+	"groups": [
+        {
+            "name": "containerRepository",
+            "displayName": "Container Repository",
+            "isExpanded": true
+        },
+        {
+            "name": "command",
+            "displayName": "Command",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+		{
+            "name": "registryUrl",
+            "type": "string",
+            "label": "Registry URL",
+            "required": true,
+            "helpMarkDown": "Container registry URL",
+			"groupName": "containerRepository"
+		},
+		{
+            "name": "registryUsername",
+            "type": "string",
+            "label": "Username",
+            "required": true,
+            "helpMarkDown": "Username to log into registry with.",
+			"groupName": "containerRepository"
+		},
+		{
+            "name": "registryPassword",
+            "type": "string",
+            "label": "Password",
+            "required": true,
+            "helpMarkDown": "Password to log into registry with.",
+			"groupName": "containerRepository"
+		},
+		{
+            "name": "repositoryName",
+            "type": "string",
+            "label": "Repository Name",
+            "required": true,
+            "helpMarkDown": "Repository name, e.g. for foo.bar.com/myrepo/yourimage:sometag enter 'myrepo' here.",
+			"groupName": "containerRepository"
+		},
+        {
+            "name": "imagesToBuild",
+            "type": "multiLine",
+            "label": "Images To Build",
+            "defaultValue": "Dockerfile|$(Build.Repository.Name)|$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "Images to build in format <DockerFilePath>|<ImageName>|<ContextPath>. Put each image to build on a new line.",
+			"groupName": "command"
+        },
+        {
+            "name": "tags",
+            "type": "multiLine",
+            "label": "Tags",
+            "defaultValue": "$(Build.BuildNumber)\r\nlatest",
+            "required": false,
+            "helpMarkDown": "Tags to apply to the built image(s)",
+			"groupName": "command"
+        },
+        {
+            "name": "pushAfterBuild",
+            "type": "boolean",
+            "label": "Push After Build",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "If selected, will also push the image to your container repository once built.",
+			"groupName": "command"
+        }
+	],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
