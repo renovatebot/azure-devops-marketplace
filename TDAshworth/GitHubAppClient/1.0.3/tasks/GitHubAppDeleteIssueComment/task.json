@@ -1,0 +1,58 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "7dc17dac-af71-4b27-9fc6-b7c1fa437926",
+  "name": "GitHubAppDeleteIssueComment",
+  "friendlyName": "Delete Issue Comment (GitHub App)",
+  "description": "Delete a comment on a GitHub issue as a GitHub App (bot).",
+  "helpUrl": "https://docs.github.com/en/rest/issues/comments#delete-an-issue-comment",
+  "author": "tdashworth",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "GitHub App: Delete Issue Comment",
+  "inputs": [
+    {
+      "name": "privateKey",
+      "type": "secureFile",
+      "label": "Private Key File",
+      "required": true,
+      "helpMarkDown": "The GitHub App private key to act as."
+    },
+    {
+      "name": "appId",
+      "type": "int",
+      "label": "App Id",
+      "required": true,
+      "helpMarkDown": "The GitHub App id to act as."
+    },
+    {
+      "name": "repo",
+      "type": "string",
+      "label": "Repository",
+      "defaultValue": "$(Build.Repository.Name)",
+      "required": true,
+      "helpMarkDown": "The repository name. The app must be installed against that repository."
+    },
+    {
+      "name": "commentId",
+      "type": "int",
+      "label": "Comment Id",
+      "required": true,
+      "helpMarkDown": "The id of comment to delete."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

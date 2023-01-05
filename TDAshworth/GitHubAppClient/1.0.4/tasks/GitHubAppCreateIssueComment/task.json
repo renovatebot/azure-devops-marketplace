@@ -1,0 +1,65 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "d9f485b0-136c-11ed-9b51-5d0ee283d142",
+  "name": "GitHubAppCreateIssueComment",
+  "friendlyName": "Create Issue Comment (GitHub App)",
+  "description": "Create a comment on a GitHub issue as a GitHub App (bot).",
+  "helpUrl": "https://docs.github.com/en/rest/issues/comments#create-an-issue-comment",
+  "author": "tdashworth",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "GitHub App: Create Issue Comment",
+  "inputs": [
+    {
+      "name": "privateKey",
+      "type": "secureFile",
+      "label": "Private Key File",
+      "required": true,
+      "helpMarkDown": "The GitHub App private key to act as."
+    },
+    {
+      "name": "appId",
+      "type": "int",
+      "label": "App Id",
+      "required": true,
+      "helpMarkDown": "The GitHub App id to act as."
+    },
+    {
+      "name": "repo",
+      "type": "string",
+      "label": "Repository",
+      "defaultValue": "$(Build.Repository.Name)",
+      "required": true,
+      "helpMarkDown": "The repository name. The app must be installed against that repository."
+    },
+    {
+      "name": "issueId",
+      "type": "int",
+      "label": "Issue Id",
+      "required": false,
+      "helpMarkDown": "The issue/pull request id to comment on. If not provided, then the pull request id will be used if found."
+    },
+    {
+      "name": "body",
+      "type": "string",
+      "label": "Comment Body",
+      "required": true,
+      "helpMarkDown": "The comment body (markdown format)."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
