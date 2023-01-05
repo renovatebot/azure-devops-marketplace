@@ -1,0 +1,72 @@
+{
+  "id": "07b4d0b0-ff24-40ca-a97a-24a8ded84422",
+  "name": "IISutilities",
+  "friendlyName": "IIS Utilities",
+  "description": "Start/Stop a webservice or application pool",
+  "category": "Utility",
+  "author": "Kris Lemoine",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "Server",
+      "type": "string",
+      "label": "IIS Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The IIS server."
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The action you want to execute on the IIS server.",
+      "options": {
+        "Start Website": "Start Website",
+        "Restart Website": "Restart Website",
+        "Stop Website": "Stop Website",
+        "Start WebAppPool": "Start WebAppPool",
+        "Restart WebAppPool": "Restart WebAppPool",
+        "Stop WebAppPool": "Stop WebAppPool"
+      }
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the website/application pool. For multiple services use ;"
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "UserName",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The username to connect to the IIS server."
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The password of the user to connect to the IIS server. Set sensitive fields to $(MySecretPassword), and define MySecretPassword in the Variables tab."
+    }
+  ],
+  "instanceNameFormat": "$(Action) $(name).",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\action.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

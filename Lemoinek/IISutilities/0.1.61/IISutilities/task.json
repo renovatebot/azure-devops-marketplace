@@ -1,0 +1,71 @@
+{
+    "id":  "07b4d0b0-ff24-40ca-a97a-24a8ded84422",
+    "name":  "IISutilities",
+    "friendlyName":  "IIS Utilities",
+    "description":  "Start/Stop a webservice or application pool",
+    "category":  "Utility",
+    "author":  "Kris Lemoine",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  1,
+                    "Patch":  61
+                },
+    "minimumAgentVersion":  "1.83.0",
+    "inputs":  [
+                   {
+                       "name":  "server",
+                       "type":  "string",
+                       "label":  "IIS Server",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The IIS server."
+                   },
+                   {
+                       "name":  "action",
+                       "type":  "pickList",
+                       "label":  "Action",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The action you want to execute on the IIS server.",
+                       "options":  {
+                                       "Start Website":  "Start Website",
+                                       "Stop Website":  "Stop Website",
+                                       "Start WebAppPool":  "Start WebAppPool",
+                                       "Restart WebAppPool":  "Restart WebAppPool",
+                                       "Stop WebAppPool":  "Stop WebAppPool"
+                                   }
+                   },
+                   {
+                       "name":  "names",
+                       "type":  "string",
+                       "label":  "Name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The name of the website/application pool. For multiple services use ;"
+                   },
+                   {
+                       "name":  "userName",
+                       "type":  "string",
+                       "label":  "UserName",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The username to connect to the IIS server."
+                   },
+                   {
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The password of the user to connect to the IIS server. Set sensitive fields to $(MySecretPassword), and define MySecretPassword in the Variables tab."
+                   }
+               ],
+    "instanceNameFormat":  "$(action) $(names).",
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "$(currentDirectory)\\action.ps1",
+                                          "argumentFormat":  "",
+                                          "workingDirectory":  "$(currentDirectory)"
+                                      }
+                  }
+}
