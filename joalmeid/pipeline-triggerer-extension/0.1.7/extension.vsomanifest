@@ -1,0 +1,112 @@
+{
+    "manifestVersion": 1,
+    "scopes": [],
+    "demands": [
+        "api-version/3.0"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/joalmeid/pipeline-triggerer"
+    },
+    "badges": [
+        {
+            "href": "https://joalmeid.visualstudio.com/azdo-pipeline-triggerer/_build/latest?definitionId=180&branchName=master",
+            "uri": "https://joalmeid.visualstudio.com/azdo-pipeline-triggerer/_apis/build/status/pipeline-triggerer-extension-CICD?branchName=master",
+            "description": "Azure Pipelines CICD multi-stage pipeline for the project"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "pipeline-trigger-task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task",
+            "properties": {
+                "name": "pipeline-trigger-task"
+            }
+        },
+        {
+            "id": "pipeline-trigger-endpoint-type",
+            "description": "Service Endpoint for a Azure DevOps API connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ADOAPI",
+                "displayName": "Azure DevOps API",
+                "url": {
+                    "displayName": "Organization Url",
+                    "value": "https://dev.azure.com/[organization]",
+                    "isVisible": "true"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/_apis/projects",
+                        "resultSelector": "jsonpath:$[*].Key"
+                    },
+                    {
+                        "name": "projects",
+                        "endpointUrl": "{{endpoint.url}}/_apis/projects",
+                        "resultSelector": "jsonpath:$.value[?(@.state=='wellFormed')]"
+                    },
+                    {
+                        "name": "buildDefinitions",
+                        "endpointUrl": "{{endpoint.url}}/{{project}}/_apis/build/definitions",
+                        "resultSelector": "jsonpath:$.value[?(@.quality=='definition')]"
+                    },
+                    {
+                        "name": "releaseDefinitions",
+                        "endpointUrl": "{{endpoint.releaseUrl}}/{{project}}/_apis/release/definitions",
+                        "resultSelector": "jsonpath:$.value[?(@.isDeleted==false)]"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "releaseUrl",
+                        "name": "Release API Url",
+                        "description": "The url of the release API",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "releaseUrlInput",
+                            "defaultValue": "https://vsrm.dev.azure.com/[organization]"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 \"token\" \":\" endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "Personal access token.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
