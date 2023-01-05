@@ -1,0 +1,104 @@
+{
+    "id": "47e3bce5-9c73-4e84-8477-c4260704a5f2",
+    "name": "FlexNet Code Insight Scan",
+    "friendlyName": "FlexNet Code Insight Scan",
+    "description": "Scan for OSS components, licenses, and security vulnerabilities using FlexNet Code Inisght.",
+    "helpMarkDown": "[More Information](https://www.flexera.com/)",
+    "category": "Build",
+    "isShellCommand": true,
+    "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass"
+    ],
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Flexera",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": ["java"],
+    "minimumAgentVersion": "1.92.0",
+  
+    "inputs": [
+        {
+            "name": "URL",
+            "type": "string",
+            "label": "FlexNet Code Insight Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the server URL in the format – http or https://<Server_Host>:<Port>/. Ensure that the URL is publicly accessible and that the port is opened up."
+        },
+        {
+            "name": "Token",
+            "type": "string",
+            "label": "Authentication Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter user access token for FlexNet Code Insight. This can be obtained/generated from the 'Preferences' page in FlexNet Code Insight server."        
+        },
+        {
+            "name": "ProjectName",
+            "type": "string",
+            "label": "FlexNet Code Insight Project Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the project name where the inventory is to be stored. Project should be of type 'Inventory only'"
+        },
+        {
+            "name": "ScanFolders",
+            "type": "string",
+            "label": "Folder(s) to Scan",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": false,
+            "helpMarkDown": "Enter a comma separated list of paths of folders to scan."
+        }
+
+     
+    ],
+    "instanceNameFormat": "FlexNet Code Insight Scan",
+   
+    "execution": {
+        "Node": {
+            "target": "codeInsightTask.js",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    },
+
+    "messages": {
+        "DownloadFromAzureBlobStorage":"Downloading artifacts from Azure blob storage, Container Name: %s",
+        "SuccessFullyFetchedItemList": "Successfully fetched list of items",
+        "StorageAccountDoesNotExist": "Failed to get azure storage account with name %s.",
+        "UnzipExtractFile": "Extracting file: %s",
+        "SevenZipExtractFile": "Extracting file: %s",
+        "TarExtractFile": "Extracting file: %s",
+        "ExtractFileFailedMsg": "Extraction failed for file: %s \ncode: %d \nstdout: %s \nstderr: %s \nerror: %s;",
+        "ExtractNonExistFile": "Extraction failed for file: %s because it does not exist.",
+        "ExtractDirFailed": "Extraction failed for file: %s because it is a directory.",
+        "CreateTempDir": "Creating temp folder: %s to decompress: %s",
+        "TempDir": "tempFolder = %s",
+        "DecompressedTempTar": "Decompressed temporary tar from: %s to: %s",
+        "RemoveTempDir": "Removing temp folder: %s",
+        "ExtractFailedCannotCreate": "Extraction failed for file: %s because temporary location could not be created: %s",
+        "CleanDestDir": "Cleaning destination folder before extraction: %s",
+        "CreateDestDir": "Creating destination folder: %s",
+        "RetrievingJdkFromAzure": "Retrieving the JDK from Azure blob storage.",
+        "RetrievingJdkFromLocalPath": "Retrieving the JDK from local path.",
+        "SucceedMsg": "Successfully extracted all files.",
+        "SetJavaHome": "JAVA_HOME is being set to: %s",
+        "SetExtendedJavaHome": "%s is being set to: %s",
+        "UnsupportedFileExtension": "Specified JDK source file does not have a supported file extension.",
+        "CouldNotFetchAccessTokenforAzureStatusCode": "Could not fetch access token for Azure. Status code: %s, status message: %s",
+        "CouldNotFetchAccessTokenforMSIDueToMSINotConfiguredProperlyStatusCode": "Could not fetch access token for Managed Service Principal. Please configure Managed Service Identity (MSI) for virtual machine 'https://aka.ms/azure-msi-docs'. Status code: %s, status message: %s",
+        "CouldNotFetchAccessTokenforMSIStatusCode": "Could not fetch access token for Managed Service Principal. Status code: %s, status message: %s"
+    }
+}
