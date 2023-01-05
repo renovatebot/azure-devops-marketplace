@@ -1,0 +1,75 @@
+{
+    "id": "121D1E15-F5FB-4B73-A93B-B2FE98A9A288",
+    "name": "SetAssemblyVersion",
+    "friendlyName": "Set Assembly Version",
+    "description": "This extension updates the version numbers in the assembly info files (i.e. AssemblyInfo.cs, AssemblyInfo.vb, AppManifest.xml) to the current build number. This step must preceed the build step.",
+    "helpMarkDown": "<p><b>Overview:</b> This extension updates the version numbers in the assembly info files (i.e. AssemblyInfo.cs, AssemblyInfo.vb, AppManifest.xml) to the current build number.  The AssemblyFileVersion is always set in AssemblyInfo.cs and AssemblyInfo.vb files and Version is always set in AppManifest.xml files.  The &lt;Project&gt;&lt;PropertyGroup&gt;&lt;FileVersion&gt; element used by .net5 is set in .csproj.  This step must preceed the build step.</p>
+    <p><b>AssemblyFileVersion:</b> This version number distinguishes between builds of the same application or library.  It is not used by Windows nor the .Net Framework.  It is visible in File Explorer.</p>
+    <p><b>AssemblyVersion:</b> This version number distinguishes between changes to the API within a shared library (DLL).  When a library has multiple assembly versions, Windows treat each version as a unique DLL and stores all versions in the GAC.  When an application runs, it will load a specific assembly version of the DLLs it needs.  Threrefore, this number should only be modified for shared libraries when changes alter the API rendering the library incompatible with applications built using the previous version.</p>
+    ",
+    "category": "Build",
+    "author": "Jay Brockway",
+    "version": {
+        "Major": 2021,
+        "Minor": 63,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Set Assembly Version $(SourceDirectory)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SourceDirectory",
+            "type": "filePath",
+            "label": "Source Directory Path",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "The containing folder or full path to the assembly info files (i.e. AssemblyInfo.cs, AssemblyInfo.vb, AppManifest.xml).  If SourceDirectory is a directory then all assemblies files in the source directory will be updated.  If SourceDirectory is a file then only the specified file will be updated."
+        },
+        {
+            "name": "BuildNumber",
+            "type": "string",
+            "label": "Build Number",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "The value to set the version number to.  The default value is $(Build.BuildNumber).",
+        },
+        {
+            "name": "VersionFormat",
+            "type": "string",
+            "label": "Version Format",
+            "defaultValue": "\\d+\\.\\d+\\.\\d+\\.\\d+",
+            "required": false,
+            "helpMarkDown": "A regular expression string defining the build number format. The default value is &#92;d+&#92;.&#92;d+&#92;.&#92;d+&#92;.&#92;d+  See: [http://semver.org]",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SetAssemblyVersion",
+            "type": "boolean",
+            "label": "Set Assembly Version",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, then set the AssemblyVersion number in the Assembly files also.  _Do not update this number unless you fully understand it's purpose._  The default value is false.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SetAppManifestVersion",
+            "type": "boolean",
+            "label": "Set App Manifest Version",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If this is true, then set the version number in all AppManifest.xml files.  The default value is false.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "SetAssemblyVersion.ps1"
+        }
+    }
+}
