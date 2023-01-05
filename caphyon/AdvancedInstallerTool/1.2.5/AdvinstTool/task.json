@@ -1,0 +1,79 @@
+{
+  "id": "ad40e839-f5ce-4ef5-a418-d2203b0dad2b",
+  "name": "AdvancedInstallerTool",
+  "friendlyName": "Advanced Installer Tool Installer",
+  "description": "Acquires a specific version of Advanced Installer from internet or the tools cache and adds it to the PATH. Use this task to install Advanced Installer for subsequent tasks",
+  "author": "Caphyon",
+  "version": {
+    "Major": 1,
+    "Minor": 2,
+    "Patch": 5
+  },
+  "category": "Tool",
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "satisfies": [
+    "AdvancedInstaller"
+  ],
+  "minimumAgentVersion": "2.115.0",
+  "instanceNameFormat": "Use Advanced Installer $(advinstVersion)",
+  "inputs": [
+    {
+      "name": "advinstVersion",
+      "type": "string",
+      "label": "Version",
+      "required": false,
+      "helpMarkDown": "Advanced Installer version to acquire. If no version is specified the latest will be used. If a local instance (manually installed and registered) is already present this step will be skipped. For a list of available versions please see [Advanced Installer version history](http://www.advancedinstaller.com/version-history.html)"
+    },
+    {
+      "name": "advinstLicense",
+      "type": "password",
+      "label": "License Key",
+      "required": false,
+      "helpMarkDown": "Advanced Installer license that will be used for registration."
+    },
+    {
+      "name": "advinstEnableCom",
+      "type": "boolean",
+      "label": "Enable PowerShell Automation",
+      "required": false,
+      "defaultValue": false,
+      "helpMarkDown": "Configure your Advanced Installer project by using custom interfaces and PowerShell commands. This capability needs Advanced Installer 16.1 or higher."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "AdvinstTool.js"
+    }
+  },
+  "postjobexecution": {
+    "Node10": {
+      "target": "AdvinstToolCleanup.js"
+    }
+  },
+  "messages": {
+    "UnsupportedOS": "Only Windows systems are supported.",
+    "InvalidVersionFormat": "Invalid version was specified. Version: %s",
+    "InstallNewTool": "Cache does not contains this Advanced Installer version. Will be downloaded and installed.",
+    "UseCachedTool": "Cached copy of AdvancedInstaller exists. No need to install afresh. Cached tool location: %s.",
+    "RegisterTool": "Registering Advanced Installer.",
+    "RegisterToolFailed": "Failed to register Advanced Installer. Error: %s",
+    "AdvinstLicenseFile": "Advanced Installer license",
+    "DownloadTool": "Downloading Advanced Installer. URL: %s",
+    "DownloadToolFailed": "Failed to download Advanced Installer.",
+    "ExtractTool": "Extracting Advanced Installer",
+    "ExtractToolFailed": "Failed to extract Advanced Installer.",
+    "CacheTool": "Caching Advanced Installer tool.",
+    "CacheToolSuccess": "Successfully cached Advanced Installer tool. Version %s",
+    "CheckToolCache": "Checking if a cached copy exists for this version...",
+    "AgentTempDirAssert": "Agent.TempDirectory is not set",
+    "CreateInstallerFolder": "The c:\\windows\\installer folder is missing. Attempting to create it.",
+    "UseLatestVersion": "No version was specifyed. Using newest.",
+    "StartCom": "Starting Advanced Installer COM server.",
+    "StartComFailed": "Failed to start Advanced Installer COM server. Error: %s",
+    "InvalidComVersion": "Skipping PowerShellAutomation. Unsupported Advanced Installer version: %s",
+    "CleanupDisabled": "Skipping cleanup because it was disabled: advancedinstaller.cleanup = %s"
+  }
+}
