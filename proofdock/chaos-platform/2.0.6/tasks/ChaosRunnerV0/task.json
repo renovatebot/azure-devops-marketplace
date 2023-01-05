@@ -1,0 +1,234 @@
+{
+  "deprecated": true,
+  "id": "f2052af9-de7a-43d8-906f-b22b8c35e614",
+  "name": "ChaosRunner",
+  "friendlyName": "Chaos runner",
+  "description": "Please use 'Chaos attack runner' task.",
+  "helpUrl": "https://docs.proofdock.io/chaos/devops/tasks/#runner-task",
+  "helpMarkDown": "[Learn more about this task](https://docs.proofdock.io/chaos/devops/tasks/#runner-task)",
+  "category": "Test",
+  "runsOn": ["Agent", "DeploymentGroup"],
+  "author": "Proofdock",
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "61"
+  },
+  "satisfies": ["Node", "npm"],
+  "demands": [],
+  "groups": [
+    {
+      "name": "azureConnection",
+      "displayName": "Azure Connection",
+      "isExpanded": false
+    },
+    {
+      "name": "kubernetesConnection",
+      "displayName": "Kubernetes Connection",
+      "isExpanded": false
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "token",
+      "label": "Proofdock API token",
+      "type": "string",
+      "helpMarkDown": "Token to communicate with the Proofdock API.",
+      "defaultValue": "",
+      "visibleRule": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "description",
+      "label": "Description",
+      "type": "string",
+      "helpMarkDown": "Describe the experiment execution.",
+      "defaultValue": "",
+      "visibleRule": "",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "experimentPath",
+      "type": "filePath",
+      "label": "Experiment file",
+      "defaultValue": "experiment.json",
+      "required": true,
+      "helpMarkDown": "Path to the experiment."
+    },
+    {
+      "name": "azureConnection",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "required": false,
+      "helpMarkDown": "Select an Azure resource manager subscription",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != ManagementGroup"
+      },
+      "groupName": "azureConnection"
+    },
+    {
+      "name": "kubernetesConnectionType",
+      "type": "pickList",
+      "label": "Connection Type",
+      "defaultValue": "",
+      "required": false,
+      "options": {
+        "Azure Resource Manager": "Azure Resource Manager",
+        "Kubernetes Service Connection": "Kubernetes Service Connection"
+      },
+      "helpMarkDown": "Select 'Azure Resource Manager' to connect to an Azure Kubernetes Service by using Azure Service Connection. Select 'Kubernetes Service Connection' to connect to any Kubernetes cluster by using kubeconfig or Service Account",
+      "groupName": "kubernetesConnection"
+    },
+    {
+      "name": "kubernetesARMConnection",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "helpMarkDown": "Select an Azure subscription, which has your Azure Kubernetes Services.",
+      "visibleRule": "kubernetesConnectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "kubernetesConnection"
+    },
+    {
+      "name": "kubernetesAzureResourceGroup",
+      "label": "Resource group",
+      "type": "pickList",
+      "helpMarkDown": "Select an Azure Resource Group.",
+      "visibleRule": "kubernetesConnectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "kubernetesConnection",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "kubernetesCluster",
+      "label": "Kubernetes cluster",
+      "type": "pickList",
+      "helpMarkDown": "Select an Azure Managed Cluster.",
+      "visibleRule": "kubernetesConnectionType = Azure Resource Manager",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "kubernetesConnection",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "useKubernetesClusterAdmin",
+      "type": "boolean",
+      "label": "Use cluster admin credentials",
+      "defaultValue": "false",
+      "visibleRule": "kubernetesConnectionType = Azure Resource Manager",
+      "groupName": "kubernetesConnection",
+      "helpMarkDown": "Use cluster administrator credentials instead of default cluster user credentials."
+    },
+    {
+      "name": "kubernetesConnection",
+      "type": "connectedService:kubernetes",
+      "label": "Kubernetes Service Connection",
+      "helpMarkDown": "Select a Kubernetes service connection.",
+      "visibleRule": "kubernetesConnectionType = Kubernetes Service Connection",
+      "required": true,
+      "groupName": "kubernetesConnection"
+    },
+    {
+      "name": "dryRun",
+      "type": "boolean",
+      "label": "Dry run",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Run experiment in dry run mode.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "noUpload",
+      "type": "boolean",
+      "label": "No upload",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Run experiment without uploading its results to Proofdock.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "noValidation",
+      "type": "boolean",
+      "label": "No validation",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Run experiment without validating the experiment.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "verbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Output additional details of the experiment run.",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "kubernetesCluster",
+      "endpointId": "$(kubernetesARMConnection)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(kubernetesAzureResourceGroup)/providers/Microsoft.ContainerService/managedClusters?api-version=2017-08-31",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{name}}}"
+    },
+    {
+      "target": "kubernetesAzureResourceGroup",
+      "endpointId": "$(kubernetesARMConnection)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.ContainerService/managedClusters?api-version=2017-08-31",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{ #extractResource id resourcegroups}}}"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "chaos-runner.js"
+    }
+  },
+  "messages": {
+    "ToolFailed": "Tool install failed: %s",
+    "CantDownloadAccessProfile": "Cannot download access profile/kube config file for the cluster %s. Reason %s.",
+    "DownloadingClient": "Downloading kubernetes client.",
+    "KubernetesClusterResourceGroup": "Kubernetes cluster %s, resource group %s.",
+    "CreatingSecret": "Executing create %s secret.",
+    "DeleteSecret": "Executing delete %s secret",
+    "CreatingConfigMap": "Executing create %s configmap.",
+    "DeleteConfigMap": "Executing delete %s configmap",
+    "ConfigMapExists": "ConfigMap %s already exists",
+    "GetConfigMap": "Executing get %s configmap",
+    "DockerRegistryConnectionNotSpecified": "Docker Registry service connection details not specified",
+    "FileNotFoundException": "Can not find file at location: %s",
+    "DownloadingKubeCtlFromUrl": "Downloading Kubectl from URL: %s",
+    "DownloadPathForStableTxt": "Download path for stable.txt: %s",
+    "DownloadKubeCtlFailed": "Can not download the kubectl client of version %s. Check if the version is correct https://github.com/kubernetes/kubernetes/releases",
+    "DownloadStableVersionFailed": "Can not download kubernetes stable version file from %s. Falling back to %s",
+    "UsingLatestStableVersion": "Invalid version 1.7 specified in Version Spec input. Using latest stable version instead. Check for correct versions https://github.com/kubernetes/kubernetes/releases",
+    "NotAValidVersion": "Not a valid version, the available versions are: %s",
+    "ConfigurationFileNotFound": "No configuration file matching %s was found.",
+    "KubernetesServiceConnectionNotFound": "Kubernetes service connection details not found.",
+    "OutputVariableDataSizeExceeded": "Output variable not set as kubectl command output exceeded the maximum supported length. Output length: %s, Maximum supported length: %s",
+    "InvalidConfiguration": "No Kubernetes configuration found, supply either inline configuration or configuration file path",
+    "CallToolRunnerExec": "Calling Toolrunner exec() method asynchronously to execute the kubectl command and store the returned promise object.",
+    "ReturningToolRunnerExecPromise": "Called Toolrunner exec() method asynchronously. Returning the promise.",
+    "ToolRunnerExecCallFailed": "Toolrunner exec() method returned error for the kubectl command. Error: %s.",
+    "ToolRunnerExecCallSucceeded": "Toolrunner exec() method returned successfully for the kubectl command.",
+    "WritingDockerConfigToTempFile": "Writing Docker config to temp file. File path: %s, Docker config: %s",
+    "ExpiredServicePrincipal": "Could not fetch access token for Azure. Verify if the Service Principal used is valid and not expired."
+  }
+}

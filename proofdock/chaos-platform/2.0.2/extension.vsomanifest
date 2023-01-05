@@ -1,0 +1,117 @@
+{
+    "manifestVersion": 1,
+    "homepage": "https://www.proofdock.io/",
+    "scopes": [
+        "vso.build_execute",
+        "vso.code_manage",
+        "vso.graph",
+        "vso.profile",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "proofdock-chaos-platform-hub",
+            "type": "ms.vss-web.hub-group",
+            "description": "Proofdock's tools",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Chaos Platform",
+                "order": 100,
+                "icon": "assets/extension_hub_group.png"
+            }
+        },
+        {
+            "id": "chaos-control-panel-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".proofdock-chaos-platform-hub"
+            ],
+            "properties": {
+                "name": "Chaos Panel",
+                "order": 2,
+                "uri": "index.html",
+                "icon": "assets/extension_hub_item_control_panel.png"
+            }
+        },
+        {
+            "id": "chaos-project-settings-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".proofdock-chaos-platform-hub"
+            ],
+            "properties": {
+                "name": "Settings",
+                "order": 3,
+                "uri": "index.html",
+                "icon": "assets/extension_hub_item_settings.png"
+            }
+        },
+        {
+            "id": "organization-settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Chaos organization settings",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Chaos",
+                "order": 100,
+                "uri": "index.html"
+            }
+        },
+        {
+            "id": "installer-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ChaosInstallerV0"
+            }
+        },
+        {
+            "id": "driver-installer-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ChaosDriverV0"
+            }
+        },
+        {
+            "id": "experiment-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ChaosRunnerV0"
+            }
+        },
+        {
+            "id": "chaos-attack-runner-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ChaosAttackRunnerV0"
+            }
+        }
+    ],
+    "eventCallbacks": {
+        "postUninstall": {
+            "uri": "https://chaosapi.proofdock.io/v1/azure/extensions/events"
+        },
+        "postUpdate": {
+            "uri": "https://chaosapi.proofdock.io/v1/azure/extensions/events"
+        },
+        "postInstall": {
+            "uri": "https://chaosapi.proofdock.io/v1/azure/extensions/events"
+        }
+    },
+    "contributionTypes": []
+}
