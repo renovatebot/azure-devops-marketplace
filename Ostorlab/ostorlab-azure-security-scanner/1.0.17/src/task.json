@@ -1,0 +1,135 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "4ed3de7c-9d7d-4913-875c-029bf7685b5f",
+    "name": "ostorlab-azure-security-scanner",
+    "friendlyName": "Ostorlab Security & Privacy testing Security Extension",
+    "description": "Mobile Security & Privacy testing Security Extension",
+    "helpMarkDown": "[Ostorlab](https://www.ostorlab.co)",
+    "category": "Build",
+    "author": "Ostorlab",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 17
+    },
+    "demands": [
+        "java"
+    ],
+    "instanceNameFormat": "Ostorlab $(filepath)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "apiKey",
+            "type": "string",
+            "required": true,
+            "label": "Ostorlab API key",
+            "helpMarkDown": "API key from Ostorlab platform."
+        },
+        {
+            "name": "filepath",
+            "type": "string",
+            "label": "File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Filepath for mobile binary to upload."
+        },
+        {
+          "name": "platform",
+          "type": "pickList",
+          "label": "Mobile application platform",
+          "defaultValue": "android",
+          "options": {
+            "android": "Android",
+            "ios": "iOS"
+          },
+          "required": true,
+          "helpMarkDown": "Mobile application platform."
+        },
+        {
+            "name": "artifactsDir",
+            "type": "string",
+            "label": "Artifacts Dir",
+            "defaultValue": "$(build.artifactStagingDirectory)/ostorlabArtifacts",
+            "required": true,
+            "helpMarkDown": "artifactsDir for the Ostorlab scan outputs."
+        },
+        {
+          "name": "scanProfile",
+          "type": "pickList",
+          "label": "Scan profile",
+          "defaultValue": "Fast Scan",
+          "options": {
+            "Fast Scan": "Fast Scan",
+            "Full Scan": "Full Scan"
+          },
+          "required": false,
+          "helpMarkDown": "Select the scan profile to run.",
+          "groupName": "advanced"
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Title",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Scan title.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "waitForResults",
+            "type": "boolean",
+            "label": "Wait for the scan to finish and retrieve the result.",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "This enables to wait for the scan to finish to retrieve the result.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "waitMinutes",
+            "type": "int",
+            "label": "Max Wait Time (in minutes)",
+            "defaultValue": 30,
+            "required": false,
+            "helpMarkDown": "This defines how long the build should wait (in minutes) to finish security analysis.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "breakBuildOnScore",
+            "type": "boolean",
+            "label": "Generate an exception if the scan risk rating is higher than the threshold.",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Set to true to generate an exception if the scan risk rating is higher than the threshold.",
+            "groupName": "advanced"
+        },
+        {
+          "name": "riskThreshold",
+          "type": "pickList",
+          "label": "Risk Threshold",
+          "defaultValue": "low",
+          "options": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+          },
+          "required": false,
+          "helpMarkDown": "Risk level for which build should fail",
+           "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
