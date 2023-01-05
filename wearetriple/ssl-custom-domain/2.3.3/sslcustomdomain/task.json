@@ -1,0 +1,113 @@
+{
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "comment": "",
+    "id": "56966f48-0694-4ca6-b667-eb4e4167ef3d",
+    "name": "Install SSL and Custom Domain",
+    "version": {
+        "major": 1,
+        "minor": 2,
+        "patch": 1,
+        "isTest": false
+    },
+    "demands": [
+        "azureps"
+    ],
+    "friendlyName": "Install SSL and Custom Domain",
+    "description": "Installs an SSL certificate (.pfx) and custom domains to the specified app service in Azure",
+    "helpMarkDown": "[More information..](https://github.com/wearetriple/ados-extension-ssl-custom-domain)",
+    "iconUrl": "https://raw.githubusercontent.com/wearetriple/ados-extension-ssl-custom-domain/master/assets/logo.png",
+    "category": "Deploy",
+    "author": "Triple",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription."
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "AppServiceName",
+            "label": "AppServiceName",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Name of the app service to which the SSL + Custom Domains must be applied",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "AppServiceSlotName",
+            "label": "AppServiceSlotName",
+            "defaultValue": "",
+            "required": false,
+            "type": "string",
+            "helpMarkDown": "Name of the deployment slot inside the app service to which the SSL + Custom Domains must be applied. Keep empty if there is only the default deployment slot.",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "CertificateFileName",
+            "label": "CertificateFileName",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Certificate file name (use Download Secure File to load it to the agent)",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "CertificatePassword",
+            "label": "CertificatePassword",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Password for the pfx",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "CustomDomains",
+            "label": "CustomDomains",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "CSV of custom domains to be added to the app service",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "ResourceGroupName",
+            "label": "ResourceGroupName",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Name of the resource group the app service is in",
+            "groupName": ""
+        }
+    ],
+    "instanceNameFormat": "Install SSL and Custom Domain for $(AppServiceName)",
+    "execution": {
+        "PowerShell3": {
+            "target": "sslcustomdomain.ps1"
+        }
+    }
+}
