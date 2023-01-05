@@ -1,0 +1,173 @@
+{
+    "id": "AF548C05-29B1-497D-823C-2D172019CCF4",
+    "name": "SCCMDeploy",
+    "friendlyName": "SCCM Deploy Task",
+    "description": "Deploy application package to SCCM",
+    "helpMarkDown": "[Learn more about this task](https://github.com/ioxFR/azure-devops-sccm-task)",
+    "helpUrl": "https://github.com/ioxFR/azure-devops-sccm-task",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Valentin LECERF",
+    "version": {
+        "Major": 1,
+        "Minor": 20210631,
+        "Patch": 36181
+    },
+    "preview": "true",
+    "releaseNotes": "Initial implemention for deploy to sccm.",
+    "groups": [
+        {
+            "name": "sccmConfiguration",
+            "displayName": "SCCM Configuration",
+            "isExpanded": false
+        },
+        {
+            "name": "applicationConfiguration",
+            "displayName": "Application Configuration",
+            "isExpanded":false
+        }
+    ],
+    "minimumAgentVersion": "2.115.0",
+    "inputs": [
+        {
+            "name": "sccmcredentials",
+            "type": "connectedService:Sccm",
+            "label": "SCCM Service Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SCCM Service connection with credential and hostname"
+          },
+          {
+            "name": "SccmSiteCode",
+            "type": "string",
+            "label": "SCCM Site Code",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SCCM Site Code for your organization."
+        },
+        {
+            "name": "UniquePackageName",
+            "type": "string",
+            "label": "Unique name for SCCM Package",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "sccmConfiguration",
+            "helpMarkDown": "Unique name for SCCM Package will be created in the collection, generally we mentionned name and version."
+        },
+        {
+            "name": "PackagePath",
+            "type": "string",
+            "label": "Package path",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "sccmConfiguration",
+            "helpMarkDown": "Path to your .appx generated and copied to shared drive location.Must be shared drive as SCCM only support UNC."
+        },
+        {
+            "name": "SccmFolderPath",
+            "type": "string",
+            "label": "Folder Path",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "sccmConfiguration",
+            "helpMarkDown": "Location for you package in SCCM folder structure."
+        },
+        {
+            "name": "dpGroups",
+            "type": "string",
+            "label": "Distribution points",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "sccmConfiguration",
+            "helpMarkDown": "List of name of distribution groups seperated by a comma.Example: DP1,DP2,DP3"
+        },
+        {
+            "name": "collectionName",
+            "type": "string",
+            "label": "Deployment Collection Name",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "sccmConfiguration",
+            "helpMarkDown": "SCCM Collection Name for package deployment scope"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "Application Name",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Name of your application visible for users from software center"
+        },
+        {
+            "name": "appDescription",
+            "type": "string",
+            "label": "Application Description",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Description of your application visible for users from software center"
+        },
+        {
+            "name": "appIcon",
+            "type": "string",
+            "label": "Application Icon Shared Path",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Icon of your application visible for users from software center. Must be shared location, generally icon is copied on root app folder of shared drive where you copied your appx"
+        },
+        {
+            "name": "appKeyword",
+            "type": "string",
+            "label": "Application Keyword",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Keyword of your application visible for users from software center."
+        },
+        {
+            "name": "appVersion",
+            "type": "string",
+            "label": "Application Version",
+            "defaultValue": "",
+            "required": true,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Version of your application visible for users from software center need to respect semantic."
+        },
+        {
+            "name": "appPublisher",
+            "type": "string",
+            "label": "Application Publisher",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "applicationConfiguration",
+            "helpMarkDown": "Publisher Name of your application visible for users from software center."
+        }
+    ],
+    "instanceNameFormat": "SCCM Deploy Task",
+    "execution": {
+        "Node": {
+            "target": "main.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "GeneratingScript": "Generating script.",
+        "JS_FormattedCommand": "Formatted command: %s",
+        "InvalidScriptArguments0": "Invalid script arguments '{0}'. Line breaks are not allowed.",
+        "InvalidScriptPath0": "Invalid script path '{0}'. Invalid path characters specified.",
+        "InvalidAzurePsVersion": "The Azure PowerShell version '{0}' specified is not in the correct format. Please check the format. An example of correct format is 1.0.1",
+        "JS_ExitCode": "PowerShell exited with code '%s'.",
+        "JS_Stderr": "PowerShell wrote one or more lines to the standard error stream.",
+        "ExpiredServicePrincipal": "Could not fetch access token for Azure. Verify if the Service Principal used is valid and not expired.",
+        "PS_ExitCode": "PowerShell exited with code '{0}'."
+    }
+}
