@@ -1,0 +1,193 @@
+{
+    "id": "6C8B8647-7AC2-41E2-AA10-68924EAA46C1",
+    "name": "TFADOScheduledWorkItemQuery",
+    "friendlyName": "Scheduled Work Item Query E-Mail",
+    "description": "Sends an E-Mail on a Schedule for Work Item Queries",
+    "helpUrl": "https://github.com/techfreakado/TFADOScheduledWorkItemQuery",
+    "helpMarkDown": "[More Information](https://github.com/techfreakado/TFADOScheduledWorkItemQuery)",
+    "category": "Utility",
+    "author": "techfreak.ch",
+    "releaseNotes": "See <a href='https://github.com/techfreakado/TFADOScheduledWorkItemQuery'>GitHub</a> for details",
+    "preview": false,
+    "version": {
+        "Major": 0,
+        "Minor": 92,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build"
+    ],
+  "groups": [
+
+    {
+      "name": "emailconnection",
+      "displayName": "Email Connection Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "query",
+      "displayName": "Query Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "email",
+      "displayName": "Email Settings",
+      "isExpanded": true
+    }
+  ],
+    "instanceNameFormat": "Send Query Result as E-Mail",
+    "inputs": [
+        {
+            "name": "sendMethod",
+            "type": "radio",
+            "groupName": "emailconnection",
+            "label": "Send Email with",
+            "required": true,
+            "defaultValue": "SendGrid",
+            "helpMarkDown": "Send E-Mail with SendGrid API or through SMTP Server",
+            "options": {
+                "SendGrid": "SendGrid API",
+                "SMTP": "SMTP Server"
+            }
+        },
+        {
+            "name": "connectedServiceNameSendGrid",
+            "type": "connectedService:sendgrid-tf-adoscheduledworkitem",
+            "groupName": "emailconnection",
+            "label": "SendGrid Connection",
+            "required": true,
+            "helpMarkDown" : "Service connection to SendGrid",
+            "visibleRule": "sendMethod=SendGrid"
+        },
+        {
+            "name": "connectedServiceNameSMTP",
+            "type": "connectedService:smtp-tf-adoscheduledworkitem",
+            "groupName": "emailconnection",
+            "label": "SMTP Connection",
+            "required": true,
+            "helpMarkDown" : "Service connection to SMTP",
+            "visibleRule": "sendMethod=SMTP"
+        },
+        {
+            "name": "project",
+            "type": "picklist",
+            "groupName": "query",
+            "label": "Project",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Choose a Project",
+            "properties": {
+                "EditableOptions": false
+            }
+        },
+        {
+            "name": "queryType",
+            "type": "radio",
+            "groupName": "query",
+            "label": "Query Type",
+            "required": true,
+            "defaultValue": "Shared",
+            "helpMarkDown": "Shared or My Query?",
+            "options": {
+                "Shared": "Shared Query",
+                "My": "My Query"
+            }
+        },
+        {
+            "name": "query",
+            "type": "pickList",
+            "groupName": "query",
+            "label": "Choose a Query",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Choose a Query",
+            "properties": {
+                "EditableOptions": false
+            },
+            "visibleRule": "queryType=Shared"
+        },
+        {
+            "name": "connectedServiceNameAzureDevOps",
+            "type": "connectedService:externalTFS",
+            "groupName": "query",
+            "label": "Azure DevOps/TFS Connection",
+            "required": true,
+            "helpMarkDown" : "Service connection to Azure DevOps/TFS",
+            "visibleRule": "queryType=My"
+        },
+        {
+            "name": "queryMy",
+            "type": "picklist",
+            "groupName": "query",
+            "label": "My Query ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The ID of the Query to execute.",
+            "properties": {
+                "EditableOptions": false
+            },
+            "visibleRule": "queryType=My"
+        },
+        {
+            "name": "sendIfEmpty",
+            "type": "boolean",
+            "groupName": "email",
+            "label": "Send e-mail on empty result",
+            "defaultValue": "true",
+            "helpMarkDown": "Send e-mail even if the query does not produce any results",
+            "required": "true"
+        },
+        {
+            "name": "subject",
+            "type": "textbox",
+            "groupName": "email",
+            "label": "Subject",
+            "defaultValue": "Your query results",
+            "required": true,
+            "helpMarkDown": "The subject of the E-Mail being sent."
+        },
+        {
+            "name": "emailAddresses",
+            "type": "multiLine",
+            "groupName": "email",
+            "label": "E-Mail Addresses",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A list of e-mail addresses to send to, delimited by comma, space or newline"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "project",
+            "endpointId": "tfs:teamfoundation",
+            "endpointUrl": "{{endpoint.url}}/_apis/projects?api-version=5.0",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "query",
+            "endpointId": "tfs:teamfoundation",
+            "parameters": {
+                "project": "$(project)"
+            },
+            "endpointUrl": "{{endpoint.url}}/{{{project}}}/_apis/wit/queries?$depth=2&api-version=5.0",
+            "resultSelector": "jsonpath:$..[?(@.isPublic == true && @.queryType)]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{path}}}\" }"
+        },
+        {
+            "target": "queryMy",
+            "endpointId": "$(connectedServiceNameAzureDevOps)",
+            "parameters": {
+                "project": "$(project)"
+            },
+            "endpointUrl": "{{endpoint.url}}/{{{project}}}/_apis/wit/queries?$depth=2&api-version=5.0",
+            "resultSelector": "jsonpath:$..[?(@.isPublic == false && @.queryType)]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{path}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
