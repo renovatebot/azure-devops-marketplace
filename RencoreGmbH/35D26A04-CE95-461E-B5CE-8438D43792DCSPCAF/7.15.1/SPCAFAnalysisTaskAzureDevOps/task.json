@@ -1,0 +1,226 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "35D26A04-CE95-461E-B5CE-8438D43792DC",
+  "name": "SPCAFAnalysisTaskAzureDevOps",
+  "friendlyName": "SPCAF Code Analysis for SharePoint and Office 365",
+  "description": "Essential tool to ensure SharePoint code quality. SPCAF analyzes SharePoint code from .wsp and .app files and checks all contained code incl. XML for correctness, best practices etc.",
+  "helpMarkDown": "[More Information](http://www.rencore.com)",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Rencore",
+  "version": {
+    "Major": 7,
+    "Minor": 15,
+    "Patch": 1
+  },
+  "demands": [
+    "msbuild"
+  ],
+  "groups": [
+    {
+      "name": "reportOptions",
+      "displayName": "Reports",
+      "isExpanded": true
+    },
+    {
+      "name": "advancedOptions",
+      "displayName": "Advanced Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "spcafinputdirectory",
+      "type": "string",
+      "label": "Input directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Relative or absolute path to the folder with the analyzable files (e.g. to the drop location)."
+    },
+    {
+      "name": "spcafoutputdirectory",
+      "type": "string",
+      "label": "Output directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Relative or absolute path to the folder where the result reports should be written to. Relative path is appended to the drop location."
+    },
+    {
+      "name": "spcaflicense",
+      "type": "filePath",
+      "label": "License File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Relative or absolute path to the license key file (.lic). If empty only summary reports are created. Relative path is appended to the sources directory."
+    },
+    {
+      "name": "spcafsetting",
+      "type": "filePath",
+      "label": "Settings File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Relative or absolute path in source directory to the settings file. Relative path is appended to the sources directory."
+    },
+    {
+      "name": "spcafreportHTML",
+      "type": "boolean",
+      "label": "HTML",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If checked a HTML report is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+    {
+      "name": "spcafreportDOCX",
+      "type": "boolean",
+      "label": "DOCX",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If checked a DOCX report is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+    {
+      "name": "spcafreportPDF",
+      "type": "boolean",
+      "label": "PDF",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If checked a PDF report is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+    {
+      "name": "spcafreportCSV",
+      "type": "boolean",
+      "label": "CSV",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If checked a CSV report is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+    {
+      "name": "spcafreportXML",
+      "type": "boolean",
+      "label": "XML",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If checked a XML report is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+    {
+      "name": "spcafreportDGML",
+      "type": "boolean",
+      "label": "Dependency Diagram",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If checked a Visual Studio DGML Diagram is created as result of the analysis.",
+      "groupName": "reportOptions"
+    },
+
+    {
+      "name": "spcaflogfile",
+      "type": "filePath",
+      "label": "Log File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Relative or absolute path in source directory to the log file.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcafoutputfile",
+      "type": "string",
+      "label": "Output filename",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of the output files. The name is used as a prefix for all generated reports.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcafverbosity",
+      "type": "pickList",
+      "label": "Verbosity",
+      "defaultValue": "normal",
+      "required": false,
+      "options": {
+        "quiet": "quiet",
+        "minimal": "minimal",
+        "normal": "normal",
+        "detailed": "detailed"
+      },
+      "helpMarkDown": "Level for verbosity to limit the detail level for log messages. Valid values are: quiet, minimal, normal, Default.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcaftempfolder",
+      "type": "filePath",
+      "label": "Temp Folder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Relative or absolute path in source directory to the temp folder.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcafskipprojectcreation",
+      "type": "boolean",
+      "label": "Skip Project Creation",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If TRUE no project (.spcaf) file is created as output of the analysis.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcaftimeout",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "60000",
+      "required": false,
+      "helpMarkDown": "Optional seconds after the analysis should be cancelled automatically.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcaffilters",
+      "type": "string",
+      "label": "Filters",
+      "defaultValue": "*.*",
+      "required": false,
+      "helpMarkDown": "Optional list of extensions to filter the input files, e.g. '*.wsp;*.app;*.sppkg'.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcafrecurse",
+      "type": "boolean",
+      "label": "Recurse",
+      "defaultValue": "true",
+      "required": false,
+      "helpMarkDown": "If TRUE input directory are recursively scanned for analyzable files, if FALSE only the given root will be scanned.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcaftreatErrorsAsWarnings",
+      "type": "boolean",
+      "label": "Treat Errors as Warnings",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If TRUE identified errors are reported as warnings.",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "spcafcustomrules",
+      "type": "filePath",
+      "label": "Custom Rules Folder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional path to custom SPCAF rule assemblies.",
+      "groupName": "advancedOptions"
+    }
+  ],
+  "instanceNameFormat": "SPCAF code analysis of SharePoint and Office projects for Azure DevOps",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\SPCAFAnalysisTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
