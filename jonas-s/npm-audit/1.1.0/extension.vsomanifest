@@ -1,0 +1,76 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/jonsth131/npm-audit"
+    },
+    "contributions": [
+        {
+            "id": "npm-audit-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        }
+    ],
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "friendlyName": "Npm audit",
+    "helpMarkDown": "",
+    "author": "Jonas S",
+    "instanceNameFormat": "npm audit",
+    "category": "Utility",
+    "inputs": [
+        {
+            "name": "path",
+            "type": "filePath",
+            "label": "Working directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Working directory to run npm audit in"
+        },
+        {
+            "name": "productionOnly",
+            "type": "checkbox",
+            "label": "Check production dependencies only",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Skips devDependencies and only checks production dependencies"
+        },
+        {
+            "name": "level",
+            "type": "radio",
+            "label": "Level to fail task",
+            "defaultValue": "high",
+            "required": true,
+            "helpMarkDown": "Vulnerability level detected to fail task",
+            "options": {
+                "low": "Low",
+                "moderate": "Moderate",
+                "high": "High",
+                "critical": "Critical"
+            }
+        },
+        {
+            "name": "registry",
+            "type": "string",
+            "label": "Registry",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Registry to use"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "VulnerabilitiesFoundButLowerLevel": "Vulnerabilities found with lower level than selected fail level",
+        "VulnerabilitiesFound": "Vulnerabilities found"
+    },
+    "scopes": [],
+    "contributionTypes": []
+}

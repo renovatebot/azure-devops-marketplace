@@ -1,0 +1,65 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "7890f95d-fd3a-4e5e-8a26-58d1bd0d4e0b",
+    "name": "npm-audit",
+    "friendlyName": "Npm audit",
+    "description": "Build step to run npm audit",
+    "helpMarkDown": "",
+    "author": "Jonas S",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "npm audit",
+    "category": "Utility",
+    "inputs": [
+        {
+            "name": "path",
+            "type": "filePath",
+            "label": "Working directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Working directory to run npm audit in"
+        },
+        {
+            "name": "productionOnly",
+            "type": "checkbox",
+            "label": "Check production dependencies only",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Skips devDependencies and only checks production dependencies"
+          },
+        {
+            "name": "level",
+            "type": "radio",
+            "label": "Level to fail task",
+            "defaultValue": "high",
+            "required": true,
+            "helpMarkDown": "Vulnerability level detected to fail task",
+            "options": {
+                "low": "Low",
+                "moderate": "Moderate",
+                "high": "High",
+                "critical": "Critical"
+            }
+        },
+        {
+            "name": "registry",
+            "type": "string",
+            "label": "Registry",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Registry to use"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "VulnerabilitiesFoundButLowerLevel": "Vulnerabilities found with lower level than selected fail level",
+        "VulnerabilitiesFound": "Vulnerabilities found"
+    }
+}
