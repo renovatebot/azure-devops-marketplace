@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "e4f606bf-c239-42ab-a3ea-28c84fcc53a8",
+  "name": "FACTSubmision",
+  "friendlyName": "FACT Submissions Task",
+  "description": "Submits the analysis results to the FACT platform",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "author": "aDolus Technology Inc.",
+  "helpUrl": "",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "instanceNameFormat": "Submits the analysis results to the FACT platform",
+  "inputs": [
+    {
+      "name": "FACTServiceConnection",
+      "type": "connectedService:factCognito",
+      "label": "aDolus FACT service connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the aDolus FACT service connection to use."
+    },
+    {
+      "name": "apiClientPath",
+      "type": "string",
+      "label": "Path to FACT API Client",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Enter the full path to the FACT API Client executable."
+    },
+    {
+      "name": "submissionDirectory",
+      "type": "string",
+      "label": "Directory of FACT analysis files",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)",
+      "required": true,
+      "helpMarkDown": "Enter the path of the directory containing the results output files created during the analysis phase of the FACT Composition Engine."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "runsOn": [ "Agent" ]
+}
