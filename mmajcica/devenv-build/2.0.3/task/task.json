@@ -1,0 +1,92 @@
+{
+  "id": "ea543240-b4a8-11e5-8761-bb4cd4a06cfc",
+  "name": "DevEnvBuild",
+  "friendlyName": "DevEnv build (Visual Studio)",
+  "description": "Build a project via the visual studio command-line invocation, devenv.cmd. Used for building eg. SSIS projects.",
+  "author": "Mario Majcica",
+  "helpMarkDown": "Build your project via the visual studio command-line invocation, devenv.cmd",
+  "category": "Build",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [
+    "visualstudio"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "5"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Build solution with DevEnv: $(solution)",
+  "inputs": [
+    {
+      "name": "solution",
+      "type": "filePath",
+      "label": "Solution / Project",
+      "defaultValue": "**\\*.sln",
+      "required": true,
+      "helpMarkDown": "Solution or Project to build. When you enter a project file, the IDE looks for an .sln file with the same base name as the project file in the parent directory for the project file. If no such .sln file exists, then the IDE looks for a single .sln file that references the project. If no such single .sln file exists, then the IDE creates an unsaved solution with a default .sln file name that has the same base name as the project file."
+    },
+    {
+      "name": "project",
+      "type": "filePath",
+      "label": "Project",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the project to build, clean, or deploy."
+    },
+    {
+      "name": "buildCfg",
+      "type": "string",
+      "label": "Configuration",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build configuration; leave blank for solution default."
+    },
+    {
+      "name": "buildPlatform",
+      "type": "string",
+      "label": "Platform",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Build platform; only applied when a configuration is specified. Leave blank for solution default."
+    },
+    {
+      "name": "vsVersion",
+      "type": "pickList",
+      "label": "Visual Studio Version",
+      "required": true,
+      "defaultValue": "latest",
+      "options": {
+        "latest": "Latest",
+        "16.0": "Visual Studio 2019",
+        "15.0": "Visual Studio 2017",
+        "14.0": "Visual Studio 2015",
+        "12.0": "Visual Studio 2013",
+        "11.0": "Visual Studio 2012"
+      }
+    },
+    {
+      "name": "deploy",
+      "type": "boolean",
+      "label": "Deploy",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Builds the solution, along with files necessary for deployment, according to the solutions configuration."
+    },
+    {
+      "name": "clean",
+      "type": "boolean",
+      "label": "Clean",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Deletes any files created by the build command, without affecting source files."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "task.ps1"
+    }
+  }
+}
