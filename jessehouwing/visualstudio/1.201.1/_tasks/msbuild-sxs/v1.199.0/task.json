@@ -1,0 +1,191 @@
+{
+  "minimumAgentVersion": "1.95.0",
+  "execution": {
+    "PowerShell3": {
+      "platforms": [
+        "windows"
+      ],
+      "target": "MSBuild.ps1"
+    },
+    "Node10": {
+      "argumentFormat": "",
+      "target": "msbuild.js"
+    }
+  },
+  "instanceNameFormat": "Build solution $(solution)",
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/build/msbuild",
+  "messages": {
+    "CreateLogFileOnlySupportedOnWindows": "`Create Log File` is only supported on Windows.",
+    "MSB_BuildToolNotFound": "MSBuild or xbuild (Mono) were not found on the macOS or Linux agent.",
+    "RecordProjectDetailsOnlySupportedOnWindows": "`Record Project Details` is only supported on Windows."
+  },
+  "version": {
+    "Patch": 0,
+    "Minor": 199,
+    "Major": 1
+  },
+  "demands": [
+    "msbuild"
+  ],
+  "inputs": [
+    {
+      "helpMarkDown": "Relative path from repo root of the project(s) or solution(s) to run.  Wildcards can be used.  For example, `**/*.csproj` for all csproj files in all sub folders.",
+      "required": true,
+      "label": "Project",
+      "defaultValue": "**/*.sln",
+      "name": "solution",
+      "type": "filePath"
+    },
+    {
+      "required": false,
+      "label": "MSBuild",
+      "defaultValue": "version",
+      "name": "msbuildLocationMethod",
+      "options": {
+        "version": "Version",
+        "location": "Specify Location"
+      },
+      "type": "radio"
+    },
+    {
+      "defaultValue": "latest",
+      "options": {
+        "17.0": "MSBuild 17.0",
+        "4.0": "MSBuild 4.0",
+        "16.0": "MSBuild 16.0",
+        "latest": "Latest",
+        "12.0": "MSBuild 12.0",
+        "15.0": "MSBuild 15.0",
+        "14.0": "MSBuild 14.0"
+      },
+      "type": "pickList",
+      "visibleRule": "msbuildLocationMethod = version",
+      "name": "msbuildVersion",
+      "label": "MSBuild Version",
+      "helpMarkDown": "If the preferred version cannot be found, the latest version found will be used instead. On an macOS agent, xbuild (Mono) will be used if version is lower than 15.0.",
+      "required": false
+    },
+    {
+      "defaultValue": "x86",
+      "options": {
+        "x86": "MSBuild x86",
+        "x64": "MSBuild x64"
+      },
+      "type": "pickList",
+      "visibleRule": "msbuildLocationMethod = version",
+      "name": "msbuildArchitecture",
+      "label": "MSBuild Architecture",
+      "helpMarkDown": "Optionally supply the architecture (x86, x64) of MSBuild to run.",
+      "required": false
+    },
+    {
+      "visibleRule": "msbuildLocationMethod = location",
+      "helpMarkDown": "Optionally supply the path to MSBuild.",
+      "required": false,
+      "label": "Path to MSBuild",
+      "defaultValue": "",
+      "name": "msbuildLocation",
+      "type": "string"
+    },
+    {
+      "defaultValue": "",
+      "required": false,
+      "type": "string",
+      "label": "Platform",
+      "name": "platform"
+    },
+    {
+      "defaultValue": "",
+      "required": false,
+      "type": "string",
+      "label": "Configuration",
+      "name": "configuration"
+    },
+    {
+      "helpMarkDown": "Additional arguments passed to MSBuild (on Windows) and xbuild (on macOS).",
+      "required": false,
+      "label": "MSBuild Arguments",
+      "defaultValue": "",
+      "name": "msbuildArguments",
+      "type": "string"
+    },
+    {
+      "helpMarkDown": "Run a clean build (/t:clean) prior to the build.",
+      "required": false,
+      "label": "Clean",
+      "defaultValue": "false",
+      "name": "clean",
+      "type": "boolean"
+    },
+    {
+      "groupName": "advanced",
+      "helpMarkDown": "If your MSBuild target configuration is compatible with building in parallel, you can optionally check this input to pass the /m switch to MSBuild (Windows only). If your target configuration is not compatible with building in parallel, checking this option may cause your build to result in file-in-use errors, or intermittent or inconsistent build failures.",
+      "required": false,
+      "label": "Build in Parallel",
+      "defaultValue": "false",
+      "name": "maximumCpuCount",
+      "type": "boolean"
+    },
+    {
+      "groupName": "advanced",
+      "helpMarkDown": "This option is deprecated. To restore NuGet packages, add a [NuGet](https://docs.microsoft.com/azure/devops/pipelines/tasks/package/nuget) task before the build.",
+      "required": false,
+      "label": "Restore NuGet Packages",
+      "defaultValue": "false",
+      "name": "restoreNugetPackages",
+      "type": "boolean"
+    },
+    {
+      "groupName": "advanced",
+      "helpMarkDown": "Optionally record timeline details for each project (Windows only).",
+      "required": false,
+      "label": "Record Project Details",
+      "defaultValue": "false",
+      "name": "logProjectEvents",
+      "type": "boolean"
+    },
+    {
+      "groupName": "advanced",
+      "helpMarkDown": "Optionally create a log file (Windows only).",
+      "required": false,
+      "label": "Create Log File",
+      "defaultValue": "false",
+      "name": "createLogFile",
+      "type": "boolean"
+    },
+    {
+      "type": "pickList",
+      "label": "Log File Verbosity",
+      "required": false,
+      "helpMarkDown": "Optional log file verbosity.",
+      "groupName": "advanced",
+      "name": "logFileVerbosity",
+      "options": {
+        "normal": "Normal",
+        "diagnostic": "Diagnostic",
+        "quiet": "Quiet",
+        "detailed": "Detailed",
+        "minimal": "Minimal"
+      },
+      "visibleRule": "createLogFile = true",
+      "defaultValue": "normal"
+    }
+  ],
+  "friendlyName": "MSBuild (Side-by-side)",
+  "category": "Build",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?LinkID=613724)",
+  "name": "MSBuild-sxs",
+  "id": "480cef4d-958a-5b86-85c5-2f5f366f4b49",
+  "description": "Build with MSBuild",
+  "groups": [
+    {
+      "isExpanded": false,
+      "displayName": "Advanced",
+      "name": "advanced"
+    }
+  ],
+  "visibility": [
+    "Build"
+  ],
+  "author": "Microsoft Corporation"
+}

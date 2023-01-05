@@ -1,0 +1,230 @@
+{
+  "version": {
+    "Major": 1,
+    "Patch": 0,
+    "Minor": 198
+  },
+  "name": "VSTest-sxs",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?LinkId=624539)",
+  "author": "Microsoft Corporation",
+  "demands": [
+    "vstest"
+  ],
+  "messages": {
+    "PublishCodeChangesPerfTime": "Total time taken to publish code changes: %d milliseconds.",
+    "ErrorReadingVstestVersion": "Error reading the version of vstest.console.exe.",
+    "UploadTestResultsPerfTime": "Total time taken to upload test results: %d milliseconds.",
+    "VstestTIANotSupported": "Install Visual Studio version 15.0.25807 or higher to run Test Impact Analysis.",
+    "RunInParallelNotSupported": "Run in Parallel is not supported with testsettings file.",
+    "FailedToSetRunInParallel": "Failed to set run in parallel. Invalid run settings file.",
+    "ErrorWhileSettingTestImpactCollectorRunSettings": "Error occurred while setting Test Impact Collector in run settings file.",
+    "ErrorWhilePublishingCodeChanges": "Error occurred while publishing the code changes. All the tests will be executed for this run.",
+    "GenerateResponseFilePerfTime": "Total time taken to get response file: %d milliseconds.",
+    "ErrorWhileReadingRunSettings": "Error occured while reading run settings file. Error : %s.",
+    "UnexpectedVersionString": "Unexpected version string detected for vstest.console.exe: %s.",
+    "PathDoesNotExist": "%s path does not exist.",
+    "VstestReturnCode": "Vstest exited with return code: %d.",
+    "NoMatchingTestAssemblies": "No test assemblies found matching the pattern: %s.",
+    "VstestFailed": "Vstest failed with error. Check logs for failures. There might be failed tests.",
+    "UnexpectedVersionNumber": "Unexpected version number detected for vstest.console.exe: %s.",
+    "UpdateOneOrHigherRequired": "Install Visual Studio 2015 Update 1 or higher on your build agent machine to run the tests in parallel.",
+    "ErrorOccuredWhileSettingRegistry": "Error occured while setting registry key, Error: %s.",
+    "ErrorWhileUpdatingResponseFile": "Error occurred while updating the response file '%s'. All the tests will be executed for this run.",
+    "VstestNotFound": "Vstest of version %d is not found. Try again with a visual studio version that exists on your build agent machine.",
+    "ErrorWhileListingDiscoveredTests": "Error occured while discovering the tests. All the tests will be exexuted for this run.",
+    "VstestDiagNotSupported": "vstest.console.exe version does not support the /diag flag. Enable diagnositics via the exe.config files",
+    "NoResultsToPublish": "No results found to publish.",
+    "ErrorWhileSettingTestImpactCollectorTestSettings": "Error occurred while setting Test Impact Collector in test settings file.",
+    "ErrorWhileReadingTestSettings": "Error occured while reading test settings file. Error : %s.",
+    "ErrorWhileCreatingResponseFile": "Error occurred while creating the response file. All the tests will be executed for this run."
+  },
+  "instanceNameFormat": "Test Assemblies $(testAssembly)",
+  "id": "d962a10a-eaad-5083-bb69-0f4d57094a9a",
+  "minimumAgentVersion": "1.89.0",
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/test/vstest",
+  "description": "Run tests with Visual Studio test runner",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "inputs": [
+    {
+      "name": "testAssembly",
+      "required": true,
+      "type": "string",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Test binaries to run tests on.  Wildcards can be used.  For example, `**\\*test*.dll;-:**\\obj\\**` for all dlls with test in name while excluding files in any sub-directory named obj.",
+      "defaultValue": "**\\*test*.dll;-:**\\obj\\**",
+      "label": "Test Assembly"
+    },
+    {
+      "name": "testFiltercriteria",
+      "required": false,
+      "type": "string",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Additional criteria to filter tests from Test assemblies. For example: `Priority=1|Name=MyTestMethod`",
+      "defaultValue": "",
+      "label": "Test Filter criteria"
+    },
+    {
+      "name": "runSettingsFile",
+      "required": false,
+      "type": "filePath",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Path to runsettings file to use with the tests. Use `$(Build.SourcesDirectory)` to access the Project folder.",
+      "defaultValue": "",
+      "label": "Run Settings File"
+    },
+    {
+      "name": "overrideTestrunParameters",
+      "required": false,
+      "type": "string",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Override parameters defined in the TestRunParameters section of runsettings file. For example: `AppURL=$(DeployURL);Port=8080`",
+      "defaultValue": "",
+      "label": "Override TestRun Parameters"
+    },
+    {
+      "name": "codeCoverageEnabled",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Collect code coverage information from the Test run.",
+      "defaultValue": "False",
+      "label": "Code Coverage Enabled"
+    },
+    {
+      "name": "runInParallel",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Enable parallel execution of your tests.",
+      "defaultValue": "false",
+      "label": "Run In Parallel"
+    },
+    {
+      "name": "vstestLocationMethod",
+      "options": {
+        "location": "Specify Location",
+        "version": "Version"
+      },
+      "type": "radio",
+      "groupName": "advancedExecutionOptions",
+      "required": false,
+      "defaultValue": "version",
+      "label": "VSTest"
+    },
+    {
+      "name": "vsTestVersion",
+      "type": "pickList",
+      "helpMarkDown": "The version of VSTest to use.",
+      "visibleRule": "vstestLocationMethod = version",
+      "groupName": "advancedExecutionOptions",
+      "defaultValue": "14.0",
+      "required": false,
+      "options": {
+        "12.0": "Visual Studio 2013",
+        "latest": "Latest",
+        "14.0": "Visual Studio 2015"
+      },
+      "label": "VSTest version"
+    },
+    {
+      "helpMarkDown": "Optionally supply the path to VSTest.",
+      "name": "vstestLocation",
+      "visibleRule": "vstestLocationMethod = location",
+      "type": "string",
+      "defaultValue": "",
+      "groupName": "advancedExecutionOptions",
+      "label": "Path to vstest.console.exe",
+      "required": false
+    },
+    {
+      "name": "pathtoCustomTestAdapters",
+      "required": false,
+      "type": "string",
+      "groupName": "advancedExecutionOptions",
+      "helpMarkDown": "Directory path to custom test adapters. Nuget restored adapters are automatically searched for.",
+      "defaultValue": "",
+      "label": "Path to Custom Test Adapters"
+    },
+    {
+      "name": "otherConsoleOptions",
+      "required": false,
+      "type": "string",
+      "groupName": "advancedExecutionOptions",
+      "helpMarkDown": "Other Console options that can be passed to vstest.console.exe. Click on the help link below for more details.",
+      "defaultValue": "",
+      "label": "Other console options"
+    },
+    {
+      "name": "testRunTitle",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Provide a name for the Test Run.",
+      "defaultValue": "",
+      "label": "Test Run Title"
+    },
+    {
+      "name": "platform",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Platform against which the tests should be reported. If you have defined a variable for platform in your build task, use that here.",
+      "defaultValue": "",
+      "label": "Platform"
+    },
+    {
+      "name": "configuration",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Configuration against which the tests should be reported. If you have defined a variable for configuration in your build task, use that here.",
+      "defaultValue": "",
+      "label": "Configuration"
+    },
+    {
+      "name": "publishRunAttachments",
+      "required": false,
+      "type": "boolean",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Opt in/out of publishing test run level attachments.",
+      "defaultValue": "true",
+      "label": "Upload Test Attachments"
+    }
+  ],
+  "friendlyName": "Visual Studio Test (Side-by-side)",
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "groups": [
+    {
+      "displayName": "Execution Options",
+      "isExpanded": true,
+      "name": "executionOptions"
+    },
+    {
+      "displayName": "Advanced Execution Options",
+      "isExpanded": false,
+      "name": "advancedExecutionOptions"
+    },
+    {
+      "displayName": "Reporting Options",
+      "isExpanded": false,
+      "name": "reportingOptions"
+    }
+  ],
+  "category": "Test",
+  "execution": {
+    "PowerShell": {
+      "argumentFormat": "",
+      "platforms": [
+        "windows"
+      ],
+      "workingDirectory": "$(currentDirectory)",
+      "target": "$(currentDirectory)\\VSTest.ps1"
+    }
+  }
+}

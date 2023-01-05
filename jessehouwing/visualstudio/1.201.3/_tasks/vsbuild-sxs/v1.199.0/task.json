@@ -1,0 +1,189 @@
+{
+  "name": "VSBuild-sxs",
+  "friendlyName": "Visual Studio build (Side-by-side)",
+  "demands": [
+    "msbuild",
+    "visualstudio"
+  ],
+  "id": "e611ef14-f538-5f42-8ffc-60c88f7f045c",
+  "minimumAgentVersion": "1.95.0",
+  "execution": {
+    "PowerShell3": {
+      "target": "VSBuild.ps1"
+    }
+  },
+  "instanceNameFormat": "Build solution $(solution)",
+  "messages": {
+    "VSVersion15NotFound": "Visual Studio 2017 was not found.",
+    "MSBuildVersionDeprecated0": "The MSBuild version parameter has been deprecated. Ignoring value '{0}'.",
+    "UnexpectedVSVersion0": "Unexpected Visual Studio version '{0}'.",
+    "VSVersion0NotFound": "Visual Studio version '{0}' not found.",
+    "MSBuildLocationDeprecated0": "The MSBuild location parameter has been deprecated. Ignoring value '{0}'",
+    "VSVersion0NotFoundFallbackVersion1": "Visual Studio version '{0}' not found. Falling back to version '{1}'.",
+    "VSLocationDeprecated0": "The Visual Studio location parameter has been deprecated. Ignoring value '{0}'",
+    "VSNotFoundTry": "Visual Studio was not found. Try installing a supported version of Visual Studio. See the task definition for a list of supported versions."
+  },
+  "description": "Build with MSBuild and set the Visual Studio version property",
+  "groups": [
+    {
+      "displayName": "Advanced",
+      "isExpanded": false,
+      "name": "advanced"
+    }
+  ],
+  "version": {
+    "Major": 1,
+    "Patch": 0,
+    "Minor": 199
+  },
+  "inputs": [
+    {
+      "name": "solution",
+      "required": true,
+      "type": "filePath",
+      "helpMarkDown": "Relative path from repo root of the solution(s) or MSBuild project to run.  Wildcards can be used.  For example, `**\\*.sln` for all sln files in all sub folders.",
+      "defaultValue": "**\\*.sln",
+      "label": "Solution"
+    },
+    {
+      "name": "vsVersion",
+      "options": {
+        "12.0": "Visual Studio 2013",
+        "17.0": "Visual Studio 2022",
+        "16.0": "Visual Studio 2019",
+        "14.0": "Visual Studio 2015",
+        "15.0": "Visual Studio 2017",
+        "11.0": "Visual Studio 2012",
+        "latest": "Latest"
+      },
+      "type": "pickList",
+      "helpMarkDown": "If the preferred version cannot be found, the latest version found will be used instead.",
+      "required": false,
+      "defaultValue": "latest",
+      "label": "Visual Studio Version"
+    },
+    {
+      "name": "msbuildArgs",
+      "required": false,
+      "type": "string",
+      "helpMarkDown": "Additional arguments passed to MSBuild.",
+      "defaultValue": "",
+      "label": "MSBuild Arguments"
+    },
+    {
+      "name": "platform",
+      "required": false,
+      "type": "string",
+      "helpMarkDown": "Specify the platform you want to build such as Win32, x86, x64 or any cpu.",
+      "defaultValue": "",
+      "label": "Platform"
+    },
+    {
+      "name": "configuration",
+      "required": false,
+      "type": "string",
+      "helpMarkDown": "Specify the configuration you want to build such as debug or release.",
+      "defaultValue": "",
+      "label": "Configuration"
+    },
+    {
+      "name": "clean",
+      "required": false,
+      "type": "boolean",
+      "helpMarkDown": "Set to False if you want to make this an incremental build.",
+      "defaultValue": "false",
+      "label": "Clean"
+    },
+    {
+      "name": "maximumCpuCount",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advanced",
+      "helpMarkDown": "If your MSBuild target configuration is compatible with building in parallel, you can optionally check this input to pass the /m switch to MSBuild (Windows only). If your target configuration is not compatible with building in parallel, checking this option may cause your build to result in file-in-use errors, or intermittent or inconsistent build failures.",
+      "defaultValue": "false",
+      "label": "Build in Parallel"
+    },
+    {
+      "name": "restoreNugetPackages",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advanced",
+      "helpMarkDown": "This option is deprecated. To restore NuGet packages, add a [NuGet Tool Installer](https://docs.microsoft.com/vsts/pipelines/tasks/tool/nuget) task before the build.",
+      "defaultValue": "false",
+      "label": "Restore NuGet Packages"
+    },
+    {
+      "helpMarkDown": "Optionally supply the architecture (x86, x64) of MSBuild to run.",
+      "options": {
+        "x64": "MSBuild x64",
+        "x86": "MSBuild x86"
+      },
+      "name": "msbuildArchitecture",
+      "type": "pickList",
+      "defaultValue": "x86",
+      "groupName": "advanced",
+      "label": "MSBuild Architecture",
+      "required": false
+    },
+    {
+      "name": "logProjectEvents",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advanced",
+      "helpMarkDown": "Optionally record timeline details for each project.",
+      "defaultValue": "true",
+      "label": "Record Project Details"
+    },
+    {
+      "name": "createLogFile",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advanced",
+      "helpMarkDown": "Optionally create a log file (Windows only).",
+      "defaultValue": "false",
+      "label": "Create Log File"
+    },
+    {
+      "name": "logFileVerbosity",
+      "type": "pickList",
+      "helpMarkDown": "Optional log file verbosity.",
+      "visibleRule": "createLogFile = true",
+      "groupName": "advanced",
+      "defaultValue": "normal",
+      "required": false,
+      "options": {
+        "quiet": "Quiet",
+        "detailed": "Detailed",
+        "normal": "Normal",
+        "diagnostic": "Diagnostic",
+        "minimal": "Minimal"
+      },
+      "label": "Log File Verbosity"
+    },
+    {
+      "name": "enableDefaultLogger",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advanced",
+      "helpMarkDown": "If true - enables default logger for msbuild",
+      "defaultValue": "true",
+      "label": "Enable Default Logger"
+    },
+    {
+      "name": "customVersion",
+      "required": false,
+      "type": "string",
+      "groupName": "advanced",
+      "helpMarkDown": "Allows setting custom version of Visual Studio. Examples: 15.0, 16.0, 17.0. Make sure that the required version of Visual Studio is installed in the system.",
+      "defaultValue": "",
+      "label": "Custom Version"
+    }
+  ],
+  "visibility": [
+    "Build"
+  ],
+  "category": "Build",
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/build/visual-studio-build",
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?LinkID=613727)",
+  "author": "Microsoft Corporation"
+}

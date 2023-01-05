@@ -1,0 +1,656 @@
+{
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "dataSourceBindings": [
+    {
+      "initialContextTemplate": "{\"skip\": \"0\"}",
+      "endpointId": "tfs:teamfoundation",
+      "target": "testPlan",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}} - {{{name}}}\" }",
+      "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans?filterActivePlans=true&api-version=3.0-preview.2&$skip={{skip}}&$top=1000",
+      "resultSelector": "jsonpath:$.value[*]",
+      "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}"
+    },
+    {
+      "resultSelector": "jsonpath:$.value[*]",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/configurations?api-version=3.0-preview.1",
+      "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}} - {{{name}}}\" }",
+      "target": "testConfiguration"
+    },
+    {
+      "resultSelector": "jsonpath:$.value[*]",
+      "endpointId": "tfs:teamfoundation",
+      "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans/{{testPlan}}/suites?$asTreeView=true&api-version=3.0-preview.2",
+      "parameters": {
+        "testPlan": "$(testPlan)"
+      },
+      "target": "testSuite"
+    }
+  ],
+  "demands": [
+    "vstest"
+  ],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?LinkId=835764)",
+  "name": "VSTest-sxs",
+  "inputs": [
+    {
+      "name": "testSelector",
+      "type": "pickList",
+      "helpMarkDown": "<ul><li><b>Test assembly: </b>Use this option to specify one or more test assemblies that contain your tests. You can optionally specify a filter criteria to select only specific tests.</li><li><b>Test plan: </b>Use this option to run tests from your test plan that have an automated test method associated with it.</li><li><b>Test run: </b>Use this option when you are setting up an environment to run tests from the Test hub. This option should not be used when running tests in a continuous integration / continuous deployment (CI/CD) pipeline.</li>",
+      "groupName": "testSelection",
+      "defaultValue": "testAssemblies",
+      "required": true,
+      "options": {
+        "testAssemblies": "Test assemblies",
+        "testPlan": "Test plan",
+        "testRun": "Test run"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "label": "Select tests using"
+    },
+    {
+      "name": "testAssemblyVer2",
+      "type": "multiLine",
+      "helpMarkDown": "Run tests from the specified files.<br>Ordered tests and webtests can be run by specifying the .orderedtest and .webtest files respectively. To run .webtest, Visual Studio 2017 Update 4 or higher is needed. <br><br>The file paths are relative to the search folder. Supports multiple lines of minimatch patterns. [More information](https://aka.ms/minimatchexamples)",
+      "visibleRule": "testSelector = testAssemblies",
+      "groupName": "testSelection",
+      "defaultValue": "**\\*test*.dll\n!**\\*TestAdapter.dll\n!**\\obj\\**",
+      "required": true,
+      "properties": {
+        "resizable": "true",
+        "rows": "3"
+      },
+      "label": "Test files"
+    },
+    {
+      "name": "testPlan",
+      "type": "pickList",
+      "helpMarkDown": "Select a test plan containing test suites with automated test cases.",
+      "visibleRule": "testSelector = testPlan",
+      "groupName": "testSelection",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "DisableManageLink": "True",
+        "EditableOptions": "True"
+      },
+      "label": "Test plan"
+    },
+    {
+      "name": "testSuite",
+      "type": "pickList",
+      "helpMarkDown": "Select one or more test suites containing automated test cases. Test case work items must be associated with an automated test method. [Learn more.](https://go.microsoft.com/fwlink/?linkid=847773",
+      "visibleRule": "testSelector = testPlan",
+      "groupName": "testSelection",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "MultiSelect": "True",
+        "DisableManageLink": "True",
+        "EditableOptions": "True"
+      },
+      "label": "Test suite"
+    },
+    {
+      "name": "testConfiguration",
+      "type": "pickList",
+      "helpMarkDown": "Select Test Configuration.",
+      "visibleRule": "testSelector = testPlan",
+      "groupName": "testSelection",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "DisableManageLink": "True",
+        "EditableOptions": "True"
+      },
+      "label": "Test configuration"
+    },
+    {
+      "name": "tcmTestRun",
+      "type": "string",
+      "helpMarkDown": "Test run based selection is used when triggering automated test runs from the test hub. This option cannot be used for running tests in the CI/CD pipeline.",
+      "visibleRule": "testSelector = testRun",
+      "groupName": "testSelection",
+      "defaultValue": "$(test.RunId)",
+      "required": false,
+      "properties": {
+        "resizable": "true",
+        "rows": "3"
+      },
+      "label": "Test Run"
+    },
+    {
+      "name": "searchFolder",
+      "required": true,
+      "type": "string",
+      "groupName": "testSelection",
+      "helpMarkDown": "Folder to search for the test assemblies.",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
+      "label": "Search folder"
+    },
+    {
+      "name": "resultsFolder",
+      "required": false,
+      "type": "string",
+      "groupName": "testSelection",
+      "helpMarkDown": "Folder to store test results. When this input is not specified, results are stored in $(Agent.TempDirectory)/TestResults by default, which is cleaned at the end of a pipeline run. The results directory will always be cleaned up at the start of the vstest task before the tests are run. Relative folder path if provided will be considered relative to $(Agent.TempDirectory)",
+      "defaultValue": "$(Agent.TempDirectory)\\TestResults",
+      "label": "Test results folder"
+    },
+    {
+      "helpMarkDown": "Additional criteria to filter tests from Test assemblies. For example: `Priority=1|Name=MyTestMethod`. [More information](https://msdn.microsoft.com/en-us/library/jj155796.aspx)",
+      "name": "testFiltercriteria",
+      "visibleRule": "testSelector = testAssemblies",
+      "type": "string",
+      "defaultValue": "",
+      "groupName": "testSelection",
+      "label": "Test filter criteria",
+      "required": false
+    },
+    {
+      "helpMarkDown": "Automatically select, and run only the tests needed to validate the code change. [More information](https://aka.ms/tialearnmore)",
+      "name": "runOnlyImpactedTests",
+      "visibleRule": "testSelector = testAssemblies",
+      "type": "boolean",
+      "defaultValue": "False",
+      "groupName": "testSelection",
+      "label": "Run only impacted tests",
+      "required": false
+    },
+    {
+      "helpMarkDown": "Number of builds after which to automatically run all tests. Test Impact Analysis stores the mapping between test cases and source code. It is recommended to regenerate the mapping by running all tests, on a regular basis.",
+      "name": "runAllTestsAfterXBuilds",
+      "visibleRule": "testSelector = testAssemblies && runOnlyImpactedTests = true",
+      "type": "string",
+      "defaultValue": "50",
+      "groupName": "testSelection",
+      "label": "Number of builds after which all tests should be run",
+      "required": false
+    },
+    {
+      "name": "uiTests",
+      "required": false,
+      "type": "boolean",
+      "groupName": "testSelection",
+      "helpMarkDown": "To run UI tests, ensure that the agent is set to run in interactive mode. Setting up an agent to run interactively must be done before queueing the build / release. Checking this box does <b>not</b> configure the agent in interactive mode automatically. This option in the task is to only serve as a reminder to configure agent appropriately to avoid failures. <br><br> Hosted Windows agents from the VS 2015 and 2017 pools can be used to run UI tests.<br> [More information](https://aka.ms/uitestmoreinfo).",
+      "defaultValue": "false",
+      "label": "Test mix contains UI tests"
+    },
+    {
+      "name": "vstestLocationMethod",
+      "options": {
+        "location": "Specific location",
+        "version": "Version"
+      },
+      "type": "radio",
+      "groupName": "executionOptions",
+      "required": false,
+      "defaultValue": "version",
+      "label": "Select test platform using"
+    },
+    {
+      "name": "vsTestVersion",
+      "type": "pickList",
+      "helpMarkDown": "The version of Visual Studio test to use. If latest is specified it chooses Visual Studio 2017 or Visual Studio 2015 depending on what is installed. Visual Studio 2013 is not supported. To run tests without needing Visual Studio on the agent, use the ‘Installed by tools installer’ option. Be sure to include the ‘Visual Studio Test Platform Installer’ task to acquire the test platform from nuget.",
+      "visibleRule": "vstestLocationMethod = version",
+      "groupName": "executionOptions",
+      "defaultValue": "latest",
+      "required": false,
+      "options": {
+        "15.0": "Visual Studio 2017",
+        "toolsInstaller": "Installed by Tools Installer",
+        "16.0": "Visual Studio 2019",
+        "latest": "Latest",
+        "14.0": "Visual Studio 2015"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "label": "Test platform version"
+    },
+    {
+      "helpMarkDown": "Optionally supply the path to VSTest.",
+      "name": "vstestLocation",
+      "visibleRule": "vstestLocationMethod = location",
+      "type": "string",
+      "defaultValue": "",
+      "groupName": "executionOptions",
+      "label": "Path to vstest.console.exe",
+      "required": false
+    },
+    {
+      "name": "runSettingsFile",
+      "required": false,
+      "type": "filePath",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Path to runsettings or testsettings file to use with the tests.",
+      "defaultValue": "",
+      "label": "Settings file"
+    },
+    {
+      "helpMarkDown": "Override parameters defined in the `TestRunParameters` section of runsettings file or `Properties` section of testsettings file. For example: `-key1 value1 -key2 value2`. Note: Properties specified in testsettings file can be accessed via the TestContext using Visual Studio 2017 Update 4 or higher ",
+      "defaultValue": "",
+      "name": "overrideTestrunParameters",
+      "type": "multiLine",
+      "properties": {
+        "resizable": "true",
+        "editorExtension": "ms.vss-services-azure.parameters-grid",
+        "rows": "3"
+      },
+      "groupName": "executionOptions",
+      "label": "Override test run parameters",
+      "required": false
+    },
+    {
+      "name": "pathtoCustomTestAdapters",
+      "required": false,
+      "type": "string",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Directory path to custom test adapters. Adapters residing in the same folder as the test assemblies are automatically discovered.",
+      "defaultValue": "",
+      "label": "Path to custom test adapters"
+    },
+    {
+      "name": "runInParallel",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "If set, tests will run in parallel leveraging available cores of the machine. This will override the MaxCpuCount if specified in your runsettings file. [Click here](https://aka.ms/paralleltestexecution) to learn more about how tests are run in parallel.",
+      "defaultValue": "False",
+      "label": "Run tests in parallel on multi-core machines"
+    },
+    {
+      "name": "runTestsInIsolation",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Runs the tests in an isolated process. This makes vstest.console.exe process less likely to be stopped on an error in the tests, but tests might run slower. This option currently cannot be used when running with the multi-agent job setting.",
+      "defaultValue": "False",
+      "label": "Run tests in isolation"
+    },
+    {
+      "name": "codeCoverageEnabled",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Collect code coverage information from the test run.",
+      "defaultValue": "False",
+      "label": "Code coverage enabled"
+    },
+    {
+      "name": "otherConsoleOptions",
+      "required": false,
+      "type": "string",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Other console options that can be passed to vstest.console.exe, as documented <a href=\"https://aka.ms/vstestotherconsoleoptions\" target=\"_blank\">here</a>. <p>These options are not supported and will be ignored when running tests using the ‘Multi agent’ parallel setting of an agent job or when running tests using ‘Test plan’ or 'Test run' option or when a custom batching option is selected. The options can be specified using a settings file instead.</p>",
+      "defaultValue": "",
+      "label": "Other console options"
+    },
+    {
+      "name": "distributionBatchType",
+      "type": "pickList",
+      "helpMarkDown": "A batch is a group of tests. A batch of tests runs its tests at the same time and results are published for the batch. If the job in which the task runs is set to use multiple agents, each agent picks up any available batches of tests to run in parallel.<br><br><b>Based on the number of tests and agents:</b> Simple batching based on the number of tests and agents participating in the test run.<br><br><b>Based on past running time of tests:</b> This batching considers past running time to create batches of tests such that each batch has approximately equal running time.<br><br><b>Based on test assemblies:</b> Tests from an assembly are batched together.",
+      "groupName": "advancedExecutionOptions",
+      "defaultValue": "basedOnTestCases",
+      "required": false,
+      "options": {
+        "basedOnExecutionTime": "Based on past running time of tests",
+        "basedOnAssembly": "Based on test assemblies",
+        "basedOnTestCases": "Based on number of tests and agents"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "label": "Batch tests"
+    },
+    {
+      "name": "batchingBasedOnAgentsOption",
+      "type": "radio",
+      "helpMarkDown": "Simple batching based on the number of tests and agents participating in the test run. When the batch size is automatically determined, each batch contains `(total number of tests / number of agents)` tests. If a batch size is specified, each batch will contain the specified number of tests.",
+      "visibleRule": "distributionBatchType = basedOnTestCases",
+      "groupName": "advancedExecutionOptions",
+      "defaultValue": "autoBatchSize",
+      "required": false,
+      "options": {
+        "autoBatchSize": "Automatically determine the batch size",
+        "customBatchSize": "Specify a batch size"
+      },
+      "label": "Batch options"
+    },
+    {
+      "helpMarkDown": "Specify batch size",
+      "name": "customBatchSizeValue",
+      "visibleRule": "distributionBatchType = basedOnTestCases && batchingBasedOnAgentsOption = customBatchSize",
+      "type": "string",
+      "defaultValue": "10",
+      "groupName": "advancedExecutionOptions",
+      "label": "Number of tests per batch",
+      "required": true
+    },
+    {
+      "name": "batchingBasedOnExecutionTimeOption",
+      "type": "radio",
+      "helpMarkDown": "This batching considers past running time to create batches of tests such that each batch has approximately equal running time. Quick running tests will be batched together, while longer running tests may belong to a separate batch. When this option is used with the multi-agent job setting, total test time is reduced to a minimum.",
+      "visibleRule": "distributionBatchType = basedOnExecutionTime",
+      "groupName": "advancedExecutionOptions",
+      "defaultValue": "autoBatchSize",
+      "required": false,
+      "options": {
+        "autoBatchSize": "Automatically determine the batch time",
+        "customTimeBatchSize": "Specify running time per batch"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "label": "Batch options"
+    },
+    {
+      "helpMarkDown": "Specify the running time (sec) per batch",
+      "name": "customRunTimePerBatchValue",
+      "visibleRule": "distributionBatchType = basedOnExecutionTime && batchingBasedOnExecutionTimeOption = customTimeBatchSize",
+      "type": "string",
+      "defaultValue": "60",
+      "groupName": "advancedExecutionOptions",
+      "label": "Running time (sec) per batch",
+      "required": true
+    },
+    {
+      "name": "dontDistribute",
+      "required": false,
+      "type": "boolean",
+      "groupName": "advancedExecutionOptions",
+      "helpMarkDown": "Choosing this option will not distribute tests across agents when the task is running in a multi-agent job.<br>Each of the selected test(s) will be repeated on each agent.<br>The option is not applicable when the agent job is configured to run with no parallelism or with the multi-config option.",
+      "defaultValue": "False",
+      "label": "Replicate tests instead of distributing when multiple agents are used in the job"
+    },
+    {
+      "name": "testRunTitle",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Provide a name for the test run.",
+      "defaultValue": "",
+      "label": "Test run title"
+    },
+    {
+      "name": "platform",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Build platform against which the tests should be reported. If you have defined a variable for platform in your build task, use that here.",
+      "defaultValue": "",
+      "label": "Build platform"
+    },
+    {
+      "name": "configuration",
+      "required": false,
+      "type": "string",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Build configuration against which the tests should be reported. If you have defined a variable for configuration in your build task, use that here.",
+      "defaultValue": "",
+      "label": "Build configuration"
+    },
+    {
+      "name": "publishRunAttachments",
+      "required": false,
+      "type": "boolean",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Opt in/out of publishing run level attachments.",
+      "defaultValue": "true",
+      "label": "Upload test attachments"
+    },
+    {
+      "name": "failOnMinTestsNotRun",
+      "required": false,
+      "type": "boolean",
+      "groupName": "reportingOptions",
+      "helpMarkDown": "Selecting this option will fail the task if specified minimum number of tests is not run.",
+      "defaultValue": "False",
+      "label": "Fail the task if a minimum number of tests are not run."
+    },
+    {
+      "helpMarkDown": "Specify the minimum # of tests that should be run for the task to succeed. Total tests executed is calculated as the sum of passed, failed and aborted tests.",
+      "name": "minimumExpectedTests",
+      "visibleRule": "failOnMinTestsNotRun = true",
+      "type": "string",
+      "defaultValue": "1",
+      "groupName": "reportingOptions",
+      "label": "Minimum # of tests",
+      "required": false
+    },
+    {
+      "name": "diagnosticsEnabled",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Collect advanced diagnostics in case of catastrophic failures.",
+      "defaultValue": "false",
+      "label": "Collect advanced diagnostics in case of catastrophic failures"
+    },
+    {
+      "name": "collectDumpOn",
+      "type": "pickList",
+      "helpMarkDown": "Collect process dump and attach to test run report.",
+      "visibleRule": "diagnosticsEnabled = true",
+      "groupName": "executionOptions",
+      "defaultValue": "onAbortOnly",
+      "required": false,
+      "options": {
+        "always": "Always",
+        "never": "Never",
+        "onAbortOnly": "On abort only"
+      },
+      "label": "Collect process dump and attach to test run report"
+    },
+    {
+      "name": "rerunFailedTests",
+      "required": false,
+      "type": "boolean",
+      "groupName": "executionOptions",
+      "helpMarkDown": "Selecting this option will rerun any failed tests until they pass or the maximum # of attempts is reached.",
+      "defaultValue": "False",
+      "label": "Rerun failed tests"
+    },
+    {
+      "name": "rerunType",
+      "type": "pickList",
+      "helpMarkDown": "Use this option to avoid rerunning tests when failure rate crosses the specified threshold. This is applicable if any environment issues leads to massive failures.<br>You can specify % failures or # of failed tests as a threshold.",
+      "visibleRule": "rerunFailedTests = true",
+      "groupName": "executionOptions",
+      "defaultValue": "basedOnTestFailurePercentage",
+      "required": false,
+      "options": {
+        "basedOnTestFailurePercentage": "% failure",
+        "basedOnTestFailureCount": "# of failed tests"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "label": "Do not rerun if test failures exceed specified threshold"
+    },
+    {
+      "helpMarkDown": "Use this option to avoid rerunning tests when failure rate crosses the specified threshold. This is applicable if any environment issues leads to massive failures.",
+      "name": "rerunFailedThreshold",
+      "visibleRule": "rerunFailedTests = true && rerunType = basedOnTestFailurePercentage",
+      "type": "string",
+      "defaultValue": "30",
+      "groupName": "executionOptions",
+      "label": "% failure",
+      "required": false
+    },
+    {
+      "helpMarkDown": "Use this option to avoid rerunning tests when number of failed test cases crosses specified limit. This is applicable if any environment issues leads to massive failures.",
+      "name": "rerunFailedTestCasesMaxLimit",
+      "visibleRule": "rerunFailedTests = true && rerunType = basedOnTestFailureCount",
+      "type": "string",
+      "defaultValue": "5",
+      "groupName": "executionOptions",
+      "label": "# of failed tests",
+      "required": false
+    },
+    {
+      "helpMarkDown": "Specify the maximum # of times a failed test should be retried. If a test passes before the maximum # of attempts is reached, it will not be rerun further.",
+      "name": "rerunMaxAttempts",
+      "visibleRule": "rerunFailedTests = true",
+      "type": "string",
+      "defaultValue": "3",
+      "groupName": "executionOptions",
+      "label": "Maximum # of attempts",
+      "required": false
+    }
+  ],
+  "author": "Microsoft Corporation",
+  "instanceNameFormat": "VsTest - $(testSelector)",
+  "category": "Test",
+  "messages": {
+    "testplanConfigInput": "Test plan configuration Id : %s",
+    "UpgradeAgentMessage": "Please upgrade your agent version. https://github.com/Microsoft/vsts-agent/releases",
+    "NoMatchingTestAssemblies": "No test assemblies found matching the pattern: %s.",
+    "testSuiteSelected": "Test suite Id selected: %s",
+    "runTestInIsolationNotSupported": "Running tests in isolation is not supported when using the multi-agent job setting. This option will be ignored.",
+    "ErrorWhileListingDiscoveredTests": "Error occurred while discovering the tests. All the tests will be executed for this run.",
+    "configureDtaAgentFailed": "Configuring the test agent with the server failed even after %d retries with error %s",
+    "RunTimePerBatch": "Run time per batch(sec) : %s",
+    "otherConsoleOptionsNotSupported": "Other console options is not supported for this task configuration. This option will be ignored.",
+    "ErrorWhileReadingTestSettings": "Error occurred while reading test settings file. Error : %s.",
+    "OverrideUseVerifiableInstrumentation": "Overriding UseVerifiableInstrumentation field to false in the runsettings file.",
+    "noVstestConsole": "Tests will not be executed with vstest console. Install Visual Studio 2017 RC or above to run tests via vstest console.",
+    "testPlanInput": "Test plan Id : %s",
+    "VstestNotFound": "Visual Studio %d is not found. Try again with a version that exists on your build agent machine.",
+    "ErrorWhileUpdatingResponseFile": "Error occurred while updating the response file '%s'. All the tests will be executed for this run.",
+    "vstestLocationSpecified": "%s, specified location : %s",
+    "testAssembliesSelector": "Test assemblies",
+    "UpdateThreeOrHigherRequired": "Install Visual Studio 2015 Update 3 or higher on your build agent machine to run the tests in parallel.",
+    "VstestFailedReturnCode": "VsTest task failed.",
+    "testImpactAndCCWontWork": "Test Impact (Run only Impacted tests) and Code Coverage data collector will not work.",
+    "searchFolderInput": "Search folder : %s",
+    "UnableToGetFeatureFlag": "Unable to get feature flag: %s",
+    "UnexpectedVersionNumber": "Unexpected version number detected for vstest.console.exe: %s.",
+    "disabledRerun": "Disabling the rerun of failed tests as the rerun threshold provided is %s",
+    "OnlyWindowsOsSupported": "This task is supported only on Windows agents and cannot be used on other platforms.",
+    "NoVstestFound": "Test platform is not found. Try again after installing it on your build agent machine.",
+    "actionOnThresholdNotMet": "Action when minimum tests threshold not met : %s",
+    "numberOfTestCasesPerSlice": "Number of test cases per batch : %s",
+    "InvalidSettingsFile": "The specified settings file %s is invalid or does not exist. Provide a valid settings file or clear the field.",
+    "distributedTestWorkflow": "In distributed testing flow",
+    "minimumExpectedTests": "Minimum tests expected to be run: %d",
+    "VstestPassedReturnCode": "VsTest task succeeded.",
+    "rerunNotSupported": "Install Visual Studio 2015 update 3 or Visual Studio 2017 to rerun failed tests.",
+    "NoResultsToPublish": "No results found to publish.",
+    "UploadTestResultsPerfTime": "Total time taken to upload test results: %d milliseconds.",
+    "runTestsLocally": "Run the tests locally using %s",
+    "noTestSourcesFound": "No test sources found matching the given filter '%s'",
+    "LookingForVsInstalltion": "Attempting to find vstest.console from a visual studio installation with version %s.",
+    "ErrorWhileSettingTestImpactCollectorRunSettings": "Error occurred while setting Test Impact Collector in run settings file.",
+    "PublishCodeChangesPerfTime": "Total time taken to publish code changes: %d milliseconds.",
+    "VstestFailed": "Vstest failed with error. Check logs for failures. There might be failed tests.",
+    "rerunFailedTests": "Rerun failed tests: %s",
+    "LookingForBuildToolsInstalltion": "Attempting to find vstest.console from a visual studio build tools installation with version %s.",
+    "pathToCustomAdaptersInvalid": "Path to custom adapters '%s' should be a directory and it should exist.",
+    "testPlanSelector": "Test plan",
+    "codeCoverageInput": "Code coverage enabled : %s",
+    "VstestTIANotSupported": "Install Visual Studio 2015 update 3 or Visual Studio 2017 RC or above to run Test Impact Analysis.",
+    "NoTestResultsDirectoryFound": "Test results directory not found.",
+    "uitestsparallel": "Running UI tests in parallel on the same machine can lead to errors. Consider disabling the ‘run in parallel’ option or run UI tests using a separate task. To learn more, see https://aka.ms/paralleltestexecution ",
+    "otherConsoleOptionsInput": "Other console options : %s",
+    "invalidRerunFailedThreshold": "Invalid rerun failed tests threshold, defaulting to 30%",
+    "nonDistributedTestWorkflow": "Running tests using vstest.console.exe runner.",
+    "ErrorWhileSettingTestImpactCollectorTestSettings": "Error occurred while setting Test Impact Collector in test settings file.",
+    "toolsInstallerPathNotSet": "VsTest Test Platform folder was not found in cache.",
+    "invalidRerunFailedTestCasesMaxLimit": "Invalid rerun failed tests case limit, defaulting to 5",
+    "testRunIdInvalid": "The test selection is 'Test run', but the test run ID '%s' given is invalid",
+    "testSelectorInput": "Test selector : %s",
+    "RunInParallelNotSupported": "Running tests in parallel on multi-core machines is not supported with testsettings file. This option will be ignored.",
+    "ErrorWhilePublishingCodeChanges": "Error occurred while publishing the code changes. All the tests will be executed for this run.",
+    "runSettingsFileInput": "Run settings file : %s",
+    "ErrorWhileCreatingResponseFile": "Error occurred while creating the response file. All the tests will be executed for this run.",
+    "testRunSelector": "Test run",
+    "ErrorWhileReadingRunSettings": "Error occurred while reading run settings file. Error : %s.",
+    "VstestLocationDoesNotExist": "The location of 'vstest.console.exe' specified '%s' does not exist.",
+    "diagnosticsInput": "Diagnostics enabled : %s",
+    "vsVersionSelected": "VisualStudio version selected for test execution : %s",
+    "invalidRunTimePerBatch": "Invalid 'Running time (sec) per batch': %s",
+    "ToolsInstallerInstallationError": "The Visual Studio Test Platform tools installer did not run or did not complete the installation successfully, please refer to the following blog for information on how to use the tools installer: https://aka.ms/vstesttoolsinstaller",
+    "testSettingPropertiesNotSupported": "Properties specified in testsettings file can be accessed via the TestContext using Visual Studio 2017 Update 4 or higher",
+    "ErrorReadingVstestVersion": "Error reading the version of vstest.console.exe.",
+    "overrideNotSupported": "Overriding test run parameters is supported only with valid runsettings or testsettings file. This option will be ignored.",
+    "runInParallelInput": "Run in parallel : %s",
+    "NoIncludePatternFound": "No include pattern found. Specify at least one include pattern to search test assemblies.",
+    "invalidRerunMaxAttempts": "Invalid/Exceeded rerun maximum attempts, defaulting to 3",
+    "GenerateResponseFilePerfTime": "Total time taken to get response file: %d milliseconds.",
+    "testRunIdInput": "Test run Id : '%s'",
+    "dtaNumberOfAgents": "Distributed test execution, number of agents in job : %s",
+    "ErrorWhileUpdatingSettings": "Error occurred while updating the settings file. Using the specified settings file.",
+    "UncPathNotSupported": "Path to test sources search folder cannot be a UNC path. Please provide a rooted path or a path relative to $(System.DefaultWorkingDirectory).",
+    "UserProvidedSourceFilter": "Source filter: %s",
+    "testSourcesFilteringFailed": "Preparing the test sources file failed. Error : %s",
+    "pathToCustomAdaptersInput": "Path to custom adapters : %s",
+    "rerunFailedThreshold": "Rerun failed tests threshold: %s",
+    "UnexpectedVersionString": "Unexpected version string detected for vstest.console.exe: %s.",
+    "pathToCustomAdaptersContainsNoAdapters": "Path to custom adapters '%s' does not contain any test adapters, provide a valid path.",
+    "runInIsolationInput": "Run in isolation : %s",
+    "minTestsNotExecuted": "The specified minimum number of tests %d were not executed in the test run.",
+    "rerunFailedTestCasesMaxLimit": "Rerun maximum failed test case limit: %s",
+    "testAssemblyFilterInput": "Test assemblies : %s",
+    "searchLocationNotDirectory": "Search folder: '%s' should be a directory and it should exist.",
+    "DontShowWERUIDisabledWarning": "Windows Error Reporting DontShowUI not set, if the windows error dialog pops-up in the middle of UI test execution than the test will hang",
+    "VsTestVersionEmpty": "VsTestVersion is null or empty",
+    "VstestDiagNotSupported": "vstest.console.exe version does not support the /diag flag. Enable diagnostics via the exe.config files",
+    "MultiConfigNotSupportedWithOnDemand": "On demand runs are not supported with Multi-Configuration option. Please use 'None' or 'Multi-agent' parallelism option.",
+    "VideoCollectorNotSupportedWithRunSettings": "Video collector is not supported with run settings.",
+    "minimumRunTimePerBatchWarning": "'Running time (seconds) per batch' should be at least '%s' seconds. Defaulting to the minimum supported value.",
+    "rerunMaxAttempts": "Rerun maximum attempts: %s",
+    "ErrorOccuredWhileSettingRegistry": "Error occurred while setting registry key, Error: %s.",
+    "testFilterCriteriaInput": "Test filter criteria : %s",
+    "vstestVersionInvalid": "Given test platform version %s is not supported.",
+    "invalidTestBatchSize": "Invalid batch size provided: %s"
+  },
+  "id": "d962a10a-eaad-5083-bb69-0f4d57094a9a",
+  "releaseNotes": "<ul><li><b>Run tests using an agent job:</b> Unified agent across Build, Release and Test allows for automation agents to be used for testing purposes as well. You can distribute tests using the multi-agent job setting. The multi-config job setting can be used to replicate tests in different configurations. <a href=\"https://aka.ms/testingwithphases\" target=\"_blank\">More information</a></li><li><b>Test Impact Analysis:</b> Automatically select and run only the tests needed to validate the code change.</li><li>Use the <b>Visual Studio Test Platform Installer task</b> to run tests without needing a full Visual Studio installation.</li></ul>",
+  "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/test/vstest",
+  "version": {
+    "Major": 2,
+    "Patch": 0,
+    "Minor": 198
+  },
+  "description": "Run unit and functional tests (Selenium, Appium, Coded UI test, etc.) using the Visual Studio Test (VsTest) runner. Test frameworks that have a Visual Studio test adapter such as MsTest, xUnit, NUnit, Chutzpah (for JavaScript tests using QUnit, Mocha and Jasmine), etc. can be run. Tests can be distributed on multiple agents using this task (version 2).",
+  "friendlyName": "Visual Studio Test (Side-by-side)",
+  "minimumAgentVersion": "2.103.0",
+  "execution": {
+    "Node": {
+      "target": "runvstest.js"
+    }
+  },
+  "groups": [
+    {
+      "displayName": "Test selection",
+      "isExpanded": true,
+      "name": "testSelection"
+    },
+    {
+      "displayName": "Execution options",
+      "isExpanded": true,
+      "name": "executionOptions"
+    },
+    {
+      "displayName": "Advanced execution options",
+      "isExpanded": false,
+      "name": "advancedExecutionOptions"
+    },
+    {
+      "displayName": "Reporting options",
+      "isExpanded": true,
+      "name": "reportingOptions"
+    }
+  ]
+}
