@@ -1,0 +1,91 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "45cd7182-50f4-11eb-998f-02004c4f4f50",
+    "name": "querysurge-scenario-results-task",
+    "friendlyName": "QuerySurge Get Scenario Results",
+    "description": "Get detailed results for a scenario and attach them as an artifact. Add the Publish Test Results task after this task to show scenario results in the build summary.",
+	"helpUrl": "https://querysurge.zendesk.com/hc/en-us/articles/360056713972",
+    "category": "Azure Pipelines",
+    "author": "RTTS",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 4
+	},
+	"minimumAgentVersion": "2.144.0",
+	"execution": {
+        "Node10": {
+			"target": "out/scenario-results-task/scenario-results.js"
+        }
+	},
+	"groups": [
+		{
+			"name": "server",
+			"displayName": "QuerySurge Server/Login Details",
+			"isExpanded": true
+		},
+		{
+			"name": "results",
+			"displayName": "Execution/Results Options",
+			"isExpanded": true
+		}
+	],
+    "inputs": [
+		{
+			"name": "host",
+			"type": "string",
+			"label": "QuerySurge hostname",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Hostname/FQDN/IP address of QuerySurge server (ex. qs.mycorp.com)"
+		},
+		{
+			"name": "port",
+			"type": "int",
+			"groupName": "server",
+			"label": "QuerySurge port",
+			"required": true,
+			"helpMarkDown": "HTTP Port of QuerySurge server (ex. 80, 8080, 443, 8443)"
+		},
+		{
+			"name": "useHttps",
+			"type": "boolean",
+			"label": "Use HTTPS",
+			"groupName": "server",
+			"required": false,
+			"helpMarkDown": "Whether to connect to the QuerySurge server via HTTPS (TLS/SSL). May require deployment of organizational CA certificates."
+		},
+		{
+			"name": "user",
+			"type": "identities",
+			"label": "QuerySurge username",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Username of QuerySurge user"
+		},
+		{
+			"name": "password",
+			"type": "identities",
+			"label": "QuerySurge password",
+			"groupName": "server",
+			"required": true,
+			"helpMarkDown": "Password of QuerySurge user"
+		},
+        {
+            "name": "projectId",
+            "type": "int",
+			"label": "Project ID #",
+			"groupName": "results",
+            "required": true,
+            "helpMarkDown": "ID # of Project (found in Global Adminstration -> Projects)"
+        },
+        {
+            "name": "execId",
+            "type": "string",
+            "label": "Scenario Execution ID",
+            "groupName": "results",
+            "required": true,
+            "helpMarkDown": "Execution ID of scenario. Execution ID should be set to the output variable provided by the Run Test Suite Task. For example, if the Run Suite Task's name is `executeRevenueTests`, the value which should be entered into Scenario Execution ID is `$(executeRevenueTests.execId)`."
+        }
+    ]
+}
