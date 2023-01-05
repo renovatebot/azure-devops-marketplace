@@ -1,0 +1,93 @@
+{
+    "id": "65386086-C58C-4396-BC83-4C7A39E84448",
+    "name": "GitHubPagesPublish",
+    "friendlyName": "Publish to GitHub Pages",
+    "description": "Publishes files to a GitHub repository",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "James Randall",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Publishes to GitHub Pages",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "docPath",
+            "type": "filePath",
+            "label": "Documentation Source",
+            "defaultValue": "$(System.DefaultWorkingDirectory)\\Documentation\\site\\*",
+            "required": true,
+            "helpMarkDown": "Source files"
+        },
+        {
+            "name": "githubusername",
+            "type": "string",
+            "label": "GitHub Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your GitHub username"
+        },
+        {
+            "name": "githubemail",
+            "type": "string",
+            "label": "GitHub Email Address",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The email address for the commit"
+        },
+        {
+            "name": "githubaccesstoken",
+            "type": "string",
+            "label": "GitHub Personal Access Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A GitHub Personal Access Token with read and write access to the repository. It's recommended to use a secure VSTS variable."
+        },
+        {
+            "name": "repositoryname",
+            "type": "string",
+            "label": "Repository Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your GitHub repository name."
+        },
+        {
+            "name": "branchname",
+            "type": "string",
+            "label": "Branch Name",
+            "defaultValue": "gh-pages",
+            "required": true,
+            "helpMarkDown": "Your GitHub repository branch."
+        },
+        {
+            "name": "commitmessage",
+            "type": "string",
+            "label": "Commit Message",
+            "defaultValue": "Automated Release $(Release.ReleaseId)",
+            "required": true,
+            "helpMarkDown": "The message that is attached to the commit"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "publish.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
