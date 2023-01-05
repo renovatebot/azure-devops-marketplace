@@ -1,0 +1,71 @@
+{
+    "id": "DFFF8D44-0D26-4B0D-96E9-44F333DE503C",
+    "name": "Dump Agent Caps",
+    "friendlyName": "Dump user defined capabilities of the current agent",
+    "description": "Creates and populates a set of build/release variables based on the user defined capabilities of the agent that's executing the task",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "Seva Alekseyev",
+    "version":
+    {
+        "Major": 1,
+        "Minor": 0,
+        "Patch":2
+    },
+    "demands": [],
+    "instanceNameFormat": "Dump Agent Capabilities into Variables",
+    "execution":
+    {
+        "PowerShell":
+        {
+            "target": "$(currentDirectory)\\DumpAgentCaps.ps1",
+            "argumentFormat": ""
+        }
+    },
+    "groups": [],
+    "inputs":
+    [
+        {
+            "name": "Prefix",
+            "type": "string",
+            "label": "Variable name prefix:",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "To avoid name clashes with other variables, you may prefix the created variables with an arbitrary text string"
+        },
+        {
+            "name": "Security",
+            "type": "pickList",
+            "options": {
+                "Context": "Context connection (Project Collection Build Service)",
+                "PAT": "Personal Access Token (PAT)",
+                "Agent": "NTLM with the agent account",
+                "Endpoint": "Credentials from a service endpoint"
+            },
+            "label": "Security:",
+            "required": true,
+            "defaultValue": "Context",
+            "helpMarkDown": "The security context to use when retrieving the agent data."
+        },
+        {
+            "name": "PAT",
+            "type": "string",
+            "label": "Personal access token (PAT):",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "PAT to connect to TFS with. Requires the **Agent pools (read)** scope.",
+            "visibleRule": "Security = PAT"
+        },
+        {
+            "name": "Endpoint",
+            "type": "connectedService:Generic",
+            "label": "Endpoint:",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Generic service endpoint to retrieve the credentials from",
+            "visibleRule": "Security = Endpoint"
+        }
+    ]
+}
+
+
