@@ -1,0 +1,127 @@
+{
+    "id": "385efe34-81f8-4778-b600-030f1c176cff",
+    "name": "TizenSigningTool",
+    "friendlyName": "Tizen Signing Tool",
+    "description": "Tizen app signing tool",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Tizen SDK",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "groups": [
+        {
+            "name": "authorCertificate",
+            "displayName": "Author Certificate",
+            "isExpanded": true
+        },
+		{
+            "name": "distributorCertificate",
+            "displayName": "Distributor Certificate",
+            "isExpanded": true
+        }
+     ],
+    "inputs": [
+		{
+            "name": "files",
+            "type": "filePath",
+            "label": "TPK Files",
+            "defaultValue": "**/*.tpk",
+            "required": true,
+            "helpMarkDown": "Relative path from the repo root to the TPK(s) you want to sign. You can use wildcards to specify multiple files. For example, `**/*.tpk` for all .TPK files in the 'bin' subfolder."
+        },
+		{
+            "name": "authorSignMethod",
+            "type": "radio",
+            "label": "Sign Method",
+            "required": false,
+            "groupName": "authorCertificate",
+            "defaultValue": "file",
+            "helpMarkDown": "Choose 'File Contents' to use a P12 certificate file in your repository. Choose 'Identifiers' to use secure file with its ID.",
+            "options": {
+                "file": "File Contents",
+                "id": "Identifiers"
+            }
+        },
+        {
+            "name": "authorCertificateFile",
+            "type": "filePath",
+            "label": "Author Certificate File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Author certificate file path.",
+            "groupName": "authorCertificate",
+			"visibleRule": "authorSignMethod = file"
+        },
+		{
+            "name": "authorCertificateFileID",
+            "type": "secureFile",
+            "label": "Author Certificate File ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Author certificate file ID.",
+            "groupName": "authorCertificate",
+			"visibleRule": "authorSignMethod = id"
+        },
+        {
+            "name": "authorCertificatePassword",
+            "type": "string",
+            "label": "Author Certificate Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Password for author certificate file.",
+            "groupName": "authorCertificate"
+        },
+		{
+            "name": "distSignMethod",
+            "type": "radio",
+            "label": "Sign Method",
+            "required": false,
+            "groupName": "distributorCertificate",
+            "defaultValue": "file",
+            "helpMarkDown": "Choose 'File Contents' to use a P12 certificate file in your repository. Choose 'Identifiers' to use secure file with its ID.",
+            "options": {
+                "file": "File Contents",
+                "id": "Identifiers"
+            }
+        },
+		{
+            "name": "distributorCertificateFile",
+            "type": "filePath",
+            "label": "Distributor Certificate File",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Distributor certificate file path.",
+            "groupName": "distributorCertificate",
+			"visibleRule": "distSignMethod = file"
+        },
+		{
+            "name": "distributorCertificateFileID",
+            "type": "secureFile",
+            "label": "Distributor Certificate File ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Distributor certificate file ID.",
+            "groupName": "distributorCertificate",
+			"visibleRule": "distSignMethod = id"
+        },
+        {
+            "name": "distributorCertificatePassword",
+            "type": "string",
+            "label": "Distributor Certificate Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Password for distributor certificate file.",
+            "groupName": "distributorCertificate"
+        }
+    ],
+	"instanceNameFormat": "Signing TPK file(s) $(files)",
+    "execution": {
+		"Node": {
+			"target": "buildtask.js",
+			"argumentFormat": ""
+		}
+    }
+}
