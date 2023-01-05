@@ -1,0 +1,73 @@
+{
+  "id": "44370cd9-75f0-46b2-bb13-0530fd391dba",
+  "name": "ado-azure-sql",
+  "friendlyName": "Update Azure SQL Server Properties.",
+  "description": "Update Azure SQL Server Properties.",
+  "helpMarkDown": "[More Information](https://github.com/baoduy/ado-azure-tools)",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "author": "Duy",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "instanceNameFormat": "Update Azure SQL Server Properties",
+  "inputs": [
+    {
+      "name": "azureSubscriptionEndpoint",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "helpMarkDown": "Select the Azure Resource Manager subscription, which contains Azure Container Registry.Note: To configure new service connection, select the Azure subscription from the list and click 'Authorize'. If your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using 'Add' or 'Manage' button.",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "resourceGroupName",
+      "label": "Azure resource group",
+      "type": "pickList",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "azSqlServerName",
+      "label": "Sql server name",
+      "type": "pickList",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "propertiesInput",
+      "type": "multiLine",
+      "label": "Sql Server Properties (JSON)",
+      "defaultValue": "{ \"properties\": { \"publicNetworkAccess\": \"disabled\"}}",
+      "required": true,
+      "helpMarkDown": "Specify the Azure SQL properties that you would like to be updated. Refer [here for details](https://docs.microsoft.com/en-us/rest/api/sql/servers/update) of Properties are supporting by this task."
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.Sql/servers?api-version=2019-06-01-preview",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{ #extractResource id resourcegroups}}}"
+    },
+    {
+      "target": "azSqlServerName",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.Sql/servers?api-version=2019-06-01-preview",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{name}}}"
+    }
+  ],
+  "execution": { "Node": { "target": "index.js" } }
+}

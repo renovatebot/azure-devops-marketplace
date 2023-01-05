@@ -1,0 +1,89 @@
+{
+  "id": "9816c013-4f97-4b1d-b937-66ca2daac556",
+  "name": "ado-azure-log",
+  "friendlyName": "Purge Azure Log Workspace Data.",
+  "description": "Purge Azure Log Workspace Data.",
+  "helpMarkDown": "[More Information](https://github.com/baoduy/ado-azure-tools)",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "author": "Duy",
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 3
+  },
+  "instanceNameFormat": "Purge Azure Log Workspace Data",
+  "inputs": [
+    {
+      "name": "azureSubscriptionEndpoint",
+      "type": "connectedService:AzureRM",
+      "label": "Azure subscription",
+      "helpMarkDown": "Select the Azure Resource Manager subscription, which contains Azure Container Registry. Note: To configure a new service connection, select the Azure subscription from the list and click 'Authorize'. If your subscription is not listed or if you want to use an existing Service Principal, you can set-up an Azure service connection using 'Add' or 'Manage' button.",
+      "defaultValue": "",
+      "required": true
+    },
+    {
+      "name": "resourceGroupName",
+      "label": "Azure resource group",
+      "type": "pickList",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "azLogWPName",
+      "label": "Log Workspace name",
+      "type": "pickList",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "",
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "azLogTbName",
+      "label": "Log Table name",
+      "type": "string",
+      "defaultValue": "ContainerLog",
+      "required": true,
+      "helpMarkDown": "The log table to be purge. ex: 'ContainerLog', 'AzureDiagnostics', 'ContainerInventory', 'Perf','VMConnection',...",
+      "properties": {
+        "EditableOptions": true
+      }
+    },
+    {
+      "name": "azLogWPDuration",
+      "label": "Log duration",
+      "type": "pickList",
+      "defaultValue": "1Week",
+      "required": true,
+      "helpMarkDown": "Select the duration you would like to purge",
+      "options": {
+        "1Month": "Older than 1 month",
+        "1Week": "Older than 1 week",
+        "1Day": "Older than 1 day"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.OperationalInsights/workspaces?api-version=2020-08-01",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{ #extractResource id resourcegroups}}}"
+    },
+    {
+      "target": "azLogWPName",
+      "endpointId": "$(azureSubscriptionEndpoint)",
+      "endpointUrl": "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.OperationalInsights/workspaces?api-version=2020-08-01",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{{{name}}}"
+    }
+  ],
+  "execution": { "Node": { "target": "index.js" } }
+}
