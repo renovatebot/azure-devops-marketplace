@@ -1,0 +1,80 @@
+{
+    "id": "B127B384-4D88-42FF-B32E-D8594E123878",
+    "name": "RunWorkflow",
+    "friendlyName": "Run a GitHub Workflow",
+    "description": "Starts a GitHub workflow (action), waits for completion, downloads the artifacts",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "Seva Alekseyev",
+    "version":
+    {
+        "Major": 1,
+        "Minor": 0,
+        "Patch":0
+    },
+    "demands": [],
+    "instanceNameFormat": "Run $(workflow) on github.com/$(repo)",
+    "execution":
+    {
+        "Node10":
+        {
+            "target": "$(currentDirectory)/RunWorkflow.js",
+            "argumentFormat": ""
+        }
+    },
+    "groups": [],
+    "inputs":
+    [
+        {
+            "name": "gh",
+            "type": "connectedService:github:OAuth,PersonalAccessToken,Token",
+            "label": "GitHub service connection",
+            "required": true,
+            "helpMarkDown": "A GitHub type service connection to use. The token must have the rights to read and invoke actions. Github Enterprise is not supported."
+        },
+        {
+            "name": "repo",
+            "type": "string",
+            "label": "Owner/Repository",
+            "required": true,
+            "helpMarkDown": "The owner name and the repo name, slash separated."
+        },
+        {
+            "name": "workflow",
+            "type": "string",
+            "label": "Workflow name",
+            "required": false,
+            "helpMarkdown": "Name of the workflow to run, case insensitive. If blank, the first workflow in the repo will be chosen."
+        },
+        {
+            "name": "ref",
+            "type": "string",
+            "label": "Branch or tag",
+            "required": false,
+            "helpMarkDown": "Branch or tag to run the workflow against. If omitted, \"master\" will be used."
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Timeout, min",
+            "required": false,
+            "defaultValue": "120",
+            "helpMarkDown": "Waiting for the run to finish will time out and error out eventually."
+        },
+        {
+            "name": "dlArtifacts",
+            "type": "boolean",
+            "label": "Download artifacts",
+            "defaultValue": true,
+            "helpMarkDown": "If the action publishes any artifacts, they will be downloaded into folders corresponding to artifact names."
+        },
+        {
+            "name": "inputs",
+            "type": "multiLine",
+            "label": "Workflow inputs",
+            "required": false,
+            "helpMarkDown": "A JSON object with the workflow input parameters.\nThose should be defined in the workflow YAML on GitHub under `on:workflow_dispatch:inputs`."
+        }
+    ]
+}
+

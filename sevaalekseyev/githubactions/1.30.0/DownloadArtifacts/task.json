@@ -1,0 +1,72 @@
+{
+    "id": "EC0D0D6C-A2F1-421A-AE3B-3870AC0E6B89",
+    "name": "DownloadArtifacrs",
+    "friendlyName": "Download GitHub Workflow Artifacts",
+    "description": "Downloads the artifacts from a GitHub workflow run",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "Seva Alekseyev",
+    "version":
+    {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [],
+    "instanceNameFormat": "Get the artifacts from $(workflow) on github.com/$(repo)",
+    "execution":
+    {
+        "Node10":
+        {
+            "target": "$(currentDirectory)/DownloadArtifacts.js",
+            "argumentFormat": ""
+        }
+    },
+    "groups": [],
+    "inputs":
+    [
+        {
+            "name": "gh",
+            "type": "connectedService:github:OAuth,PersonalAccessToken,Token",
+            "label": "GitHub service connection",
+            "required": true,
+            "helpMarkDown": "A GitHub type service connection to use. The token must have the rights to read actions. Github Enterprise is not supported."
+        },
+        {
+            "name": "repo",
+            "type": "string",
+            "label": "Owner/Repository",
+            "required": true,
+            "helpMarkDown": "The owner name and the repo name, slash separated.\nIf your repo is at https://github.com/acme/widgets/, then this parameter should be \"acme/widgets\"."
+        },
+        {
+            "name": "workflow",
+            "type": "string",
+            "label": "Workflow name",
+            "required": false,
+            "helpMarkdown": "Name of the workflow to get the artifacts from, case insensitive. If blank, the first workflow in the repo will be chosen.\nThis parameter should match the contents of the `name:` line in your workflow's YAML file on GitHub."
+        },
+        {
+            "name": "branch",
+            "type": "string",
+            "label": "Branch",
+            "required": false,
+            "helpMarkDown": "If provided, only actions against the specified branch will be considered. Internally, it's a filter by the \"head_branch\" property of the run."
+        },
+        {
+            "name": "artNameFilter",
+            "type": "string",
+            "label": "Artifact name(s)",
+            "required": false,
+            "helpMarkDown": "If provided, only the artifact with the specified name (case insensitive) will be downloaded, the rest will be ignored. See also the checkbox below."
+        },
+        {
+            "name": "artNameFilterIsRegex",
+            "type": "boolean",
+            "label": "Name filter is a regular expression",
+            "defaultValue": false,
+            "helpMarkDown": "Check this to treat the artifact name filter as a regular expression in [JavaScript syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions). Case insensitive match, the filter string is expected to match the whole name."
+        }
+    ]
+}
+
