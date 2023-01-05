@@ -1,0 +1,69 @@
+{
+    "id": "5e17d48f-44df-43fb-9c9c-c66614b6c605",
+    "name": "ApkTool",
+    "friendlyName": "ApkTool",
+    "description": "ApkTool Command Line Runner",
+    "helpMarkDown": "[More Information](https://builttoroam.com)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Built to Roam",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 12
+    },
+    "demands": [
+        "msbuild"
+    ],
+    "minimumAgentVersion": "1.99.0",
+    "inputs": [
+        {
+            "name": "apktoolAction",
+            "type": "radio",
+            "label": "ApkTool Action",
+            "required": true,
+            "defaultValue": "decode",
+            "options": {
+                "decode": "Unpack (decode)",
+                "build": "Pack (build)"
+            }
+        },
+        {
+            "name": "inputFolder",
+            "type": "filePath",
+            "label": "Input folder",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "apktoolAction = build",
+            "helpMarkDown": "The folder to pack into an apk."
+        },
+        {
+            "name": "apkfile",
+            "type": "filePath",
+            "label": "Apk",
+            "defaultValue": "[path]\\[filename].apk",
+            "required": true,
+            "helpMarkDown": "Relative path from repo root to the apk to extract or package."
+        },
+        {
+            "name": "outputFolder",
+            "type": "filePath",
+            "label": "Output folder",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "apktoolAction = decode",
+            "helpMarkDown": "The folder to extract the apk in to."
+        }
+    ],
+    "instanceNameFormat": "ApkTool - $(apkToolAction)",
+    "execution": {
+        "PowerShell3": {
+            "target": "MSBuild.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}
