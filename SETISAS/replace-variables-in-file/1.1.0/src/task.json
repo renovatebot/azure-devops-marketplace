@@ -1,0 +1,64 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "498f07a9-f778-4edb-b197-432b7cbd2e8c",
+    "name": "replace-variables-in-file",
+    "friendlyName": "Replace variables in a file",
+    "description": "This task allows you to replaces the pipeline variables in a file with their corresponding values (not secrets) during a build or release process.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Andrés Lavado @ SETI S.A.S",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Replace variables",
+    "inputs": [
+        {
+            "name": "filepath",
+            "type": "filePath",
+            "label": "File path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the path and name of the file you want to replace."
+        },
+        {
+            "name": "contentToVariable",
+            "type": "boolean",
+            "label": "Store content in a variable",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Store the file content in a variable to use in another task."
+        },
+        {
+            "name": "variableName",
+            "type": "string",
+            "label": "Variable name",
+            "defaultValue": "storedFileContent",
+            "required": true,
+            "helpMarkDown": "Specify the variable name that will store the file content",
+            "visibleRule": "contentToVariable=true"
+        },
+        {
+            "name": "endWithNewLine",
+            "type": "boolean",
+            "label": "End file with new line",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Specifies if you want to automatically add a new line at the end of the file."
+        },
+        {
+            "name": "verbose",
+            "type": "boolean",
+            "label": "Verbose logging",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Specifies if you want detailed logs."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
