@@ -1,0 +1,66 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Schlumberger/vsts-serena-deployment-automation"
+    },
+    "contributions": [
+        {
+            "id": "PublishArtifacts",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "PublishArtifacts"
+            }
+        },
+        {
+            "id": "Serena-Deployment-Autoamtion-endpoint",
+            "description": "Serena Deployment Automation Endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-auth-scheme",
+            "url": "http://sra.alm.sample.com/da",
+            "targets": [
+                "ms.vss-endpoint.endpoint-auth-schemes"
+            ],
+            "properties": {
+                "name": "SerenaDAEndpoint",
+                "displayName": "Serena Deployment Automation Connect",
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "username",
+                        "name": "Username",
+                        "description": "Username for connecting to Serena Deployment Automation",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "password",
+                        "name": "Password",
+                        "description": "Password for connecting to Serena Deployment Automation",
+                        "inputMode": "passwordbox",
+                        "isConfidential": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

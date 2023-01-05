@@ -1,0 +1,71 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Schlumberger/vsts-serena-deployment-automation"
+    },
+    "contributions": [
+        {
+            "id": "PublishArtifacts",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "PublishArtifacts"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Serena Deployment Automation Endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "SerenaDAEndpoint",
+                "displayName": "Serena DA Connect",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the Serena server to connect to."
+                },
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Enter the Serena username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Enter the Serena Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
