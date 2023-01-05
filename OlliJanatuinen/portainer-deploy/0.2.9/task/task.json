@@ -1,0 +1,120 @@
+{
+	"id": "81d130ce-0e2d-4c51-bbdc-69a1ae9f6085",
+	"name": "Deploy",
+	"friendlyName": "Portainer.io",
+	"description": "Deploy resources to Portainer.io",
+	"author": "Olli Janatuinen",
+	"helpMarkDown": "Deploy resources to Portainer.io",
+	"category": "Deploy",
+	"visibility": ["Build",
+	"Release"],
+	"demands": [],
+	"version": {
+		"Major": "0",
+		"Minor": "1",
+		"Patch": "3"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "$(action)",
+	"inputs": [{
+		"name": "PortainerService",
+		"type": "connectedService:Portainer2",
+		"label": "Portainer.io endpoint",
+		"defaultValue": "",
+		"required": true,
+		"helpMarkDown": "Select the Portainer.io endpoint to use. If needed, click on 'manage', and add a new Portainer Endpoint of type 'Portainer.io'"
+	},
+	{
+		"name": "action",
+		"type": "pickList",
+		"label": "Action",
+		"defaultValue": "Deploy an stack",
+		"required": true,
+		"options": {
+			"Deploy an stack": "Deploy an stack",
+			"Deploy an service": "Deploy an service"
+		},
+		"helpMarkDown": "Select a Portainer.io action."
+	},
+	{
+		"name": "StackName",
+		"type": "string",
+		"label": "Stack Name",
+		"defaultValue": "$(Docker.StackName)",
+		"required": true,
+		"visibleRule": "action = Deploy an stack"
+	},
+	{
+		"name": "ComposeFile",
+		"type": "filePath",
+		"label": "Compose Path",
+		"defaultValue": ".\\docker-compose.yml",
+		"required": true,
+		"visibleRule": "action = Deploy an stack"
+	},
+	{
+		"name": "ServiceName",
+		"type": "string",
+		"label": "Service Name",
+		"defaultValue": "$(Docker.ServiceName)",
+		"required": true,
+		"visibleRule": "action = Deploy an service"
+	},
+	{
+		"name": "ImageName",
+		"type": "string",
+		"label": "Image Name",
+		"defaultValue": "$(Docker.ImageName)",
+		"required": true,
+		"visibleRule": "action = Deploy an service"
+	},
+	{
+		"name": "tag",
+		"type": "string",
+		"label": "Docker Tag",
+		"defaultValue": "$(Build.BuildNumber)",
+		"required": true
+	},
+	{
+		"name": "Constraints",
+		"type": "string",
+		"label": "Constraints (comma separated list)",
+		"defaultValue": "engine.labels.type==worker",
+		"required": false,
+		"visibleRule": "action = Deploy an service"
+	},
+	{
+		"name": "Networks",
+		"type": "string",
+		"label": "Networks (comma separated list)",
+		"defaultValue": "$(Docker.Networks)",
+		"required": false,
+		"helpMarkDown": "Name of Docker network(s), must be exists on Swarm",
+		"visibleRule": "action = Deploy an service"
+	},
+	{
+		"name": "Configs",
+		"type": "string",
+		"label": "Configs (comma separated list)",
+		"defaultValue": "",
+		"required": false,
+		"helpMarkDown": "Name of Docker config(s), must be exists on Swarm",
+		"visibleRule": "action = DISABLED"
+	},
+	{
+		"name": "Secrets",
+		"type": "string",
+		"label": "Secrets (comma separated list)",
+		"defaultValue": "",
+		"required": false,
+		"helpMarkDown": "Name of Docker secret(s), must be exists on Swarm",
+		"visibleRule": "action = DISABLED"
+	}],
+	"execution": {
+		"PowerShell3": {
+			"target": "portainer.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
