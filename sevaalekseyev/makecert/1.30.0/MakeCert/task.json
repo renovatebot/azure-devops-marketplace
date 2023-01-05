@@ -1,0 +1,313 @@
+{
+    "id": "40B33457-B445-4414-9155-43005C97E346",
+    "name": "MakeCert",
+    "friendlyName": "Create a CSR or a self-signed certificate",
+    "description": "Creates a private RSA key and either a certificate request, or a signed certificate on a target machine",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "Seva Alekseyev",
+    "version":
+    {
+        "Major": 3,
+        "Minor": 0,
+        "Patch":0
+    },
+    "demands": [],
+    "instanceNameFormat": "Create a cert/CSR on $(Server) for $(DN)",
+    "execution":
+    {
+        "PowerShell":
+        {
+            "target": "$(currentDirectory)/MakeCert.ps1",
+            "argumentFormat": ""
+        }
+    },
+    "groups": [
+        {
+            "name":"cert",
+            "displayName":"Certificate",
+            "isExpanded":true
+        },
+        {
+            "name":"key",
+            "displayName":"Private Key",
+            "isExpanded":false
+        },        
+        {
+            "name":"usage",
+            "displayName":"Key Usage",
+            "isExpanded":false
+        },
+        {
+            "name":"extusage",
+            "displayName":"Extended Key Usage",
+            "isExpanded":false
+        },
+        {
+            "name":"constraints",
+            "displayName":"Basic Constraints",
+            "isExpanded":false
+        },
+        {
+            "name":"adv",
+            "displayName":"Advanced",
+            "isExpanded":false
+        }                  
+    ],
+    "inputs":
+    [
+        {
+            "name": "Server",
+            "type": "string",
+            "label": "Server:",
+            "required": false,
+            "helpMarkDown": "The target machine name. DNS aliases are welcome. If blank, localhost is assumed."
+        },
+        {
+            "name": "TargetType",
+            "type": "radio",
+            "options": {
+                "Cert": "Self-signed certificate",
+                "CSR": "Certificate request"
+            },
+            "label": "What to create:",
+            "required": true,
+            "defaultValue": "Cert",
+            "helpMarkDown": "Whether to self-sign the certificate request and store it in a cert store (\"Personal\" by default), or to save it under \"Certificate Enrollment Requests\" and output a certificate request (CSR) to be sent to a certification authority."
+        },        
+        {
+            "name": "DN",
+            "type": "string",
+            "label": "Distinguished name:",
+            "required": true,
+            "helpMarkDown": "The subject for the certificate, as an X500 distinguished name. Provide as a semicolon separated list of named values, read right to left.\nFor example: `CN=foo;OU=IT;O=ACME Software;L=Seattle;ST=Washington;C=US`",
+            "groupName": "cert"
+        },
+        {
+            "name": "Lifetime",
+            "type": "string",
+            "label": "Lifetime (days):",
+            "required": true,
+            "defaultValue": "365",
+            "helpMarkDown": "The expiration date will be set to that many days from the creation time. Cert authorities usually override that with a setting of their own.",
+            "groupName": "cert"
+        },
+        {
+            "name": "FriendlyName",
+            "type": "string",
+            "label": "Friendly name:",
+            "required": false,
+            "helpMarkDown": "This line only displays in the certificate management UI of Windows. Leaving it blank is fine.",
+            "groupName": "cert"
+        },
+        {
+            "name": "Description",
+            "type": "string",
+            "label": "Description:",
+            "required": false,
+            "helpMarkDown": "This line only displays in the certificate management UI of Windows. Leaving it blank is fine.",
+            "groupName": "cert"
+        },
+        {
+            "name": "SAN",
+            "type": "multiLine",
+            "label": "Subject alternative name:",
+            "required": false,
+            "helpMarkDown": "Provide the values for the Subject Alternative Name extenion, one value per line, in the `type=value` format, where `type` can be:\n - DNS\n - Email\n - IP\n - URI\n - Name\nFor TLS server certificates, modern browsers require at least one `DNS=(hostname)` line here.",
+            "groupName": "cert"
+        },  
+        
+        {
+            "name": "Length",
+            "type": "string",
+            "label": "Key length:",
+            "required": true,
+            "defaultValue": "2048",
+            "helpMarkDown": "RSA key length, in bits. As of late 2021, 2048 is considered secure, 1024 is not.",
+            "groupName": "key"
+        },
+        {
+            "name": "Exportable",
+            "type": "boolean",
+            "label": "Mark as exportable",
+            "defaultValue": "false",
+            "helpMarkDown": "Leave unchecked if the private key is not expected to leave the target machine.",
+            "groupName": "key"
+        },
+        {
+            "name": "Permissions",
+            "type": "multiLine",
+            "label": "Extra permissions:",
+            "required": false,
+            "helpMarkDown": "Users who should be granted access to the private key, in addition to the default SYSTEM and Administrators.\nEach line should contain a username (presumed local on the target server), or a domain\\username, or a [two letter code for a well known SID](https://docs.microsoft.com/en-us/windows/win32/secauthz/sid-strings). Prepend a line with a * for read-only access, otherwise full control will be granted.",
+            "groupName": "key"
+        },                 
+
+        {
+            "name": "KUKE",
+            "type": "boolean",
+            "label": "Key encipherment",
+            "defaultValue":"true",
+            "groupName": "usage"
+        },       
+        {
+            "name": "KUDE",
+            "type": "boolean",
+            "label": "Data encipherment",
+            "defaultValue":"true",
+            "groupName": "usage"
+        },
+        {
+            "name": "KUDS",
+            "type": "boolean",
+            "label": "Digital signature",
+            "defaultValue":"true",
+            "groupName": "usage"
+        }, 
+        {
+            "name": "KUKCS",
+            "type": "boolean",
+            "label": "Key certificate signing",
+            "defaultValue":"false",
+            "groupName": "usage"
+        }, 
+        {
+            "name": "KUKA",
+            "type": "boolean",
+            "label": "Key agreement",
+            "defaultValue":"false",
+            "groupName": "usage"
+        },         
+        {
+            "name": "KUCS",
+            "type": "boolean",
+            "label": "CRL signing",
+            "defaultValue":"false",
+            "groupName": "usage"
+        },  
+        {
+            "name": "KUNR",
+            "type": "boolean",
+            "label": "Non-repudiation",
+            "defaultValue":"false",
+            "groupName": "usage"
+        },     
+        {
+            "name": "KUEO",
+            "type": "boolean",
+            "label": "Encipher only",
+            "defaultValue":"false",
+            "groupName": "usage"
+        }, 
+        {
+            "name": "KUDO",
+            "type": "boolean",
+            "label": "Decipher only",
+            "defaultValue":"false",
+            "groupName": "usage"
+        },         
+        {
+            "name": "KUCritical",
+            "type": "boolean",
+            "label": "Make Key Usage critical",
+            "defaultValue":"true",
+            "helpMarkDown": "If checked, the key usage extension wlll be marked as critical. For a self signed certificate, it makes no difference.",
+            "groupName": "usage"
+        },
+
+
+        {
+            "name": "EKUSA",
+            "type": "boolean",
+            "label": "Server authentication",
+            "defaultValue":"true",
+            "groupName": "extusage"
+        },
+        {
+            "name": "EKUCA",
+            "type": "boolean",
+            "label": "Client authentication",
+            "defaultValue":"true",
+            "groupName": "extusage"
+        },
+        {
+            "name": "EKUCS",
+            "type": "boolean",
+            "label": "Code signing",
+            "defaultValue":"false",
+            "groupName": "extusage"
+        }, 
+        {
+            "name": "EKUExtra",
+            "type": "multiLine",
+            "label": "More:",
+            "required": false,
+            "helpMarkDown": "Provide more OIDs for extended key usage, one OID per line. Lists of possible values are available online.",
+            "groupName": "extusage"
+        },                
+        {
+            "name": "EKUCritical",
+            "type": "boolean",
+            "label": "Make Extended Key Usage critical",
+            "defaultValue":"false",
+            "helpMarkDown": "If checked, the extended key usage extension wlll be marked as critical. For a self signed certificate, it makes no difference.",
+            "groupName": "extusage"
+        },
+
+        {
+            "name": "BCPresent",
+            "type": "boolean",
+            "label": "Enable the Basic Constraints extension",
+            "defaultValue":"false",
+            "helpMarkDown": "Check this to add the Basic Constraints extension to the certificate.",
+            "groupName": "constraints"
+        },
+        {
+            "name": "BCIsAuthority",
+            "type": "boolean",
+            "label": "Allow subject to issue certificates",
+            "defaultValue":"true",
+            "helpMarkDown": "If checked, the certificate will be marked as a potential certificate authority one",
+            "groupName": "constraints",
+            "visibleRule": "BCPresent = true"
+        },        
+        {
+            "name": "BCPathLength",
+            "type": "int",
+            "label": "Path length:",
+            "helpMarkDown": "Numeric or blank. Determines how many levels of subauthority are allowed under this certificate. Blank means no limit.",
+            "groupName": "constraints",
+            "visibleRule": "BCIsAuthority = true"
+        },
+        {
+            "name": "BCCritical",
+            "type": "boolean",
+            "label": "Make Basic Constraints critical",
+            "defaultValue":"false",
+            "helpMarkDown": "If checked, the Basic Constraints extension wlll be marked as critical. For a self signed certificate, it makes no difference.",
+            "groupName": "constraints",
+            "visibleRule": "BCPresent = true"
+        },              
+
+        {
+            "name": "StoreName",
+            "type": "string",
+            "label": "Store name:",
+            "required": true,
+            "defaultValue": "My",
+            "helpMarkDown": "This line determines which folder in the certificate store to store the certificate in. The line should correspond to the internal name. Valid store names are\n - My\n - AddressBook\n - AuthRoot\n - CertificationAuthority\n - Disallowed\n - Root\n - TrustedPeople\n - TrustedPublisher\n[See the docs.](https://docs.microsoft.com/en-us/dotnet/framework/configure-apps/file-schema/wcf/certificate-of-clientcertificate-element)",
+            "groupName": "adv",
+            "visibleRule": "TargetType = Cert"
+        },
+        {
+            "name": "CSRFileName",
+            "type": "string",
+            "label": "Save the request in file:",
+            "required": false,
+            "helpMarkDown": "If you provide a file name here, the CSR will be saved, in PEM (AKA Base64) format, into that file. The file name is treated as local to the target server, not to the agent machine. If a file extension is omitted, a default one will not be added, since there is no universally accepted default.",
+            "groupName": "adv",
+            "visibleRule": "TargetType = CSR"
+        }
+    ]
+}
+
