@@ -1,0 +1,411 @@
+{
+    "id": "b84d9559-3ee0-4945-bea5-642328ca1430",
+    "name": "OpKeyTestSuite",
+    "friendlyName": "OpKey Test Suite",
+    "description": "Run OpKey Test Suite",
+    "helpMarkDown": "This step execute OpKey SaaS Suite",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "SSTS Inc",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 8
+    },
+    "instanceNameFormat": "OpKey SaaS Build",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "opkeySaaSEndPoint",
+            "type": "connectedService:OpKey",
+            "label": "OpKey SaaS EndPoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OpKey Server EndPoint.",
+            "properties":{"EditableOptions":false}
+        },
+        {
+            "name": "opkeyProject",
+            "type": "pickList",
+            "label": "Project",
+            "defaultValue": "",
+            "required": true,
+			"helpMarkDown": "OpKey Server Project.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeySuitePath",
+            "type": "pickList",
+            "label": "Suite Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OpKey Suite Path.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyBuilds",
+            "type": "pickList",
+            "label": "Build",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OpKey Server Builds.",
+			"properties":{"EditableOptions":true}
+        },
+		{
+            "name": "opkeySession",
+            "type": "string",
+            "label": "SessionName",
+            "defaultValue": "New Session",
+            "required": true,
+            "helpMarkDown": "OpKey Server Builds."
+		},
+		{
+            "name": "opkeyAgent",
+            "type": "pickList",
+            "label": "Agent",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OpKey Server Agent.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyAgentPlugin",
+            "type": "pickList",
+            "label": "Plugin",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OpKey Server Agent Plugins.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeySnapFreq",
+            "type": "pickList",
+            "label": "Snapshot Frequency",
+            "required": true,
+            "helpMarkDown": "OpKey Snapshot Frequency.",
+			"properties":{"EditableOptions":false},
+			"options": {
+                "FailedSteps": "FailedSteps",
+                "NoStep": "NoStep",
+                "AllSteps": "AllSteps"
+            }
+        },
+		{
+            "name": "opkeySnapQual",
+            "type": "pickList",
+            "label": "Snapshot Quality",
+            "required": true,
+            "helpMarkDown": "OpKey Snapshot Quality",
+			"properties":{"EditableOptions":false},
+			"options": {
+                "Medium": "Medium",
+                "Low": "Low",
+                "High": "High"
+            }
+        },
+        {
+            "name": "opkeyReportType",
+            "type": "pickList",
+            "label": "Report Type",
+            "required": true,
+            "helpMarkDown": "Send Report Type",
+			"properties":{"EditableOptions":false},
+			"options": {
+                "DontSend": "DontSend",
+                "Summary": "Summary",
+                "Failed": "Failed",
+                "Detailed":"Detailed",
+                "OutlineReport":"OutlineReport",
+                "IntegratedDataReport":"IntegratedReport"
+            }
+        },
+        {
+            "name": "opkeyStepTimeOut",
+            "type": "string",
+            "label": "Step TimeOut",
+            "defaultValue": "90",
+            "required": true,
+            "helpMarkDown": "OpKey Step TimeOut must be between 5 to 300 "
+			
+		},
+		{
+            "name": "opkeyUpdateTMT",
+            "type": "boolean",
+            "label": "Update Mapped Test Management Artifact",
+            "defaultValue": "false",
+            "helpMarkDown": "Update Mapped Test Management Artifact"
+        },
+        {
+            "name": "opkeySkipStep",
+            "type": "boolean",
+            "label": "Skip Step",
+            "defaultValue": "false",
+            "helpMarkDown": "Skip Step if Mandatory fields not provided"
+        },
+        {
+            "name": "opkeyIPExecType",
+            "type": "boolean",
+            "label": "Randomize Input Default Value",
+            "defaultValue": false,
+            "helpMarkDown": "If checked, Random value(s) from Input Parameter (Default List) will be picked."
+        },
+        {
+            "name": "opkHighLightObj",
+            "type": "boolean",
+            "label": "HighLight Object",
+            "defaultValue": false,
+            "helpMarkDown": "Enable to highlight object during execution (Currently it is applicable on Selenium-JS)."
+        },
+        {
+            "name": "opkObjectVisibility",
+            "type": "boolean",
+            "label": "Perform Visibility Check",
+            "defaultValue": false,
+            "helpMarkDown": "Enable this for performing visibility check of web-element(s) before execution."
+        },
+        {
+            "name": "opkeyWaitExecution",
+            "type": "boolean",
+            "label": "Wait for Execution Result",
+            "defaultValue": true,
+            "helpMarkDown": "If checked, Build step waits until Opkey Execution is not finished."
+		},
+		{
+            "name": "opkeyGVName1",
+            "type": "pickList",
+            "label": "GlobalVariable1",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OpKey Global Variable.",
+            "properties":{"EditableOptions":false,
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "opkeyGVValue1",
+            "type": "pickList",
+            "label": "Value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide value for Global Variable change at runtime",
+            "properties":{"EditableOptions":true}
+		},
+		{
+            "name": "opkeyGVName2",
+            "type": "pickList",
+            "label": "GlobalVariable2",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OpKey Global Variable.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyGVValue2",
+            "type": "pickList",
+            "label": "Value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide value for Global Variable change at runtime",
+            "properties":{"EditableOptions":true}
+		},
+		{
+            "name": "opkeyGVName3",
+            "type": "pickList",
+            "label": "GlobalVariable3",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OpKey Global Variable.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyGVValue3",
+            "type": "pickList",
+            "label": "Value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide value for Global Variable change at runtime",
+            "properties":{"EditableOptions":true}
+		},
+		{
+            "name": "opkeyGVName4",
+            "type": "pickList",
+            "label": "GlobalVariable4",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OpKey Global Variable.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyGVValue4",
+            "type": "pickList",
+            "label": "Value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide value for Global Variable change at runtime",
+            "properties":{"EditableOptions":true}
+		},
+		{
+            "name": "opkeyGVName5",
+            "type": "pickList",
+            "label": "GlobalVariable5",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OpKey Global Variable.",
+			"properties":{"EditableOptions":false}
+        },
+		{
+            "name": "opkeyGVValue5",
+            "type": "pickList",
+            "label": "Value",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide value for Global Variable change at runtime",
+            "properties":{"EditableOptions":true}
+		}
+		
+    ],
+	"dataSourceBindings": [
+				{
+				  "target": "opkeyProject",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyProjectsRESTCall"
+				},
+				{
+				  "target": "opkeySuitePath",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeySuiteRESTCall",
+				  "parameters":{
+								 "opk_project":"$(opkeyProject)"
+							   }
+				},
+				{
+				  "target": "opkeyAgent",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyAgentsRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)"
+							   }
+				},
+				{
+				  "target": "opkeyAgentPlugin",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyAgentPluginsRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)",
+								"opk_agent":"$(opkeyAgent)"
+							   }
+				},
+				{
+				  "target": "opkeyBuilds",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyBuildsRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)"
+							   }
+                },
+				{
+				  "target": "opkeyGVName1",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyGVRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)"
+							   }
+                },
+				{
+				  "target": "opkeyGVName2",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyGVRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)"
+							   }
+				},
+				{
+				  "target": "opkeyGVName3",
+				  "endpointId": "$(opkeySaaSEndPoint)",
+				  "dataSourceName": "OpKeyGVRESTCall",
+				  "parameters":{
+								"opk_project":"$(opkeyProject)"
+							   }
+                },
+                {
+                    "target": "opkeyGVName4",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVRESTCall",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVName5",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVRESTCall",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVValue1",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVVALUE1Call",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)",
+                                  "opk_agent":"$(opkeyAgent)",
+                                  "gv_name":"$(opkeyGVName1)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVValue2",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVVALUE2Call",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)",
+                                  "opk_agent":"$(opkeyAgent)",
+                                  "gv_name":"$(opkeyGVName2)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVValue3",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVVALUE3Call",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)",
+                                  "opk_agent":"$(opkeyAgent)",
+                                  "gv_name":"$(opkeyGVName3)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVValue4",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVVALUE4Call",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)",
+                                  "opk_agent":"$(opkeyAgent)",
+                                  "gv_name":"$(opkeyGVName4)"
+                                 }
+                },
+                {
+                    "target": "opkeyGVValue5",
+                    "endpointId": "$(opkeySaaSEndPoint)",
+                    "dataSourceName": "OpKeyGVVALUE5Call",
+                    "parameters":{
+                                  "opk_project":"$(opkeyProject)",
+                                  "opk_agent":"$(opkeyAgent)",
+                                  "gv_name":"$(opkeyGVName5)"
+                                 }
+                }
+	],
+    "execution": {
+        "Node": {
+            "target": "opkeyNodeExecutor.js"
+        }
+    }
+}
