@@ -1,0 +1,138 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e6e43054-d95e-4940-bb84-1cb6e98c4583",
+    "name": "sftpDownload",
+    "friendlyName": "SFTP / SSH Download",
+    "description": "SFTP / SSH Download 1.3.0",
+    "helpMarkDown": "Download files from remote server. [More information](https://github.com/Adacta/Azure-DevOps-SFTP-SSH-download/)",
+    "category": "Utility",
+    "author": "Adacta d.o.o.",
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "1.95.1",
+    "instanceNameFormat": "SFTP/SSH Download from $(sourcePath)",
+    "groups": [
+        {
+            "name": "sshConnection",
+            "displayName": "SSH Connection",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "showEnvironmentVariables": true,
+    "inputs": [
+        {
+            "name": "sourcePath",
+            "type": "string",
+            "label": "Source path",
+            "defaultValue": "./",
+            "required": true,
+            "helpMarkDown": "Remote source path to download"
+        },
+        {
+            "name": "sourceContents",
+            "type": "multiLine",
+            "label": "Source files",
+            "defaultValue": "**",
+            "required": true,
+            "helpMarkDown": "Remote minimatch file pattern. [More Information](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/file-matching-patterns?view=azure-devops)"
+        },
+        {
+            "name": "target",
+            "type": "filePath",
+            "label": "Destination path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Local (agent) target destination path to put downloaded files"
+        },
+        {
+            "name": "cleanTargetFolder",
+            "type": "boolean",
+            "label": "Clean target folder",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Delete all existing files and sub-folders in the target folder before copying.",
+            "groupName": "advanced"
+        },
+        {
+            "groupName": "sshConnection",
+            "name": "connectionType",
+            "type": "pickList",
+            "options": {
+                "connectedServiceSSH": "SSH Connection",
+                "hostname": "Hostname"
+            },
+            "label": "Connection Type",
+            "required": true,
+            "helpMarkDown": "Select connection type"
+        },
+        {
+            "name": "sshEndpoint",
+            "visibleRule": "connectionType = connectedServiceSSH",
+            "groupName": "sshConnection",
+            "type": "connectedService:ssh",
+            "label": "SSH service connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SSH service connection with connection details for the remote machine."
+        },
+        {
+            "name": "sshHost",
+            "visibleRule": "connectionType = hostname",
+            "groupName": "sshConnection",
+            "type": "string",
+            "label": "SSH hostname",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "SSH hostname"
+        },
+        {
+            "name": "username",
+            "visibleRule": "connectionType = hostname",
+            "groupName": "sshConnection",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Username / login"
+        },
+        {
+            "name": "password",
+            "visibleRule": "connectionType = hostname",
+            "groupName": "sshConnection",
+            "type": "string",
+            "label": "Password / Key passphrase",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Password for username or Key passphrase. \nIt can accept variable defined in build or release pipelines as '$(passwordVariable)'. \nYou may mark the variable type as 'secret' to secure it."
+        },
+        {
+            "name": "secureFilePath",
+            "visibleRule": "connectionType = hostname",
+            "groupName": "sshConnection",
+            "type": "string",
+            "label": "Private Key (Secure File Path)",
+            "defaultValue": "$(_Download_Secure_File_.secureFilePath)",
+            "required": false,
+            "helpMarkDown": "Filename of secure file. Use [Download Secure File](https://go.microsoft.com/fwlink/?LinkID=862069) task and set output variable name (`Reference name` under *Output Variables*).\n\nLeave empty fot password authentication."
+        }
+    ],
+    "OutputVariables": [
+        {
+            "name": "ProcessedFilesCount",
+            "description": "Number of processed files"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "sftpDownload.ps1"
+        }
+    }
+}
