@@ -1,0 +1,74 @@
+{
+  "id": "FF6A3ADC-A2D1-4DDC-AF87-9139CBD74BF1",
+  "name": "MSCRMUpdateConfigurationRecords",
+  "friendlyName": "Update Configuration Records",
+  "description": "Upserts a configuration entity records using lookup/value pairs in a PowerApps/CDS/Dynamics 365 environment",
+  "author": "Wael Hamze",
+  "helpMarkDown": "Reads a json array of lookup/value and upserts records target environment",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 13
+  },
+  "preview":  false,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Update Configuration Records: $(entityName)",
+  "inputs": [
+    {
+      "name": "crmConnectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "More information on [format](https://docs.microsoft.com/en-us/powerapps/developer/common-data-service/xrm-tooling/use-connection-strings-xrm-tooling-connect#connection-string-parameters)"
+    },
+    {
+      "name": "entityName",
+      "type": "string",
+      "label": "Entity Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The entity logical name to upsert. (i.e. prefix_config)"
+    },
+    {
+      "name": "lookupFieldName",
+      "type": "string",
+      "label": "Lookup Field Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the field used to lookup the record. (i.e. prefix_key)"
+    },
+    {
+      "name": "valueFieldName",
+      "type": "string",
+      "label": "Value Field Names",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Comma-separated list of the names of the fields for upserting the values. (e.g.: prefix_value1,prefix_value2). At least one if required."
+    },
+    {
+      "name": "configurationRecordsJson",
+      "type": "multiLine",
+      "label": "A json array of lookup/value pairs.",
+      "defaultValue": "[['key1','value1'],['key2','$(variable2)']]",
+      "required": true,
+      "helpMarkDown": "FORMAT: [['key1','value1'],['key2','$(variable2)']]"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMUpdateConfigurationRecords.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

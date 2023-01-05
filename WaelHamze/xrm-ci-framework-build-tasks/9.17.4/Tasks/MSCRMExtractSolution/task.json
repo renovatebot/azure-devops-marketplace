@@ -1,0 +1,89 @@
+{
+  "id": "48834E5A-A932-49AF-A7FD-A805B5E1CFB5",
+  "name": "MSCRMExtractSolution",
+  "friendlyName": "Extract Solution",
+  "description": "Unpacks a PowerApps/CDS/Dynamics 365 Solution zip into mutiple files using SolutionPackager.exe",
+  "author": "Wael Hamze",
+  "helpMarkDown": "You can control the version using of the SolutionPackager used using the Tools Installer Task",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 4
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Extract Solution",
+  "inputs": [
+    {
+      "name": "unpackedFilesFolder",
+      "type": "filePath",
+      "label": "Unpacked Files Folder",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The folder path to store the xml solution files extracted using SolutionPackager.exe"
+    },
+    {
+      "name": "mappingFile",
+      "type": "filePath",
+      "label": "Mapping File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The mapping file in source control to be used by the SolutionPackager.exe when extracting the solution"
+    },
+    {
+      "name": "packageType",
+      "type": "pickList",
+      "label": "Package Type",
+      "defaultValue": "Unmanaged",
+      "required": false,
+      "helpMarkDown": "The type of solution package to create",
+      "options": {
+        "Unmanaged": "Unmanaged",
+        "Managed": "Managed",
+        "Both": "Both"
+      }
+    },
+    {
+      "name": "solutionFile",
+      "type": "filePath",
+      "label": "Solution File",
+      "defaultValue": "$(build.binariesdirectory)",
+      "required": true,
+      "helpMarkDown": "The path on the agent machine to the solution zip file. For package type = Both, use the unmanaged zip"
+    },
+    {
+      "name": "sourceLoc",
+      "type": "string",
+      "label": "Source Loc",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This argument generates a template resource file"
+    },
+    {
+      "name": "localize",
+      "type": "boolean",
+      "label": "Localize",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Extract or merge all string resources into .resx files"
+    },
+    {
+      "name": "treatUnpackWarningsAsErrors",
+      "type": "boolean",
+      "label": "Treat Warnings as Errors",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Set to true to fail the task if any warnings are encountered during the extract operation"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMExtractSolution.ps1"
+    }
+  }
+}

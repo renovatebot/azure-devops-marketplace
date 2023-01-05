@@ -1,0 +1,179 @@
+{
+  "id": "179fac12-2402-486e-80cf-5a6a8571f7c0",
+  "name": "OctopusPack",
+  "friendlyName": "Package Application for Octopus",
+  "description": "Package your application into a NuPkg or Zip file.",
+  "helpMarkDown": "Version: 5.2.134. [More Information](https://g.octopushq.com/TFS-VSTS)",
+  "category": "Package",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Octopus Deploy",
+  "version": {
+    "Major": 4,
+    "Minor": 3,
+    "Patch": 134
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "groups": [
+    {
+      "name": "nuget",
+      "displayName": "NuGet",
+      "isExpanded": false
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PackageId",
+      "type": "string",
+      "label": "Package ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ID of the package. e.g. MyCompany.App"
+    },
+    {
+      "name": "PackageFormat",
+      "type": "pickList",
+      "label": "Package Format",
+      "required": true,
+      "defaultValue": "NuPkg",
+      "options": {
+        "NuPkg": "NuPkg",
+        "Zip": "Zip"
+      },
+      "helpMarkDown": "Package format. Must be either NuPkg or Zip."
+    },
+    {
+      "name": "PackageVersion",
+      "type": "string",
+      "label": "Package Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The version of the package; must be a valid [SemVer](http://semver.org/) version; defaults to a timestamp-based version."
+    },
+    {
+      "name": "SourcePath",
+      "type": "filePath",
+      "label": "Source Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The folder containing the files and folders to package. Defaults to working directory."
+    },
+    {
+      "name": "OutputPath",
+      "type": "filePath",
+      "label": "Output Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The directory into which the generated package will be written. Defaults to working directory."
+    },
+    {
+      "name": "NuGetAuthor",
+      "type": "string",
+      "label": "Author",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Add an author to the NuGet package metadata.",
+      "groupName": "nuget"
+    },
+    {
+      "name": "NuGetTitle",
+      "type": "string",
+      "label": "Title",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Add a title to the NuGet package metadata.",
+      "groupName": "nuget"
+    },
+    {
+      "name": "NuGetDescription",
+      "type": "string",
+      "label": "Description",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Add a description to the NuGet package metadata.",
+      "groupName": "nuget"
+    },
+    {
+      "name": "NuGetReleaseNotes",
+      "type": "string",
+      "label": "Release Notes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Add release notes to the NuGet package metadata.",
+      "groupName": "nuget"
+    },
+    {
+      "name": "NuGetReleaseNotesFile",
+      "type": "filePath",
+      "label": "Release Notes File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "A file containing release notes to be added to the NuGet package metadata.",
+      "groupName": "nuget"
+    },
+    {
+      "name": "Include",
+      "type": "multiLine",
+      "label": "Include",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "File patterns to include, relative to the root path. e.g. /bin/*.dll",
+      "groupName": "advanced"
+    },
+    {
+      "name": "Overwrite",
+      "type": "boolean",
+      "label": "Overwrite",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Allow an existing package of the same ID and version to be overwritten.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "ListFiles",
+      "type": "boolean",
+      "label": "Log Added Files",
+      "defaultValue": "false",
+      "required": "false",
+      "helpMarkDown": "Write a list of all files added to the build log.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "CompressionLevel",
+      "type": "pickList",
+      "label": "Compression Level",
+      "defaultValue": "optimal",
+      "required": false,
+      "helpMarkDown": "Set the compression level.",
+      "groupName": "advanced",
+      "options": {
+        "none": "None",
+        "fast": "Fast",
+        "optimal": "Optimal"
+      }
+    },
+    {
+      "name": "AdditionalArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments to be supplied to the Octopus CLI. See the [Octopus CLI documentation](https://g.octopushq.com/OctopusCliPack) for available parameters.",
+      "groupName": "advanced"
+    }
+  ],
+  "instanceNameFormat": "Package $(PackageId)",
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

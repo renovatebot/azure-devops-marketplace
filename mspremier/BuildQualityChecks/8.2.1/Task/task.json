@@ -1,0 +1,659 @@
+{
+    "id": "16a2ad20-f191-11e5-bed4-ab22bcd17937",
+    "name": "BuildQualityChecks",
+    "friendlyName": "Build Quality Checks",
+    "description": "Breaks a build based on quality metrics like number of warnings or code coverage.",
+    "author": "Microsoft",
+    "helpMarkDown": "[[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "8",
+        "Minor": "2",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "Check build quality",
+    "groups": [
+        {
+            "name": "warnings",
+            "displayName": "Warnings Policy",
+            "isExpanded": true
+        },
+        {
+            "name": "coverage",
+            "displayName": "Code Coverage Policy",
+            "isExpanded": true
+        },
+        {
+            "name": "baseline",
+            "displayName": "Baseline",
+            "isExpanded": false
+        },
+        {
+            "name": "reporting",
+            "displayName": "Reporting Options",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "checkWarnings",
+            "type": "boolean",
+            "label": "Enabled",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate to check build warnings. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#enabled)",
+            "groupName": "warnings"
+        },
+        {
+            "name": "warningFailOption",
+            "type": "radio",
+            "label": "Fail Build On",
+            "defaultValue": "build",
+            "required": true,
+            "helpMarkDown": "Fail build either if it exceeds a fixed number of warnings or the previous build's warning count. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#failOption)",
+            "groupName": "warnings",
+            "options": {
+                "fixed": "Fixed Threshold",
+                "build": "Previous Value"
+            },
+            "visibleRule": "checkWarnings = true"
+        },
+        {
+            "name": "warningThreshold",
+            "type": "string",
+            "label": "Warning Threshold",
+            "defaultValue": "0",
+            "required": true,
+            "helpMarkDown": "Specify the maximum number of warnings. The build will fail if this number is exceeded. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#threshold)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && warningFailOption = fixed"
+        },
+        {
+            "name": "forceFewerWarnings",
+            "type": "boolean",
+            "label": "Force Fewer Warnings",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "If checked, the build will fail if the number of warnings has not decreased since the last build. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#forceFewer)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && warningFailOption = build"
+        },
+        {
+            "name": "allowWarningVariance",
+            "type": "boolean",
+            "label": "Allow Variance",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to allow a temporary increase of warnings. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#allowWarningVariance)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && warningFailOption = build && forceFewerWarnings = false"
+        },
+        {
+            "name": "warningVariance",
+            "type": "string",
+            "label": "Variance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the maximum temporary increase of warnings that will not fail the build. You should set this value as low as possible. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warningVariance)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && warningFailOption = build && forceFewerWarnings = false && allowWarningVariance = true"
+        },
+        {
+            "name": "showStatistics",
+            "type": "boolean",
+            "label": "Show Warning Statistics",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activates warning statistics. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#statistics)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true"
+        },
+        {
+            "name": "evaluateTaskWarnings",
+            "type": "boolean",
+            "label": "Evaluate Task Warnings",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "Check this option to evaluate warnings from other pipeline tasks. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#evaluateTaskWarnings)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true"
+        },
+        {
+            "name": "warningTaskFilters",
+            "type": "multiLine",
+            "label": "Task Filters",
+            "defaultValue": "/^((vs|ms)build|ant(\\s+.+)?|gradle(w)?(\\s+.+)?|grunt|gulp|maven(\\s+.+)?|xamarin(android|ios)|xcode(\\s+.+)?|cmake|build\\s+.+|dotnet(corecli|\\s+.+))$/i",
+            "required": false,
+            "helpMarkDown": "Regular expressions (one per line) to include warnings from relevant tasks. Note: Use [JavaScript RegExp](http://www.regular-expressions.info/javascript.html) syntax. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#taskFilters)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateTaskWarnings = true"
+        },
+        {
+            "name": "warningFilters",
+            "type": "multiLine",
+            "label": "Warning Filters (Tasks)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Regular expressions (one per line) to filter warnings. Note: Use [JavaScript RegExp](http://www.regular-expressions.info/javascript.html) syntax. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warnFilters)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateTaskWarnings = true"
+        },
+        {
+            "name": "inclusiveFiltering",
+            "type": "boolean",
+            "label": "Make Warning Filters Inclusive",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Changes the behavior of warning filters to be inclusive (i.e., count regular AND matching warnings) instead of exclusive (i.e., just count matching warnings). [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#inclusiveFiltering)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateTaskWarnings = true"
+        },
+        {
+            "name": "evaluateFileWarnings",
+            "type": "boolean",
+            "label": "Evaluate File Warnings",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to evaluate warnings from arbitrary log files. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#evaluateFileWarnings)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true"
+        },
+        {
+            "name": "warningFilesFolder",
+            "type": "string",
+            "label": "Source Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Folder that contains the log files you want to analyze. If you leave this empty, the task looks for files in the root folder of the repo (same as if you had specified `$(Build.SourcesDirectory)`). [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warningFilesFolder)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateFileWarnings = true"
+        },
+        {
+            "name": "warningFiles",
+            "type": "multiLine",
+            "label": "Files",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "File paths to include in the evaluation. Supports multiple lines of match patterns. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warningFiles)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateFileWarnings = true"
+        },
+        {
+            "name": "warningFileFilters",
+            "type": "multiLine",
+            "label": "Warning Filters (Files)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Regular expressions (one per line) to filter warnings. Note: Use [JavaScript RegExp](http://www.regular-expressions.info/javascript.html) syntax. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warningFileFilters)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateFileWarnings = true"
+        },
+        {
+            "name": "warningFilesArtifact",
+            "type": "string",
+            "label": "Build Artifact",
+            "defaultValue": "warningFiles",
+            "required": true,
+            "helpMarkDown": "Build artifact that contains log files for warnings analysis of previous build. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/WarningsPolicy.md#warningFilesArtifact)",
+            "groupName": "warnings",
+            "visibleRule": "checkWarnings = true && evaluateFileWarnings = true"
+        },
+        {
+            "name": "checkCoverage",
+            "type": "boolean",
+            "label": "Enabled",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Activate to check code coverage. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#enabled)",
+            "groupName": "coverage"
+        },
+        {
+            "name": "coverageFailOption",
+            "type": "radio",
+            "label": "Fail Build On",
+            "defaultValue": "build",
+            "required": true,
+            "helpMarkDown": "Fail build if its code coverage value falls below a fixed value or the previous build's code coverage value. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#failOption)",
+            "groupName": "coverage",
+            "options": {
+                "fixed": "Fixed Threshold",
+                "build": "Previous Value"
+            },
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "coverageType",
+            "type": "radio",
+            "label": "Coverage Type",
+            "defaultValue": "blocks",
+            "required": true,
+            "helpMarkDown": "Set the coverage type, based on which the coverage policy will determine coverage values. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#coverType)",
+            "groupName": "coverage",
+            "options": {
+                "blocks": "Block Coverage",
+                "lines": "Line Coverage",
+                "branches": "Branch Coverage",
+                "custom": "Custom Coverage"
+            },
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "customCoverageType",
+            "type": "string",
+            "label": "Coverage Type Name",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Specify the name of the custom coverage type. The name must match one of the names listed in the code coverage section of the build summary page. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#coverTypeName)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageType = custom"
+        },
+        {
+            "name": "treat0of0as100",
+            "type": "boolean",
+            "label": "Treat 0/0 elements as 100%",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to treat zero of zero elements as 100% instead of 0% coverage. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#treat0of0as100)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "coverageThreshold",
+            "type": "string",
+            "label": "Code Coverage Threshold",
+            "defaultValue": "60",
+            "required": true,
+            "helpMarkDown": "Specify the minimum code coverage value in percentage terms. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#threshold)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = fixed"
+        },
+        {
+            "name": "forceCoverageImprovement",
+            "type": "boolean",
+            "label": "Force Coverage Improvement",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "If checked, the build will fail if code coverage value has not improved since the last build. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#forceImprove)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build"
+        },
+        {
+            "name": "coverageUpperThreshold",
+            "type": "string",
+            "label": "Upper Threshold",
+            "defaultValue": "80",
+            "required": true,
+            "helpMarkDown": "Specify the upper threshold for code coverage improvements. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#upperThreshold)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = true"
+        },
+        {
+            "name": "ignoreDecreaseAboveUpperThreshold",
+            "type": "boolean",
+            "label": "Ignore Decrease Above Threshold",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If checked, the build will not fail if code coverage value has decreased since the last build but is still above the upper threshold. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#ignoreDecreaseAboveUpperThreshold)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = true"
+        },
+        {
+            "name": "useUncoveredElements",
+            "type": "boolean",
+            "label": "Use Uncovered Elements",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to evaluate coverage policy based on uncovered instead of covered elements. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#useUncoveredElements)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = false"
+        },
+        {
+            "name": "allowCoverageVariance",
+            "type": "boolean",
+            "label": "Allow Variance",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to allow a temporary variance (i.e., increase of uncoverd elements or decrease of covered elements) of coverage values. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#allowCoverageVariance)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = false"
+        },
+        {
+            "name": "coverageVariance",
+            "type": "string",
+            "label": "Variance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the maximum temporary variance of coverage values that will not fail the build. You should set this value as low as possible. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#coverageVariance)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = false && allowCoverageVariance = true"
+        },
+        {
+            "name": "coverageDeltaType",
+            "type": "radio",
+            "label": "Delta Type",
+            "defaultValue": "percentage",
+            "required": false,
+            "helpMarkDown": "Use percentage value or absolute value when comparing code coverage. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#coverageDeltaType)",
+            "groupName": "coverage",
+            "options": {
+                "percentage": "Percentage Value",
+                "absolute": "Absolute Value"
+            },
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = false"
+        },
+        {
+            "name": "coveragePrecision",
+            "type": "string",
+            "label": "Precision",
+            "defaultValue": "4",
+            "required": false,
+            "helpMarkDown": "The number of significant decimals used when comparing coverage percentage values. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#coveragePrecision)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true && coverageFailOption = build && forceCoverageImprovement = false && coverageDeltaType = percentage"
+        },
+        {
+            "name": "buildConfiguration",
+            "type": "string",
+            "label": "Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Configuration for which code coverage should be checked. Make sure this value matches the value of _Build platform_ in the _Visual Studio Test_ task's _Reporting options_ section! [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#config)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "buildPlatform",
+            "type": "string",
+            "label": "Platform",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Platform for which code coverage should be checked. Make sure this value matches the value of _Build platform_ in the _Visual Studio Test_ task's _Reporting options_ section! [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#platform)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "explicitFilter",
+            "type": "boolean",
+            "label": "Force Filter",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Check this option to force search for code coverage data that is associated with the specified _Configuration_ and _Platform_. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/CodeCoveragePolicy.md#explicitFilter)",
+            "groupName": "coverage",
+            "visibleRule": "checkCoverage = true"
+        },
+        {
+            "name": "includePartiallySucceeded",
+            "type": "boolean",
+            "label": "Include Partially Succeeded Builds",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If checked, baseline builds will include partially succeeded builds, otherwise only succeeded builds will be used as baselines. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#partial)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "fallbackOnPRTargetBranch",
+            "type": "boolean",
+            "label": "Fall Back on PR Target Branch",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If checked, the task will look for a baseline build associated with the PR's target branch if it cannot find one for the current PR. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#fallbackOnPRTargetBranch)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "baseDefinitionFilter",
+            "type": "string",
+            "label": "Definition Filter",
+            "defaultValue": "*",
+            "required": false,
+            "helpMarkDown": "Enter a filter value to search for specific build definitions. Use an asterisk (*) to list all definitions. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#baseDefFilter)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "baseDefinitionId",
+            "type": "pickList",
+            "label": "Build Definition",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "DisableManageLink": "true",
+                "EditableOptions": "true"
+            },
+            "helpMarkDown": "Select the baseline build definition. If you choose to base policies on a previous build, the last build of the chosen baseline definition is used for comparison. If your build definition is not in the list, manually enter the build definition ID. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#baseDef)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "baseRepoId",
+            "type": "pickList",
+            "label": "Repository",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "DisableManageLink": "true",
+                "EditableOptions": "true"
+            },
+            "helpMarkDown": "Select the repository to look for branches. **Note:** There will always be only one option here. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#baseRepo)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "baseBranchRef",
+            "type": "pickList",
+            "label": "Branch (Git)",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "DisableManageLink": "true",
+                "EditableOptions": "true"
+            },
+            "helpMarkDown": "Select the baseline branch. If you choose to base policies on a previous build, the last build targeting this branch is used for comparison. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#baseBranch)",
+            "groupName": "baseline"
+        },
+        {
+            "name": "runTitle",
+            "type": "string",
+            "label": "Run Title",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a name for the task run. The name is used as a header in the task's summary section. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#runTitle)",
+            "groupName": "reporting"
+        },
+        {
+            "name": "fileAnalysisTitle",
+            "type": "string",
+            "label": "File Analysis Title",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a custom name for the file warnings analysis. The name is used in warning statistics instead of the default value _File Analysis_. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#fileAnalysisTitle)",
+            "groupName": "reporting"
+        },
+        {
+            "name": "disableCertCheck",
+            "type": "boolean",
+            "label": "Disable NodeJS certificate check",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Enable this option if your Team Foundation Server is configured with a self-signed or corporate SSL certificate. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#noCertCheck)",
+            "groupName": "advanced"
+        },
+        {
+            "name": "createBuildIssues",
+            "type": "boolean",
+            "label": "Log task results as build issues",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "When enabled, task results are logged as build warnings/errors in addition to summary output. [[Docs]](https://github.com/MicrosoftPremier/VstsExtensions/blob/master/BuildQualityChecks/en-US/overview.md#createBuildIssues)",
+            "groupName": "advanced"
+        }
+    ],
+    "sourceDefinitions": [
+        {
+            "target": "baseDefinitionId",
+            "endpoint": "/$(system.teamProject)/_apis/build/definitions?type=build&name=$(baseDefinitionFilter)&$top=1000&api-version=2.0",
+            "selector": "jsonpath:$.value[?(@.quality=='definition')].name",
+            "keySelector": "jsonpath:$.value[?(@.quality=='definition')].id",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "baseRepoId",
+            "endpoint": "/$(system.teamProject)/_apis/build/definitions/$(baseDefinitionId)?api-version=2.0",
+            "selector": "jsonpath:$.repository.name",
+            "keySelector": "jsonpath:$.repository.id",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "baseBranchRef",
+            "endpoint": "/$(system.teamProject)/_apis/git/repositories/$(baseRepoId)/refs/heads?api-version=1.0",
+            "selector": "jsonpath:$.value[*].name",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "WarningsPolicyResult",
+            "description": "Policy result of the Warnings Policy (deprecated)"
+        },
+        {
+            "name": "WarningsPolicy.Result",
+            "description": "Policy result of the Warnings Policy"
+        },
+        {
+            "name": "WarningsPolicy.Warnings.Total",
+            "description": "Total number of warnings in the current build as seen by the Warnings Policy"
+        },
+        {
+            "name": "WarningsPolicy.Warnings.Filtered",
+            "description": "Number of filtered warnings in the current build as seen by the Warnings Policy"
+        },
+        {
+            "name": "WarningsPolicy.Baseline.Warnings.Total",
+            "description": "Total number of warnings in the baseline build as seen by the Warnings Policy"
+        },
+        {
+            "name": "WarningsPolicy.Baseline.Warnings.Filtered",
+            "description": "Number of filtered warnings in the baseline build as seen by the Warnings Policy"
+        },
+        {
+            "name": "CodeCoveragePolicyResult",
+            "description": "Policy result of the Code Coverage Policy (deprecated)"
+        },
+        {
+            "name": "CodeCoveragePolicy.Result",
+            "description": "Policy result of the Code Coverage Policy"
+        },
+        {
+            "name": "CodeCoveragePolicy.Elements.Total",
+            "description": "Total number of coverable elements in the current build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Elements.Covered",
+            "description": "Number of covered elements in the current build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Elements.Uncovered",
+            "description": "Number of uncovered elements in the current build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Percentage.Covered",
+            "description": "Percentage of covered elements in the current build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Percentage.Uncovered",
+            "description": "Percentage of uncovered elements in the current build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Baseline.Elements.Total",
+            "description": "Total number of coverable elements in the baseline build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Baseline.Elements.Covered",
+            "description": "Number of covered elements in the baseline build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Baseline.Elements.Uncovered",
+            "description": "Number of uncovered elements in the baseline build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Baseline.Percentage.Covered",
+            "description": "Percentage of covered elements in the baseline build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Baseline.Percentage.Uncovered",
+            "description": "Percentage of uncovered elements in the baseline build"
+        },
+        {
+            "name": "CodeCoveragePolicy.Elements.Label",
+            "description": "Label (or type) of elements evaluated by the policy (e.g., blocks, lines, etc.)"
+        }
+    ],
+    "prejobexecution": {
+        "Node10": {
+            "target": "preparePullRequestPolicyStatuses.js",
+            "argumentFormat": ""
+        }
+    },
+    "execution": {
+        "Node10": {
+            "target": "task.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "NoPolicyEnabled": "No build quality policies have been enabled.",
+        "NotAllowedOnMultiConfigBuild": "This task cannot be run in a multi-config build on TFS 2015. Execution aborted.",
+        "NoBaselineBuild": "The baseline build could not be found. All policies based on the previous build will pass.",
+        "NoCorrelatingJob": "No correlating build job could be found in the baseline build. The warnings policy will pass.",
+        "ForceNewBaselineBuild": "Forcing a new baseline because variable BQC.ForceNewBaseline is set to true. All policies based on the previous build will pass.",
+        "PrevBuildWarningsExceeded": "The number of warnings (%d) has increased since the previous build! The previous build had %d warning(s).",
+        "PrevBuildWarningsExceededWithVariance": "The number of warnings (%d) has increased more than the allowed variance since the previous build! The previous build had %d warning(s).",
+        "PrevBuildFilteredWarningsExceeded": "The number of filtered warnings (%d out of %d) has increased since the previous build! The previous build had %d filtered warning(s) out of %d total warning(s).",
+        "PrevBuildFilteredWarningsExceededWithVariance": "The number of filtered warnings (%d out of %d) has increased more than the allowed variance since the previous build! The previous build had %d filtered warning(s) out of %d total warning(s).",
+        "NotFewerWarnings": "The number of warnings (%d) has not decreased since the previous build! The previous build had %d warning(s).",
+        "NotFewerFilteredWarnings": "The number of filtered warnings (%d out of %d) has not decreased since the previous build! The previous build had %d filtered warning(s) out of %d total warning(s).",
+        "WarningThresholdExceeded": "The number of warnings (%d) exceeds the threshold (%d)!",
+        "FilteredWarningThresholdExceeded": "The number of filtered warnings (%d out of %d) exceeds the threshold (%d)!",
+        "NoMatchingTasksFound": "The specified task filters did not match any build task.",
+        "InvalidTimeline": "Timeline does not exist or has no records.",
+        "InvalidRegExp": "The expression '%s' is not a valid regular expression and will be ignored.",
+        "WarningsPassed": "Warnings policy passed with %d warning(s).",
+        "FilteredWarningsPassed": "Warnings policy passed with %d filtered warning(s) out of %d total warning(s).",
+        "WarningsIncreasedWithinVariance": "Warnings increased within configured variance.",
+        "BelowCoverageThreshold": "The code coverage value (%d%%, %d %s) is lower than the minimum value (%d%%)!",
+        "BelowPrevBuildCoverage": "The code coverage (%s) value (%d%%, %d %s) is lower than the value of the previous build! The previous build had a coverage value of %d%% (%d %s).",
+        "BelowPrevBuildCoverageWithVariance": "The code coverage (%s) value (%d%%, %d %s) is lower than the value of the previous build including variance! The previous build had a coverage value of %d%% (%d %s).",
+        "NoCoverageImprovement": "The code coverage (%s) value (%d%%, %d %s) has not improved since the last build! The previous build had a coverage value of %d%% (%d %s).",
+        "AbovePrevBuildUncovered": "The (%s) amount of uncovered code (%d%%, %d %s) has increased since the previous build! The previous build had %d%% (%d %s) of uncovered code.",
+        "AbovePrevBuildUncoveredWithVariance": "The (%s) amount of uncovered code (%d%%, %d %s) has increased more than the allowed variance since the previous build! The previous build had %d%% (%d %s) of uncovered code.",
+        "UncoveredElementsIncreasedWithinVariance": "The amount of uncovered code has increased within configured variance.",
+        "CoveragePassed": "Code coverage policy passed with %d%% (%d/%d %s).",
+        "CoverageDecreasedWithinVariance": "Code coverage decreased within configured variance.",
+        "CoverageDecreasedAboveUpperThreshold": "Code coverage decreased above upper threshold.",
+        "TaskFailed": "At least one build quality policy was violated. See Build Quality Checks section for more details.",
+        "EvaluateWarnings": "Validating build warnings policy...",
+        "EvaluateCoverage": "Validating code coverage policy...",
+        "NoMatchingCoverageFilter": "No coverage data matched the specified platform (%s) and configuration (%s). Please check the values of the build variables $(BuildPlatform) and $(BuildConfiguration) and make sure the same values are used in the reporting options section of the Visual Studio Test task.",
+        "WarningStatistics": "Warning Statistics",
+        "WarningStatisticsNotChanged": "Warnings haven't changed since last build.",
+        "WarningStatisticsNotSupported": "Your version of Team Foundation Server does not support warning statistics. Please refer to the task documentation for more information.",
+        "WarningStatisticsNoBaseline": "No warning statistics available, since no baseline build was found.",
+        "DoNotDisableNodeJsCertCheck": "The current agent supports custom CA certificates through the NODE_EXTRA_CA_CERTS variable. Please use this variable instead of disabling the certificate check!",
+        "InvalidParameterValueFixed": "The value '%s' for parameter '%s' is invalid. Assuming value '%s'.",
+        "InvalidParameterValue": "The value '%s' for parameter '%s' is invalid. Please correct and try to run the task again.",
+        "NoWarningsAnalysisEnabled": "You have to enable task and/or file warnings analysis but currently none is enabled!",
+        "NoMatchingFiles": "No files matching the supplied file patterns found!",
+        "NoCoverageData": "Coverage policy for uncovered elements failed since no coverage data could be found!",
+        "ArtifactDownloadError": "Could not download build artifact '%s' from build %d: %s",
+        "CoverageTypeMissing": "Coverage data does not include the requested coverage of type '%s'. Please ensure that your coverage tool is able to report this type of coverage data!",
+        "RemovedWarningsTruncated": "The list of removed warnings was truncated after the first %d entries. You may include additional warnings by increasing the value of the variable BQC.Statistics.MaxRemovedWarnings.",
+        "AddedWarningsTruncated": "The list of added warnings was truncated after the first %d entries. You may include additional warnings by increasing the value of the variable BQC.Statistics.MaxAddedWarnings.",
+        "WarningsTruncated": "Some details are missing because warning list was truncated."
+    }
+}

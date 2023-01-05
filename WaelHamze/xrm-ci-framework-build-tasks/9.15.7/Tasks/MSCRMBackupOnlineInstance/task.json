@@ -1,0 +1,107 @@
+{
+  "id": "0C3E661C-D316-443E-9A77-470989DA8E29",
+  "name": "MSCRMBackupOnlineInstance",
+  "friendlyName": "Backup Online Instance",
+  "description": "Creates a backup of a PowerApps/CDS/Dynamics 365 Environment",
+  "author": "Wael Hamze",
+  "helpMarkDown": "This task uses the (Microsoft.Xrm.OnlineManagementAPI)[https://www.powershellgallery.com/packages/Microsoft.Xrm.OnlineManagementAPI]",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [ ],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Backup $(instanceName)",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "apiUrl",
+      "type": "string",
+      "label": "ApiUrl",
+      "defaultValue": "https://admin.services.crm[n].dynamics.com",
+      "required": true,
+      "helpMarkDown": "Use the Service Url for your environment region as per (documentation)[https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/online-management-api/get-started-online-management-api]"
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The environment username"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The environment password"
+    },
+    {
+      "name": "instanceName",
+      "type": "string",
+      "label": "Instance Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The unique instance name. E.g. for :https://contoso.crm.dynamics.com, the value would be: contoso"
+    },
+    {
+      "name": "backupLabel",
+      "type": "string",
+      "label": "Label",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The label of the backup"
+    },
+    {
+      "name": "notes",
+      "type": "string",
+      "label": "Notes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The notes you want included with the backup"
+    },
+    {
+      "name": "backupExistsAction",
+      "type": "pickList",
+      "label": "Backup already exists action",
+      "defaultValue": "Error",
+      "required": true,
+      "options": {
+        "Error": "Error - Attempt to stop the pipeline",
+        "Skip": "Skip - Don't take another backup",
+        "Continue": "Continue - Attempt to take another backup"
+      },
+      "helpMarkDown": "Action to take if a backup with same label already exists for this instance. Can sometimes occur if re-running pipeline after backup already taken."
+    },
+    {
+      "name": "waitForCompletion",
+      "type": "boolean",
+      "label": "Wait For Completion",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Setting this to true will cause the task to wait until the backup completes"
+    },
+    {
+      "name": "sleepDuration",
+      "type": "string",
+      "label": "Sleep Duration (seconds)",
+      "defaultValue": "5",
+      "required": false,
+      "helpMarkDown": "The frequency to query the status of the backup job while waiting for completion"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMBackupOnlineInstance.ps1"
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "overview.md"
+        },
+        "license": {
+            "path": "license-terms.md"
+        }
+    },
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://about.sonarcloud.io/contact/"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/SonarSource/sonar-scanner-vsts"
+    },
+    "scopes": [
+        "vso.build",
+        "vso.code",
+        "vso.test"
+    ],
+    "contributions": [
+        {
+            "id": "14d9cde6-c1da-4d55-aa01-2965cd301255",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/prepare"
+            }
+        },
+        {
+            "id": "ce096e50-6155-4de8-8800-4221aaeed4a1",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analyze"
+            }
+        },
+        {
+            "id": "38b27399-a642-40af-bb7d-9971f69712e8",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/publish"
+            }
+        },
+        {
+            "id": "343c5f6a-e4d5-4480-a764-506e1daa05df",
+            "description": "Service endpoint type for SonarCloud Connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "sonarcloud",
+                "displayName": "SonarCloud",
+                "icon": "icons/SonarCloud_endpoint.png",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://sonarcloud.io",
+                    "isVisible": false
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/organizations/search?member=true",
+                        "resultSelector": "jsonpath:$.organizations[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.apitoken \":\" }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "SonarCloud Token",
+                                "description": "Authentication Token generated through SonarCloud (go to My Account > Security > Generate Tokens)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Go to <a href=\"https://sonarcloud.io/account/security/\" target=\"_blank\">your SonarCloud account security page</a> to generate a token."
+            }
+        }
+    ],
+    "contributionTypes": []
+}

@@ -1,0 +1,226 @@
+{
+  "id": "4E131B60-5532-4362-95B6-7C67D9841B4F",
+  "name": "OctopusCreateRelease",
+  "friendlyName": "Create Octopus Release",
+  "description": "There is a later version of this task, we recommend using the latest version. Create a Release in Octopus Deploy",
+  "helpMarkDown": "Version: 5.2.134. [More Information](https://g.octopushq.com/TFS-VSTS)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Octopus Deploy",
+  "version": {
+    "Major": 3,
+    "Minor": 1,
+    "Patch": 134
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "groups": [
+    {
+      "name": "releasenotes",
+      "displayName": "Release Notes",
+      "isExpanded": true
+    },
+    {
+      "name": "deployment",
+      "displayName": "Deployment",
+      "isExpanded": false
+    },
+    {
+      "name": "tenant",
+      "displayName": "Tenants",
+      "isExpanded": false
+    },
+    {
+      "name": "additional",
+      "displayName": "Additional Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "OctoConnectedServiceName",
+      "type": "connectedService:OctopusEndpoint",
+      "label": "Octopus Deploy Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Octopus Deploy server connection"
+    },
+    {
+      "name": "Space",
+      "type": "string",
+      "label": "Space (Legacy - Use version 4 of this task)",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "helpMarkDown": "Version 3 of this task has limited support for spaces. We recommend using version 4 of this task for a better experience."
+    },
+    {
+      "name": "ProjectGroup",
+      "type": "pickList",
+      "label": "Project Group",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "The project group within Octopus (this populates the next Project dropdown)."
+    },
+    {
+      "name": "ProjectName",
+      "type": "pickList",
+      "label": "Project Name",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Octopus Deploy Project Name"
+    },
+    {
+      "name": "ReleaseNumber",
+      "type": "string",
+      "label": "Release Number",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The number to use for this release. You can leave this blank if the release number is calculated by Octopus."
+    },
+    {
+      "name": "Channel",
+      "type": "pickList",
+      "label": "Channel",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "The [channel](https://g.octopushq.com/Channels) to use for the release."
+    },
+    {
+      "name": "ChangesetCommentReleaseNotes",
+      "type": "boolean",
+      "label": "Include Changeset Comments",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to include linked Changeset comments in Octopus Release notes.",
+      "groupName": "releasenotes"
+    },
+    {
+      "name": "WorkItemReleaseNotes",
+      "type": "boolean",
+      "label": "Include Work Items",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Whether to include linked Work Item Titles in Octopus Release notes.",
+      "groupName": "releasenotes"
+    },
+    {
+      "name": "CustomReleaseNotes",
+      "type": "string",
+      "label": "Custom Notes",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom notes appended to Octopus Release notes. This field supports markdown. To include newlines, you can use HTML linebreaks.",
+      "groupName": "releasenotes"
+    },
+    {
+      "name": "DeployToEnvironment",
+      "type": "pickList",
+      "label": "To Environment",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Deploy the release to this environment after creating it.",
+      "groupName": "deployment"
+    },
+    {
+      "name": "DeployForTenants",
+      "type": "pickList",
+      "label": "Tenant(s)",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Deploy the release for this comma-delimited list of tenants after creating it. Wildcard '*' will deploy to all tenants currently able to deploy to the above provided environment.",
+      "groupName": "tenant"
+    },
+    {
+      "name": "DeployForTenantTags",
+      "type": "string",
+      "label": "Tenant tag(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Deploy the release for tenants who match these tags and are ready to deploy to the provided environment.",
+      "groupName": "tenant"
+    },
+    {
+      "name": "DeploymentProgress",
+      "type": "boolean",
+      "label": "Show Deployment Progress",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Output from the deployment will appear in the log. If checked, the task will only succeed if the deployment is successful.",
+      "groupName": "deployment"
+    },
+    {
+      "name": "AdditionalArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments to be supplied to the Octopus CLI. See the [Octopus CLI documentation](https://g.octopushq.com/OctoExeCreateRelease) for available parameters.",
+      "groupName": "additional"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ProjectGroup",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllProjectGroups",
+      "resultTemplate": "{\"Value\":\"{{{Id}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "ProjectName",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusListProjectsInProjectGroup",
+      "parameters": {
+        "ProjectGroupId": "$(ProjectGroup)"
+      },
+      "resultTemplate": "{\"Value\":\"{{{Id}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "DeployToEnvironment",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllEnvironments",
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "Channel",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusProjectChannels",
+      "parameters": {
+        "ProjectName": "$(ProjectName)"
+      },
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "DeployForTenants",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllTenants",
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    }
+  ],
+  "instanceNameFormat": "Create Octopus Release: $(ProjectName)",
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

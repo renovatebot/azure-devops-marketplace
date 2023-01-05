@@ -1,0 +1,130 @@
+{
+  "id": "A6EB6B39-F378-4328-B533-D88F36BE7A2A",
+  "name": "MSCRMRestoreOnlineInstance",
+  "friendlyName": "Restore Online Instance",
+  "description": "Restores PowerApps/CDS/Dynamcics 365 environment from a previous backup using a timestamp or label",
+  "author": "Wael Hamze",
+  "helpMarkDown": "This task uses the (Microsoft.Xrm.OnlineManagementAPI)[https://www.powershellgallery.com/packages/Microsoft.Xrm.OnlineManagementAPI]",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 12,
+    "Minor": 0,
+    "Patch": 4
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Restore $(TargetInstanceName)",
+  "inputs": [
+    {
+      "name": "apiUrl",
+      "type": "string",
+      "label": "ApiUrl",
+      "defaultValue": "https://admin.services.crm[n].dynamics.com",
+      "required": true,
+      "helpMarkDown": "Use the Service Url for your environment region as per (documentation)[https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/online-management-api/get-started-online-management-api]"
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The environment username"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The environment password"
+    },
+    {
+      "name": "sourceInstanceName",
+      "type": "string",
+      "label": "Source Instance Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The unique instance name. E.g. for :https://contoso.crm.dynamics.com, the value would be: contoso"
+    },
+    {
+      "name": "restoreType",
+      "type": "pickList",
+      "label": "Restore Using",
+      "defaultValue": "label",
+      "required": true,
+      "options": {
+        "label": "Manual Backup Label",
+        "time": "Timestamp"
+      },
+      "helpMarkDown": "Restore a specific timestamp or use a backup label to retrieve the timestamp"
+    },
+    {
+      "name": "backupLabel",
+      "type": "string",
+      "label": "Label",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The label of the manual backup to restore. Task will retrieve the last backup using this label and use it's timestamp.",
+      "visibleRule": "restoreType = label"
+    },
+    {
+      "name": "restoreTimestamp",
+      "type": "string",
+      "label": "Restore Timestamp (UTC)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The restore time in UTC e.g.: 2020-02-15T20:08:18Z (Must be within backup retention period)",
+      "visibleRule": "restoreType = time"
+    },
+    {
+      "name": "targetInstanceName",
+      "type": "string",
+      "label": "Target Instance Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The unique instance name. E.g. for :https://contoso.crm.dynamics.com, the value would be: contoso"
+    },
+    {
+      "name": "friendlyName",
+      "type": "string",
+      "label": "Friendly Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The new friendly name of the instance"
+    },
+    {
+      "name": "securityGroupName",
+      "type": "string",
+      "label": "Security Group Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the security group to be applied to target instance after copy. If Id is provided, this value is not used"
+    },
+    {
+      "name": "waitForCompletion",
+      "type": "boolean",
+      "label": "Wait For Completion",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Setting this to true will cause the task to wait until the backup completes"
+    },
+    {
+      "name": "sleepDuration",
+      "type": "string",
+      "label": "Sleep Duration (seconds)",
+      "defaultValue": "5",
+      "required": false,
+      "helpMarkDown": "The frequency to query the status of the backup job while waiting for completion"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "MSCRMRestoreOnlineInstance.ps1"
+    }
+  }
+}

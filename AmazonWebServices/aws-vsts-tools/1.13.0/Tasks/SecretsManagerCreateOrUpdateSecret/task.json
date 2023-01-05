@@ -1,0 +1,222 @@
+{
+  "id": "3D6CB0C8-D1F9-465F-957A-A02C776646A0",
+  "name": "SecretsManagerCreateOrUpdateSecret",
+  "friendlyName": "AWS Secrets Manager Create/Update Secret",
+  "description": "Updates a secret, optionally creating a secret if it does not exist",
+  "author": "Amazon Web Services",
+  "helpMarkDown": "Please refer to [Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/) for more information.\n\nMore information on this task can be found in the [task reference](https://docs.aws.amazon.com/vsts/latest/userguide/secretsmanager-create-update.html).\n\n####Task Permissions\nThis task requires permissions to call the following AWS service APIs (depending on selected task options, not all APIs may be used):\n* secretsmanager:CreateSecret\n* secretsmanager:PutSecretValue\n* secretsmanager:UpdateSecret",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "instanceNameFormat": "Secrets Manager Create/Update Secret: $(secretName)",
+  "groups": [
+    {
+      "name": "outputs",
+      "displayName": "Outputs",
+      "isExpanded": false
+    },
+    {
+      "name": "diagnostic",
+      "displayName": "Diagnostic",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "awsCredentials",
+      "type": "connectedService:AWS",
+      "label": "AWS Credentials",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the AWS credentials to be used by the task in the build agent environment.\n\nYou can specify credentials using a service endpoint (of type _AWS_) in the task configuration or you can leave unspecified. If unspecified the task will attempt to obtain credentials from the following sources in order:\n\n* From task variables named _AWS.AccessKeyID_, _AWS.SecretAccessKey_ and optionally _AWS.SessionToken_.\n* From credentials set in environment variables in the build agent process. When using environment variables in the build agent process you may use the standard AWS environment variables: _AWS_ACCESS_KEY_ID_, _AWS_SECRET_ACCESS_KEY_ and optionally _AWS_SESSION_TOKEN_.\n* If the build agent is running on an Amazon EC2 instance, from the instance metadata associated with the EC2 instance. For credentials to be available from EC2 instance metadata the instance must have been started with an instance profile referencing a role granting permissions to the task to make calls to AWS on your behalf. See [Using an IAM Role to Grant Permissions to Applications Running on Amazon EC2 Instances](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html) for more information."
+    },
+    {
+      "name": "regionName",
+      "label": "AWS Region",
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "The AWS region code (us-east-1, us-west-2 etc) of the region containing the AWS resource(s) the task will use or create. For more information see [AWS Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html).\n\nIf a region is not explicitly configured the task will attempt to obtain the region to be used from the following sources:\n\n* From a task variable named _AWS.Region_.\n* From the standard AWS environment variable _AWS_REGION_ in the build agent's environment.\n*  If the build agent is running on an Amazon EC2 instance, from instance metadata associated with the EC2 instance.\n\n__Note:__ The regions listed in the picker are those known at the time this software was released. New regions that are not listed may still be used by entering the _region code_ of the region (for example _us_west_2_).",
+      "options": {
+        "af-south-1": "Africa (Cape Town) [af-south-1]",
+        "ap-east-1": "Asia Pacific (Hong Kong) [ap-east-1]",
+        "ap-northeast-1": "Asia Pacific (Tokyo) [ap-northeast-1]",
+        "ap-northeast-2": "Asia Pacific (Seoul) [ap-northeast-2]",
+        "ap-northeast-3": "Asia Pacific (Osaka) [ap-northeast-3]",
+        "ap-south-1": "Asia Pacific (Mumbai) [ap-south-1]",
+        "ap-southeast-1": "Asia Pacific (Singapore) [ap-southeast-1]",
+        "ap-southeast-2": "Asia Pacific (Sydney) [ap-southeast-2]",
+        "ap-southeast-3": "Asia Pacific (Jakarta) [ap-southeast-3]",
+        "ca-central-1": "Canada (Central) [ca-central-1]",
+        "eu-central-1": "Europe (Frankfurt) [eu-central-1]",
+        "eu-north-1": "Europe (Stockholm) [eu-north-1]",
+        "eu-south-1": "Europe (Milan) [eu-south-1]",
+        "eu-west-1": "Europe (Ireland) [eu-west-1]",
+        "eu-west-2": "Europe (London) [eu-west-2]",
+        "eu-west-3": "Europe (Paris) [eu-west-3]",
+        "me-south-1": "Middle East (Bahrain) [me-south-1]",
+        "sa-east-1": "South America (Sao Paulo) [sa-east-1]",
+        "us-east-1": "US East (N. Virginia) [us-east-1]",
+        "us-east-2": "US East (Ohio) [us-east-2]",
+        "us-west-1": "US West (N. California) [us-west-1]",
+        "us-west-2": "US West (Oregon) [us-west-2]",
+        "cn-north-1": "China (Beijing) [cn-north-1]",
+        "cn-northwest-1": "China (Ningxia) [cn-northwest-1]",
+        "us-gov-east-1": "AWS GovCloud (US-East) [us-gov-east-1]",
+        "us-gov-west-1": "AWS GovCloud (US-West) [us-gov-west-1]"
+      },
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "secretNameOrId",
+      "label": "Secret Name",
+      "type": "string",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Specifies the friendly name of the new secret. The secret name must be ASCII letters, digits, or the following characters: /_+=.@- (spaces are not permitted).\n\nLength Constraints: Minimum length of 1. Maximum length of 512.\n\nIf updating an existing secret you can specify either the Amazon Resource Name (ARN) or the friendly name of the secret."
+    },
+    {
+      "name": "description",
+      "label": "Description",
+      "type": "string",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Optional description of the secret."
+    },
+    {
+      "name": "secretValueSource",
+      "label": "Secret Value Location",
+      "type": "radio",
+      "defaultValue": "inline",
+      "required": true,
+      "helpMarkDown": "Specifies the source of the value to be stored in the secret. You can enter text values for secrets inline in the task configuration or in a file loaded when the task runs. Binary secret values must be loaded from a file.",
+      "options": {
+        "inline": "Inline",
+        "file": "From File"
+      }
+    },
+    {
+      "name": "secretValue",
+      "label": "Secret Value",
+      "type": "multiLine",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the text value that you want to store in this secret. For storing multiple values, we recommend that you use a JSON text string argument and specify key/value pairs.\n\nRequired if _Secret Value Location_ is set to _Inline_.",
+      "visibleRule": "secretValueSource = inline"
+    },
+    {
+      "name": "secretValueType",
+      "label": "Secret Value Type",
+      "type": "radio",
+      "defaultValue": "string",
+      "required": true,
+      "helpMarkDown": "Specifies whether the file contents being stored in the secret text or binary data.\n\n*Note:* to satisfy the service's API requirements the task will automatically base-64 encode secrets specified as binary type; you do not need to perform the base-64 encoding prior to specifying the secret value in the task.",
+      "options": {
+        "string": "String",
+        "binary": "Binary"
+      },
+      "visibleRule": "secretValueSource = file"
+    },
+    {
+      "name": "secretValueFile",
+      "label": "Path to File Containing Secret Value",
+      "type": "filePath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specifies the file containing the value (text or binary) that you want to store in this secret.\n\nRequired if _Secret Value Location_ is set to _From File_.",
+      "visibleRule": "secretValueSource = file"
+    },
+    {
+      "name": "kmsKeyId",
+      "label": "KMS Key ID",
+      "type": "string",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Speciﬁes the ARN or alias of the AWS KMS customer master key (CMK) to be used to encrypt the secret.\n\nIf you don't specify this value, then Secrets Manager defaults to using the AWS account's default CMK (the one named aws/secretsmanager). If a KMS CMK with that name doesn't yet exist, then Secrets Manager creates it for you automatically the ﬁrst time it needs to encrypt a secret.\n\n*Important* You can use the account's default CMK to encrypt and decrypt only if you call this operation using credentials from the same account that owns the secret. If the secret is in a diﬀerent account, then you must create a custom CMK and specify the ARN in this ﬁeld."
+    },
+    {
+      "name": "autoCreateSecret",
+      "label": "Create secret if it does not exist",
+      "type": "boolean",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If the specified secret does not exist, attempt to create a new secret. Secrets Manager automatically attaches the staging label _AWSCURRENT_ to the new version. If this option is not selected, the task will return an error if the secret cannot be found."
+    },
+    {
+      "name": "tags",
+      "type": "multiLine",
+      "label": "Tags for New Secret",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Optional list of tags (key-value pairs) that can be assigned to the new secret. Enter as Key=Value, one per line. Up to 50 tags can be applied to a secret.",
+      "visibleRule": "autoCreateSecret = true"
+    },
+    {
+      "name": "arnOutputVariable",
+      "type": "string",
+      "label": "Output variable name to contain the secret's ARN",
+      "defaultValue": "",
+      "groupName": "outputs",
+      "helpMarkDown": "Optional name of a variable to store the ARN of the new or updated secret on task completion.",
+      "required": false
+    },
+    {
+      "name": "versionIdOutputVariable",
+      "type": "string",
+      "label": "Output variable name to contain the secret's version ID",
+      "defaultValue": "",
+      "groupName": "outputs",
+      "helpMarkDown": "Optional name of a variable to store the version ID of the new or updated secret on task completion.",
+      "required": false
+    },
+    {
+      "name": "logRequest",
+      "type": "boolean",
+      "label": "Log Request",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If selected, request headers and other data for calls to AWS services are logged to the task's debug log.",
+      "groupName": "diagnostic"
+    },
+    {
+      "name": "logResponse",
+      "type": "boolean",
+      "label": "Log Response",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If selected, the response metadata and body content of non-streaming responses from calls to AWS services are output to the task's debug log. The unique request ID, which can be useful when contacting AWS for support, is always logged to the task output regardless of this option setting.",
+      "groupName": "diagnostic"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "SecretsManagerCreateOrUpdateSecret.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "UpdatingSecret": "Updating secret %s.",
+    "SecretNotFound": "Specified secret does not exist, cannot proceed with update.",
+    "SecretNotFoundAutoCreating": "Specified secret does not exist. 'Create secret if it does not exist' was set true for task - attempting to create a new secret.",
+    "SecretCreated": "Successfully created new secret named %s, ARN '%s'.",
+    "SecretCreationFailed": "Error creating secret: %s",
+    "SecretUpdateFailed": "Error updating secret: %s",
+    "AddingTag": "Adding tag. Key '%s', Value '%s'",
+    "SettingVersionIdOutputVariable": "Setting version ID for secret into task output variable %s",
+    "SettingArnOutputVariable": "Setting ARN for new secret into task output variable %s",
+    "TooManyTags": "%s tags were specified for the task. The service permits a maximum of %s.",
+    "CreateSecretCompleted": "Successfully created the new secret.",
+    "UpdateSecretCompleted": "Successfully updated the secret."
+  },
+  "version": {
+    "Major": "1",
+    "Minor": "13",
+    "Patch": "0"
+  }
+}

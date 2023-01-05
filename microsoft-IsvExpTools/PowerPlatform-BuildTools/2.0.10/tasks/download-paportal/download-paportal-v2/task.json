@@ -1,0 +1,95 @@
+{
+  "name": "PowerPlatformDownloadPaportal",
+  "friendlyName": "Power Platform Download PAPortal",
+  "description": "Power Platform Download PowerPages web site (PAPortal)",
+  "author": "Microsoft",
+  "helpMarkDown": "[More Info](https://aka.ms/buildtoolsdoc)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "PowerPlatformTool"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "10"
+  },
+  "preview": false,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Platform Download PAPortal $(message)",
+  "inputs": [
+    {
+      "name": "authenticationType",
+      "type": "radio",
+      "label": "Authentication type",
+      "defaultValue": "PowerPlatformEnvironment",
+      "required": true,
+      "helpMarkDown": "Authentication via username/password is simpler to set up but won't work if your AAD tenant requires MFA; use Service Principal Name (SPN) if MFA is required.",
+      "options": {
+        "PowerPlatformEnvironment": "Username/password (no MFA support)",
+        "PowerPlatformSPN": "Service Principal/client secret (supports MFA)"
+      }
+    },
+    {
+      "name": "PowerPlatformEnvironment",
+      "type": "connectedService:Generic",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformEnvironment",
+      "helpMarkDown": "Authenticate with your Power Platform environment with username/password. Does not support MFA."
+    },
+    {
+      "name": "PowerPlatformSPN",
+      "type": "connectedService:powerplatform-spn",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformSPN",
+      "helpMarkDown": "Authenticate with your Power Platform environment with an Azure AppID, tenantID and client secret."
+    },
+    {
+      "name": "Environment",
+      "label": "Environment Url",
+      "type": "string",
+      "defaultValue": "$(BuildTools.EnvironmentUrl)",
+      "required": false,
+      "helpMarkDown": "Environment url this task targets; default is the pipeline variable that e.g. the CreateEnvironment task has set before."
+    },
+    {
+      "name": "DownloadPath",
+      "type": "filePath",
+      "label": "Download path",
+      "required": true,
+      "helpMarkDown": "Local path to where the Power Pages website content will be downloaded"
+    },
+    {
+      "name": "WebsiteId",
+      "type": "string",
+      "label": "Id of website",
+      "required": true,
+      "helpMarkDown": "Website id of the Power Pages website to be downloaded"
+    },
+    {
+      "name": "Overwrite",
+      "type": "boolean",
+      "label": "Overwrite data",
+      "required": false,
+      "helpMarkDown": "Overwrite if Power Pages website exists at the given path"
+    },
+    {
+      "name": "ExcludeEntities",
+      "type": "string",
+      "label": "Entities to exclude",
+      "required": false,
+      "helpMarkDown": "Comma separated list of entity logical names to exclude while downloading"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  },
+  "id": "75caa998-d6b8-481b-9ac9-63f49bd41e23"
+}

@@ -1,0 +1,126 @@
+{
+  "id": "0dba3baf-3724-455d-b194-3c6ec0b56431",
+  "name": "PowerPlatformCopyEnvironment",
+  "friendlyName": "Power Platform Copy Environment",
+  "description": "Power Platform Copy Environment",
+  "author": "Microsoft",
+  "helpMarkDown": "[More Info](https://aka.ms/buildtoolsdoc)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "PowerPlatformTool"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "10"
+  },
+  "preview": false,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Platform Copy Environment $(message)",
+  "outputVariables": [
+    {
+      "name": "BuildTools.EnvironmentUrl",
+      "description": "Output variable of newly copied environment; will by default be consumed by following tasks"
+    }
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "authenticationType",
+      "type": "radio",
+      "label": "Authentication type",
+      "defaultValue": "PowerPlatformEnvironment",
+      "required": true,
+      "helpMarkDown": "Authentication via username/password is simpler to set up but won't work if your AAD tenant requires MFA; use Service Principal Name (SPN) if MFA is required.",
+      "options": {
+        "PowerPlatformEnvironment": "Username/password (no MFA support)",
+        "PowerPlatformSPN": "Service Principal/client secret (supports MFA)"
+      }
+    },
+    {
+      "name": "PowerPlatformEnvironment",
+      "type": "connectedService:Generic",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformEnvironment",
+      "helpMarkDown": "Authenticate with your Power Platform environment with username/password. Does not support MFA."
+    },
+    {
+      "name": "PowerPlatformSPN",
+      "type": "connectedService:powerplatform-spn",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformSPN",
+      "helpMarkDown": "Authenticate with your Power Platform environment with an Azure AppID, tenantID and client secret."
+    },
+    {
+      "name": "Environment",
+      "label": "Source Environment Url",
+      "type": "string",
+      "required": false,
+      "defaultValue": "$(BuildTools.EnvironmentUrl)",
+      "helpMarkDown": "Environment url this task targets; default is the pipeline variable that e.g. the CreateEnvironment task has set before."
+    },
+    {
+      "name": "TargetEnvironmentUrl",
+      "label": "Target environment url",
+      "type": "string",
+      "required": true,
+      "helpMarkDown": "Set the target environment url to copy to."
+    },
+    {
+      "name": "CopyType",
+      "label": "Copy Type",
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "MinimalCopy",
+      "helpMarkDown": "Select the type of copy.",
+      "options": {
+        "FullCopy": "Full Copy",
+        "MinimalCopy": "Minimal Copy"
+      }
+    },
+    {
+      "name": "OverrideFriendlyName",
+      "label": "Override Friendly Name",
+      "type": "boolean",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Check to override the friendly name of the target environment.",
+      "defaultValue": "false"
+    },
+    {
+      "name": "FriendlyName",
+      "label": "Friendly Name",
+      "type": "string",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Set the friendly name of the target environment.",
+      "visibleRule": "OverrideFriendlyName = true"
+    },
+    {
+      "name": "DisableAdminMode",
+      "label": "Disable Admin Mode",
+      "type": "boolean",
+      "required": false,
+      "defaultValue": true,
+      "groupName": "advanced",
+      "helpMarkDown": "Specify whether to Disable the administration mode."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

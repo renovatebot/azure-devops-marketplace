@@ -1,0 +1,99 @@
+{
+  "id": "b1861ef4-b62e-40c1-bcb0-be00d454a8a7",
+  "name": "OctopusMetadata",
+  "friendlyName": "Push Package Build Information to Octopus",
+  "description": "There is a later version of this task, we recommend using the latest version. Collect information related to the build, including work items from commit messages, and push to your Octopus Deploy Server.",
+  "helpMarkDown": "Version: 5.2.134. [More Information](https://g.octopushq.com/TFS-VSTS)",
+  "category": "Package",
+  "visibility": [
+    "Build"
+  ],
+  "author": "Octopus Deploy",
+  "version": {
+    "Major": 4,
+    "Minor": 3,
+    "Patch": 134
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "OctoConnectedServiceName",
+      "type": "connectedService:OctopusEndpoint",
+      "label": "Octopus Deploy Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Octopus Deploy server connection"
+    },
+    {
+      "name": "Space",
+      "type": "pickList",
+      "label": "Space",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "The space within Octopus."
+    },
+    {
+      "name": "PackageId",
+      "type": "multiLine",
+      "label": "Package IDs",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Newline-separated package IDs; e.g.\nMyCompany.MyApp\nMyCompany.MyApp2"
+    },
+    {
+      "name": "PackageVersion",
+      "type": "string",
+      "label": "Package Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The version of the package; must be a valid [SemVer](http://semver.org/) version."
+    },
+    {
+      "name": "Replace",
+      "type": "pickList",
+      "label": "Overwrite Mode",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Normally, if the same package build information already exists on the server, the server will reject the package build information push. This is a good practice as it ensures build information isn't accidentally overwritten or ignored. Use this setting to override this behavior.",
+      "options": {
+        "false": "Fail if exists",
+        "true": "Overwrite existing",
+        "IgnoreIfExists": "Ignore if exists"
+      }
+    },
+    {
+      "name": "AdditionalArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments to be supplied to the Octopus CLI. See the [Octopus CLI documentation](https://g.octopushq.com/OctopusCliBuildInformation) for available parameters.",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "Space",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllSpaces",
+      "resultTemplate": "{\"Value\":\"{{{Id}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    }
+  ],
+  "instanceNameFormat": "Push Package Build Information to Octopus",
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

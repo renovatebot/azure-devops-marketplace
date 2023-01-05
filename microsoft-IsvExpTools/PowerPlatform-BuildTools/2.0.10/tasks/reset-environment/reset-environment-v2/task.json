@@ -1,0 +1,343 @@
+{
+  "id": "6e960d4e-ff9f-4112-8dd0-db0e97a7f131",
+  "name": "PowerPlatformResetEnvironment",
+  "friendlyName": "Power Platform Reset Environment",
+  "description": "Power Platform Reset Environment",
+  "author": "Microsoft",
+  "helpMarkDown": "[More Info](https://aka.ms/buildtoolsdoc)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+    "PowerPlatformTool"
+  ],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "10"
+  },
+  "preview": false,
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Platform Reset Environment $(message)",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "outputVariables": [
+    {
+      "name": "BuildTools.EnvironmentUrl",
+      "description": "Output variable of newly reset environment; will by default be consumed by following tasks"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "authenticationType",
+      "type": "radio",
+      "label": "Authentication type",
+      "defaultValue": "PowerPlatformEnvironment",
+      "required": true,
+      "helpMarkDown": "Authentication via username/password is simpler to set up but won't work if your AAD tenant requires MFA; use Service Principal Name (SPN) if MFA is required.",
+      "options": {
+        "PowerPlatformEnvironment": "Username/password (no MFA support)",
+        "PowerPlatformSPN": "Service Principal/client secret (supports MFA)"
+      }
+    },
+    {
+      "name": "PowerPlatformEnvironment",
+      "type": "connectedService:Generic",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformEnvironment",
+      "helpMarkDown": "Authenticate with your Power Platform environment with username/password. Does not support MFA."
+    },
+    {
+      "name": "PowerPlatformSPN",
+      "type": "connectedService:powerplatform-spn",
+      "label": "Service connection",
+      "required": true,
+      "visibleRule": "authenticationType = PowerPlatformSPN",
+      "helpMarkDown": "Authenticate with your Power Platform environment with an Azure AppID, tenantID and client secret."
+    },
+    {
+      "name": "Environment",
+      "label": "Environment Url",
+      "type": "string",
+      "required": false,
+      "defaultValue": "$(BuildTools.EnvironmentUrl)",
+      "helpMarkDown": "Environment url this task targets; default is the pipeline variable that e.g. the CreateEnvironment task has set before."
+    },
+    {
+      "name": "TargetRelease[obsolete]",
+      "label": "Target Release",
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "Dynamics 365, version 9.0",
+      "helpMarkDown": "Select the target release.",
+      "options": {
+        "Dynamics 365, version 9.0": "Dynamics 365, version 9.0"
+      }
+    },
+    {
+      "name": "CurrencyName",
+      "label": "Currency",
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "USD",
+      "helpMarkDown": "Select the currency.",
+      "properties": {
+        "EditableOptions": true
+      },
+      "options": {
+        "XDR": "XDR",
+        "USD": "USD",
+        "XCD": "XCD",
+        "AED": "AED",
+        "AFN": "AFN",
+        "ALL": "ALL",
+        "AMD": "AMD",
+        "ARS": "ARS",
+        "EUR": "EUR",
+        "AUD": "AUD",
+        "AZN": "AZN",
+        "BAM": "BAM",
+        "BDT": "BDT",
+        "BGN": "BGN",
+        "BHD": "BHD",
+        "BND": "BND",
+        "BOB": "BOB",
+        "BRL": "BRL",
+        "BTN": "BTN",
+        "BWP": "BWP",
+        "BYN": "BYN",
+        "BZD": "BZD",
+        "CAD": "CAD",
+        "CDF": "CDF",
+        "CHF": "CHF",
+        "XOF": "XOF",
+        "CLP": "CLP",
+        "XAF": "XAF",
+        "CNY": "CNY",
+        "COP": "COP",
+        "CRC": "CRC",
+        "CUP": "CUP",
+        "CZK": "CZK",
+        "DJF": "DJF",
+        "DKK": "DKK",
+        "DOP": "DOP",
+        "DZD": "DZD",
+        "EGP": "EGP",
+        "ERN": "ERN",
+        "ETB": "ETB",
+        "GBP": "GBP",
+        "GEL": "GEL",
+        "GTQ": "GTQ",
+        "HKD": "HKD",
+        "HNL": "HNL",
+        "HRK": "HRK",
+        "HTG": "HTG",
+        "HUF": "HUF",
+        "IDR": "IDR",
+        "ILS": "ILS",
+        "INR": "INR",
+        "IQD": "IQD",
+        "IRR": "IRR",
+        "ISK": "ISK",
+        "JMD": "JMD",
+        "JOD": "JOD",
+        "JPY": "JPY",
+        "KES": "KES",
+        "KGS": "KGS",
+        "KHR": "KHR",
+        "KRW": "KRW",
+        "KWD": "KWD",
+        "KZT": "KZT",
+        "LAK": "LAK",
+        "LBP": "LBP",
+        "LKR": "LKR",
+        "LYD": "LYD",
+        "MAD": "MAD",
+        "MDL": "MDL",
+        "MKD": "MKD",
+        "MMK": "MMK",
+        "MNT": "MNT",
+        "MOP": "MOP",
+        "MVR": "MVR",
+        "MXN": "MXN",
+        "MYR": "MYR",
+        "NGN": "NGN",
+        "NIO": "NIO",
+        "NOK": "NOK",
+        "NPR": "NPR",
+        "NZD": "NZD",
+        "OMR": "OMR",
+        "PAB": "PAB",
+        "PEN": "PEN",
+        "PHP": "PHP",
+        "PKR": "PKR",
+        "PLN": "PLN",
+        "PYG": "PYG",
+        "QAR": "QAR",
+        "RON": "RON",
+        "RSD": "RSD",
+        "RUB": "RUB",
+        "RWF": "RWF",
+        "SAR": "SAR",
+        "SEK": "SEK",
+        "SGD": "SGD",
+        "SOS": "SOS",
+        "SYP": "SYP",
+        "THB": "THB",
+        "TJS": "TJS",
+        "TMT": "TMT",
+        "TND": "TND",
+        "TRY": "TRY",
+        "TTD": "TTD",
+        "TWD": "TWD",
+        "UAH": "UAH",
+        "UYU": "UYU",
+        "UZS": "UZS",
+        "VES": "VES",
+        "VND": "VND",
+        "YER": "YER",
+        "ZAR": "ZAR"
+      }
+    },
+    {
+      "name": "Purpose",
+      "label": "Purpose",
+      "type": "string",
+      "required": false,
+      "helpMarkDown": " Sets the description used to associate the environment with a specific intent."
+    },
+    {
+      "name": "AppsTemplate",
+      "label": "Select Dynamics365 apps",
+      "type": "pickList",
+      "required": false,
+      "helpMarkDown": "Select Dynamics365 apps that need to deployed.",
+      "properties": {
+        "EditableOptions": true,
+        "MultiSelectFlatList": true
+      },
+      "options": {
+        "D365_Sales": "Sales",
+        "D365_CustomerService": "Customer Service",
+        "D365_FieldService": "Field Service",
+        "D365_ProjectServiceAutomation": "Project Service Automation",
+        "D365_CDSSampleApp": "Sample App"
+      }
+    },
+    {
+      "name": "Language",
+      "label": "Language",
+      "type": "pickList",
+      "required": false,
+      "defaultValue": "English (United States)",
+      "helpMarkDown": "Select the language.",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "options": {
+        "1025": "Arabic",
+        "1026": "български (България)",
+        "1027": "català (català)",
+        "1028": "Chinese (Taiwan)",
+        "1029": "Czech",
+        "1030": "Danish",
+        "1031": "German",
+        "1032": "Greek",
+        "1033": "English (United States)",
+        "1035": "Finnish",
+        "1036": "French",
+        "1037": "Hebrew",
+        "1038": "Hungarian",
+        "1040": "Italian",
+        "1041": "Japanese",
+        "1042": "Korean",
+        "1043": "Dutch",
+        "1044": "Norwegian (Bokmål)",
+        "1045": "Polish",
+        "1046": "Portuguese (Brazil)",
+        "1048": "română (România)",
+        "1049": "Russian",
+        "1050": "hrvatski (Hrvatska)",
+        "1051": "slovenčina (Slovensko)",
+        "1053": "Swedish",
+        "1054": "Thai",
+        "1055": "Turkish",
+        "1058": "українська (Україна)",
+        "1060": "slovenščina (Slovenija)",
+        "1061": "eesti (Eesti)",
+        "1062": "latviešu (Latvija)",
+        "1063": "lietuvių (Lietuva)",
+        "1066": "Vietnamese",
+        "1069": "euskara (euskara)",
+        "1081": "हिन्दी (भारत)",
+        "1086": "Malay",
+        "1087": "қазақ тілі (Қазақстан)",
+        "1110": "galego (galego)",
+        "2052": "Chinese (PRC)",
+        "2070": "Portuguese (Portugal)",
+        "2074": "srpski (Srbija i Crna Gora (Bivša))",
+        "3076": "Chinese (Hong Kong S.A.R.)",
+        "3082": "Spanish",
+        "3098": "Serbian (Cyrillic)"
+      }
+    },
+    {
+      "name": "OverrideDomainName",
+      "label": "Override Domain Name",
+      "type": "boolean",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Check to override the domain name while resetting the instance.",
+      "defaultValue": "false"
+    },
+    {
+      "name": "DomainName",
+      "label": "Domain name",
+      "type": "string",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "The domain name is part of the environment URL. If you enter a domain name that's already in use, then the task appends a numeric value to the domain name, starting with 0 and sets the environment URL. For example - If the domain name 'contoso' is already in use, then the environment URL will be updated to https://{contoso}0.crm.dynamics.com.",
+      "visibleRule": "OverrideDomainName = true"
+    },
+    {
+      "name": "OverrideFriendlyName",
+      "label": "Override Friendly Name",
+      "type": "boolean",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Check to override the friendly name while resetting the instance.",
+      "defaultValue": "false"
+    },
+    {
+      "name": "FriendlyName",
+      "label": "Display name",
+      "type": "string",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Set the display name of the reset instance.",
+      "visibleRule": "OverrideFriendlyName = true"
+    },
+    {
+      "name": "WaitForEnvironmentAvailability",
+      "label": "Wait for Environment Availability (OBSOLETE)",
+      "type": "boolean",
+      "required": false,
+      "groupName": "advanced",
+      "helpMarkDown": "OBSOLETE: This task parameter will go away in the future. Reset Environment will always wait for completion",
+      "defaultValue": "true"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

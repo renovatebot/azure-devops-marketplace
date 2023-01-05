@@ -1,0 +1,176 @@
+{
+  "id": "1627fcfe-f292-4904-adac-26cfb14bdb07",
+  "name": "OctopusPromote",
+  "friendlyName": "Promote Octopus Release",
+  "description": "There is a later version of this task, we recommend using the latest version. Promote an Octopus release from one environment to another",
+  "helpMarkDown": "Version: 5.2.134. [More Information](https://g.octopushq.com/TFS-VSTS)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Octopus Deploy",
+  "version": {
+    "Major": 3,
+    "Minor": 1,
+    "Patch": 134
+  },
+  "demands": [],
+  "minimumAgentVersion": "2.144.0",
+  "groups": [
+    {
+      "name": "tenant",
+      "displayName": "Tenants",
+      "isExpanded": false
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced Options",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "OctoConnectedServiceName",
+      "type": "connectedService:OctopusEndpoint",
+      "label": "Octopus Deploy Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Octopus Deploy server connection"
+    },
+    {
+      "name": "Space",
+      "type": "string",
+      "label": "Space (Legacy - Use version 4 of this task)",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "helpMarkDown": "Version 3 of this task has limited support for spaces. We recommend using version 4 of this task for a better experience."
+    },
+    {
+      "name": "ProjectGroup",
+      "type": "pickList",
+      "label": "Project Group",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "The project group within Octopus (this populates the next Project dropdown)."
+    },
+    {
+      "name": "Project",
+      "type": "pickList",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Octopus Deploy Project Name"
+    },
+    {
+      "name": "From",
+      "type": "pickList",
+      "label": "Promote From",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "The environment the release is currently deployed to. e.g. 'Staging'"
+    },
+    {
+      "name": "To",
+      "type": "pickList",
+      "label": "Promote To",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Comma separated list of environments to deploy to"
+    },
+    {
+      "name": "ShowProgress",
+      "type": "boolean",
+      "label": "Show Deployment Progress",
+      "defaultValue": "False",
+      "required": false,
+      "helpMarkDown": "If checked, the build process will only succeed if the deployment is successful."
+    },
+    {
+      "name": "DeployForTenants",
+      "type": "pickList",
+      "label": "Tenant(s)",
+      "defaultValue": "",
+      "required": false,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Promote the release for this comma delimited list of tenants. Wildcard '*' will deploy to all tenants currently able to deploy to the above provided environment.",
+      "groupName": "tenant"
+    },
+    {
+      "name": "DeployForTenantTags",
+      "type": "string",
+      "label": "Tenant Tag(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Promote the release for tenants who match these tags and are ready to deploy to the provided environment.",
+      "groupName": "tenant"
+    },
+    {
+      "name": "AdditionalArguments",
+      "type": "string",
+      "label": "Additional Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments to be supplied to the Octopus CLI. See the [Octopus CLI documentation](https://g.octopushq.com/OctoExePromoteRelease) for available parameters.",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ProjectGroup",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllProjectGroups",
+      "resultTemplate": "{\"Value\":\"{{{Id}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "Project",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusListProjectsInProjectGroup",
+      "parameters": {
+        "ProjectGroupId": "$(ProjectGroup)"
+      },
+      "resultTemplate": "{\"Value\":\"{{{Id}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "From",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllEnvironments",
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "To",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllEnvironments",
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    },
+    {
+      "target": "DeployForTenants",
+      "endpointId": "$(OctoConnectedServiceName)",
+      "dataSourceName": "OctopusAllTenants",
+      "resultTemplate": "{\"Value\":\"{{{Name}}}\",\"DisplayValue\":\"{{{Name}}}\"}"
+    }
+  ],
+  "instanceNameFormat": "Promote $(Project) from $(From) to $(To)",
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

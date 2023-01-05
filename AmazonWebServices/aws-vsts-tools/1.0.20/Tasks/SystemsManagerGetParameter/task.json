@@ -1,0 +1,200 @@
+{
+    "id": "57EF2AF4-CD99-4298-BF77-2FEB5DC51863",
+    "name": "SystemsManagerGetParameter",
+    "friendlyName": "AWS Systems Manager Get Parameter",
+    "description": "Reads the value of one or more parameters from the Parameter Store and adds them as variables to the current build or release definition",
+    "author": "Amazon Web Services",
+    "helpMarkDown": "Please refer to [Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-paramstore.html) for more information.",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "20"
+    },
+    "minimumAgentVersion": "1.91.0",
+    "instanceNameFormat": "Systems Manager Get Parameter: $(parameterName)$(parameterNamePrefix)",
+    "groups": [
+        {
+            "name": "diagnostic",
+            "displayName": "Diagnostic",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "awsCredentials",
+            "type": "connectedService:AWS",
+            "label": "AWS Credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AWS credentials to use when it executes on a build host. If needed, click on 'Manage', and add a new Service Endpoint of type 'AWS'."
+        },
+        {
+            "name": "regionName",
+            "label": "AWS Region",
+            "type": "string",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "The AWS region code (us-east-1, us-west-2 etc) of the region containing the AWS resource(s) the task will use or create. For more information see [AWS Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html)."
+        },
+        {
+            "name": "readMode",
+            "label": "Read Mode",
+            "type": "radio",
+            "required": true,
+            "defaultValue": "single",
+            "helpMarkDown": "Whether the task gets the value of a single named parameter or values from a parameter hierarchy identified by common parameter path.",
+            "options": {
+                "single": "Get value for single parameter",
+                "hierarchy": "Get values for parameter hierarchy"
+            }
+        },
+        {
+            "name": "parameterName",
+            "label": "Parameter Name",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "The name identifying a single parameter to be read from the store.",
+            "visibleRule": "readMode = single"
+        },
+        {
+            "name": "parameterVersion",
+            "label": "Parameter Version",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "If left blank the value associated with the latest version of the parameter is read. If set, the task requests the value associated with the specified version of the parameter. Parameter versions start at at 1 and increment each time a new value is stored for the parameter.",
+            "visibleRule": "readMode = single"
+        },
+        {
+            "name": "parameterPath",
+            "label": "Parameter Path",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "The hierarchy for the parameter. Hierarchies start with a forward slash (/) and end with the parameter name. A hierarchy can have a maximum of five levels. For example: /Finance/Prod/IAD/WinServ2016/license15.\n\nNote that SecureString parameter types will be set as secret variables.",
+            "visibleRule": "readMode = hierarchy"
+        },
+        {
+            "name": "recursive",
+            "label": "Recursive",
+            "type": "boolean",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Retrieve all parameters within the hierarchy.",
+            "visibleRule": "readMode = hierarchy"
+        },
+        {
+            "name": "singleNameTransform",
+            "label": "Variable Name Transform",
+            "type": "pickList",
+            "defaultValue": "none",
+            "required": false,
+            "helpMarkDown": "Options for constructing the output variable name.",
+            "visibleRule": "readMode = single",
+            "options": {
+                "none": "Use parameter name (including any path) as variable name",
+                "leaf": "Use leaf of pathed parameter name as variable name",
+                "substitute": "Replace text in the parameter name using a regular expression",
+                "custom": "Use custom name"
+            }
+        },
+        {
+            "name": "hierarchyNameTransform",
+            "label": "Variable Name Transform",
+            "type": "pickList",
+            "defaultValue": "none",
+            "required": false,
+            "helpMarkDown": "Options for constructing the output variable name.",
+            "visibleRule": "readMode = hierarchy",
+            "options": {
+                "none": "Use parameter names (including any paths) as variable names",
+                "leaf": "Use leaf of parameter names as variable names",
+                "substitute": "Replace text in the parameter name using a regular expression"
+            }
+        },
+        {
+            "name": "customVariableName",
+            "label": "Custom Variable Name",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "The name of the build variable to hold the parameter value. This value is required if the variable name transform option is set to 'Use custom name'.",
+            "visibleRule": "singleNameTransform = custom"
+        },
+        {
+            "name": "replacementPattern",
+            "label": "Search Pattern",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "A regular expression defining the text in the parameter name that is to be replaced to form the variable name. This field is required if text replacement is selected for the Variable Name Transform option.",
+            "visibleRule": "hierarchyNameTransform = substitute || singleNameTransform = substitute"
+        },
+        {
+            "name": "replacementText",
+            "label": "Replacement Text",
+            "type": "string",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "The text to use to replace the matched pattern defined in the field Text Replacement Pattern. If an empty string is supplied the text identified by the pattern is simply removed from the parameter name.",
+            "visibleRule": "hierarchyNameTransform = substitute || singleNameTransform = substitute"
+        },
+        {
+            "name": "globalMatch",
+            "label": "Global Match",
+            "type": "boolean",
+            "defaultValue": "true",
+            "required": "false",
+            "helpMarkDown": "If set a global match is performed with the specified pattern.",
+            "visibleRule": "hierarchyNameTransform = substitute || singleNameTransform = substitute"
+        },
+        {
+            "name": "caseInsensitiveMatch",
+            "label": "Case-insensitive Match",
+            "type": "boolean",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "If set a case-insensitive match is performed with the specified pattern.",
+            "visibleRule": "hierarchyNameTransform = substitute || singleNameTransform = substitute"
+        },
+        {
+            "name": "logRequest",
+            "type": "boolean",
+            "label": "Log Request",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If selected, request headers and other data for calls to AWS services are logged to the task's debug log.",
+            "groupName": "diagnostic"
+        },
+        {
+            "name": "logResponse",
+            "type": "boolean",
+            "label": "Log Response",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If selected, the response metadata and body content of non-streaming responses from calls to AWS services are output to the task's debug log. The unique request ID, which can be useful when contacting AWS for support, is always logged to the task output regardless of this option setting.",
+            "groupName": "diagnostic"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "SystemsManagerGetParameter.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "ReadingParameterHierarchy": "Reading parameter hierarchy with path %s, recursive mode = %s",
+        "SettingVariable": "Setting variable %s from parameter %s, is secret = %s",
+        "TransformedParameterName": "Transformed input parameter name %s to build variable name %s",
+        "UsingParameterNameForVariable": "Using original parameter name %s for build variable",
+        "TaskCompleted": "Successfully created variables from parameter value(s).",
+        "InvalidParameterVersion": "%s is not a valid parameter version number. Version numbers should be >= 1"
+    }
+}
