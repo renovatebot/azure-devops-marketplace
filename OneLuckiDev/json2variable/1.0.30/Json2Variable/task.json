@@ -1,0 +1,59 @@
+{
+    "id": "ffd54dce-ce4f-4080-bdda-a110f334feff", 
+    "name": "oneLuckiDevJson2Variable",
+    "friendlyName": "JSON to Variable",
+    "description": "Task that will read a JSON file and create build and/or release variables available to other tasks for the data in the JSON",
+    "author": "Jeff Przylucki",  
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0", 
+      "Patch": "30"
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "JSON to Variable",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "jsonFile",
+            "type": "filePath",
+            "label": "Json File (full path)",
+            "required": true,
+            "helpMarkDown": "The location to load the JSON file from."
+        },
+        {
+            "name": "shouldPrefixVariables",
+            "type": "boolean",
+            "label": "Should Add prefix to variable name",
+            "required": true,
+            "defaultValue": true,
+            "helpMarkDown": "Allows you to control if the task adds a prefix to the start of the variable names.  When using multiple tasks in the same build/release this will help keep things clear as to which file the variable originated."
+        },
+        {
+            "name": "variablePrefix",
+            "type": "string",
+            "label": "Variable Name Prefix",
+            "required": false,
+            "visibleRule":"shouldPrefixVariables==true",
+            "helpMarkDown": "A Name to prefix the variables output by this task.  Set this to different values if you are using this task multiple times to keep things clear.",
+            "defaultValue": "json"
+        }
+    ],
+    "execution": {
+      "Node": {
+        "target": "./dist/json2variable.js",
+        "argumentFormat": ""
+      }
+    }
+  }
