@@ -1,0 +1,87 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f90c2b0c-e85a-4feb-ac05-dbf3a6561c28",
+    "name": "OsservanteRBAC",
+    "friendlyName": "Osservante RBAC",
+    "description": "Easily manage all your Azure resource groups and role based access assignments (RBAC) in code.",
+    "helpMarkDown": "",
+    "category": "Azure Pipelines",
+    "author": "Osservante",
+    "helpUrl": "https://osservante.com/",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 12
+    },
+    "instanceNameFormat": "Osservante RBAC - $(Mode)",
+    "inputs": [
+        {
+            "name": "licenseid",
+            "type": "string",
+            "label": "RBAC License ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "RBAC License ID"
+        },
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+            }
+        },
+        {
+            "name": "rbacSubscriptions",
+            "type": "string",
+            "label": "Subscription(s) to process",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Comma delimited list of subscriptions to process (can be the name or the ID).  e.g. OSS-SUB-SBX,OSS-SUB-DEV,OSS-SUB-SIT"
+        },
+        {
+            "name": "Mode",
+            "type": "pickList",
+            "label": "Mode",
+            "required": true,
+            "helpMarkDown": "Mode to run in: Export, Plan, Apply, DisplayPlan",
+            "defaultValue": "Export",
+            "options": {
+                "Export": "Export",
+                "Plan": "Plan",
+                "Apply": "Apply",
+                "DisplayPlan": "DisplayPlan"
+            }
+        },
+        {
+            "name": "rootFolder",
+            "type": "string",
+            "label": "Root folder for RBAC data",
+            "defaultValue": "rbac",
+            "required": true,
+            "helpMarkDown": "Root folder for RBAC data"
+        },
+        {
+            "name": "outputFolder",
+            "type": "string",
+            "label": "Output folder",
+            "defaultValue": "output",
+            "required": true,
+            "helpMarkDown": "Output folder"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "taskScript.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}
