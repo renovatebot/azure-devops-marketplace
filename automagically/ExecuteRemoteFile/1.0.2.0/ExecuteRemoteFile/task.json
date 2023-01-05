@@ -1,0 +1,81 @@
+{
+  "id": "398fc761-6303-4a6b-bb12-bfa0947bd2f8",
+  "name": "ExecuteRemoteFile",
+  "friendlyName": "Execute a file on remote machine",
+  "description": "Runs executable or batch file on remote machine",
+  "author": "automagically",
+  "helpMarkDown": "Runs executable or batch file on remote machine",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "inputs": [
+    {
+      "name": "remoteServer",
+      "type": "string",
+      "label": "Remote server",
+      "defaultValue": "$(serverName)",
+      "required": true,
+      "helpMarkDown": "Remote server name or comma separated list of remote server names"
+    },
+    {
+      "name": "remoteUserName",
+      "type": "string",
+      "label": "Remote username",
+      "defaultValue": "$(deployUserName)",
+      "required": true,
+      "helpMarkDown": "Username of user on remote computer."
+    },
+    {
+      "name": "remoteUserPassword",
+      "type": "string",
+      "label": "Remote user password",
+      "defaultValue": "$(deployUserPassword)",
+      "required": true,
+      "helpMarkDown": "Password of the user on remote computer."
+    },
+    {
+      "name": "remoteWinRMProtocol",
+      "type": "radio",
+      "label": "Protocol",
+      "required": true,
+      "defaultValue": "http",
+      "options": {
+        "http": "HTTP",
+        "https": "HTTPS"
+      },
+      "helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    },
+    {
+      "name": "filePath",
+      "type": "string",
+      "label": "File path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File path to run"
+    },
+    {
+      "name": "arguments",
+      "type": "string",
+      "label": "Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Arguments"
+    }
+  ],
+  "instanceNameFormat": "Runs executable or batch file on remote machine",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\ExecuteRemoteFile.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
