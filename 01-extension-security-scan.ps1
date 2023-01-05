@@ -94,6 +94,15 @@ foreach ($extension in $extensions)
         }
     }
 
+    & git config --local user.email "jesse.houwing@gmail.com"
+    & git config --local user.name "Jesse Houwing"
+    & git diff --exit-code
+    if ($LASTEXITCODE -ne 0)
+    {
+        & git add .
+        & git commit -m "Update $publisherId/$extensionId"
+        & git push
+    }
     write-host "##### COUNT: $count / $max "
     $count += 1
 }
