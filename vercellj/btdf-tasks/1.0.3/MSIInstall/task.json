@@ -1,0 +1,61 @@
+{
+  "id": "5f085399-5bf7-44e2-9539-6b1125e4aa2f",
+  "name": "MSIInstall",
+  "friendlyName": "MSI Install",
+  "description": "Install an MSI using the command msiexec.exe /i [msi file]",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Install: $(Name)",
+  "inputs": [
+    {
+      "name": "Path",
+      "type": "string",
+      "label": "MSI",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the MSI file to install."
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Product name (BizTalk application) to install. (optional; default is the non-numeric portion of the MSI base file name)."
+    },
+    {
+      "name": "Destination",
+      "type": "string",
+      "label": "Destination",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the directory to which the product will be installed (optional; default is a subfolder by the same name as the product in `$env:ProgramFiles or `$env:ProgramFiles(x86))."
+    },
+    {
+      "name": "Arguments",
+      "type": "string",
+      "label": "Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional arguments passed to msiexec"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Install-BTDFApplication.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "cce8979f-88a6-4ff2-8742-23dac3c088b4",
+  "name": "BTDFDeploy",
+  "friendlyName": "BTDF - Deploy",
+  "description": "Deployment Framework for BizTalk btdfproj project target: Deploy",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "0",
+    "Patch": "3"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Deploy: $(Name)",
+  "inputs": [
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "BizTalk application name."
+    },
+    {
+      "name": "Environment",
+      "type": "string",
+      "label": "Environment",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The BTDF environment name, used as a prefix to the settings file name (i.e. '{0}_settings.xml')"
+    },
+    {
+      "name": "BTDeployMgmtDB",
+      "type": "boolean",
+      "label": "Deploy Mgmt DB",
+      "defaultValue": "true",
+      "helpMarkDown": "Boolean DeployBizTalkMgmtDB MSBuild property setting used when building the BTDF project (*.btdfproj)."
+    },
+    {
+      "name": "SkipUndeploy",
+      "type": "boolean",
+      "label": "Skip Undeploy",
+      "defaultValue": "true",
+      "helpMarkDown": "Boolean SkipUndeploy MSBuild property setting used when building the BTDF project (*.btdfproj).  A dedicated Undeploy task is recommended over setting Skip Undeploy to false.  But, the option is here if desired."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Deploy-BTDFApplication.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

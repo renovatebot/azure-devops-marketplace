@@ -1,0 +1,59 @@
+{
+  "id": "f5504365-d837-4efa-bcf4-fef6ec064501",
+  "name": "BTDFUndeploy",
+  "friendlyName": "BTDF - Undeploy",
+  "description": "Deployment Framework for BizTalk btdfproj project target: Undeploy",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Azure Pipelines",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "UnDeploy: $(Name)",
+  "inputs": [
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "BizTalk application name."
+    },
+    {
+      "name": "Destination",
+      "type": "filePath",
+      "label": "Destination",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the directory where the product is installed (optional; default is a subfolder by the same name as the product in `$env:ProgramFiles or `$env:ProgramFiles(x86))."
+    },
+    {
+			"name": "BTDeployMgmtDB",
+			"type": "pickList",
+			"label": "Deploy Mgmt DB",
+			"defaultValue": "true",
+			"helpMarkDown": "Boolean DeployBizTalkMgmtDB MSBuild property setting used when building the BTDF project (*.btdfproj).",
+			"properties": {
+                "EditableOptions": "True"
+            },
+			"options": {
+				"true": "True",
+				"false": "False"
+			}
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\UnDeploy-BTDFApplication.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
