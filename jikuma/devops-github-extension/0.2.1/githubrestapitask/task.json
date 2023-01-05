@@ -1,0 +1,99 @@
+{
+    "id": "65650c66-6feb-44e0-bd0f-00aeb0f97111",
+    "name": "azuredevopsgithub",
+    "friendlyName": "Azure DevOps GitHub Rest Api Integration.",
+    "description": "Enable users to make github rest api calls from the pipeline.",
+    "helpMarkDown": "Enable users to make github rest api calls from the pipeline.",
+    "category": "Utility",
+    "author": "jikuma",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Github $(method)",
+    "outputVariables": [
+        {
+            "name": "Output",
+            "description": "Stores the output of rest api call"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "gitHubConnection",
+            "type": "connectedService:github:OAuth,PersonalAccessToken,Token",
+            "label": "GitHub connection (OAuth or PAT)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the name of the GitHub service connection to use to connect to the GitHub repository. The connection must be based on a GitHub user's OAuth or a GitHub personal access token. Learn more about service connections [here](https://aka.ms/AA3am5s)."
+        },
+         {
+            "name": "method",
+            "type": "pickList",
+            "label": "Method",
+            "required": "true",
+            "defaultValue": "POST",
+            "options": {
+                "OPTIONS": "OPTIONS",
+                "GET": "GET",
+                "HEAD": "HEAD",
+                "POST": "POST",
+                "PUT": "PUT",
+                "DELETE": "DELETE",
+                "TRACE": "TRACE",
+                "PATCH": "PATCH"
+            },
+            "helpMarkDown": "Select the HTTP method with which the API should be invoked."
+        },
+        {
+            "name": "body",
+            "type": "multiLine",
+            "label": "Body",
+            "required": "false",
+            "defaultValue": "",
+            "properties": {
+                "resizable": "true",
+                "rows": "3",
+                "maxLength": "2000"
+            },
+            "visibleRule": "method != GET && method != HEAD"
+        },
+        {
+            "name": "githubrestapiurl",
+            "type": "string",
+            "label": "URL and parameters",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Eg: https://api.github.com/repos/jikuma/sampledevspacesapp/statuses/d180a16dba039c7f46a80c509eb17a7259f29fb3"
+        },
+        {
+            "name": "ignoreFailure",
+            "type": "boolean",
+            "label": "Ignore Failure",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Mark task as success even if api call fails."
+        },
+        {
+            "name": "valuesToExtract",
+            "type": "multiLine",
+            "label": "Extract Values",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A multiline list of JSON paths to extract into separate job variables. The JSON root is denoted by $. For array element access, use `$.list.0.name`. \nFor example, if you specify `$.name` here and `FOO_` for prefix, there will be a job variable called `FOO_name` with the value taken from `name` property of the response object. Nonexistent or bad paths are reported as warnings."
+        },
+        {
+            "name": "valuePrefix",
+            "type": "string",
+            "label": "Variable Name Prefix",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkdown": "This line, if provided, will be prepended to job variable name when extracting JSON values. This is for disambiguating if you have several invokations of the same or similar API in the definition."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
