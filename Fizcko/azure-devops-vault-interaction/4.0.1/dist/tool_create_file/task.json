@@ -1,0 +1,118 @@
+{
+    "id":  "81152B68-7A9D-4471-8579-4CDA672AC509",
+    "name":  "ToolCreateFile",
+    "friendlyName":  "Tool - Create a File",
+    "description":  "Provide the ability to create a file and perform an action on his content.",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "Fizcko",
+    "version":  {
+                    "Major":  4,
+                    "Minor":  0,
+                    "Patch":  1
+                },
+    "instanceNameFormat":  "Tool - Create a File",
+    "groups":  [
+                   {
+                       "name":  "groupSettings",
+                       "displayName":  "Settings",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "targetDirectory",
+                       "type":  "filePath",
+                       "label":  "Target directory",
+                       "defaultValue":  "$(System.DefaultWorkingDirectory)",
+                       "required":  true,
+                       "helpMarkDown":  "Directory to save the file.",
+                       "groupName":  "groupSettings"
+                   },
+                   {
+                       "name":  "targetName",
+                       "type":  "string",
+                       "label":  "File name",
+                       "defaultValue":  "myCert.pem",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the file name with the extension.",
+                       "groupName":  "groupSettings"
+                   },
+                   {
+                       "name":  "fileContent",
+                       "type":  "multiLine",
+                       "label":  "File Content",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the content of the file.",
+                       "groupName":  "groupSettings"
+                   },
+                   {
+                       "name":  "fileEncoding",
+                       "type":  "pickList",
+                       "label":  "Encoding",
+                       "defaultValue":  "utf8",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the file encoding. More defails in NodeJS documentation (Buffers and Character Encodings).",
+                       "groupName":  "groupSettings",
+                       "options":  {
+                                       "ascii":  "ASCII",
+                                       "utf8":  "UTF8",
+                                       "utf16le":  "BigEndianUTF32",
+                                       "ucs2":  "UCS-2 (Alias of UTF-16LE)",
+                                       "base64":  "Base64 encoding",
+                                       "latin1":  "Latin-1",
+                                       "binary":  "Binary (Latin-1)",
+                                       "hex":  "HEX"
+                                   }
+                   },
+                   {
+                       "name":  "actionType",
+                       "type":  "pickList",
+                       "label":  "Action to perform",
+                       "defaultValue":  "none",
+                       "required":  true,
+                       "helpMarkDown":  "Choose an action to perform on the file content.",
+                       "groupName":  "groupSettings",
+                       "options":  {
+                                       "none":  "No action",
+                                       "replaceToken":  "Replace token by a new line",
+                                       "decodeBase64":  "Decode from base64"
+                                   }
+                   },
+                   {
+                       "name":  "actionToken",
+                       "type":  "string",
+                       "label":  "Token to replace",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Enter the token to replace by a new line.",
+                       "groupName":  "groupSettings",
+                       "visibleRule":  "actionType = replaceToken"
+                   },
+                   {
+                       "name":  "actionNewLineType",
+                       "type":  "pickList",
+                       "label":  "New line type",
+                       "defaultValue":  "crlf",
+                       "required":  true,
+                       "helpMarkDown":  "Choose the new line type",
+                       "groupName":  "groupSettings",
+                       "options":  {
+                                       "cr":  "Carriage Return (CR, \\r)",
+                                       "lf":  "Line Feed (LF, \\n)",
+                                       "crlf":  "CR followed by LF (CRLF, \\r\\n)"
+                                   },
+                       "visibleRule":  "actionType = replaceToken"
+                   }
+               ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "tool_create_file.js"
+                                 }
+                  }
+}
