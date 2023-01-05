@@ -1,0 +1,124 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "09ea8124-816f-4b89-8377-b45d2f6a54cb",
+    "name": "LiquidFileUploader",
+    "friendlyName": "Liquid File",
+    "description": "Build task, for help you uploasd files to liquide file server",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "AviHadad",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Upload files from folder to LiquidFile",
+    "groups": [{
+            "name": "Server",
+            "displayName": "Liquid server",
+            "isExpanded": false
+        },
+        {
+            "name": "Cofiguration",
+            "displayName": "Upload Cofiguration",
+            "isExpanded": false
+        },
+        {
+            "name": "Client",
+            "displayName": "Client",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [{
+        "name": "url",
+        "type": "string",
+        "label": "liquidfile server url",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a full url to your liquidefile server",
+        "groupName": "Server"
+    }, {
+        "name": "token",
+        "type": "string",
+        "label": "your token",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a base64 token for your liquidefile server - use a secret",
+        "groupName": "Server"
+    }, {
+        "name": "days",
+        "type": "string",
+        "label": "expire in days",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a days number for your liquidefile server as expire gap",
+        "groupName": "Cofiguration"
+    }, {
+        "name": "folder",
+        "type": "string",
+        "label": "folder to upload",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "the folder that contains the files to upload to your liquidefile server",
+        "groupName": "Cofiguration"
+    }, {
+        "name": "private",
+        "type": "pickList",
+        "label": "permmision to download",
+        "required": true,
+        "helpMarkDown": "appliese permmision dowload parameter to your liquidefile server",
+        "defaultValue": "0",
+        "options": {
+            "0": "Public",
+            "1": "Private",
+            "2": "Organisation"
+        },
+        "groupName": "Cofiguration"
+    }, {
+        "name": "pool",
+        "type": "string",
+        "label": "pool name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "pool id in liquidfile witch the files will be add to",
+        "groupName": "Server"
+    }, {
+        "name": "email",
+        "type": "string",
+        "label": "client email",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "email witch the server send the download links to",
+        "groupName": "Client"
+    }, {
+        "name": "subject",
+        "type": "string",
+        "label": "email subject",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "email subject",
+        "groupName": "Client"
+    }, {
+        "name": "body",
+        "type": "string",
+        "label": "email body",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "email body",
+        "groupName": "Client"
+    }, {
+        "name": "auth",
+        "type": "boolean",
+        "label": "Auth to download",
+        "defaultValue": false,
+        "required": true,
+        "helpMarkDown": "if he need to Authenticate befor downloading.",
+        "groupName": "Client"
+    }],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

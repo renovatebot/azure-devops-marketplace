@@ -1,0 +1,140 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "09ea8124-816f-4b89-8377-b45d2f6a54cb",
+    "name": "LiquidFileUploader",
+    "friendlyName": "Liquid File",
+    "description": "Build task, for help you uploasd files to liquide file server",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "AviHadad",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Upload files from folder to LiquidFile",
+    "groups": [{
+            "name": "Server",
+            "displayName": "Liquid server",
+            "isExpanded": false
+        },
+        {
+            "name": "Cofiguration",
+            "displayName": "Upload Cofiguration",
+            "isExpanded": false
+        },
+        {
+            "name": "Client",
+            "displayName": "Client",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [{
+        "name": "url",
+        "type": "string",
+        "label": "liquidfile server url",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a full url to your liquidefile server",
+        "groupName": "Server"
+    }, {
+        "name": "token",
+        "type": "string",
+        "label": "Token in Base64 (converter - https://www.base64encode.org/)",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a base64 token for your liquidefile server (BASIC ************) - use a secret",
+        "groupName": "Server"
+    }, {
+        "name": "days",
+        "type": "string",
+        "label": "Expire gap",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "a days number for your liquidefile server as expire gap",
+        "groupName": "Cofiguration"
+    }, {
+        "name": "folder",
+        "type": "string",
+        "label": "Upload folder",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "the folder that contains the files to upload to your liquidefile server",
+        "groupName": "Cofiguration"
+    }, {
+        "name": "private",
+        "type": "pickList",
+        "label": "Download Permmision",
+        "required": true,
+        "helpMarkDown": "appliese permmision dowload parameter to your liquidefile server",
+        "defaultValue": "0",
+        "options": {
+            "0": "Public",
+            "1": "Private",
+            "2": "Organisation"
+        },
+        "groupName": "Cofiguration"
+    }, {
+        "name": "pool",
+        "type": "string",
+        "label": "Pool name",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "pool id in liquidfile witch the files will be add to",
+        "groupName": "Server"
+    }, {
+        "name": "email",
+        "type": "string",
+        "label": "Target email",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "email witch the server send the download links to",
+        "groupName": "Client"
+    }, {
+        "name": "subject",
+        "type": "string",
+        "label": "Email subject",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "email subject",
+        "groupName": "Client"
+    }, {
+        "name": "body",
+        "type": "string",
+        "label": "Email body",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "email body",
+        "groupName": "Client"
+    }, {
+        "name": "group",
+        "type": "boolean",
+        "label": "Grouped mail",
+        "defaultValue": false,
+        "required": true,
+        "helpMarkDown": "Groups all files in folder into one mail.",
+        "groupName": "Client"
+    }, {
+        "name": "dell",
+        "type": "boolean",
+        "label": "Delete Source",
+        "defaultValue": false,
+        "required": true,
+        "helpMarkDown": "if you want to delete the files from the folder.",
+        "groupName": "Cofiguration"
+    }, {
+        "name": "auth",
+        "type": "boolean",
+        "label": "Require Auth",
+        "defaultValue": false,
+        "required": true,
+        "helpMarkDown": "if he need to Authenticate befor downloading.",
+        "groupName": "Cofiguration"
+    }],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
