@@ -1,0 +1,79 @@
+{
+  "id": "d612a30e-b8e5-33a9-a88c-ad0ab24fc111",
+  "name": "mergebase-task",
+  "friendlyName": "MergeBase SCA Scanner",
+  "description": "Checks source and binary software assets for libraries with known vulnerabilities.",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "MergeBase",
+  "version": {
+    "Major": "3",
+    "Minor": "2",
+    "Patch": "9000"
+  },
+  "instanceNameFormat": "Mergebase",
+  "inputs": [
+    {
+      "name": "ScanName",
+      "type": "string",
+      "label": "Name of the scan",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the scan. This name will appear in the MergeBase dashboard showing the scan results. If not specified MergeBase uses: REPOSITORY.git~BRANCH."
+    },
+    {
+      "name": "CustomerServer",
+      "type": "string",
+      "label": "MergeBase Server (e.g., 'customer.mergebase.com')",
+      "defaultValue": "<customer.mergebase.com>",
+      "required": true,
+      "helpMarkDown": "MergeBase Domain (e.g., 'customer.mergebase.com'). Azure pipeline must be able to connect to this domain on port 443."
+    },
+    {
+      "name": "CustomerToken",
+      "type": "string",
+      "label": "MergeBase Customer Token",
+      "defaultValue": "<mergebase-token>",
+      "required": true,
+      "helpMarkDown": "MergeBase Customer Token (typically between 20 - 32 Base64 characters)."
+    },
+    {
+      "name": "ScanAllProjects",
+      "type": "boolean",
+      "label": "Scan all projects found.",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "By default MergeBase scans *ONLY* the first project it finds in the repository structure. Set ScanAllProjects = true to scan all projects found."
+    },
+    {
+      "name": "KillBuild",
+      "type": "boolean",
+      "label": "Kill the build if vulnerabilities are found.",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Kill the build if vulnerabilities are found."
+    },
+    {
+      "name": "SeverityThreshold",
+      "type": "string",
+      "label": "Vulnerabilities below the specified CVSS threshold (between 0.0 and 10.0) are ignored.",
+      "defaultValue": "0.0",
+      "required": true,
+      "helpMarkDown": "Vulnerabilities below the specified CVSS threshold (between 0.0 and 10.0) are ignored."
+    },
+    {
+      "name": "DebugMode",
+      "type": "boolean",
+      "label": "Run scans in debug mode (causes more verbose output).",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Run scans in debug mode to help troubleshoot possible problems with the scanner (causes more verbose output to STDOUT/STDERR of the scan console)."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "$(currentDirectory)/index.js",
+      "argumentFormat": ""
+    }
+  }
+}
