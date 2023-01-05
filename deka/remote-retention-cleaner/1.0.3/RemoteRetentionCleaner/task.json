@@ -1,0 +1,73 @@
+{
+    "id":  "15f76a08-0248-4dc8-b93e-960a7c8e69c7",
+    "name":  "RemoteRetentionCleaner",
+    "friendlyName":  "Windows Remote Retention Cleaner",
+    "description":  "Windows Remote cleaner with retention policy.",
+    "category":  "Utility",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+    "author":  "deka",
+    "version":  {
+                    "Major":  1,
+                    "Minor":  0,
+                    "Patch":  3
+                },
+    "minimumAgentVersion":  "1.83.0",
+    "inputs":  [
+                   {
+                       "name":  "remoteComputer",
+                       "type":  "string",
+                       "label":  "Remote computers",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The names of windows machines separated by commas. ex : MACHINE1,MACHINE2."
+                   },{
+                       "name":  "userName",
+                       "type":  "string",
+                       "label":  "User name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The user name for credential."
+                   },{
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The password for credential."
+                   },{
+                       "name":  "folderPath",
+                       "type":  "string",
+                       "label":  "Path",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The path to the folder that needs to be cleaned."
+                   },
+                   {
+                       "name":  "retentionDays",
+                       "type":  "string",
+                       "label":  "Days to keep",
+                       "defaultValue":  "30",
+                       "required":  false,
+                       "helpMarkDown":  "Retention days."
+                   },
+                   {
+                       "name":  "minimumToKeep",
+                       "type":  "string",
+                       "label":  "Minimum to keep",
+                       "defaultValue":  "2",
+                       "required":  false,
+                       "helpMarkDown":  "Minimum to keep."
+                   }
+               ],
+    "instanceNameFormat":  "Remote cleaner $(remoteComputer) $(folderPath).",
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "$(currentDirectory)\\RemoteRetentionCleaner.ps1",
+                                          "argumentFormat":  "",
+                                          "workingDirectory":  "$(currentDirectory)"
+                                      }
+                  }
+}

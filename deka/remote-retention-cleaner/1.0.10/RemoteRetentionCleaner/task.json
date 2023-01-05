@@ -1,0 +1,97 @@
+{
+  "id": "15f76a08-0248-4dc8-b93e-960a7c8e69c7",
+  "name": "RemoteRetentionCleaner",
+  "friendlyName": "Windows Remote Retention Cleaner",
+  "description": "Windows Remote cleaner with retention policy.",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "author": "deka",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 10
+  },
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "remoteComputer",
+      "type": "string",
+      "label": "Remote computers",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown":
+        "The names of windows machines separated by commas. ex : MACHINE1,MACHINE2."
+    },
+    {
+      "name": "userName",
+      "type": "string",
+      "label": "User name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The user name for credential."
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The password for credential."
+    },
+    {
+      "name": "folderPath",
+      "type": "string",
+      "label": "Path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The path to the folder that needs to be cleaned."
+    },
+    {
+      "name": "excludes",
+      "type": "multiLine",
+      "label": "Omits the specified items",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown":
+        "Omits the specified items. The value of this parameter qualifies the Path parameter. Enter a path element or pattern, such as '*.txt'. Wildcards are permitted. You can use line break or comma to add multiple patterns"
+    },
+    {
+      "name": "retentionDays",
+      "type": "string",
+      "label": "Days to keep",
+      "defaultValue": "30",
+      "required": true,
+      "helpMarkDown": "Retention days."
+    },
+    {
+      "name": "minimumToKeep",
+      "type": "string",
+      "label": "Minimum to keep",
+      "defaultValue": "2",
+      "required": true,
+      "helpMarkDown": "Minimum to keep."
+    },
+    {
+      "name": "winRMProtocol",
+      "type": "radio",
+      "label": "Protocol",
+      "required": false,
+      "defaultValue": "Http",
+      "options": {
+        "Http": "HTTP",
+        "Https": "HTTPS"
+      },
+      "helpMarkDown":
+        "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP."
+    }
+  ],
+  "instanceNameFormat": "Remote cleaner $(remoteComputer) $(folderPath).",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\RemoteRetentionCleaner.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
+
