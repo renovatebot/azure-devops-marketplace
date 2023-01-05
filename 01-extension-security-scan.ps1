@@ -41,7 +41,7 @@ function commit-changes
     & git config --local user.email "jesse.houwing@gmail.com"
     & git config --local user.name "Jesse Houwing"
     
-    & git add .
+    & git add . | Out-Null
     (& git diff HEAD --exit-code) | Out-null
     if ($LASTEXITCODE -ne 0)
     {
@@ -52,8 +52,15 @@ function commit-changes
     write-host "::endgroup::"
 }
 
+Write-host "::group::Installing tfx"
 & npm install tfx-cli@^0 -g --no-fund
+$token = $env:AZURE_DEVOPS_PAT
+$marketplace = "https://marketplace.visualstudio.com"
+& tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
 
+Write-host "::endgroup::"
+
+Write-host "::group::Fetching Extension Metadata"
 $pageSize= 100;
 $page = 1
 $totalFetched = 0
@@ -79,17 +86,8 @@ if (-not (Test-Path -path $cacheFile -PathType Leaf))
 else {
     $extensions = Get-Content -raw -Path $cacheFile | ConvertFrom-Json
 }
+Write-host "::endgroup::"
 
-if ($max -eq 0)
-{
-    $max = $extensions.Count
-}
-
-$token = $env:AZURE_DEVOPS_PAT
-$marketplace = "https://marketplace.visualstudio.com"
-& tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
-
-$count = 1
 foreach ($extension in $extensions)
 {
     $publisherId = $extension.publisher.publisherName
@@ -125,6 +123,7 @@ foreach ($extension in $extensions)
 
         if (-not (Test-Path -Path $extractedPath -PathType Container))
         {
+            write-host "$($version.version)"
             try{
                 $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
@@ -141,6 +140,4 @@ foreach ($extension in $extensions)
         commit-changes -message "Update $publisherId/$extensionId"
     }
     write-host "::endgroup::"
-    write-host "##### $count / $max "
-    $count += 1
 }

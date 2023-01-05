@@ -1,6 +1,4 @@
 $extensions = Get-Content -raw -Path extensions.json | ConvertFrom-Json 
-$max = $extensions.Count
-$count = 0
 
 function add-version
 {
@@ -24,6 +22,7 @@ $renovateData = @{}
 foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
+    Write-host "::group::$publisherId/$extensionId"
 
     $extensionDataFile = "$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
@@ -35,7 +34,7 @@ foreach ($extension in $extensions) {
 
         $extensionManifestFile = "$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
-        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json
+        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
 
         $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
         foreach ($taskContribution in $taskContributions)
@@ -93,14 +92,14 @@ foreach ($extension in $extensions) {
         } 
     }  
     
-    
+    write-host "::endgroup::"
 }
 
 $renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "renovate-data.json"
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
-& git add .
+& git add renovate-data.json
 & git diff HEAD --exit-code
 if ($LASTEXITCODE -ne 0)
 {    
