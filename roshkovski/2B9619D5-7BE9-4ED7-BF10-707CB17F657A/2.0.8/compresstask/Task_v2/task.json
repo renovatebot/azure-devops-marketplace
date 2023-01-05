@@ -1,0 +1,88 @@
+{
+    "id": "5805278E-455E-4DC9-9E30-87B22E01993F",
+    "name": "Artifacts-Compress",
+    "friendlyName": "Artifacts Compress",
+    "instanceNameFormat": "Artifacts Compress",
+    "description": "Task for artifact compress. Removes source files\\folders.",
+    "category": "Utility",
+    "author": "Piotr Roshkovski",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=roshkovski.2B9619D5-7BE9-4ED7-BF10-707CB17F657A)",
+    "demands": [
+        "msbuild"
+    ],
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 8
+    },
+    "visibility": [
+        "Build"
+    ],
+    "minimumAgentVersion": "2.114.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "source",
+            "type": "string",
+            "label": "Source",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "Source to compress. Should be directory path."
+        },
+        {
+            "name": "dest",
+            "type": "string",
+            "label": "Destination",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "Destination for compressed files. Should be directory path."
+        },
+        {
+            "name": "compressionLevel",
+            "type": "pickList",
+            "label": "Compression Level",
+            "defaultValue": "Fastest",
+            "required": true,
+            "helpMarkDown": "Compression level.",
+            "options": {
+                "Fastest": "Fastest",
+                "NoCompression": "NoCompression",
+                "Optimal": "Optimal"
+            }
+        },
+        {
+            "name": "multiplePackages",
+            "type": "boolean",
+            "label": "Multiple Packages",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "If true - creates multiple packages from child items."
+        },
+        {
+            "name": "cleanDest",
+            "type": "boolean",
+            "label": "Clean Destination",
+            "defaultValue": false,
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "If true - removes all files and directories on destination before compression."
+        }
+    ],
+    "execution": {
+        "Powershell": {
+            "target": "$(currentDirectory)\\scripts\\compress-it!.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    },
+    "messages": {
+        "TaskSuccessCode": "Successfully passed task.",
+        "TaskFailedCode": "Failed to pass task."
+    }
+}
