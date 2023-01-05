@@ -1,0 +1,95 @@
+﻿{
+    "id":  "6e2729df-2211-4a7c-af6f-b726bbca2a3a",
+    "name":  "AzureAppConfiguration",
+    "friendlyName":  "Azure App Configuration",
+    "description":  "Download key-values to task variables from Azure App Configuration",
+    "helpUrl":  "https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview",
+    "helpMarkDown":  "Email AzureAppConfig@microsoft.com for questions.",
+    "category":  "Deploy",
+    "author":  "Microsoft Corporation",
+    "version":  {
+                    "Major":  5,
+                    "Minor":  2,
+                    "Patch":  0
+                },
+    "instanceNameFormat":  "Azure App Configuration",
+    "minimumAgentVersion":  "2.144.0",
+    "inputs":  [
+                   {
+                       "name":  "ConnectedServiceName",
+                       "aliases":  [
+                                       "azureSubscription"
+                                   ],
+                       "type":  "connectedService:AzureRM",
+                       "label":  "Azure subscription",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Select the Azure Subscription for the Azure App Configuration instance."
+                   },
+                   {
+                       "name":  "AppConfigurationEndpoint",
+                       "type":  "pickList",
+                       "label":  "App Configuration Endpoint",
+                       "required":  true,
+                       "helpMarkDown":  "Provide the endpoint of an existing [Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/concept-key-value).",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "validation":  {
+                                          "expression":  "isUrl(value)",
+                                          "message":  "Provide a valid app configuration endpoint."
+                                      }
+                   },
+                   {
+                       "name":  "KeyFilter",
+                       "type":  "string",
+                       "label":  "Key Filter",
+                       "defaultValue":  "*",
+                       "required":  true,
+                       "helpMarkDown":  "The filter can be used to select what key-values are requested from Azure App Configuration. A value of \u0027*\u0027 will select all key-values. [Reference for key-values query](https://docs.microsoft.com/en-us/azure/azure-app-configuration/concept-key-value#query-key-values).",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "Label",
+                       "type":  "string",
+                       "label":  "Label",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies which label should be used when selecting key-values from App Configuration. If no label is provided then key-values with the _null_ label will be retrieved. The following characters are not allowed: `,` `*`.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "validation":  {
+                                          "expression":  "isMatch(value, \u0027^[^\\*|\\,]*$\u0027,\u0027IgnoreCase\u0027)",
+                                          "message":  "The following characters are not allowed: \u0027*\u0027, \u0027,\u0027"
+                                      }
+                   },
+                   {
+                       "name":  "TrimKeyPrefix",
+                       "type":  "multiLine",
+                       "label":  "Trim Key Prefix",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specifies one or more prefixes that should be trimmed from App Configuration keys before setting them as variables. Multiple prefixes can be separated by a new-line character.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "AppConfigurationEndpoint",
+                                   "endpointId":  "$(ConnectedServiceName)",
+                                   "endpointUrl":  "{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.AppConfiguration/configurationStores?api-version=2019-02-01-preview",
+                                   "resultSelector":  "jsonpath:$.value[*]",
+                                   "resultTemplate":  "{ \"Value\" : \"{{{properties.endpoint}}}\", \"DisplayValue\" : \"{{{properties.endpoint}}}\" }"
+                               }
+                           ],
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "index.js"
+                                 }
+                  }
+}
