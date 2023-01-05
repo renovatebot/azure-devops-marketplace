@@ -1,0 +1,106 @@
+{
+	"id": "e52a32de-e740-4343-a0c6-f80146ba6857",
+	"name": "RunSQLServerScripts",
+	"friendlyName": "Run SQL Server Scripts",
+	"description": "Executes SQL Server database scripts using the DbaTools module commandline tool.",
+	"author": "pwshliquori",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": ["dbatools"],
+	"version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "12"
+	},
+	"groups": [
+		{
+			"name": "logOptions",
+			"displayName": "Log Options",
+			"isExpanded": false
+		},
+		{
+			"name": "advanced",
+			"displayName": "Advanced",
+			"isExpanded": false
+		}
+	],
+	"instanceNameFormat": "Run SQL Server Scripts",
+	"inputs": [
+		{
+			"name": "scriptPath",
+			"type": "filePath",
+			"label": "Script Path",
+			"defaultValue": "$(System.DefaultWorkingDirectory)",
+			"required": true,
+			"helpMarkDown": "Path of the SQL Server scripts."
+		},
+		{
+			"name": "sqlInstance",
+			"type": "string",
+			"label": "SQL Instance",
+			"required": true,
+			"helpMarkDown": "SQL Server instance name"  
+		},
+		{
+			"name": "databaseName",
+			"type": "string",
+			"label": "Database Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Name of database for script to run on."	
+		},
+		{
+			"name": "user",
+			"type": "string",
+			"label": "User",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "User to connect to the SQL Server database."
+		},
+		{
+			"name": "password",
+			"type": "string",
+			"label": "Password",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Password to connect to the SQL Server database. It is recommended to store the password is a secured variable or upload a secure file."
+		},
+		{
+			"name": "logPath",
+			"type": "textbox",
+			"label": "Log Path",
+			"defaultValue": "",
+			"required": false,
+			"groupName": "logOptions",
+			"helpMarkDown": "Path to save the log file after scripts have completed."
+		},
+		{
+			"name": "copy",
+			"type": "boolean",
+			"label": "Copy sql files to log",
+			"defaultValue": false,
+			"required": false,
+			"groupName": "logOptions",
+			"helpMarkDown": "Copy .sql files to the log path."
+		},
+		{
+            "name": "failOnNullFiles",
+            "type": "boolean",
+            "label": "Fail on missing sql files",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "If this is true, this task will fail if there are no sql files in the script path. If this is false, task will write \"No sql files exist\" to console.",
+            "groupName": "advanced"
+        }
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)/Invoke-SqlServerDatabase.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}

@@ -1,0 +1,48 @@
+{
+	"id": "00e0447b-c6a2-4346-a42a-10b811a312af",
+	"name": "DbaToolsModuleInstaller",
+	"friendlyName": "DbaTools Module Installer",
+	"description": "Install the dbatools modules from the PSGallery if it does not exist on the agent.",
+	"author": "liquorichris",
+	"helpMarkDown": "DbaTools Module Installer",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"demands": [],
+	"version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "3"
+	},
+	"instanceNameFormat": "DbaTools Module Installer",
+	"inputs": [
+		{
+			"name": "version",
+			"type": "pickList",
+			"label": "Module Version",
+			"defaultValue": "Latest",
+			"required": true,
+			"helpMarkDown": "Module version to install on agent. Default is set to install lastest version.",
+			"options": {
+				"latest": "Latest",
+				"specificVersion": "Specific Version"
+			}
+		},
+		{
+            "name": "dbaToolsVersion",
+            "type": "string",
+            "label": "DbaTools Version",
+            "required": true,
+            "helpMarkDown": "Specify the version of the DbaTools module to install on the agent. Available versions can be viewed on <a href=\"https://https://www.powershellgallery.com/packages/dbatools/0.9.803/\">nuget</a>.",
+            "visibleRule": "version = specificVersion"
+        }
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)/Install-DbaTools.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
