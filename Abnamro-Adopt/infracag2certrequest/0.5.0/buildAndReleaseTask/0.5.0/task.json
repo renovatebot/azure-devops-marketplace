@@ -1,0 +1,177 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ea42b06e-b052-4e88-bdc7-751acf970077",
+    "name": "infracag2certrequest",
+    "friendlyName": "InfraCA G2 certificate request task",
+    "description": "Request certificate from InfraCA G2 via Azure Cloud RA",
+    "helpMarkDown": "This task can be used to request a certificate from the InfraCA G2. Instructions for the task can be found [here](https://confluence.aws.abnamro.org/display/CS/Azure+DevOps+Pipeline+Extension)",
+    "category": "Utility",
+    "author": "O&I Certificate Services",
+    "version": {
+        "Major": 0,
+        "Minor": 5,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Request certificate from InfraCA G2 via Azure Cloud RA",
+    "inputs": [
+		{
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+            }
+        },
+		{
+			"name": "action",
+			"type": "pickList",
+			"label": "Action",
+			"defaultValue": "new",
+			"required": true,
+			"helpMarkDown": "Select action to perform",
+			"options": {
+				"new": "New Request",
+				"renew": "Renewal",
+				"revoke": "Revoke"
+			}
+		},
+		{
+			"name": "resourcegroup",
+			"type": "pickList",
+			"label": "Resource Group",
+			"required": true,
+			"helpMarkDown": "Provide the name of the Resource Group.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+        },
+		{
+			"name": "keyvault",
+			"type": "pickList",
+			"label": "Key vault",
+			"required": true,
+			"helpMarkDown": "Provide the name of an existing key vault in which the certificate will be stored.",
+			"properties": {
+				"EditableOptions": "True"
+			}
+		},
+        {
+            "name": "commonname",
+            "type": "string",
+            "label": "Common Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Certificate common name (also known as subject). The common name must adhere to the naming conventions [see here](https://confluence.aws.abnamro.org/display/CS/Azure+DevOps+Pipeline+Extension)"
+        },        
+		{
+            "name": "email",
+            "type": "string",
+            "label": "E-mail address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "E-mail address that is used to send expiry notifications."
+        },        
+		{
+            "name": "certname",
+            "type": "string",
+            "label": "Certificate Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name that will be used for the certificate in the Azure Key Vault. This must be an existing certificate for renewals or revocations."
+        },
+		{
+            "name": "oarid",
+            "type": "string",
+            "label": "OAR-id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAR-id for which the certificate will be used. The OAR-id will be in the 2nd SAN field of the certificate."
+        },
+		{
+			"name": "environment",
+			"type": "pickList",
+			"label": "Environment",
+			"defaultValue": "D",
+			"required": true,
+			"helpMarkDown": "Select one, must match the resource group",
+			"options": {
+				"D": "D",
+				"T": "T",
+				"A": "A",
+				"P": "P"
+			}
+		},
+		{
+			"name": "san",
+			"type": "multiLine",
+			"label": "Subject Alternative Names",
+			"defaultValue": "",
+			"required": false,
+			"visibleRule": "action != revoke",
+			"helpMarkDown": "Subject Alternative Names, one per line"
+		},
+		{
+            "name": "reason",
+            "type": "pickList",
+            "label": "Revocation reason",
+            "defaultValue": "0",
+            "required": true,
+            "visibleRule": "action = revoke",
+            "helpMarkDown": "Select one, must match the resource group",
+            "options": {
+                        "0": "unspecified",
+                        "1": "keyCompromise",
+                        "2": "cACompromise",
+                        "3": "affiliationChanged",
+                        "4": "superseded",
+                        "5": "cessationOfOperation",
+                        "9": "privilegeWithdrawn"
+                }
+        },        
+		{
+            "name": "version",
+            "type": "string",
+            "label": "Certificate version to revoke",
+            "defaultValue": "0",
+            "required": true,
+            "visibleRule": "action = revoke",
+            "helpMarkDown": "Version of the certificate to be revoked (can be found in Azure Key Vault certificate overview)."
+        },
+        {
+			"name": "confirmRevoke",
+			"type": "boolean",
+			"label": "I understand that revoking a certificate is irreversible.",
+            "defaultValue": "false",
+            "visibleRule": "action = revoke",
+            "helpMarkDown": "Please confirm that you understand that the certificate with the version specified in the previous field will be irreveribly revoked, which may cause downtime and/or connectivity issues."
+        }
+    ],
+	"dataSourceBindings": [
+		{
+            "target": "resourcegroup",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}/subscriptions/$(endpoint.subscriptionId)/resourcegroups?api-version=2021-04-01",
+            "resultSelector": "jsonpath:$.value[*].name"
+        },
+        {
+           "target": "keyvault",
+           "endpointId": "$(ConnectedServiceNameARM)",
+           "endpointUrl": "{{{endpoint.url}}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(resourcegroup)/providers/Microsoft.KeyVault/vaults?api-version=2019-09-01",
+           "resultSelector": "jsonpath:$.value[*].name"
+        } 
+	],
+    "execution": {
+        "PowerShell3": {
+            "target": "azurepowershell.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}

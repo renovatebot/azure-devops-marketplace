@@ -1,0 +1,80 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ea42b06e-b052-4e88-bdc7-751acf970077",
+    "name": "infracag2certrequest",
+    "friendlyName": "InfraCA G2 certificate request task",
+    "description": "Request certificate from InfraCA G2 via Azure Cloud RA",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "O&I Certificate Services",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 6
+    },
+    "instanceNameFormat": "Request certificate from InfraCA G2 via Azure Cloud RA",
+    "inputs": [
+		{
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+            }
+        },
+        {
+            "name": "commonname",
+            "type": "string",
+            "label": "Common Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Certificate common name"
+        },        
+		{
+            "name": "certname",
+            "type": "string",
+            "label": "Certificate Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Certificate name in keyvault"
+        },
+		{
+            "name": "resourcegroup",
+            "type": "string",
+            "label": "Resource Group",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Resource group"
+        },
+		{
+            "name": "oarid",
+            "type": "string",
+            "label": "OAR-id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAR-id"
+        },
+		{
+            "name": "keyvault",
+            "type": "string",
+            "label": "Key Vault name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Key Vault name"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "azurepowershell.ps1",
+            "platforms": [
+                "windows"
+            ]
+        }
+    }
+}
