@@ -1,0 +1,70 @@
+{
+  "id": "67971e48-2825-4337-a4ba-dac1794cb3a8",
+  "name": "StartStopService",
+  "friendlyName": "Stop-Service or Start-Service powershell command",
+  "description": "This task allows users to start/stop windows servie using powershell command Stop-Service or Start-Service. It doesn't need admin privilege or share folder on the target machine.",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "ShahyadS",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 10
+  },
+  "instanceNameFormat": "Start/Stop Service $(ServiceName)",
+  "inputs": [
+    {
+      "name": "ServiceName",
+      "type": "string",
+      "label": "Service Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of a service.(Do not use the display name)"
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action for the service",
+      "required": true,
+      "helpMarkDown": "Type of the action: Start, Stop",
+      "options": {
+        "Start": "Start",
+        "Stop": "Stop"
+      }
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "a userid for the target machine with required access rights.<br>(e.g. domain\\username)"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password"
+    },
+    {
+      "name": "MachineNameslist",
+      "type": "string",
+      "label": "comma/semicolon separated list of machine names",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the machines where the service is there (e.g. serverName1;serverName2;serverName3)"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\StartStopService.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

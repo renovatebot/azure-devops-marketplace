@@ -1,0 +1,70 @@
+{
+  "id": "292d1dd6-6c61-4efb-89dd-5c280974407e",
+  "name": "StartStopScheduledTask",
+  "friendlyName": "Stop-ScheduledTask or Start-ScheduledTask powershell command",
+  "description": "This task allows users to start/stop windows Scheduled Task using powershell command Stop-ScheduledTask or Start-ScheduledTask. It doesn't need admin privilege or share folder on the target machine.",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "ShahyadS",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 10
+  },
+  "instanceNameFormat": "Start/Stop Scheduled Task $(TaskName)",
+  "inputs": [
+    {
+      "name": "TaskName",
+      "type": "string",
+      "label": "Task Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of a Task in Windows Task Scheduler"
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action for the Task",
+      "required": true,
+      "helpMarkDown": "Type of the action: Start, Stop",
+      "options": {
+        "Start": "Start",
+        "Stop": "Stop"
+      }
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "a userid for the target machine with required access rights.<br>(e.g. domain\\username)"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password"
+    },
+    {
+      "name": "MachineNameslist",
+      "type": "string",
+      "label": "comma/semicolon separated list of machine names",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the machines on which the task is created (e.g. serverName1;serverName2;serverName3)"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\StartStopScheduledTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
