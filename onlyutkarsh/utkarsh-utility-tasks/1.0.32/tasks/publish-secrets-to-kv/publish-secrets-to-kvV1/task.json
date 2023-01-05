@@ -1,0 +1,82 @@
+{
+    "id": "7d5f64bf-9ebc-4327-be65-4942e45eea23",
+    "name": "publish-secrets-to-kv",
+    "friendlyName": "Publish Secrets to Azure Key vault",
+    "description": "Publish secrets to Azure Key vault in bulk and optionally add tags to each secret",
+    "helpMarkDown": "v1.0.32<br/>[More Information](https://marketplace.visualstudio.com/items?itemName=onlyutkarsh.utkarsh-utility-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Utkarsh Shigihalli",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 32
+    },
+    "instanceNameFormat": "Publish secrets to Azure Key vault $(keyVaultName)",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure subscription for the key vault"
+        },
+        {
+            "name": "keyVaultName",
+            "type": "pickList",
+            "label": "Key vault",
+            "required": true,
+            "helpMarkDown": "Provide the name of an existing key vault",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "secrets",
+            "type": "multiLine",
+            "label": "List of secrets",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "List of secrets to be added to the key vault. Add as `secretname=secretvalue`. Separate each pair by newline. E.g. `Password=$(MySecretPassword)`"
+        },
+        {
+            "name": "tags",
+            "type": "multiLine",
+            "label": "Tags",
+            "defaultValue": "Build=$(Build.BuildNumber)",
+            "required": false,
+            "helpMarkDown": "List of tags to be added to each secret. Add as `tagName=tagValue` and separate each pair by newline. E.g. `Build=$(Build.BuildNumber)`. **Note**: Any existing tags will be overwritten."
+        },
+        {
+            "name": "contentType",
+            "type": "string",
+            "label": "Content Type of the secrets",
+            "defaultValue": "Added via Utkarsh Utilities Extension",
+            "required": false,
+            "helpMarkDown": "Specify the content type of secrets to assist in interpreting the secret data when it is retrieved. Usually used as a hint for interpreting the secret data. The maximum length of this field is `255` characters.",
+            "properties": {
+                "maxLength": "255"
+            }
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "keyVaultName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureKeyVaultsList",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
