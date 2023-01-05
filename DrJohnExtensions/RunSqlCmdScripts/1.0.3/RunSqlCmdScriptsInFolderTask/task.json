@@ -1,0 +1,99 @@
+{
+    "id": "ac2ee55f-4e52-4dbe-a01b-2b43ed500433",
+    "name": "RunSqlCmdScriptsInFolderTask",
+    "friendlyName": "Run all SQL Scripts in folder in SQLCMD mode",
+    "description": "Run a multiple SQL Scripts in SQLCMD mode passing multiple parameters via a SqlCmdVariables array",
+    "helpMarkDown": "[More Information](https://github.com/DrJohnT/AzureDevOpsExtensionsForSqlServer/tree/master/extensions/RunSqlCmdScripts)",
+    "author": "Dr. John Tunnicliffe",
+    "preview": false,
+    "deprecated": false,
+    "showEnvironmentVariables": false,
+    "category": "Utility",
+    "demands": [],
+    "minimumAgentVersion": "1.95.0",
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "2"
+    },
+    "instanceNameFormat": "Run SQLCMD Scripts in folder $(SqlCmdSciptFolderPath)",
+    "inputs": [
+		{
+            "name": "Server",
+            "type": "string",
+            "label": "Server name or IP address",
+            "required": true,
+            "helpMarkDown": "Server name or IP address.  Include the database instance name and port if necessary (e.g. myserver\\myinstance,myport)"
+        },
+		{
+            "name": "Database",
+            "type": "string",
+            "label": "The name of the SQL database",
+            "required": true,
+            "helpMarkDown": "The name of the database against which the script will be run"
+        },
+        {
+            "name": "SqlCmdSciptFolderPath",
+            "type": "filePath",
+            "label": "Path to folder containing SQLCMD script files",
+            "required": true,
+            "helpMarkDown": "Path to the folder containing the SQLCMD scripts to be run."
+        },
+        {
+            "name": "Recursive",
+            "type": "pickList",
+            "label": "Recurse sub-folders and run all SQLCMD scipts found",
+            "required": true,
+            "helpMarkDown": "Run SQLCMD scipts in the folder and all sub-folders in alphabetical order.",
+            "defaultValue": "true",
+            "options": {
+                "true": "Recurse folder and sub-folders",
+                "false": "Do not recurse sub-folders"
+            }
+        },
+        {
+            "name": "SqlCmdVariableType",
+            "type": "pickList",
+            "label": "Provide SQLCMD Variables",
+            "required": true,
+            "helpMarkDown": "Choose how you wish to provide SQLCMD Variables to the script.",
+            "defaultValue": "none",
+            "options": {
+                "none": "No SQLCMD Variables",
+                "json": "JSON format (Recommended)",
+                "text": "Multi-line text input as name/value pairs"
+            }
+        },
+        {
+            "name": "SqlCmdVariablesInJson",
+            "type": "multiLine",
+            "label": "SqlCmd Variables and Values (JSON format)",
+            "defaultValue": "{\n\"var1\": \"jsonvalue1\",\n\"var2\": \"jsonvalue2\"}",
+            "required": false,
+            "visibleRule": "SqlCmdVariableType=json",
+            "helpMarkDown": "A list of SqlCmd variables and their values in JSON format."
+        },
+        {
+            "name": "SqlCmdVariablesInText",
+            "type": "multiLine",
+            "label": "SqlCmd Variables and Values (name/value pair format)",
+            "defaultValue": "var1=varvalue1\nvar2=varvalue2\nvar3=varvalue3\nvar4=varvalue4",
+            "required": false,
+            "visibleRule": "SqlCmdVariableType=text",
+            "helpMarkDown": "A list of SqlCmd variables and their values in the format var=varvalue. e.g. \nvar1=varvalue1\nvar2=varvalue2\nvar3=varvalue3\nvar4=varvalue4"
+        },
+        {
+            "name": "QueryTimeout",
+            "type": "string",
+            "label": "Query Timeout in seconds",
+            "defaultValue": "6000",
+            "required": false,
+            "helpMarkDown": "The query timeout in seconds"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\RunSqlCmdScript.ps1"
+        }
+    }
+}
