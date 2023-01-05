@@ -1,0 +1,130 @@
+{
+  "id": "1644f10b-352c-43f3-9957-8c158759ba7c",
+  "name": "AzureSQLLogin",
+  "friendlyName": "Azure SQL Logins",
+  "description": "Add new SQL Users & Logins to a database",
+  "author": "Code88",
+  "helpMarkDown": "Add new SQL Users & Logins to a database",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [
+    "azureps"
+  ],
+  "version": {
+    "Major": "5",
+    "Minor": "13",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "Azure SQL Logins $(message)",
+
+  "groups": [
+        {
+            "name": "Picker",
+            "displayName": "Admin Or Read Only Account",
+            "isExpanded": true
+        }
+      
+        ],
+
+  "inputs": [
+
+       {
+            "name": "Choice",
+            "type": "pickList",
+            "label": "Account Type",
+            "defaultValue": "Pick Account Type",
+            "required": true,
+            "helpMarkDown": "Pick an option to add login to Azure SQL",
+            "groupname":"Picker",
+            "options": {
+                "RO": "Read Only",
+                "AD": "Admin Rights"
+            }
+       },
+           {
+            "name": "UserName",
+            "type": "string",
+            "label": "Email Addresses",
+            "visibleRule": "Choice = AD",
+              "groupname":"Picker",
+            "required": false
+        },
+        {
+            "name": "ReadOnlyUser",
+            "type": "string",
+            "label": "Read Only User Name",
+            "required": false,
+            "groupname":"Picker",
+            "defaultValue": "ReadOnlyAzureSQL",
+            "visibleRule": "Choice = RO",
+            "helpMarkDown": "Name of the read only account"
+        },     
+        {
+            "name": "ReadOnlyEmail",
+            "type": "string",
+            "label": "Email Address",
+            "required": false,
+            "groupname":"Picker",
+            "defaultValue": "",
+            "visibleRule": "Choice = RO",
+            "helpMarkDown": "Email Address of the user who wants the readonly Information"
+        },
+         {
+            "name": "Server",
+            "type": "string",
+            "label": "Database Connection",
+            "required": false
+        },
+        {
+            "name": "Database",
+            "type": "string",
+            "label": "Name of the Database",
+            "required": false
+        },
+         {
+            "name": "AdminName",
+            "type": "string",
+            "label": "SQL Admin",
+            "required": false
+        },
+         {
+            "name": "AdminPassword",
+            "type": "string",
+            "label": "SQL Password",
+            "required": false
+        },
+         
+
+         {
+            "name": "UserNameSG",
+            "type": "string",
+            "label": "SendGrid UserName",
+            "required": false
+        },
+         {
+            "name": "PasswordSG",
+            "type": "string",
+            "label": "SendGrid Password",
+            "required": false
+        },
+         {
+            "name": "EmailFrom",
+            "type": "string",
+            "label": "Custom address",
+            "required": false
+        }
+
+      
+
+  ],  
+"dataSourceBindings": [
+],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Azure.ps1"
+    }
+  }
+}
