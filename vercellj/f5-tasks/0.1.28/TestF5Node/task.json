@@ -1,0 +1,98 @@
+{
+  "id": "984c3692-d7bc-49a8-aebc-45422d5b74a3",
+  "name": "TestF5Node",
+  "friendlyName": "Test - Node",
+  "description": "Verify Node status",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "4",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Test Node: /$(Partition)/$(Name))",
+  "inputs": [
+    {
+      "name": "LTMName",
+      "type": "string",
+      "label": "IP Address",
+      "defaultValue": "$(F5LTMName)",
+      "required": true,
+      "helpMarkDown": "F5 device name or IP address."
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "$(F5UserName)",
+      "required": true,
+      "helpMarkDown": "F5 user name. *case sensitive*"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "$(F5Password)",
+      "required": true,
+      "helpMarkDown": "F5 user password. The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it."
+    },
+    {
+      "name": "Partition",
+      "type": "string",
+      "label": "Partition",
+      "defaultValue": "Common",
+      "required": true,
+      "helpMarkDown": "F5 partition name *case sensitive*."
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Node",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "F5 node name *case sensitive*."
+    },
+    {
+      "name": "NodeSession",
+      "type": "pickList",
+      "label": "Session",
+      "defaultValue": "monitor-enabled",
+      "required": true,
+      "helpMarkDown": "F5 node session",
+      "options": {
+        "monitor-enabled": "monitor-enabled",
+        "monitor-disabled": "monitor-disabled",
+        "user-disabled": "user-disabled",
+        "user-enabled": "user-enabled"
+      }
+    },
+    {
+      "name": "NodeState",
+      "type": "pickList",
+      "label": "State",
+      "defaultValue": "up",
+      "required": true,
+      "helpMarkDown": "F5 node state",
+      "options": {
+        "up": "up",
+        "down": "down",
+        "user-down": "user-down",
+        "unchecked": "unchecked"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Test-F5Node.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

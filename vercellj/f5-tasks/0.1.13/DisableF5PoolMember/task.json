@@ -1,0 +1,101 @@
+{
+  "id": "31e75ea0-9d2b-11e6-acba-7dd161269b2e",
+  "name": "DisableF5PoolMember",
+  "friendlyName": "Disable - Pool Member",
+  "description": "Disable Pool Member(s)",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "13",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Disable Pool Member: /$(PoolName)/$(Partition)/$(Name))",
+  "inputs": [
+    {
+      "name": "LTMName",
+      "type": "string",
+      "label": "IP Address",
+      "defaultValue": "$(F5LTMName)",
+      "required": true,
+      "helpMarkDown": "F5 device name or IP address."
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "$(F5UserName)",
+      "required": true,
+      "helpMarkDown": "F5 user name. *case sensitive*"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "$(F5Password)",
+      "required": true,
+      "helpMarkDown": "F5 user password. The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it, and then reference it here, like '$(F5Password)'."
+    },
+    {
+      "name": "Application",
+      "type": "string",
+      "label": "Application",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "F5 iApp name (optional) *case sensitive*."
+    },
+    {
+      "name": "Partition",
+      "type": "string",
+      "label": "Partition",
+      "defaultValue": "Common",
+      "required": true,
+      "helpMarkDown": "F5 partition name *case sensitive*."
+    },
+    {
+      "name": "PoolName",
+      "type": "string",
+      "label": "Pool",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "F5 pool name *case sensitive*."
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Member Name",
+      "defaultValue": "*",
+      "required": true,
+      "helpMarkDown": "Regular expression used to identify pool member(s) to disable."
+    },
+    {
+      "name": "DeviceGroup",
+      "type": "string",
+      "label": "Device Group",
+      "defaultValue": "$(F5DeviceGroup)",
+      "required": false,
+      "helpMarkDown": "F5 device group to sync to (optional). *case sensitive*"
+    },
+    {
+      "name": "Force",
+      "type": "boolean",
+       "label": "Forced Offline",
+      "defaultValue": "false",
+      "helpMarkDown": "Forced Offline (Only active connections allowed)."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Disable-F5PoolMember.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "id": "0f10e9a0-9d2b-11e6-9324-2935380740c6",
+  "name": "EnableF5Node",
+  "friendlyName": "Enable - Node",
+  "description": "Enable Node(s) and all related pool member(s)",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "13",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Enable Node: /$(Partition)/$(Name))",
+  "inputs": [
+    {
+      "name": "LTMName",
+      "type": "string",
+      "label": "IP Address",
+      "defaultValue": "$(F5LTMName)",
+      "required": true,
+      "helpMarkDown": "F5 device name or IP address."
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "$(F5UserName)",
+      "required": true,
+      "helpMarkDown": "F5 user name. *case sensitive*"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "$(F5Password)",
+      "required": true,
+      "helpMarkDown": "F5 user password. The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it."
+    },
+    {
+      "name": "Partition",
+      "type": "string",
+      "label": "Partition",
+      "defaultValue": "Common",
+      "required": true,
+      "helpMarkDown": "F5 partition name *case sensitive*."
+    },
+    {
+      "name": "Name",
+      "type": "string",
+      "label": "Node",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "F5 node name *case sensitive*."
+    },
+    {
+      "name": "DeviceGroup",
+      "type": "string",
+      "label": "Device Group",
+      "defaultValue": "$(F5DeviceGroup)",
+      "required": false,
+      "helpMarkDown": "F5 device group to sync to (optional). *case sensitive*"
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Enable-F5Node.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

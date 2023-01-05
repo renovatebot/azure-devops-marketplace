@@ -1,0 +1,143 @@
+{
+  "id": "602f72da-26eb-4258-8e73-33f96cd1320f",
+  "name": "BlueGreenSelection",
+  "friendlyName": "Blue-Green Deployment - Selection",
+  "description": "Selects F5 Blue and Green pools by name, attempts to validate their pool members are mutually exclusive, and persists environment variable(s) for use by subsequent tasks.",
+  "author": "Jason Vercellone",
+  "helpMarkDown": "",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "29",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "F5 B-G $(VirtualServer)",
+  "groups": [
+      {
+          "name":"pools",
+          "displayName":"Pools",
+          "isExpanded":true
+      },
+      {
+          "name":"variables",
+          "displayName":"Output variables",
+          "isExpanded":true
+      }
+  ],
+  "inputs": [
+    {
+      "name": "LTMName",
+      "type": "string",
+      "label": "IP Address",
+      "defaultValue": "$(F5LTMName)",
+      "required": true,
+      "helpMarkDown": "F5 device name or IP address."
+    },
+    {
+      "name": "UserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "$(F5UserName)",
+      "required": true,
+      "helpMarkDown": "F5 user name. *case sensitive*"
+    },
+    {
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "$(F5Password)",
+      "required": true,
+      "helpMarkDown": "F5 user password. The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it."
+    },
+    {
+      "name": "Application",
+      "type": "string",
+      "label": "Application",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "F5 application name (optional). *case sensitive*"
+    },
+    {
+      "name": "Partition",
+      "type": "string",
+      "label": "Partition",
+      "defaultValue": "Common",
+      "required": true,
+      "helpMarkDown": "F5 partition name *case sensitive*."
+    },
+    {
+      "name": "VirtualServer",
+      "type": "string",
+      "label": "Virtual server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "F5 virtual server. *case sensitive*"
+    },
+    {
+      "name": "DeviceGroup",
+      "type": "string",
+      "label": "Device Group",
+      "defaultValue": "$(F5DeviceGroup)",
+      "required": false,
+      "helpMarkDown": "F5 device group to sync to (optional). *case sensitive*"
+    },
+    {
+      "name": "BluePool",
+      "type": "string",
+      "label": "Blue pool",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pools",
+      "helpMarkDown": "F5 BLUE pool name. *case sensitive*"
+    },
+    {
+      "name": "GreenPool",
+      "type": "string",
+      "label": "Green pool",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "pools",
+      "helpMarkDown": "F5 GREEN pool name. *case sensitive*"
+    },
+    {
+      "name": "F5VariablePrefix",
+      "type": "string",
+      "label": "Prefix",
+      "defaultValue": "F5",
+      "required": false,
+      "groupName": "variables",
+      "helpMarkDown": "The tasks outputs 2 variables '{0}MachineList' and '{0}ServerList', where {0} is this optional prefix.  The default prefix is F5, so the default output variables are $(F5MachineList) and $(F5ServerList). It is only useful if multiple 'Blue-Green Deployment - Selection' tasks are necessary."
+    },
+    {
+      "name": "MachineListFormat",
+      "type": "string",
+      "label": "Machine format",
+      "defaultValue": "{1}:5985",
+      "required": true,
+      "groupName": "variables",
+      "helpMarkDown": "A machine list value format expression where {0} is ip address, {1} is server name, and {2} is the pool member port number."
+    },
+    {
+      "name": "ServerListFormat",
+      "type": "string",
+      "label": "Server format",
+      "defaultValue": "{1}",
+      "required": true,
+      "groupName": "variables",
+      "helpMarkDown": "A server list value format expression where {0} is ip address, {1} is name, and {2} is the port number of the pool member."
+    }
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Select-F5BlueGreen.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
