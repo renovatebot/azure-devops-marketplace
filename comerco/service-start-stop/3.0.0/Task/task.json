@@ -1,0 +1,69 @@
+{
+  "id": "2f54d623-fa68-4229-a80e-0340ea70f4fd",
+  "name": "Service",
+  "friendlyName": "Use PowerShell to manage a service",
+  "description": "Manage a Windows service",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Comerco",
+  "version": {
+    "Major": 3,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Start/Stop Service $(ServiceName)",
+  "inputs": [
+    {
+      "name": "ServiceName",
+      "type": "string",
+      "label": "Service Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of a service. Eg : W32Time.<br>Do not use the display name : Windows Time."
+    },
+    {
+      "name": "Action",
+      "type": "pickList",
+      "label": "Action for the service",
+      "required": true,
+      "helpMarkDown": "Type of the action: Start, Stop",
+      "options": {
+        "Start": "Start",
+        "Stop": "Stop"
+      }
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Administrator login for the target machine.<br>Eg: domain\\username"
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for administrator login for the target machine. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+    },
+    {
+      "name": "MachineNameslist",
+      "type": "string",
+      "label": "List of machine names delimited by commas(,) or semicolons(;)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the machines where the schedule task is running. (ex: serverName1,serverName2,serverName3;serverName4)"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
