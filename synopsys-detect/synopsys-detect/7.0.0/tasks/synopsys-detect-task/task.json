@@ -1,0 +1,96 @@
+{
+  "id": "5e9b6b5e-3130-47dc-89c5-77a58949f2cf",
+  "name": "SynopsysDetectTask",
+  "friendlyName": "Synopsys Detect",
+  "description": "Execute Synopsys Detect against your build",
+  "author": "Synopsys",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 7,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Run Synopsys Detect for your build $(message)",
+  "inputs": [
+    {
+      "name": "BlackDuckService",
+      "type": "connectedService:SynopsysBlackDuck",
+      "label": "Black Duck Service Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Black Duck end point to use. Click on 'manage' and add a new Service Endpoint of type 'Black Duck'"
+    },
+    {
+      "name": "BlackDuckProxyService",
+      "type": "connectedService:SynopsysProxy",
+      "label": "Black Duck Proxy Service Endpoint",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Select the Black Duck proxy to use. Click on 'manage' and add a new Service Endpoint of type 'Black Duck Proxy'"
+    },
+    {
+      "name": "DetectRunMode",
+      "type": "radio",
+      "label": "Detect Run Mode",
+      "defaultValue": "UseScript",
+      "options": {
+        "UseScript": "Use Default Script",
+        "UseAirGap": "Use Air Gap"
+      }
+    },
+    {
+      "name": "DetectArguments",
+      "type": "multiLine",
+      "label": "Detect Arguments",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional detect arguments. Newline or space to separate. Use double quotes to escape. Can use environment and build variables."
+    },
+    {
+      "name": "AddTaskSummary",
+      "type": "boolean",
+      "defaultValue": true,
+      "label": "Add Detect Task Summary",
+      "required": false,
+      "helpMarkDown": "If set to true, will add a summary of the detect task to the build summary tab."
+    },
+    {
+      "name": "DetectVersion",
+      "type": "string",
+      "label": "Detect Version",
+      "defaultValue": "latest",
+      "required": true,
+      "helpMarkDown": "Version of the detect binary to use. Default: latest.",
+      "visibleRule": "DetectRunMode = UseScript"
+    },
+    {
+      "name": "DetectFolder",
+      "type": "string",
+      "label": "Detect Folder",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The location in the Tool directory to download the detect jar or the location of an existing detect jar. Default: 'detect' directory.",
+      "visibleRule": "DetectRunMode = UseScript"
+    },
+    {
+      "name": "DetectAirGapJarDirectoryPath",
+      "type": "string",
+      "defaultValue": "",
+      "label": "Detect Air Gap Jar Directory Path",
+      "required": true,
+      "helpMarkDown": "The extracted Detect jar directory path that will be used for Air Gap mode.",
+      "visibleRule": "DetectRunMode = UseAirGap"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "detect-task.js"
+    }
+  }
+}
