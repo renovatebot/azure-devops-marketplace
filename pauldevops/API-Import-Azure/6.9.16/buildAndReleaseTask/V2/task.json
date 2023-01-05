@@ -1,0 +1,158 @@
+{
+  "id": "2002ea40-168a-11e8-a8e0-13723dcf3280",
+  "name": "AzureAPIImport",
+  "friendlyName": "API Import (Azure)",
+  "description": "Add/Import API definition (Swagger,Wadl) using URL or File ",
+  "author": "paulpuvi@outlook.com",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "demands": [
+    "azureps",
+    "DotNetFramework"
+  ],
+  "version": {
+    "Major": "1",
+    "Minor": "1",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "releaseNotes": "What's new in version <br />Supports Import defintion file from linked artifact path (swagger/wadl)<br />Formatted Ouput<br />.",
+  "instanceNameFormat": "Azure API Import $(weburlpath)",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceNameARM",
+      "options": {
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "ApiRG",
+      "type": "pickList",
+      "label": "APIM Resource Group Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Resource group name of APIM Instance.",
+      "options": {},
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "Apimname",
+      "type": "pickList",
+      "label": "API Instance Name ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Api Instance ",
+      "options": {},
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "target",
+      "type": "radio",
+      "label": "Source Type",
+      "required": true,
+      "defaultValue": "endpointurl",
+      "helpMarkDown": "Specification  Source: URL or File",
+      "options": {
+        "endpointurl": "URL",
+        "filePath": "File Path"
+      }
+    },
+    {
+      "name": "endpointurl",
+      "type": "string",
+      "label": "API Definition URL ",
+      "visibleRule": "target = endpointurl",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Please make sure this url is reachable from VSTS agent machine",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "filePath",
+      "type": "filePath",
+      "label": "API Definition FILE",
+      "visibleRule": "target = filePath",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Path of the script to execute. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+    },
+    {
+      "name": "Specificationformat",
+      "type": "pickList",
+      "label": "Specification Format",
+      "defaultValue": "swagger",
+      "required": true,
+      "options": {
+        "swagger": "swagger",
+        "wadl": "wadl"
+      },
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "weburlpath",
+      "type": "string",
+      "label": "API Suffix ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Last part of the API's public URL",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ApiRG",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "ApiPortals",
+      "target": "Apimname",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ApiManagement/service?api-version=2016-07-07",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ApiRG)"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\API_IMPORT_Asset.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

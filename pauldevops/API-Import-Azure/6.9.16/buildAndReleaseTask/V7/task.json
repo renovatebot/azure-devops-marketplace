@@ -1,0 +1,362 @@
+{
+  "id": "2002ea40-168a-11e8-a8e0-13723dcf3280",
+  "name": "AzureAPIImport",
+  "friendlyName": "API Import (Azure)",
+  "description": "Create/Update API (Openapi-2.0/3.0,Wadl) using URL or File ",
+  "author": "paulpuvi@outlook.com",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent",
+    "DeploymentGroup"
+  ],
+  "demands": [
+    "azureps",
+    "DotNetFramework"
+  ],
+  "version": {
+    "Major": "6",
+    "Minor": "9",
+    "Patch": "29"
+  },
+  "preview": true,
+  "minimumAgentVersion": "1.95.0",
+   "releaseNotes": "openapi and self-managed gw testing",
+  "instanceNameFormat": "Azure API $(Specificationformat) Import ",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceNameARM",
+      "options": {
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "ApiRG",
+      "type": "pickList",
+      "label": "APIM Resource Group Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Resource group name of APIM Instance.",
+      "options": {},
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "Apimname",
+      "type": "pickList",
+      "label": "APIM Instance Name ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Api Instance ",
+      "options": {},
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "selfgw",
+      "type": "boolean",
+      "label": "Use self-managed apim gateway",
+      "helpMarkDown": "Enable this to use self-managed apim gateways"
+    },
+    {
+      "name": "apimgateway",
+      "type": "pickList",
+      "label": "APIM Gateway",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "selfgw = true",
+      "helpMarkDown": "Select the Apim Gateway",
+      "options": {},
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "target",
+      "type": "radio",
+      "label": "Source Type",
+      "required": true,
+      "defaultValue": "endpointurl",
+      "helpMarkDown": "Specification  Source: URL or File",
+      "options": {
+        "endpointurl": "URL",
+        "filePath": "File Path"
+      }
+    },
+    {
+      "name": "endpointurl",
+      "type": "string",
+      "label": "API Definition URL ",
+      "visibleRule": "target = endpointurl",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Please make sure this url is reachable from azure devops agent machine",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "filePath",
+      "type": "filePath",
+      "label": "API Definition FILE",
+      "visibleRule": "target = filePath",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Path of the script to execute. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+    },
+
+    {
+      "name": "urlspecificationformat",
+      "type": "pickList",
+      "label": "Specification Format",
+      "defaultValue": "swagger",
+      "visibleRule": "target = endpointurl",
+      "required": true,
+      "options": {
+        "openapi-3.0-Json": "openapi-3.0-Json",
+        "openapi-3.0-Yaml": "openapi-3.0-Yaml",
+        "swagger": "swagger",
+        "wadl": "wadl"
+      },
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "filespecificationformat",
+      "type": "pickList",
+      "label": "Specification Format",
+      "visibleRule": "target = filepath",
+      "defaultValue": "swagger",
+      "required": true,
+      "options": {
+        "openapi--3.0-Json": "openapi+json",
+        "openapi--3.0-Yaml": "openapi",
+        "openapi--2.0-Json": "swagger-json",
+        "wadl-xml": "wadl-xml"
+      },
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "weburlpath",
+      "type": "string",
+      "label": "API Suffix ",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Last part of the API's public URL",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "subscriptionrequired",
+      "type": "boolean",
+      "label": "Subscription required ?",
+      "helpMarkDown": "Specifies whether an API or Product subscription is required for accessing the API "
+    },
+
+    {
+      "name": "header",
+      "type": "string",
+      "label": "Header name",
+      "defaultValue": "Ocp-Apim-Subscription-Key",
+      "required": true,
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      },
+      "visibleRule": "subscriptionrequired=true"
+    },
+
+    {
+      "name": "query",
+      "type": "string",
+      "label": "Query parameter name",
+      "defaultValue": "subscription-key",
+      "required": true,
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      },
+      "visibleRule": "subscriptionrequired=true"
+    },
+
+    {
+      "name": "apiversion",
+      "type": "boolean",
+      "label": "Version this API?",
+      "helpMarkDown": "Enable this to create/Update version of new/existing API  ",
+      "visibleRule": "target = endpointurl"
+
+    },
+    {
+      "name": "schematarget",
+      "type": "radio",
+      "label": "Versioning Scheme",
+      "required": true,
+      "defaultValue": "path",
+      "helpMarkDown": "value that determines where the API Version identifer will be located in a HTTP request",
+      "options": {
+        "path": "Path",
+        "header": "Header",
+        "querystring": "Query String"
+      },
+      "visibleRule": "apiversion=true"
+    },
+    {
+      "name": "versionsetidentifier",
+      "type": "string",
+      "label": "Api Version Set identifier",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "e.g v1",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      },
+      "visibleRule": "apiversion=true"
+    },
+    {
+      "name": "versiondisplayname",
+      "type": "string",
+      "label": "Api Version Display Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "e.g Testing ",
+      "options": {},
+      "properties": {
+        "EditableOptions": "true"
+      },
+      "visibleRule": "apiversion=true"
+    },
+    {
+      "name": "versionheadername",
+      "type": "string",
+      "label": "Version Header",
+      "visibleRule": "schematarget = header",
+      "required": true,
+      "defaultValue": "api-version",
+      "helpMarkDown": "Name of HTTP header parameter that indicates the API Version."
+    },
+    {
+      "name": "versionqueryname",
+      "type": "string",
+      "label": "Version query parameter",
+      "visibleRule": "schematarget = querystring",
+      "required": true,
+      "defaultValue": "api-version",
+      "helpMarkDown": "Name of query parameter that indicates the API Version."
+    },
+    {
+      "name": "addtoproduct",
+      "type": "boolean",
+      "label": "Add API To Existing Product(s)",
+      "helpMarkDown": "Enable this to add api to existing product"
+    },
+    {
+      "name": "productselector",
+      "type": "pickList",
+      "label": "Product selector",
+      "required": true,
+      "defaultValue": "Product",
+      "helpMarkDown": "value that determines where the API Version identifer will be located in a HTTP request",
+      "options": {
+        "Product": "Product",
+        "Products": "Products"
+      },
+      "visibleRule": "addtoproduct=true"
+    },
+    {
+      "name": "productname",
+      "type": "pickList",
+      "label": "Product",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Existing Product selection.",
+      "options": {},
+      "properties": {
+        "EditableOptions": "False"
+      },
+      "visibleRule": "productselector=Product"
+    },
+    {
+      "name": "productnames",
+      "type": "multiline",
+      "label": "Products",
+      "defaultValue": "starter,unlimited",
+      "required": true,
+      "helpMarkDown": "Enter the name of the products.  i.e Starter,Unlimited,Xyz ",
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "visibleRule": "productselector=Products"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "ApiRG",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "ApiPortals",
+      "target": "Apimname",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ApiManagement/service?api-version=2019-01-01",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ApiRG)"
+      }
+    },
+    {
+      "name": "ApiGateways",
+      "target": "Apimgateway",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ApiManagement/service/$(Apimname)/gateways?api-version=2019-12-01",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(ApiRG)"
+      }
+    },
+    {
+      "target": "productname",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ApiManagement/service/$(Apimname)/products?api-version=2019-01-01",
+      "resultSelector": "jsonpath:$.value[*]",
+      "resultTemplate": "{\"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{properties.displayName}}}\" }",
+      "parameters": {
+        "ResourceGroupName": "$(ApiRG)"
+      }
+    }    
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\API_IMPORT_Asset.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
