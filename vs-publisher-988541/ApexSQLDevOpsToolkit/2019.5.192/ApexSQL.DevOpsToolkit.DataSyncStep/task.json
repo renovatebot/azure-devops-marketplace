@@ -1,0 +1,213 @@
+{
+  "id": "3f8cdc5e-2e09-4d36-9015-0c4f94511a44",
+  "name": "ApexSqlDotDataSync",
+  "friendlyName": "ApexSQL DevOps toolkit - Sync data",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Sync data",
+  "description": "Prepare data synchronization script.",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "sourceOptions",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "targetDbOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    },
+    {
+      "name": "advancedOptions",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "Package",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": true,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "dataSource",
+      "type": "pickList",
+      "label": "Data source",
+      "defaultValue": "database",
+      "options": {
+        "database": "Database",
+        "nuget": "NuGet feed",
+        "local": "Local NuGet",
+        "buildVcs": "Build VCS",
+        "subroot": "Subfolder of build VSC root"
+      },
+      "required": false,
+      "helpMarkDown": "Choose which type of source to use.",
+      "groupName": "sourceOptions"
+    },
+    {
+      "name": "connSourceSubDir",
+      "type": "string",
+      "label": "Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path to database source project",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource=subroot"
+    },
+    {
+      "name": "sourcePackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": false,
+      "helpMarkDown": "Enter full path, with file name and extension, to NuGet package with stored database source. Leave empty if package, created in previous task, will be used",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = local"
+    },
+    {
+      "name": "sourceFeedPackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of package located on designated online feed",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = nuget"
+    },
+    {
+      "name": "sourceFeed",
+      "type": "string",
+      "label": "Feed URI",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "URL to online feed where package is located",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = nuget"
+    },
+    {
+      "name": "sourceSqlServer",
+      "type": "string",
+      "label": "Source SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify source database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = database"
+    },
+    {
+      "name": "sourceSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = database"
+    },
+    {
+      "name": "sourceSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = database"
+    },
+    {
+      "name": "sourceDbName",
+      "type": "string",
+      "label": "Source Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify source database name",
+      "groupName": "sourceOptions",
+      "visibleRule": "dataSource = database"
+    },
+    {
+      "name": "targetSqlServer",
+      "type": "string",
+      "label": "Target SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetDbName",
+      "type": "string",
+      "label": "Target Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "specProject",
+      "type": "filePath",
+      "label": "ApexSQL project file path.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path to ApexSQL project file. Project file name and extension should be included in path",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "additionalParams",
+      "type": "multiLine",
+      "label": "Additional parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters for ApexSQL CLI",
+      "groupName": "advancedOptions"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

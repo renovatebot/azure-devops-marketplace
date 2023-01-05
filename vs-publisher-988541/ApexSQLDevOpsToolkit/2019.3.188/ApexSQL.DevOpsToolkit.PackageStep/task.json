@@ -1,0 +1,153 @@
+{
+  "id": "e9997d32-b64a-4191-9c2d-cc601355b8a0",
+  "name": "ApexSqlDotPackage",
+  "friendlyName": "ApexSQL DevOps toolkit - Package",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Package",
+  "description": "Prepare NuGet deployment package containing database script folder.",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "sourceDbOptions",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "additionalOptions",
+      "displayName": "Additional options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "ID",
+      "defaultValue": "package.1.0.$(Build.BuildNumber)",
+      "required": false,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "connServer",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceDbOptions"
+    },
+    {
+      "name": "connSqlAuthLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceDbOptions"
+    },
+    {
+      "name": "connSqlAuthPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceDbOptions"
+    },
+    {
+      "name": "connDbName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "sourceDbOptions"
+    },
+    {
+      "name": "refactorSqlScripts",
+      "type": "boolean",
+      "label": "Refactor SQL scripts",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Format or obfuscate SQL scripts",
+      "groupName": "additionalOptions"
+    },
+    {
+      "name": "refactorType",
+      "type": "pickList",
+      "label": "Refactor type",
+      "defaultValue": "format",
+      "options": {
+        "format": "Format",
+        "obfuscate": "Obfuscate"
+      },
+      "required": false,
+      "helpMarkDown": "Select type of refactor",
+      "groupName": "additionalOptions",
+      "visibleRule": "refactorSqlScripts = true"
+    },
+    {
+      "name": "manualProfile",
+      "type": "boolean",
+      "label": "Custom profile",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Check this option to specify custom refactor profile name.",
+      "groupName": "additionalOptions",
+      "visibleRule": "refactorType = format"
+    },
+    {
+      "name": "formatProfileList",
+      "type": "pickList",
+      "label": "Profile",
+      "defaultValue": "ApexSQL",
+      "options": {
+        "ApexSQL": "ApexSQL",
+        "Compact": "Compact",
+        "Extended": "Extended",
+        "MSDN": "MSDN SQL BOL"
+      },
+      "required": false,
+      "helpMarkDown": "Specify profile name.",
+      "groupName": "additionalOptions",
+      "visibleRule": "manualProfile = false"
+    },
+    {
+      "name": "formatProfile",
+      "type": "string",
+      "label": "Profile",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify profile name. Leave empty to use default profile.",
+      "groupName": "additionalOptions",
+      "visibleRule": "manualProfile = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

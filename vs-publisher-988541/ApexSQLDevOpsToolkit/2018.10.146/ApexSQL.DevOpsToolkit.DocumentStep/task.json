@@ -1,0 +1,220 @@
+{
+  "id": "ce399001-0aaa-4364-b5f8-50543569449d",
+  "name": "ApexSqlDotDocument",
+  "friendlyName": "ApexSQL DevOps toolkit - Document",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Document",
+  "description": "Create database documentation",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "sourceOptions",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "targetDbOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    },
+    {
+      "name": "advancedOptions",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "Package",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": true,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "trackChanges",
+      "type": "boolean",
+      "label": "Changes only",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Document only differences between selected source and target",
+      "groupName": "sourceOptions"
+    },
+    {
+      "name": "sourceUseDatabaseScripts",
+      "type": "boolean",
+      "label": "From a package",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Check option if database source is stored in package",
+      "groupName": "sourceOptions",
+      "visibleRule": "trackChanges = true"
+    },
+    {
+      "name": "pkgStoredOn",
+      "type": "pickList",
+      "label": "Stored on",
+      "defaultValue": "local",
+      "options": {
+        "local": "Local storage",
+        "feed": "NuGet feed"
+      },
+      "required": false,
+      "helpMarkDown": "Choose whether package is sourced locally or from online feed",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceUseDatabaseScripts = true && trackChanges = true"
+    },
+    {
+      "name": "sourcePackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path, with file name and extension, to NuGet package with stored database source. Leave empty if package, created in previous task, will be used",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = local  && sourceUseDatabaseScripts = true && trackChanges = true"
+    },
+    {
+      "name": "sourceFeedPackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of package located on designated online feed",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = feed && sourceUseDatabaseScripts = true && trackChanges = true"
+    },
+    {
+      "name": "sourceFeed",
+      "type": "string",
+      "label": "Feed URI",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "URL to online feed where package is located",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = feed && sourceUseDatabaseScripts = true && trackChanges = true"
+    },
+    {
+      "name": "sourceSqlServer",
+      "type": "string",
+      "label": "Source SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify source database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "sourceOptions",
+      "visibleRule": "trackChanges = true && sourceUseDatabaseScripts = false"
+    },
+    {
+      "name": "sourceSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "trackChanges = true && sourceUseDatabaseScripts = false"
+    },
+    {
+      "name": "sourceSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "sourceOptions",
+      "visibleRule": "trackChanges = true && sourceUseDatabaseScripts = false"
+    },
+    {
+      "name": "sourceDbName",
+      "type": "string",
+      "label": "Source Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify source database name",
+      "groupName": "sourceOptions",
+      "visibleRule": "trackChanges = true && sourceUseDatabaseScripts = false"
+    },
+    {
+      "name": "targetSqlServer",
+      "type": "string",
+      "label": "Target SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetDbName",
+      "type": "string",
+      "label": "Target Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "specProject",
+      "type": "filePath",
+      "label": "ApexSQL Doc project file path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path to ApexSQL Doc project file. Project file name and extension should be included in path",
+      "groupName": "advancedOptions"
+    },
+    {
+      "name": "additionalParams",
+      "type": "multiLine",
+      "label": "Additional parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters for ApexSQL Doc CLI",
+      "groupName": "advancedOptions"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

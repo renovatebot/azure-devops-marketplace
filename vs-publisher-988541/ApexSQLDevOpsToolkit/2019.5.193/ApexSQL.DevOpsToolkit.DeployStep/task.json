@@ -1,0 +1,214 @@
+{
+  "id": "9d253d9b-38da-4594-9e97-9f7068d023d7",
+  "name": "ApexSqlDotDeploy",
+  "friendlyName": "ApexSQL DevOps toolkit - Deploy",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Deploy",
+  "description": "Execute schema and data synchronization scripts against target database.",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "sourceOptions",
+      "displayName": "Source",
+      "isExpanded": true
+    },
+    {
+      "name": "targetDbOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    },
+    {
+      "name": "validationOptions",
+      "displayName": "Validation",
+      "isExpanded": true
+    },
+    {
+      "name": "additionalOptions",
+      "displayName": "Additional options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "ID",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": true,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "sourceUseScriptsFromPackage",
+      "type": "boolean",
+      "label": "From a package",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Check if database synchronization scripts are stored in package",
+      "groupName": "sourceOptions"
+    },
+    {
+      "name": "pkgStoredOn",
+      "type": "pickList",
+      "label": "Stored on",
+      "defaultValue": "local",
+      "options": {
+        "local": "Local storage",
+        "feed": "NuGet feed"
+      },
+      "required": false,
+      "helpMarkDown": "Choose whether package is sourced locally or from online feed",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceUseScriptsFromPackage = true"
+    },
+    {
+      "name": "sourcePackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "package.1.0.$(Build.BuildNumber).nupkg",
+      "required": false,
+      "helpMarkDown": "Enter full path, with file name and extension, to NuGet package with stored database source. Leave empty if package, created in previous task, will be used",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = local"
+    },
+    {
+      "name": "sourceFeedPackageName",
+      "type": "string",
+      "label": "Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Name of package located on designated online feed",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = feed"
+    },
+    {
+      "name": "sourceFeed",
+      "type": "string",
+      "label": "Feed URI",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "URL to online feed where package is located",
+      "groupName": "sourceOptions",
+      "visibleRule": "pkgStoredOn = feed"
+    },
+    {
+      "name": "sourceSchemaSyncFile",
+      "type": "filePath",
+      "label": "Schema Sync file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path, with file name and extension, to schema synchronization script",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceUseScriptsFromPackage = false"
+    },
+    {
+      "name": "sourceDataSyncFile",
+      "type": "filePath",
+      "label": "Data Sync file",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path, with file name and extension, to data synchronization script",
+      "groupName": "sourceOptions",
+      "visibleRule": "sourceUseScriptsFromPackage = false"
+    },
+    {
+      "name": "targetSqlServer",
+      "type": "string",
+      "label": "Target SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlAuthLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetSqlAuthPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "targetDbName",
+      "type": "string",
+      "label": "Target Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "preDeployment",
+      "type": "boolean",
+      "label": "Pre-deployment",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Execute pre-deployment validation",
+      "groupName": "validationOptions"
+    },
+    {
+      "name": "postDeployment",
+      "type": "boolean",
+      "label": "Post-deployment",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Execute post-deployment validation",
+      "groupName": "validationOptions"
+    },
+    {
+      "name": "backupBeforeDeployment",
+      "type": "boolean",
+      "label": "Backup before deployment",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Backup database before deployment",
+      "groupName": "additionalOptions"
+    },
+    {
+      "name": "additionalParameters",
+      "type": "string",
+      "label": "Additional parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters for backup CLI",
+      "groupName": "additionalOptions",
+      "visibleRule": "backupBeforeDeployment = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

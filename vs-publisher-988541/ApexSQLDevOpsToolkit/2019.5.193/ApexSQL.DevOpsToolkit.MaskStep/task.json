@@ -1,0 +1,112 @@
+﻿{
+  "id": "2E8FE57E-444C-4746-B997-7E035E64A90E",
+  "name": "ApexSqlDotMask",
+  "friendlyName": "ApexSQL DevOps toolkit - Mask",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Mask",
+  "description": "Mask step",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "targetDbOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    },
+    {
+      "name": "additionalOptions",
+      "displayName": "Additional options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "ID",
+      "defaultValue": "package.1.0.$(Build.BuildNumber)",
+      "required": false,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "connServer",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connSqlAuthLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connSqlAuthPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connDbName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "specProject",
+      "type": "filePath",
+      "label": "ApexSQL Mask project file path.",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter full path to ApexSQL Mask project file. Project file name and extension should be included in path",
+      "groupName": "additionalOptions"
+    },
+    {
+      "name": "additionalParams",
+      "type": "multiLine",
+      "label": "Additional parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters for ApexSQL Build CLI",
+      "groupName": "additionalOptions"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}

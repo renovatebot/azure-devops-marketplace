@@ -1,0 +1,121 @@
+{
+  "id": "0f144c64-29c7-4084-a044-d0626ffd8464",
+  "name": "ApexSqlDotTest",
+  "friendlyName": "ApexSQL DevOps toolkit - Test",
+  "instanceNameFormat": "ApexSQL DevOps toolkit - Test",
+  "description": "Install tSQLt framework and perform SQL unit tests.",
+  "helpMarkDown": "",
+  "category": "Build",
+  "author": "ApexSQL LLC",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "groups": [
+    {
+      "name": "packageOptions",
+      "displayName": "Package",
+      "isExpanded": true
+    },
+    {
+      "name": "targetDbOptions",
+      "displayName": "Target",
+      "isExpanded": true
+    },
+    {
+      "name": "advOptions",
+      "displayName": "Additional options",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "specIsOutputIncluded",
+      "type": "boolean",
+      "label": "Include output in package",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Store output in NuGet package file",
+      "groupName": "packageOptions"
+    },
+    {
+      "name": "specOutputName",
+      "type": "string",
+      "label": "ID",
+      "defaultValue": "package.1.0.$(Build.BuildNumber)",
+      "required": false,
+      "helpMarkDown": "Specify output package file name. Use format {name}.{major}.{minor}.{build}",
+      "groupName": "packageOptions",
+      "visibleRule": "specIsOutputIncluded = true"
+    },
+    {
+      "name": "connServer",
+      "type": "string",
+      "label": "SQL Server",
+      "defaultValue": "(local)",
+      "required": false,
+      "helpMarkDown": "Specify target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connSqlAuthLogin",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify login name to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connSqlAuthPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify password to use for SQL Server authentication. Leave empty for Windows authentication",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "connDbName",
+      "type": "string",
+      "label": "Database",
+      "defaultValue": "DefaultDb",
+      "required": false,
+      "helpMarkDown": "Specify target database name",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "installSqlCopTest",
+      "type": "boolean",
+      "label": "Install SQL Cop Test",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Install and run SQL Cop tests if they don't exist in selected database",
+      "groupName": "targetDbOptions"
+    },
+    {
+      "name": "advClassName",
+      "type": "string",
+      "label": "Class",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Enter name of specific class in selected database",
+      "groupName": "advOptions"
+    },
+    {
+      "name": "additionalParams",
+      "type": "multiLine",
+      "label": "Additional parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional parameters for ApexSQL Unit Test CLI",
+      "groupName": "advOptions"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "bootstrap.js"
+    }
+  }
+}
