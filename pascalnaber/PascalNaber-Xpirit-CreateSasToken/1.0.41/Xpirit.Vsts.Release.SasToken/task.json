@@ -1,0 +1,116 @@
+{
+  "id": "9E0B2BDA-6A8D-4215-8E8C-3D47614DB813",
+  "name": "createsastoken",
+  "friendlyName": "Create SAS Token",
+  "description": "Create a SAS Token which can be used to pass to the deployment of an ARM Template",
+  "helpMarkDown": "[More Information, setup...]()",
+  "category": "Utility",
+  "author": "Pascal Naber (Xpirit)",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 41
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+    {
+      "name": "output",
+      "displayName": "Output Variables",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "StorageAccountRM",
+      "type": "pickList",
+      "label": "RM Storage Account",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify a pre-existing ARM storage account.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+
+    },
+    {
+      "name": "SasTokenTimeOutInHours",
+      "type": "string",
+      "label": "SasToken TimeOut In Hours",
+      "defaultValue": "1",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter the number of hours the token is valid."
+    },
+    {
+      "name": "Permission",
+      "type": "string",
+      "label": "Permission",
+      "defaultValue": "r",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter the rights that the token should has (rwdl) which stands for read write delete list."
+    },
+    {
+      "name": "StorageContainerName",
+      "type": "string",
+      "label": "Blob Container Name",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter the name of an existing Blob container within the given StorageAccount."
+    },
+    {
+      "name": "outputStorageUri",
+      "type": "string",
+      "label": "Storage Container URI",
+      "required": false,
+      "defaultValue": "storageUri",
+      "groupName": "output",
+      "helpMarkDown": "Provide a name (without $() ) for the variable for the storage container URI that the files were copied to with this task. The variable can be used as $(variableName) to refer to the resource group in subsequent tasks like in the DeployAzureResourceGroup task for deploying ARM Templates. Valid only when the selected destination is Azure Blob."
+    },
+    {
+      "name": "outputStorageContainerSasToken",
+      "type": "string",
+      "label": "Storage Container SAS Token",
+      "required": true,
+      "defaultValue": "storageToken",
+      "groupName": "output",
+      "helpMarkDown": "Provide a name (without $() ) for the variable for the storage container SAS Token used to access the files copied to with this task. The variable can be used as $(variableName) to refer to the resource group in subsequent tasks like in the DeployAzureResourceGroup task for deploying ARM Templates. Valid only when the selected destination is Azure Blob."
+    }
+
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "StorageAccountRM",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureStorageAccountRM"
+    }
+  ],
+  "instanceNameFormat": "Create SAS Token for Storage Account $(StorageAccountRM)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Apply.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
