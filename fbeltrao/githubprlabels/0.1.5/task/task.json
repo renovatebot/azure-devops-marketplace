@@ -1,0 +1,55 @@
+{
+    "id": "79ae0514-ee91-4a19-ae69-030952b0b23e",
+    "name": "githubprlabels",
+    "friendlyName": "GitHub PR labels",
+    "description": "Add or remove labels in GitHub pull requests",
+    "helpMarkDown": "Add or remove labels in GitHub pull requests",
+    "category": "Utility",
+    "author": "fbeltrao",
+    "preview": true,
+    "visibility": [
+        "Build"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 5
+    },
+    "instanceNameFormat": "GitHub PR label ($(action) $(label))",
+    "inputs": [
+        {
+            "name": "gitHubConnection",
+            "type": "connectedService:github:OAuth,PersonalAccessToken",
+            "label": "GitHub Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the service connection name for your GitHub connection. Learn more about service connections [here](https://aka.ms/AA3am5s)."
+        },
+        {
+            "name": "action",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "add",
+            "required": true,
+            "helpMarkDown": "Specify whether the label should be added or removed from the pull request",
+            "options": {
+                "add": "Add",
+                "remove": "Remove"
+            }
+        },
+        {
+            "name": "label",
+            "type": "string",
+            "label": "Label",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "action = add || action = remove",
+            "helpMarkDown": "Specify the existing label to add/remove in the GitHub PR. Remember that the label definition must already exist!"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
