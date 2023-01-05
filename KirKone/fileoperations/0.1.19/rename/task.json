@@ -1,0 +1,72 @@
+{
+    "id": "070a44c5-c554-4e46-ab56-4c1c30c5dc5d",
+    "name": "rename",
+    "friendlyName": "File Rename",
+    "description": "Rename files with custom inputs",
+    "helpMarkDown": "[More Information](https://github.com/kirkone/KK.VSTS.Extensions.FileOperations/blob/master/README.md)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 4
+    },
+    "demands": [],
+    "minimumAgentVersion": "2.0.0",
+    "groups": [
+        {
+            "name": "renameAdvanced",
+            "displayName": "Advanced",
+            "isExpanded": false,
+            "visibleRule": "Command = rename"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "Command",
+            "type": "pickList",
+            "label": "Command",
+            "defaultValue": "rename",
+            "required": true,
+            "helpMarkDown": "The operation to run.",
+            "options": {
+                "rename": "rename",
+                "append": "append"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "SourceFile",
+            "type": "filePath",
+            "label": "Source File",
+            "helpMarkDown": "This file will be renamed.",
+            "required": true,
+            "visibleRule": "Command = rename"
+        },
+        {
+            "name": "NewName",
+            "type": "string",
+            "label": "New Name",
+            "defaultValue": "",
+            "helpMarkDown": "The new name for the file.",
+            "required": true,
+            "visibleRule": "Command = rename"
+        }
+    ],
+    "instanceNameFormat": "$(Command): $(SourceFile)",
+    "execution": {
+        "Node": {
+            "target": "rename.js"
+        }
+    }
+}
