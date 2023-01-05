@@ -1,0 +1,103 @@
+{
+    "id": "9d2e4cf0-f3bb-11e6-978b-770d284f4f2d",
+    "name": "AzureAppServiceSetAppSettings",
+    "friendlyName": "Azure App Service: Set App settings",
+    "description": "Set the App Settings of an Azure App Service",
+    "author": "Henk Boelman",
+    "helpMarkDown": "[Read my blog for more Information](https://www.henkboelman.com/2017/vsts-task-to-set-app-settings-during-deploy)",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "demands": ["azureps"],
+    "version": {
+        "Major": "2",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Set App Settings: $(pickList)",
+    "inputs": [{
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "AzureRM Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the AzureRM Subscription that contains the AzureRM App Service"
+        },
+        {
+            "name": "WebAppName",
+            "type": "pickList",
+            "label": "Azure App Service",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the AzureRM App Service."
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select AzureRM Resource Group that contains the AzureRM App Service"
+        },
+        {
+            "name": "Slot",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Select the slot to configure, or leave empty to use the default, production slot."
+        },
+        {
+            "name": "AppSettings",
+            "type": "multiLine",
+            "label": "App Settings",
+            "defaultValue": "key1='value1'\nkey2='value2'",
+            "required": true,
+            "helpMarkDown": "Add every App Setting on a seperated line. Key and value are seperated by = and the values enclosed by a singleqoute",
+            "properties": {
+                "resizable": "true",
+                "rows": "20"
+            }
+        }
+    ],
+    "dataSourceBindings": [{
+            "target": "WebAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        },
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppResourceGroup",
+            "parameters": {
+                "WebAppName": "$(WebAppName)"
+            }
+        },
+        {
+            "target": "Slot",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppSlotsId",
+            "parameters": {
+                "ResourceGroupName": "$(ResourceGroupName)",
+                "WebAppName": "$(WebAppName)"
+            },
+            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+        }
+    ],
+    "execution": {
+        "AzurePowerShell": {
+            "target": "ApplyAppSettings.ps1"
+        }
+    }
+}
