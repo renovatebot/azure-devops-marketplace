@@ -1,0 +1,56 @@
+{
+	"id": "eac0431e-6ffc-4dc6-be6e-d296e9686ca6",
+	"name": "fetch-build-artifact",
+	"friendlyName": "Fetch Build Artifacts",
+	"description": "Fetch build artifacts from the server",
+	"helpMarkDown": "",
+	"category": "Utility",
+	"author": "Bool (by Sigma)",
+	"version": {
+		"Major": "1",
+		"Minor": "0",
+		"Patch": "2"
+	},
+	"instanceNameFormat": "Fetch Artifact: $(artifactName)",
+	"inputs": [
+		{
+			"name": "project",
+			"type": "string",
+			"label": "Project",
+			"defaultValue": "$(System.TeamProject)",
+			"required": false,
+			"helpMarkDown": "Project from where to fetch the build artifact. Leaving it blank defaults to the current project and is equal to using $(System.TeamProject)."
+		},
+		{
+			"name": "buildDefinitionId",
+			"type": "string",
+			"label": "Build Definition Id",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Id of build definition from where to fetch build artifact. Must be a valid numerical value, eg. 12, and an existing build definition."
+		},
+		{
+			"name": "artifactName",
+			"type": "string",
+			"label": "Build Artifact Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Name of the artifact to fetch, eg. \"drop\"."
+		},
+		{
+			"name": "targetDirectory",
+			"type": "filePath",
+			"label": "Target Folder",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "The directory where to download the artifact. Must be an existing directory. Leaving it blank defaults to source root directory and is equal to using $(Build.SourcesDirectory)."
+		}
+	],
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\fetch.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
