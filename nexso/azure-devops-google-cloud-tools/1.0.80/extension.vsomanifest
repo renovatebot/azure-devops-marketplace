@@ -1,0 +1,117 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.build_execute",
+        "vso.release"
+    ],
+    "contributions": [
+        {
+            "id": "gcp-credentials",
+            "description": "Credentials for tasks invoking Google Cloud Platform services",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "GCPToolsServiceEndpoint",
+                "displayName": "Google Cloud Platform",
+                "authorizationUrl": "",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Google Accounts",
+                    "value": "https://accounts.google.com/o/oauth2",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "GCPListFunctionRegions",
+                        "endpointUrl": "https://cloudfunctions.googleapis.com/v1/projects/$(gcpProject)/locations",
+                        "resultSelector": "jsonpath:$.locations[*].locationId"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "id": "endpoint-json",
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-cert",
+                        "displayName": "JSON Key file contents",
+                        "inputDescriptors": [
+                            {
+                                "id": "certificate",
+                                "name": "JSON Content",
+                                "description": "The contents of the json key file (credentials). [Learn more](https://github.com/nexsolab/azure-devops-google-cloud-tools/blob/master/SERVICECONN.md)",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "[Get Json Key File](https://console.cloud.google.com/iam-admin/serviceaccounts)"
+            }
+        },
+        {
+            "id": "GoogleCloudSdkTool",
+            "description": "Run an gcloud CLI command against an GCP connection",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GoogleCloudSdkTool"
+            }
+        },
+        {
+            "id": "GoogleCloudFunctions",
+            "description": "Deploy code to GCP Functions or create, remove and call functions",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GoogleCloudFunctions"
+            }
+        },
+        {
+            "id": "GoogleCloudDNS",
+            "description": "Create and manage DNS records in Google Cloud",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GoogleCloudDNS"
+            }
+        },
+        {
+            "id": "GoogleCloudPubSub",
+            "description": "Manage PubSub topics, subscriptions and publish or get messages",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GoogleCloudPubSub"
+            }
+        },
+        {
+            "id": "GoogleCloudMemorystore",
+            "description": "Manage Redis instances",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GoogleCloudMemorystore"
+            }
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/nexsolab/azure-devops-google-cloud-tools"
+    },
+    "contributionTypes": []
+}
