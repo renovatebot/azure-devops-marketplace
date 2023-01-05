@@ -1,0 +1,62 @@
+{
+	"id": "3933420c-5028-40d7-9eae-2f17f5484e17",
+	"name": "compile-type-script",
+	"friendlyName": "Compile TypeScript",
+	"description": "Compile TypeScript project or files",
+	"helpMarkDown": "Having Problems? Please [create an issue on our Github](https://github.com/BoolBySigma/CompileTypeScript/issues) and we will try to help you.",
+	"category": "Build",
+	"author": "Martin Nilsson",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 4
+	},
+	"instanceNameFormat": "Compile TypeScript",
+	"inputs": [
+		{
+			"name": "compileType",
+			"type": "pickList",
+			"label": "Compile",
+			"defaultValue": "1",
+			"options": {
+				"1": "Project",
+				"2": "Files"
+			},
+			"required": true,
+			"helpMarkDown": "Choose whether to compile a project (defined in a tsconfig.json file) or files."
+		},
+		{
+			"name": "projectPath",
+			"type": "filePath",
+			"label": "Path",
+			"defaultValue": "",
+			"required": false,
+			"visibleRule": "compileType=1",
+			"helpMarkDown": "Path to a valid <code>tsconfig.json</code> file or directory containing the <code>tsconfig.json</code> file. Variables can be used. Leaving it blank defaults to source root directory and is equal to using <code>$(Build.SourcesDirectory)</code>."
+		},
+		{
+			"name": "filesPath",
+			"type": "filePath",
+			"label": "Working Directory",
+			"defaultValue": "",
+			"required": false,
+			"visibleRule": "compileType=2",
+			"helpMarkDown": "Root directory that contains .ts files to compile. Variables can be used. Leaving it blank defaults to source root directory and is equal to using <code>$(Build.SourcesDirectory)</code>."
+		},
+		{
+			"name": "files",
+			"type": "string",
+			"label": "Files",
+			"defaultValue": "file1.ts file2.ts",
+			"required": true,
+			"visibleRule": "compileType=2",
+			"helpMarkDown": "Files to compile separated by space character (' '). Relative paths to files in subfolders is supported. Variables can be used."
+		}
+	],
+	"execution": {
+		"Node": {
+			"target": "index.js",
+			"argumentFormat": ""
+		}
+	}
+}
