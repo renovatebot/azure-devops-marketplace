@@ -1,0 +1,78 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Esquio connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "esquio",
+                "icons": {
+                    "default": "icons/xabaril-endpoint-icon.png",
+                    "wide": "icons/xabaril.png"
+                },
+                "displayName": "Esquio API connection",
+                "url": {
+                    "displayName": "Esquio API Url",
+                    "helpText": "Url for the Esquio API to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/products",
+                        "resultSelector": "jsonpath:$.result[*]"
+                    },
+                    {
+                        "name": "EsquioProducts",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/products",
+                        "resultSelector": "jsonpath:$.result[*]"
+                    },
+                    {
+                        "name": "EsquioFlags",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/products/$(productId)/flags",
+                        "resultSelector": "jsonpath:$.result[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "x-api-key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"TODO\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "rollout-feature",
+            "description": "Esquio rollout feature",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "rollout-feature"
+            }
+        },
+        {
+            "id": "rollback-feature",
+            "description": "Esquio rollback feature",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "rollback-feature"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
