@@ -1,0 +1,106 @@
+{
+    "id": "11f18d28-72b3-41e0-a85b-291e2739752d",
+    "name": "AzureDevOpsApplicationGatewayScaleTaskExtension",
+    "friendlyName": "Azure Application Gateway Instance Scaler",
+    "description": "Configure Azure Application Gateway instance capacity and tier",
+    "helpMarkDown": "[More Information](https://marketplace.visualstudio.com/items?itemName=williamoconnor.AzureDevOpsApplicationGatewayScaleTaskExtension)",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "William O'Connor",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [ "PowerShell" ],
+    "instanceNameFormat": "Scale Application Gateway: $(applicationGatewayName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Resource Manager connection to use when authenticating to Azure",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource Group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Resource Group where the Application Gateway resource is located."
+        },
+        {
+            "name": "applicationGatewayName",
+            "type": "pickList",
+            "label": "Application Gateway",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Application Gateway Name"
+        },
+        {
+            "name": "applicationGatewaySkuName",
+            "type": "pickList",
+            "label": "Application Gateway SKU",
+            "required": "true",
+            "helpMarkDown": "Set the SKU for the Application Gateway",
+            "options": {
+                "Standard_Small": "Standard Small",
+                "Standard_Medium": "Standard Medium",
+                "Standard_Large": "Standard Large",
+                "Standard_v2": "Standard v2",
+                "WAF_Medium": "WAF Medium",
+                "WAF_Large": "WAF Large",
+                "WAF_v2": "WAF v2"
+            }
+        },
+        {
+            "name": "applicationGatewayCapacity",
+            "type": "int",
+            "label": "Instance count",
+            "required": "true",
+            "defaultValue": 1,
+            "helpMarkDown": "Specify the instance count of the application gateway. A minimum instance count of 1 is allowed"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "applicationGatewayName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "endpointUrl": "{{{endpoint.url}}}subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Network/applicationGateways/?api-version=2019-08-01",
+            "resultSelector": "jsonpath:$.value[*].name"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "AzureDevOpsApplicationGatewayScaleTaskExtension.ps1"
+        }
+    }
+}
