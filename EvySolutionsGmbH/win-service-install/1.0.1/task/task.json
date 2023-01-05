@@ -1,0 +1,64 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "ff5516f1-9af5-4eba-9c3e-fa1f05e5d398",
+    "name": "WinServiceInstall",
+    "friendlyName": "Windows Service Installer",
+    "description": "Install a Windows Service on local system",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "evy Solutions GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "sc create $(samplestring)",
+    "inputs": [
+        {
+            "name": "serviceName",
+            "type": "string",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A sample string"
+        },
+        {
+            "name": "binPath",
+            "type": "string",
+            "label": "Service Binary Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Full Path to serivce executable (binpath)"
+        },
+        {
+            "name": "serviceDisplayName",
+            "type": "string",
+            "label": "Service Display Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Service Display Name"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "installer.js", 
+            "platforms": [ "windows" ]
+        }
+    },
+    "postjobexecution": {
+        "Node10": {
+            "target": "uninstaller.js",
+            "platforms": [ "windows" ]
+        }
+    },
+    "messages": {
+        "InstallRequiresWindows": "Install Windows requires a windows agent. Installing on Mac or Linux is not supported ."
+    }
+}
