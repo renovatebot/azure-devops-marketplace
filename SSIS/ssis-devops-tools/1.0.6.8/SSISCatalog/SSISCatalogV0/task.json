@@ -1,0 +1,115 @@
+{
+    "id":  "FF0067F5-6AD3-41DA-AE07-7F7BE6F7D92B",
+    "name":  "SSISCatalog",
+    "friendlyName":  "SSIS Catalog Configuration",
+    "description":  "Configure folders, projects and environments of SSIS catalog based on a JSON configuration file or inline string.",
+    "helpMarkDown":  "https://aka.ms/AA6pzmk",
+    "category":  "Deploy",
+    "author":  "Microsoft Corporation",
+    "version":  {
+                    "Major":  0,
+                    "Minor":  5,
+                    "Patch":  15
+                },
+    "minimumAgentVersion":  "2.144.0",
+    "instanceNameFormat":  "Configure SSIS Catalog",
+    "inputs":  [
+                   {
+                       "name":  "configSource",
+                       "type":  "radio",
+                       "label":  "Configuration file source",
+                       "required":  true,
+                       "defaultValue":  "filePath",
+                       "helpMarkDown":  "Source of the SSIS catalog configuration file. Please refer to this [document](https://aka.ms/AA7v53i) for more details on the schema of the configuration JSON.",
+                       "options":  {
+                                       "filePath":  "File Path",
+                                       "inline":  "Inline"
+                                   }
+                   },
+                   {
+                       "name":  "configPath",
+                       "type":  "filePath",
+                       "label":  "Configuration JSON file path",
+                       "required":  true,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Path of the SSIS catalog configuration file. Please refer to this [document](https://aka.ms/AA7v53i) for more details on the schema of the configuration JSON.",
+                       "visibleRule":  "configSource = filePath"
+                   },
+                   {
+                       "name":  "configContent",
+                       "type":  "multiLine",
+                       "label":  "Inline configuration JSON",
+                       "required":  true,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Inline content of the SSIS catalog configuration. Please refer to this [document](https://aka.ms/AA7v53i) for more details on the schema of the configuration JSON.",
+                       "visibleRule":  "configSource = inline",
+                       "properties":  {
+                                          "resizable":  "true",
+                                          "rows":  "10",
+                                          "maxLength":  "20000"
+                                      }
+                   },
+                   {
+                       "name":  "rollBackOnError",
+                       "type":  "boolean",
+                       "label":  "Roll back configuration when error occurs",
+                       "required":  true,
+                       "defaultValue":  "true",
+                       "helpMarkDown":  "Whether to roll back the configuration made by this task when error occurs."
+                   },
+                   {
+                       "name":  "targetServer",
+                       "type":  "string",
+                       "label":  "Target server",
+                       "required":  true,
+                       "helpMarkDown":  "Name of the target SQL Server whose SSIS catalog needs to be configured."
+                   },
+                   {
+                       "name":  "authType",
+                       "type":  "pickList",
+                       "label":  "Authentication type",
+                       "required":  true,
+                       "helpMarkDown":  "Authentication type to access the target SQL Server.",
+                       "options":  {
+                                       "win":  "Windows Authentication",
+                                       "sql":  "SQL Server Authentication",
+                                       "adpwd":  "Active Directory - Password",
+                                       "adint":  "Active Directory - Integrated"
+                                   }
+                   },
+                   {
+                       "name":  "username",
+                       "type":  "string",
+                       "label":  "Username",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Username to access the target SQL Server.",
+                       "visibleRule":  "authType=sql || authType=adpwd"
+                   },
+                   {
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Password to access the target SQL Server.",
+                       "visibleRule":  "authType=sql || authType=adpwd"
+                   },
+                   {
+                       "name":  "connectionStringSuffix",
+                       "type":  "string",
+                       "label":  "Connection string suffix",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Suffix of the connection string which is used to connect to the SSIS catalog."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "main.ps1",
+                                          "platforms":  [
+                                                            "windows"
+                                                        ]
+                                      }
+                  }
+}
