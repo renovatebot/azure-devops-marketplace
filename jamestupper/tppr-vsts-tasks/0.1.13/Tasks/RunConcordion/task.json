@@ -1,0 +1,139 @@
+{
+    "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+    "id": "4c10c8f3-e81b-4614-a911-708e646ff28f",
+    "name": "RunConcordion",
+    "friendlyName": "Run Concordion",
+    "description": "Run Concordion tests using NUnit. NUnit Test Adapter 2.x and 3.x do not currently work with addins.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "James Tupper",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 13
+    },
+    "instanceNameFormat": "Run Concordion Tests - $(testAssembly)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourcesDirectory",
+            "type": "filePath",
+            "label": "Sources Directory",
+            "defaultValue": "$(build.sourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "The root directory of your sources"
+        },
+        {
+            "name": "buildConfiguration",
+            "type": "string",
+            "label": "Build Configuration",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The build configuration"
+        },
+        {
+            "name": "buildPlatform",
+            "type": "string",
+            "label": "Build Platform",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The build platform"
+        },
+        {
+            "name": "testAssembly",
+            "type": "string",
+            "label": "Test Assembly",
+            "defaultValue": "**\\*test*.dll;-:**\\obj\\**",
+            "required": true,
+            "helpMarkDown": "Test binaries to run tests on. Wildcards can be used. For example, `**\\*test*.dll;-**\\obj\\**` for all dlls with test in the name while excluding files in any sub-directory named obj."
+        },
+        {
+            "name": "nunitArguments",
+            "type": "string",
+            "label": "NUnit Arguments",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Extra NUnit arguments to pass to the cli."
+        },
+        {
+            "name": "nunitTestRunnerLocationMethod",
+            "type": "radio",
+            "label": "Select NUnit Test Runner using",
+            "required": false,
+            "groupName": "advanced",
+            "defaultValue": "version",
+            "options": {
+                "version": "Version",
+                "location": "Specific location"
+            }
+        },
+        {
+            "name": "nunitTestRunnerVersion",
+            "type": "pickList",
+            "label": "NUnit Test Runner version",
+            "defaultValue": "2.6.4",
+            "helpMarkDown": "The version of NUnit runner to use",
+            "visibleRule": "nunitTestRunnerLocationMethod = version",
+            "groupName": "advanced",
+            "options": {
+                "2.6.4": "NUnit 2.6.4"
+            }
+        },
+        {
+            "name": "nunitTestRunnerPath",
+            "type": "string",
+            "label": "Path to NUnit Test Runner",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to the NUnit Test Runner",
+            "visibleRule": "nunitTestRunnerLocationMethod = location",
+            "groupName": "advanced"
+        },
+        {
+            "name": "concordionLocationMethod",
+            "type": "radio",
+            "label": "Select Concordion using",
+            "required": false,
+            "groupName": "advanced",
+            "defaultValue": "version",
+            "options": {
+                "version": "Version",
+                "location": "Specific location"
+            }
+        },
+        {
+            "name": "concordionVersion",
+            "type": "pickList",
+            "label": "Concordion version",
+            "defaultValue": "1.5.1",
+            "helpMarkDown": "The version of Concordion to use",
+            "visibleRule": "concordionLocationMethod = version",
+            "groupName": "advanced",
+            "options": {
+                "1.5.1": "Concordion 1.5.1"
+            }
+        },
+        {
+            "name": "concordionPath",
+            "type": "string",
+            "label": "Path to Concordion",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optionally supply the path to Concordion. The `Concordion.NUnit.dll` must exist in this folder",
+            "visibleRule": "concordionLocationMethod = location",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
