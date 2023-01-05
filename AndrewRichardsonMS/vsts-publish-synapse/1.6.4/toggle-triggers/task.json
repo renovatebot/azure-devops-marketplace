@@ -1,0 +1,126 @@
+{
+    "id":  "ca5d1b06-3bab-452d-9db0-7128760aa44b",
+    "name":  "azure-synapse-toggle-triggers-json",
+    "friendlyName":  "Azure Synapse Toggle Triggers",
+    "description":  "Toggle Triggers in an Azure Synapse Workspaces",
+    "author":  "William Michel",
+    "helpMarkDown":  "",
+    "category":  "Manage",
+    "preview":  true,
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "runsOn":  [
+                   "Agent"
+               ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  "1",
+                    "Minor":  "1",
+                    "Patch":  "7"
+                },
+    "minimumAgentVersion":  "1.100.0",
+    "groups":  [
+                   {
+                       "name":  "azure",
+                       "displayName":  "Azure Details",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "synapse",
+                       "displayName":  "Synapse Details",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "ServiceConnectionName",
+                       "aliases":  [
+                                       "azureSubscription"
+                                   ],
+                       "type":  "connectedService:AzureRM",
+                       "label":  "Azure Subscription",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "This is needed to connect to your Azure account.\u003cbr\u003eTo configure new service connection, select the Azure subscription from the list and click \u0027Authorize\u0027.\u003cbr\u003eIf your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using \u0027Add\u0027 or \u0027Manage\u0027 button."
+                   },
+                   {
+                       "name":  "ResourceGroupName",
+                       "type":  "pickList",
+                       "label":  "Resource group",
+                       "required":  true,
+                       "helpMarkDown":  "Provide the name of the resource group that contains the Synapse Workspace.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "groupname":  "azure"
+                   },
+                   {
+                       "name":  "WorkspaceName",
+                       "type":  "string",
+                       "label":  "Synapse Workspace",
+                       "defaultValue":  "",
+                       "required":  "true",
+                       "helpMarkDown":  "Name of the Synapse Workspace.",
+                       "groupname":  "azure"
+                   },
+                   {
+                       "name":  "ToggleOn",
+                       "type":  "boolean",
+                       "label":  "ToggleOn",
+                       "defaultValue":  "true",
+                       "required":  true,
+                       "helpMarkDown":  "True, to toggle triggers on. False to toggle triggers off.",
+                       "groupName":  "synapse"
+                   },
+                   {
+                       "name":  "Triggers",
+                       "type":  "string",
+                       "label":  "Trigger names to be toggled",
+                       "defaultValue":  "*",
+                       "required":  true,
+                       "helpMarkDown":  "Comma separated triggers to be toggled. \u0027*\u0027 for all triggers.",
+                       "groupName":  "synapse"
+                   },
+                   {
+                       "name":  "Continue",
+                       "type":  "boolean",
+                       "label":  "Continue on error.",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Continue on deployment failures.",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "Debug",
+                       "type":  "boolean",
+                       "label":  "Debug.",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Additional logging for troubleshooting issues.",
+                       "groupName":  "advanced"
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "ResourceGroupName",
+                                   "endpointId":  "$(ServiceConnectionName)",
+                                   "dataSourceName":  "AzureResourceGroups"
+                               }
+                           ],
+    "instanceNameFormat":  "Toggle Azure Synapse Triggers",
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "./dist/toggle-triggers/index.js",
+                                     "argumentFormat":  ""
+                                 }
+                  }
+}
