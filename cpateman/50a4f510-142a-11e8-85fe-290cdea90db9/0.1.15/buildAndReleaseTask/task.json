@@ -1,0 +1,216 @@
+{
+    "id": "50a4f510-142a-11e8-85fe-290cdea90db9",
+    "name": "DotCover Analyse",
+    "friendlyName": "Resharper DotCover Analyse Task",
+    "description": "The task creates and runs the Resharper DotCover analyse command line",
+    "author": "Christopher Pateman",
+    "helpMarkDown": "[More Information](https://www.jetbrains.com/help/dotcover/Running_Coverage_Analysis_from_the_Command_LIne.html)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "1",
+        "Patch": "15"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Dot Cover Analyse $(message)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "TargetExecutable",
+            "type": "filePath",
+            "label": "Target Executable",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "File name of the program to analyse"
+        },
+        {
+            "name": "TargetWorkingDir",
+            "type": "filePath",
+            "label": "Target Working Directory",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Program working directory"
+        },
+        {
+            "name": "TargetArguments",
+            "type": "string",
+            "label": "Target Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Program arguments. If contains * then will be used as a wildcard to search the Target Working Directory."
+        },
+        {
+            "name": "ProjectPattern",
+            "type": "string",
+            "label": "Project Pattern",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use this to search the Target Wroking Directory for all file in a pattern",
+            "groupName": "advanced"
+        },
+        {
+            "name": "TempDir",
+            "type": "string",
+            "label": "Temp Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Directory for auxiliary files. Set to the system temp by default",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ReportType",
+            "type": "pickList",
+            "label": "Report Type",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A type of the report. XML by default",
+            "options": {
+                "HTML": "HTML",
+                "JSON": "JSON",
+                "DetailedXML": "DetailedXML",
+                "NDependXML": "NDependXML",
+                "XML": "XML"
+            }
+        },
+        {
+            "name": "Output",
+            "type": "filePath",
+            "label": "Output Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Resulting report file path and name. Default path is the Target Working Directory and default name is 'CodeAnalyseResults'."
+        },
+        {
+            "name": "InheritConsole",
+            "type": "pickList",
+            "label": "Inherit Console",
+            "defaultValue": "True",
+            "required": false,
+            "helpMarkDown": "Lets the analysed application to inherit dotCover console. True by default. Please note that windows of the analysed GUI application will not be hidden if the console is inherited",
+            "options": {
+                "True": "True",
+                "False": "False"
+            },
+            "groupName": "advanced"
+        },
+        {
+            "name": "AnalyseTargetArguments",
+            "type": "pickList",
+            "label": "Analyse Target Arguments",
+            "defaultValue": "True",
+            "required": false,
+            "helpMarkDown": "Specifies whether dotCover should analyse the 'target arguments' string and convert relative paths to absolute ones. True by default",
+            "options": {
+                "True": "True",
+                "False": "False"
+            },
+            "groupName": "advanced"
+        },
+        {
+            "name": "Scope",
+            "type": "string",
+            "label": "Scope",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows including assemblies that were not loaded in the specified scope into coverage results. The parameter is a semicolon separated list of file path masks.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "Filters",
+            "type": "string",
+            "label": "Filters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specifies coverage filters using the following syntax: +:module=*;class=*;function=*;Use -:myassembly to exclude an assembly from code coverage.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "AttributeFilters",
+            "type": "string",
+            "label": "Attribute Filters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specifies attribute filters using the following syntax: filter1;filter2;... Asterisk wildcard (*) is supported here",
+            "groupName": "advanced"
+        },
+        {
+            "name": "DisableDefaultFilters",
+            "type": "string",
+            "label": "Disable Default Filters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Disables default (automatically added) filters",
+            "groupName": "advanced"
+        },
+        {
+            "name": "SymbolSearchPaths",
+            "type": "string",
+            "label": "Symbol Search Paths",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specifies additional symbol search paths. Paths to symbol servers (starting with srv* prefix) are supported here. Values are separated with semicolon",
+            "groupName": "advanced"
+        },
+        {
+            "name": "AllowSymbolServerAccess",
+            "type": "string",
+            "label": "Allow Symbol Server Access",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows dotCover to search for PDB files on a symbol server",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ReturnTargetExitCode",
+            "type": "string",
+            "label": "Return Target Exit Code",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Returns the exit code of the target executable in case coverage analysis succeeded",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ProcessFilters",
+            "type": "string",
+            "label": "Process Filters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specifies process filters. Syntax: +:process1;-:process2",
+            "groupName": "advanced"
+        },
+        {
+            "name": "HideAutoProperties",
+            "type": "string",
+            "label": "Hide Auto Properties",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Remove auto-implemented properties from report",
+            "groupName": "advanced"
+        },
+        {
+            "name": "LogFile",
+            "type": "string",
+            "label": "Log File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enables logging and specifies log file name",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "analyse.ps1"
+        }
+    }
+}
