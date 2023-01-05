@@ -1,0 +1,223 @@
+{
+  "id": "53872c9a-a53f-4fcf-973d-8ded3d75432c",
+  "name": "aquasecScanner",
+  "friendlyName": "Aqua Security",
+  "description": "Security Assessment for Images",
+  "author": "aquasec",
+  "helpMarkDown": "This task scans a Docker image for security vulnerabilities and compare it against an image assurance policy. You should add this task after a step that builds a Docker image and before a step that pushes the image to a registry.",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "version": {
+    "Major": "4",
+    "Minor": "1",
+    "Patch": "19"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Image Scanning",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "localImage",
+      "displayName": "Local image",
+      "isExpanded": false
+    },
+    {
+      "name": "hostedImage",
+      "displayName": "Hosted image",
+      "isExpanded": false
+    },
+    {
+      "name": "linuxParameters",
+      "displayName": "Linux Parameters",
+      "isExpanded": false
+    },
+    {
+      "name": "windowsParameters",
+      "displayName": "Windows Parameters",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "image",
+      "type": "string",
+      "label": "Image name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The image to scan. Can be a static name, e.g. myapp/myimage:4, or a variable based name, e.g. $(Build.Repository.Name):$(Build.BuildId)"
+    },
+    {
+      "name": "scanType",
+      "type": "radio",
+      "label": "Scan type",
+      "required": true,
+      "defaultValue": "local",
+      "options": {
+        "local": "local",
+        "hosted": "hosted",
+        "dockerarchive": "docker-archive"
+      }
+    },
+    {
+      "name": "register",
+      "type": "boolean",
+      "label": "Register",
+      "required": true,
+      "helpMarkDown": "Register the image in the Aqua console.",
+      "defaultValue": false,
+      "groupName": "localImage"
+    },
+    {
+      "name": "hideBase",
+      "type": "boolean",
+      "label": "Hide base image vulnerabilities ",
+      "required": true,
+      "helpMarkDown": "Hide vulnerabilities in the base image.",
+      "defaultValue": false,
+      "groupName": "hostedImage"
+    },
+    {
+      "name": "showNegligible",
+      "type": "boolean",
+      "label": "Show negligible vulnerabilities",
+      "required": true,
+      "helpMarkDown": "Show negligible/unknown severity vulnerabilities.",
+      "defaultValue": false,
+      "groupName": "hostedImage"
+    },
+    {
+      "name": "windowsScannerVersion",
+      "type": "radio",
+      "label": "Scanner Version",
+      "required": true,
+      "groupName": "windowsParameters",
+      "helpMarkDown": "Select 6.5.0 to use the embedded scanner for 6.5.0 version. Select Artifacts to use the scanner binaries from Azure DevOps Artifacts service.",
+      "defaultValue": "6.5.0",
+      "options": {
+        "6.5.0": "6.5.0",
+        "Artifacts": "Artifacts"
+      }
+    },
+    {
+      "name": "scanner",
+      "type": "string",
+      "label": "Aqua Scanner Image Name",
+      "defaultValue": "registry.aquasec.com/scanner:6.5",
+      "required": false,
+      "helpMarkDown": "Change this field to use a non default version of the Aqua Scanner.",
+      "groupName": "linuxParameters"
+    },
+    {
+      "name": "runOptions",
+      "type": "string",
+      "label": "Additional Docker run options",
+      "defaultValue": "",
+      "required": false,
+      "groupName": "linuxParameters"
+    },
+    {
+      "name": "registry",
+      "type": "string",
+      "label": "Registry",
+      "helpMarkDown": "Scan an image in a Registry.",
+      "defaultValue": "",
+      "required": false
+    },
+    {
+      "name": "connection",
+      "type": "connectedService:Generic",
+      "label": "Aqua Management Console Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The Aqua Management Console connection. click the Manage link and create a new Generic Service Endpoint, enter the Aqua Management Console url, e.g. <b>`https://server.example.com`</b>, and required credentials."
+    },
+    {
+      "name": "composefile",
+      "type": "string",
+      "label": "Docker Compose File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Docker compose file(s) containing the images to scan. Can be a static name, e.g. myapp/myimage:4, or a variable based name, e.g. $(Build.Repository.Name):$(Build.BuildId)"
+    },
+    {
+      "name": "dockerarchivefile",
+      "type": "string",
+      "label": "Tar File Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path of the tar file to scan. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory)."
+    },    
+    {
+      "name": "policies",
+      "type": "string",
+      "label": "Policies",
+      "defaultValue": "",
+      "required": false
+    },
+    {
+      "name": "notCompliesCmd",
+      "type": "string",
+      "label": "Shell command to execute when no compliance",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "When image doesn’t comply with Aqua policy command to execute when no compliance."
+    },
+    {
+      "name": "customFlags",
+      "type": "string",
+      "label": "Custom flags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Custom flags."
+    },
+    {
+      "name": "caCertificates",
+      "type": "boolean",
+      "label": "Do not verify TLS certificates.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "scanMalware",
+      "type": "boolean",
+      "label": "Collect malware files when scanning image.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "showWillNotFix",
+      "type": "boolean",
+      "label": "Show vulnerabilities that will not be fixed.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    },
+    {
+      "name": "registerCompliant",
+      "type": "boolean",
+      "label": "Register the image in the Aqua Server only if is determined to be compliant.",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": ""
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "dockerTask.js",
+      "argumentFormat": ""
+    }
+  },
+  "messages": {
+    "ScanReturnCode": "scan exited with return code: %d",
+    "ScanFailed": "scan failed with error: %s"
+  }
+}
