@@ -1,0 +1,74 @@
+{
+    "id": "22584988-d1f2-4ccc-813c-9bd8890b3e1a",
+    "name": "freestyle",
+    "friendlyName": "Sentry CLI Freestyle",
+    "description": "Task for running the sentry CLI (1.0.5)",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Daniel Habenicht",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "instanceNameFormat": "Sentry CLI",
+    "minimumAgentVersion": "2.144.0",
+    "groups": [
+        {
+            "name": "generic",
+            "displayName": "Generic Credentials",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "genericServiceEnv",
+            "type": "string",
+            "label": "Environment Variable for Generic Connection 1",
+            "helpMarkDown": "The Credentials from Service Connection 1 will be available to the Sentry CLI under this Environment Variable",
+            "groupName": "generic"
+        },
+        {
+            "name": "genericServiceConnection",
+            "type": "connectedService:generic",
+            "label": "Generic Connection 1",
+            "required": false,
+            "helpMarkDown": "Generic Service Connection for any credentials.",
+            "groupName": "generic"
+        },
+        {
+            "name": "command",
+            "type": "string",
+            "label": "Sentry CLI Command",
+            "required": true,
+            "helpMarkDown": "Arguments passed to the CLI"
+        },
+        {
+            "name": "cwd",
+            "type": "filePath",
+            "label": "Working Directory",
+            "defaultValue": "$(Build.Repository.LocalPath)",
+            "required": true,
+            "helpMarkDown": "The Working directory of Sentry CLI",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
