@@ -1,0 +1,59 @@
+{
+    "id": "25BD5165-40A2-4EA9-80D6-E47B9EE4550E",
+    "name": "TFVCGet",
+    "friendlyName": "TFVC - Get latest",
+    "description": "Gets a file or a folder tree from TFVC source control",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "author": "Seva Alekseyev",
+    "version":
+    {
+        "Major": 2,
+        "Minor": 2,
+        "Patch":6
+    },
+    "demands": [],
+    "instanceNameFormat": "Get $(TFVCPath) into $(LocalPath)",
+    "execution":
+    {
+        "PowerShell":
+        {
+            "target": "$(currentDirectory)\\TFVCGet.ps1",
+            "argumentFormat": ""
+        },
+        "Node10":
+        {
+            "target": "$(currentDirectory)/TFVCGet.js",
+            "argumentFormat": ""
+        }
+    },
+    "groups": [],
+    "inputs":
+    [
+        {
+            "name": "TFVCPath",
+            "type": "string",
+            "label": "Source control path:",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Absolute TFVC path of the file or folder to get, starting with $/. Folders will be downloaded recursively."
+        },
+        {
+            "name": "LocalPath",
+            "type": "string",
+            "label": "Target path:",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Path to store the TFVC item(s). If downloading a file, it can be a file name or an existing folder name. If getting a folder and the path doesn't exist, it will be created."
+        },
+        {
+            "name": "Timeout",
+            "type": "string",
+            "label": "Timeout:",
+            "required": false,
+            "helpMarkDown": "Connection timeout, in seconds, for the Azure DevOps REST API client. Blank means the API default; as of the time of this writing, it was 180 seconds."
+        }
+    ]
+}
+
+
