@@ -1,0 +1,162 @@
+﻿{
+  "id": "63c722b8-ca8a-4830-8a46-8a6b7bce9c00",
+  "name": "CosmosDbEmulator",
+  "friendlyName": "Azure Cosmos DB Emulator",
+  "description": "Create and start an Azure Cosmos DB Emulator container for testing",
+  "helpMarkDown": "[More information](https://go.microsoft.com/fwlink/?LinkID=link-id)",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Microsoft",
+  "version": {
+    "Major": 2,
+    "Minor": 11,
+    "Patch": 28
+  },
+  "instanceNameFormat": "Run Azure Cosmos DB Emulator container",
+  "runsOn": [
+    "Agent",
+    "Server"
+  ],
+  "groups": [
+    {
+      "displayName": "Credentials",
+      "name": "credentials",
+      "isExpanded": false
+    },
+    {
+      "displayName": "Start Options",
+      "name": "startOptions",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "containerName",
+      "type": "string",
+      "label": "Container Name",
+      "defaultValue": "azure-cosmosdb-emulator",
+      "required": true,
+      "helpMarkDown": "Assign a unique name to the container"
+    },
+    {
+      "name": "enableAPI",
+      "type": "string",
+      "label": "API",
+      "defaultValue": "SQL",
+      "required": true,
+      "helpMarkDown": "Specify the API enpoint for the Azure Cosmos Emulator",
+      "enum": [
+        "SQL",
+        "MongoDB",
+        "Cassandra",
+        "Gremlin",
+        "Table"
+      ]
+    },
+    {
+      "name": "portMapping",
+      "type": "string",
+      "label": "Port mapping",
+      "defaultValue": "8081:8081, 8901:8901, 8902:8902, 8979:8979, 10250:10250, 10251:10251, 10252:10252, 10253:10253, 10254:10254, 10255:10255, 10256:10256, 10350:10350",
+      "required": true,
+      "helpMarkDown": "Specify a list of *`<host-port>`* **`:`** *`<container-port>`* mappings or **`PublishAll`** to automatically map container ports to host ports in the ephemeral port range"
+    },
+    {
+      "name": "hostDirectory",
+      "type": "filePath",
+      "label": "Host Directory",
+      "defaultValue": "$(Build.BinariesDirectory)\\azure-cosmosdb-emulator",
+      "required": true,
+      "helpMarkDown": "Specify the path to a directory for saving diagnostics and PFX and CER forms of the Emulator's self-signed SSL certificate"
+    },
+    
+    {
+        "name": "consistency",
+        "type": "pickList",
+        "options": {
+          "BoundedStaleness": "BoundedStaleness",
+          "Eventual": "Eventual",
+          "Session": "Session",
+          "Strong": "Strong"
+        },
+        "label": "Consistency Level",
+        "defaultValue": "Session",
+        "required": false,
+        "helpMarkDown": "Specify the default consistency level (default: Session)",
+        "groupName": "startOptions"
+    },
+    {
+      "name": "partitionCount",
+      "type": "string",
+      "label": "Number of 10GB data partitions to allocate",
+      "defaultValue": "25",
+      "required": false,
+      "helpMarkDown": "Specify the total number of 10GB partitions to allocate for storing data up to 200 (default: 25)",
+      "groupName": "startOptions"
+    },
+    {
+      "name": "defaultPartitionCount",
+      "type": "string",
+      "label": "Number of 10GB partitions to reserve per partitioned collection",
+      "defaultValue": "default",
+      "required": false,
+      "helpMarkDown": "Specify the number of 10GB partitions to reserve for each partitioned collection up to 200",
+      "groupName": "startOptions"
+    },
+    {
+      "name": "simulateRateLimiting",
+      "type": "boolean",
+      "label": "Simulate Rate Limiting",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Enable request rate limiting simulation",
+      "groupName": "startOptions"
+    },
+    {
+      "name": "trace",
+      "type": "boolean",
+      "label": "Enable Tracing",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "startOptions"
+    },
+    {
+      "name": "startingTimeout",
+      "type": "string",
+      "label": "Emulator Start Timeout",
+      "defaultValue": "300",
+      "required": false,
+      "groupName": "startOptions"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "task.js"
+    }
+  },
+  "OutputVariables": [
+    {
+      "name": "ContainerId",
+      "description": "Full ID of the Emulator container"
+    },
+    {
+      "name": "Endpoint",
+      "description": "Web address for communicating with the Emulator in the container"
+    },
+    {
+      "name": "HostDirectory",
+      "description": "Path to the directory containing diagnostics and PFX and CER forms of the Emulator's self-signed SSL certificate"
+    },
+    {
+      "name": "IPAddress",
+      "description": "IPv4 address assigned to the container"
+    },
+    {
+      "name" : "Ports",
+      "description" : "Publish port mapping as a JSON object of the form: `{ \"8081\": <gateway-port>, \"8901\": <compute-port-1>, \"8902\": <compute-port-2>, \"10250\": <mongo-port-1>, \"10251\": <direct-port-1>, \"10252\": <direct-port-2>, \"10253\": <direct-port-3>, \"10254\": <direct-port-4>, \"10255\": <mongo-port-2>, \"10256\": <mongo-port-3>, \"10350\": <cassandra-port>`}"
+    }
+  ]
+}
