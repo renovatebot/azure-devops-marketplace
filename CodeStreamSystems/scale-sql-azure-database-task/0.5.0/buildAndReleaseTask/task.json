@@ -1,0 +1,79 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e2450612-3a85-413e-8ab6-a4098bf5bebe",
+    "name": "ScaleSqlAzureDatabase",
+    "friendlyName": "Scale Sql Azure Database up or down on demand.",
+    "description": "Azure DevOps Build/Release task for scaling an Azure Sql Database up or down on demand.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "CodeStream",
+    "version": {
+        "Major": 0,
+        "Minor": 5,
+        "Patch": 0
+    },
+    "demands": [
+        "azureps"
+    ],
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "instanceNameFormat": "Scale $(SqlServerName) $(DatabaseName) to $(PerfLevel)",
+    "inputs": [
+        {
+            "name": "Sqlservername",
+            "type": "string",
+            "label": "Sql Server Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the Azure SQL Server"
+        },
+        {
+            "name": "Sqlserverusername",
+            "type": "string",
+            "label": "Sql Server Username",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Azure SQL Server username used to scale the server"
+        },
+        {
+            "name": "Sqlserverpassword",
+            "type": "string",
+            "label": "Sql Server password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Azure SQL Server password for the user that will be used to scale the server"
+        },
+        {
+            "name": "DatabaseName",
+            "type": "string",
+            "label": "Sql Server Database Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Azure SQL Server database to scale"
+        },
+        {
+            "name": "Edition",
+            "type": "string",
+            "label": "Azure SQL Edition",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Can be either of 'Basic', 'Standard' or 'Premium'"
+        },
+        {
+            "name": "PerfLevel",
+            "type": "string",
+            "label": "Sql Azure Performance Level",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Azure SQL Server password for the user that will be used to scale the server, valid values are 'B', 'S0', 'S1', 'S2', 'S3', 'P1', 'P2', 'P3'"
+        }
+
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "ScaleSQlAzureDatabaseDevOpsTask.ps1"
+        }
+    }
+}
