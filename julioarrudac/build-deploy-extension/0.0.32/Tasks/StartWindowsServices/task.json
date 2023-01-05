@@ -1,0 +1,171 @@
+{
+    "id":  "b8191a40-7d09-11e7-adbb-b774110c0faf",
+    "name":  "StartWindowsServices",
+    "friendlyName":  "Install and Start Windows Service",
+    "description":  "Task used to install and start your Windows Service in remote Machines",
+    "author":  "Julio Arruda",
+    "helpMarkDown":  "",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  0,
+                    "Minor":  0,
+                    "Patch":  32
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "Install Windows Service $(ServiceName)",
+    "groups":  [
+                   {
+                       "name":  "configuracoes",
+                       "displayName":  "Configs",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "servico",
+                       "displayName":  "Service",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "runRemote",
+                       "type":  "boolean",
+                       "label":  "Run Remote",
+                       "defaultValue":  "true",
+                       "groupName":  "configuracoes",
+                       "required":  false,
+                       "helpMarkDown":  "Enable this option if this task running for a remote computer. If run local like deployment groups, disable this"
+                   },
+                   {
+                       "name":  "EnvironmentName",
+                       "type":  "multiLine",
+                       "label":  "Machines",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Provide a comma separated list of machine IP addresses or FQDNs along with ports. Port is defaulted based on the selected protocol. \u003cbr\u003eEg: dbserver.fabrikam.com,dbserver_int.fabrikam.com:5986,192.168.12.34:5986 \u003cbr\u003eOr provide output variable of other tasks. Eg: $(variableName) \u003cbr\u003eIf you are using HTTPS, name/IP of machine should match the CN in the certificate."
+                   },
+                   {
+                       "name":  "AdminUserName",
+                       "type":  "string",
+                       "label":  "Admin Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Administrator login for the target machines."
+                   },
+                   {
+                       "name":  "AdminPassword",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "configuracoes",
+                       "visibleRule":  "runRemote = True",
+                       "helpMarkDown":  "Administrator password for the target machines. \u003cbr\u003eIt can accept variable defined in Build/Release definitions as \u0027$(passwordVariable)\u0027. \u003cbr\u003eYou may mark variable type as \u0027secret\u0027 to secure it."
+                   },
+                   {
+                       "name":  "ServiceName",
+                       "type":  "string",
+                       "label":  "Service Name",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Name of service"
+                   },
+                   {
+                       "name":  "ServiceFolder",
+                       "type":  "filePath",
+                       "label":  "Service Path",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Path of your service will be installed ex: c:\\servico\\servico.exe"
+                   },
+                   {
+                       "name":  "usaInstallutil",
+                       "type":  "boolean",
+                       "label":  "Using InstallUtil",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  ""
+                   },
+                   {
+                       "name":  "installutilpath",
+                       "type":  "filePath",
+                       "label":  "InstallUtil Path",
+                       "defaultValue":  "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\InstallUtil.exe",
+                       "required":  false,
+                       "visibleRule":  "usaInstallutil = true",
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Path where InstallUtil.exe has been installed"
+                   },
+                   {
+                       "name":  "configuraUsuario",
+                       "type":  "boolean",
+                       "label":  "Change User Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  "Change the Login used in Windows Service"
+                   },
+                   {
+                       "name":  "serviceUser",
+                       "type":  "string",
+                       "label":  "Service Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "visibleRule":  "configuraUsuario = true",
+                       "helpMarkDown":  "Login used in your Windows Service"
+                   },
+                   {
+                       "name":  "servicePassword",
+                       "type":  "string",
+                       "label":  "Service Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "visibleRule":  "configuraUsuario = true",
+                       "helpMarkDown":  "Password Used in your windows Service"
+                   },
+                   {
+                       "name":  "startupType",
+                       "type":  "pickList",
+                       "label":  "Startup Type",
+                       "defaultValue":  "Manual",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "visibleRule":  "usaInstallutil = false",
+                       "helpMarkDown":  "Select the Startup Type",
+                       "options":  {
+                                       "Manual":  "Manual",
+                                       "Automatic":  "Automatic",
+                                       "Disabled":  "Disabled"
+                                   }
+                   },
+                   {
+                       "name":  "iniciaServico",
+                       "type":  "boolean",
+                       "label":  "Start Service",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "servico",
+                       "helpMarkDown":  ""
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "startService.ps1"
+                                      }
+                  }
+}
