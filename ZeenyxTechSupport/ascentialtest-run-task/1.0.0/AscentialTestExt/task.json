@@ -1,0 +1,216 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "61921f48-c477-43f5-ae7d-26130ab69276",
+    "name": "ascentialtestrun",
+    "friendlyName": "AscentialTest",
+    "description": "Run AscentialTest command lines",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "ZeenyxSupport",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Echo $(projectname)",
+    "inputs": [
+        {
+            "name": "atinstallpath",
+            "type": "string",
+            "label": "AT Install Path",
+            "defaultValue": "C:\\Program Files (x86)\\Zeenyx\\AscentialTest",
+            "required": true,
+            "helpMarkDown": "The AscentialTest install folder. Example: C:\\Program Files (x86)\\Zeenyx\\AscentialTest"
+        },
+        {
+            "name": "projectpath",
+            "type": "string",
+            "label": "Project Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to the AscentialTest project. Example: C:\\ProjectPath"
+        },
+        {
+            "name": "workingdirectory",
+            "type": "string",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The working directory. If you leave this blank the default working directory of your agent will be used"
+        },
+        {
+            "name": "projectname",
+            "type": "string",
+            "label": "Project Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the AscentialTest project. Do not include the extension '.zProject'"
+        },
+        {
+            "name": "runtype",
+            "type": "picklist",
+            "label": "Run Type",
+            "defaultValue": "testset",
+            "required": true,
+            "helpMarkDown": "Valid values are 'testset' and 'test'",
+	    "options": {
+	      "testset": "testset",
+	      "test": "test"
+	      }
+        },
+        {
+            "name": "runtypename",
+            "type": "string",
+            "label": "Run Type Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the Test Set or Test to run"
+        },
+        {
+            "name": "testsetoverview",
+            "type": "boolean",
+            "label": "TestSet Overview",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch to indicate whether to generate the TestSet Overview report"
+	},
+        {
+            "name": "testsummary",
+            "type": "boolean",
+            "label": "TestSet Summary",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch to indicate whether to generate the TestSet Summary report"
+	},
+        {
+            "name": "testsummaryattr",
+            "type": "boolean",
+            "label": "TestSet Summary Attribute",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch to indicate whether to generate the TestSet Summary Attribute report"
+	},
+        {
+            "name": "testsetdetail",
+            "type": "boolean",
+            "label": "TestSet Detail",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch to indicate whether to generate the TestSet Detail report"
+	},
+        {
+            "name": "reportpath",
+            "type": "string",
+            "label": "Report Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The location where reports will be generated"
+        },
+        {
+            "name": "reportformat",
+            "type": "picklist",
+            "label": "Report Format",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Valid values are 'PDF','HTML','Excel','RTF','Text','TIF'",
+	    "options": {
+	      "PDF": "PDF",
+	      "HTML": "HTML",
+	      "Excel": "Excel",
+	      "RTF": "RTF",
+	      "Text": "Text",
+	      "TIF": "TIF"
+	      }
+        },
+        {
+            "name": "summaryattribute",
+            "type": "string",
+            "label": "Summary Attribute",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The name of the project attribute"
+        },
+        {
+            "name": "outputlevel",
+            "type": "picklist",
+            "label": "Output Level",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Valid values are 'Error','Info','Trace'",
+	    "options": {
+	      "Error": "Error",
+	      "Info": "Info",
+	      "Trace": "Trace"
+	      }
+        },
+        {
+            "name": "email",
+            "type": "boolean",
+            "label": "Email",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch to indicate whether reports should be emailed"
+	},
+        {
+            "name": "checkurl",
+            "type": "string",
+            "label": "Checkout URL",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The url for project checkout"
+        },
+        {
+            "name": "checkpath",
+            "type": "string",
+            "label": "Checkout Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The location to store the AscentialTest project"
+        },
+        {
+            "name": "checkrevision",
+            "type": "string",
+            "label": "Checkout Revision",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The revision number for project checkout"
+        },
+        {
+            "name": "queryExpression",
+            "type": "string",
+            "label": "Test Set query",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Query to be used to select tests from a test set"
+        },
+        {
+            "name": "runonlyfailedtests",
+            "type": "boolean",
+            "label": "Run Only Failed Tests",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "A switch that indicates whether to run only failed tests"
+        },
+        {
+            "name": "testarguments",
+            "type": "string",
+            "label": "Test Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A space delimited string of test arguments in the format ArgName=value"
+        },
+        {
+            "name": "targetcomputers",
+            "type": "string",
+            "label": "Target Computers",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A comma delimited list of target computers"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
