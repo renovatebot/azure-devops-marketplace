@@ -1,0 +1,111 @@
+{
+  "id": "55d3ccd0-b4ab-11e6-b1f1-81320662b638",
+  "name": "WaitForTriggeredBuildsXPlat",
+  "friendlyName": "Wait For Triggered Builds",
+  "description": "Wait for the triggered builds - Cross Platform -",
+  "author": "megoels",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "WaitForTriggeredBuildsXPlat $(message)",
+  "groups": [
+    {
+      "name": "system",
+      "displayName": "System Settings",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "waitTagsList",
+      "type": "string",
+      "label": "Wait Tags",
+      "required": true,
+      "defaultValue": "default",
+      "helpMarkDown": "A comma-delimited list of tags for the step to wait, for example: tag1,tag2."
+    },
+    {
+      "name": "buildsAreInCurrentTeamProject",
+      "type": "boolean",
+      "label": "Wait for builds which are in the same team project (as this build)",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "True if the builds are in the same team project as this build."
+    },
+    {
+      "name": "teamProjectUri",
+      "type": "string",
+      "label": "Team Project URL (full URL)",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "buildsAreInCurrentTeamProject = false",
+      "helpMarkDown": "The full URL of the team project which contians the triggered builds, e.g: https://<ACCOUNTNAME>.visualstudio.com/DefaultCollection/<TEAMPROJECT>"
+    },
+    {
+      "name": "customAuth",
+      "type": "boolean",
+      "label": "Custom Authentication (Endpoint)",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Access the build api via custom Endpoint. Set it to false for bearer token authorization using the System.AccessToken variable."
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "Service Endpoint",
+      "required": false,
+      "helpMarkDown": "The server generic endpoint, set the key -Password/Token Key- field to your API key.",
+      "visibleRule": "customAuth = true"
+    },
+    {
+      "name": "timeOut",
+      "type": "string",
+      "label": "Timeout [minutes]",
+      "required": false,
+      "defaultValue": "120",
+      "helpMarkDown": "If timeout reached failing the step and moving on to the next step. An empty or zero value indicates an infinite timeout."
+    },
+    {
+      "name": "cancellingOnError",
+      "type": "boolean",
+      "label": "Cancel Build-Chain On Failure",
+      "required": false,
+      "defaultValue": true,
+      "helpMarkDown": "Set it to true for canceling the build chain if error occurred on any build (the build chain is list of triggered builds which registered for wait by tag)."
+    },
+    {
+      "name": "http_proxy",
+      "type": "string",
+      "label": "HTTP Proxy",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If the agent is behind Proxy and there's no environment variable then you can provide it here",
+      "groupName": "system"
+    },
+    {
+      "name": "https_proxy",
+      "type": "string",
+      "label": "HTTPS Proxy",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If the agent is behind Proxy and there's no environment variable then you can provide it here",
+      "groupName": "system"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "waitForTriggeredBuilds.js",
+      "argumentFormat": ""
+    }
+  }
+}

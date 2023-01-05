@@ -1,0 +1,223 @@
+{
+  "id": "92cda420-aa43-11e6-915e-d77172ce108a",
+  "name": "TriggerAnotherBuildXPlat",
+  "friendlyName": "Trigger Another Build",
+  "description": "Trigger another build - Cross Platform -",
+  "author": "megoels",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    },
+    {
+      "name": "system",
+      "displayName": "System Settings",
+      "isExpanded": false
+    }
+  ],
+  "instanceNameFormat": "TriggerAnotherBuildXPlat $(message)",
+  "inputs": [
+    {
+      "name": "BuildDefinitionName",
+      "type": "string",
+      "label": "Build Definition Name",
+      "required": true,
+      "helpMarkDown": "Provide the build definition name to be triggered."
+    },
+    {
+      "name": "definitionIsInCurrentTeamProject",
+      "type": "boolean",
+      "label": "Same Team Project (as this build)",
+      "defaultValue": true,
+      "required": true,
+      "helpMarkDown": "True if the build to be triggered is in the same team project as this build."
+    },
+    {
+      "name": "teamProjectUri",
+      "type": "string",
+      "label": "Team Project URL (full URL)",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "definitionIsInCurrentTeamProject = false",
+      "helpMarkDown": "The full URL of the team project which contians the build definition to be triggered, e.g: https://<ACCOUNTNAME>.visualstudio.com/DefaultCollection/<TEAMPROJECT>"
+    },
+    {
+      "name": "customAuth",
+      "type": "boolean",
+      "label": "Custom Authentication (Endpoint)",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Access the build api via custom Endpoint. Set it to false for bearer token authorization using the System.AccessToken variable."
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Generic",
+      "label": "Server Endpoint",
+      "required": false,
+      "helpMarkDown": "The server generic endpoint, set the key -Password/Token Key- field to your API key.",
+      "visibleRule": "customAuth = true"
+    },
+    {
+      "name": "triggerWithSourceVersion",
+      "type": "boolean",
+      "label": "Trigger with current Source Version",
+      "required": false,
+      "defaultValue": false,
+      "helpMarkDown": "If this option is enabled, the triggered build will run with the same source version as the original build (Git: The commit ID. TFVC: the changeset).",
+      "groupName": "advanced"
+    },
+    {
+      "name": "triggerWithSourceBranch",
+      "type": "boolean",
+      "label": "Trigger with current Shelveset or Source Branch",
+      "required": false,
+      "defaultValue": false,
+      "helpMarkDown": "Use this option for triggering the selected build with shelveset or same source branch as the original build.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "customBranch",
+      "type": "string",
+      "label": "Custom Source Branch",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Define the branch to the triggered build, for example: refs/heads/master.",
+      "groupName": "advanced",
+      "visibleRule": "triggerWithSourceBranch = false"
+    },
+    {
+      "name": "parameters",
+      "type": "string",
+      "label": "Parameters",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "A comma-delimited list of parameters in the form of param1=value1;param2=value2;... this params will be passed to the triggered build variables.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "demands",
+      "type": "string",
+      "label": "Demands",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "A comma-delimited list of demands in the form of capability1=value1;capability2=value2;... for example: KW=true;Protex=yes.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "triggeredBuildId",
+      "type": "string",
+      "label": "Triggered Build ID Variable",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "Specify the variable to hold the Build ID of the triggered build (name only without $). Keep it empty if it not needed.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "multipleTriggers",
+      "type": "boolean",
+      "label": "Multiple Triggers",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Triggers the same build according to multiple values of parameters (used for testing different numerical values).",
+      "groupName": "advanced"
+    },
+    {
+      "name": "multiParams",
+      "type": "string",
+      "label": "Multipliers Parameters (numerical values)",
+      "required": false,
+      "defaultValue": "",
+      "helpMarkDown": "A list of comma separated parameters with range of values. For example param1=1-10;param2=3-4 triggers the selected build on each value of the parameters.",
+      "groupName": "advanced",
+      "visibleRule": "multipleTriggers = true"
+    },
+    {
+      "name": "valuesRangeOnEachAgent",
+      "type": "boolean",
+      "label": "Trigger the values range on each Agent from the Pool",
+      "required": false,
+      "defaultValue": false,
+      "helpMarkDown": "True=Trigger the same build on each Agent (which meets the specified demands) with each parameter value within the specified range, False=Trigger the range of the parameter values on Agents according to availability in Pool, if large range specified than the available Agents, some values will wait until an Agent completes running a previously assigned value.",
+      "groupName": "advanced",
+      "visibleRule": "multipleTriggers = true"
+    },
+    {
+      "name": "waitForTriggeredBuild",
+      "type": "boolean",
+      "label": "Wait for completion",
+      "required": false,
+      "defaultValue": false,
+      "helpMarkDown": "Wait for the triggered build to be finished.",
+      "groupName": "advanced",
+      "visibleRule": "multipleTriggers = false"
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Timeout [minutes]",
+      "required": false,
+      "defaultValue": "120",
+      "helpMarkDown": "Once timeout expired failing the triggering step and moving on to the next step.",
+      "groupName": "advanced",
+      "visibleRule": "waitForTriggeredBuild = true"
+    },
+    {
+      "name": "registerToWait",
+      "type": "boolean",
+      "label": "Register to wait",
+      "required": true,
+      "defaultValue": false,
+      "helpMarkDown": "Once this checked the triggered build will be added into wait list (for the Wait step).",
+      "visibleRule": "multipleTriggers = true || waitForTriggeredBuild = false",
+      "groupName": "advanced"
+    },
+    {
+      "name": "waitTag",
+      "type": "string",
+      "label": "Wait Tag",
+      "required": true,
+      "defaultValue": "default",
+      "helpMarkDown": "Specify a custom tag for the Wait step, this tag can be used on the Wait step to determine wait list of triggered builds.",
+      "visibleRule": "registerToWait = true",
+      "groupName": "advanced"
+    },
+    {
+      "name": "http_proxy",
+      "type": "string",
+      "label": "HTTP Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here",
+      "required": false,
+      "groupName": "system"
+    },
+    {
+      "name": "https_proxy",
+      "type": "string",
+      "label": "HTTPS Proxy",
+      "defaultValue": "",
+      "helpMarkDown": "If Agent is behind Proxy and there's no environment variable then you can provide it here ",
+      "required": false,
+      "groupName": "system"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "triggerAnotherBuild.js",
+      "argumentFormat": ""
+    }
+  }
+}
