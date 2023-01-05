@@ -1,0 +1,90 @@
+{
+    "id": "61f19783-f8e0-4a05-a664-e5022b464652",
+    "name": "Execute SQL",
+    "friendlyName": "Execute SQL",
+    "description": "Execute SQL against Azure DB",
+    "helpMarkDown": "See http://www.damutu.com/",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Damutu",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "instanceNameFormat": "Execute SQL $(databaseserverinput) ($(databasenamestring))",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "databaseserverinput",
+            "type": "string",
+            "label": "Database Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter the server name of your Azure database e.g. mydatabase.database.windows.net"
+        },
+        {
+            "name": "databasenamestring",
+            "type": "string",
+            "label": "Database Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The database name e.g. AdventureWorks"
+        },
+        {
+            "name": "adminusertring",
+            "type": "string",
+            "label": "Database User",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter a user name, ensure the user has sufficient privileges to run the query."
+        },
+        {
+            "name": "adminpasswordstring",
+            "type": "string",
+            "label": "Database Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Can accept variable defined in build or release pipelines e.g. '$(DBpasswordVariable)'.<br />You may mark the variable type as 'secret' to secure it."
+        },
+		{
+            "name": "sqlquerystring",
+            "type": "multiLine",
+            "label": "SQL Query",
+            "required": true,
+            "helpMarkDown": "T-SQL script",
+        },
+        {
+            "name": "connectiontimeout",
+            "type": "string",
+            "label": "Connection timeout",
+            "defaultValue": "120",
+            "required": true,
+            "helpMarkDown": "SQL Connection timeout in seconds.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "QueryTimeoutstring",
+            "type": "string",
+            "label": "Query timeout",
+            "defaultValue": "65535",
+            "required": true,
+            "helpMarkDown": "The timeout must be an integer value between 1 and 65535.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "RunQuery.ps1"
+        }
+    }
+}
