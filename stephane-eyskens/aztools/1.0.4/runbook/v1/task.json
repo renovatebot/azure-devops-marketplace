@@ -1,0 +1,163 @@
+{
+  "id": "3ae86126-6850-4c52-8a44-05949ec3bc53",
+  "name": "runbook",
+  "friendlyName": "Call an Automation Runbook",
+  "description": "Call an Automation Runbook",
+  "author": "Stephane Eyskens",
+  "helpMarkDown": "Makes sure all endpoints are secured",
+  "category": "Utility",
+  "visibility": [
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Azure Automation Runbook $(message)",
+  "inputs": [
+   {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceNameARM",
+    "options": {
+      "ConnectedServiceName": "Azure Classic",
+      "ConnectedServiceNameARM": "Azure Resource Manager"
+    }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Classic Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "rg",
+      "label": "Automation Resource Group",
+      "type": "pickList",
+      "required": true,
+      "helpMarkDown": "Select resource group which contains the API portal",
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "AutomationAccountName",
+      "type": "pickList",
+      "label": "Automation Account",
+      "required": true,
+      "helpMarkDown": "The Automation Account containing the runbook",
+      "properties": {
+        "EditableOptions": "true"
+      }
+    },
+    {
+      "name": "runbook",
+      "type": "pickList",
+      "label": "Target Runbook",
+      "required": true,
+      "helpMarkDown": "The Runbook to execute",
+      "properties": {
+        "EditableOptions": "false"
+      }
+    },
+    {
+      "name": "NewWebHook",
+      "type": "boolean",
+      "label": "Create a new webhook",
+      "required": true,
+      "defaultValue":true,
+      "helpMarkDown": "Let the task create a new webhook. Note that the corresponding webhook's code must be webhook friendly!"
+    },
+    {
+      "name": "runbookuri",
+      "type": "string",
+      "label": "Runbook's webhook URL",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": "The secret webhook URL. Use preferably a secret release variable",
+      "visibleRule": "NewWebHook = false"
+    },
+    {
+      "name": "webhookdata",
+      "type": "multiline",
+      "properties": {
+        "resizable": "true",
+        "rows": "3"
+      },
+      "label": "Webhook data json payload",
+      "required": true,
+      "helpMarkDown": "",
+      "defaultValue": ""
+    },
+    {
+      "name": "wait",
+      "type": "boolean",
+      "label": "Wait for the job to complete",
+      "required": true,
+      "helpMarkDown": ""
+
+    },
+    {
+      "name": "timeout",
+      "type": "string",
+      "label": "Max wait time in minutes",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "5",
+      "visibleRule": "wait = true"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "rg",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "name": "AutomationAccount",
+      "target": "AutomationAccountName",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts/?api-version=2018-01-15",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(rg)"
+      }
+    },
+    {
+      "name": "RunbookList",
+      "target": "runbook",
+      "endpointId": "$(ConnectedServiceNameARM)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.Automation/automationAccounts/$(AutomationAccountName)/runbooks?api-version=2018-01-15",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+        "ResourceGroupName": "$(rg)",
+        "AutomationAccountName":"$(AutomationAccountName)"
+      }
+    }
+    
+  ],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "runbook.ps1"
+    }
+  }
+}
