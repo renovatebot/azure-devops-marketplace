@@ -1,0 +1,66 @@
+{
+   "id": "08303e1c-e498-484c-a908-708604ddaefa",
+   "name": "vfs-for-git",
+   "friendlyName": "VFS for git",
+   "description": "Interact with VFS for git",
+   "helpMarkDown": "[More Information](https://url.to/yourmarkdown)",
+   "category": "Utility",
+   "visibility": ["Build","Release"],
+   "author": "",
+   "version": {
+      "Major": 0,
+      "Minor": 0,
+      "Patch": 1
+   },
+   "demands": [],
+   "inputs": [
+      {
+         "name": "gitRepositoryId",
+         "type": "picklist",
+         "label": "Repository",
+         "defaultValue": "",
+         "required": true
+      },
+      {
+        "name": "gitRepositoryUrl",
+        "type": "string",
+        "label": "",
+        "defaultValue": "",
+        "required": true
+     },
+     {
+        "name": "gitRepositoryName",
+        "type": "string",
+        "label": "",
+        "defaultValue": "",
+        "required": true
+     }
+   ],
+   "dataSourceBindings": [
+       {
+            "target": "gitRepositoryId",
+            "endpointId": "tfs:teamfoundation ",
+            "endpointUrl": "{{endpoint.url}}/_apis/git/repositories",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },{
+            "target": "gitRepositoryUrl",
+            "endpointId": "tfs:teamfoundation ",
+            "endpointUrl": "{{endpoint.url}}/_apis/git/repository/$(gitRepositoryId)",
+            "resultSelector": "jsonpath:$.repository[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{remoteUrl}}}\"}"
+        },
+        {
+            "target": "gitRepositoryName",
+            "endpointId": "tfs:teamfoundation ",
+            "endpointUrl": "{{endpoint.url}}/_apis/git/repository/$(gitRepositoryId)",
+            "resultSelector": "jsonpath:$.repository[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\"}"
+        }
+
+    ],
+   "instanceNameFormat": "vfs-for-git",
+   "execution":
+    {"Node":{"target":"vfs-for-git.js"}}
+   
+}

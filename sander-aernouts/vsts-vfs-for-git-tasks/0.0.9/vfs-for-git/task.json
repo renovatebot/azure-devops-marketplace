@@ -1,0 +1,54 @@
+{
+   "id": "08303e1c-e498-484c-a908-708604ddaefa",
+   "name": "vfs-for-git",
+   "friendlyName": "VFS for git",
+   "description": "Interact with VFS for git",
+   "helpMarkDown": "[More Information](https://url.to/yourmarkdown)",
+   "category": "Utility",
+   "visibility": ["Build","Release"],
+   "author": "",
+   "version": {
+      "Major": 0,
+      "Minor": 0,
+      "Patch": 3
+   },
+   "demands": [],
+   "inputs": [
+        {
+            "name": "projectId",
+            "type": "picklist",
+            "label": "Project",
+            "defaultValue": "",
+            "required": true
+        },
+        {
+            "name": "gitRepositoryId",
+            "type": "picklist",
+            "label": "Repository",
+            "defaultValue": "",
+            "required": true
+        }
+        
+   ],
+   "dataSourceBindings": [
+        {
+            "target": "projectId",
+            "endpointId": "tfs:teamfoundation",
+            "endpointUrl": "{{endpoint.url}}/_apis/projects",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+       {
+            "target": "gitRepositoryId",
+            "endpointId": "tfs:teamfoundation",
+            "endpointUrl": "{{endpoint.url}}/{projectId}/_apis/git/repositories",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+
+    ],
+   "instanceNameFormat": "vfs-for-git",
+   "execution":
+    {"Node":{"target":"vfs-for-git.js"}}
+   
+}
