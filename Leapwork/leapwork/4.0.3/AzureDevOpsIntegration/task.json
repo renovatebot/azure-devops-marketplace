@@ -1,0 +1,97 @@
+{
+  "id": "397a0aad-6383-48d8-86c8-2a64406f5ed5",
+  "name": "Leapwork",
+  "friendlyName": "Leapwork",
+  "description": "Run Leapwork schedules",
+  "author": "Leapwork",
+  "helpMarkDown": "[More Information](https://leapwork.com/)",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+        "DotNetFramework"
+    ],
+  "version": {
+    "Major": "4",
+    "Minor": "0",
+    "Patch": "3"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Run Leapwork schedules and get results in JUnit format",
+  "inputs": [
+    {
+      "name": "leapworkHostname",
+      "type": "string",
+      "label": "Hostname",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Leapwork controller hostname or IP address"
+    },
+    {
+      "name": "leapworkPort",
+      "type": "string",
+      "label": "API port",
+      "defaultValue": "9001",
+      "required": true,
+      "helpMarkDown": "Leapwork controller API port"
+    },
+	{
+      "name": "leapworkAccessKey",
+      "type": "string",
+      "label": "Access key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Leapwork controller API access key"
+    },
+	 {
+      "name": "leapworkTimeDelay",
+      "type": "string",
+      "label": "Time Delay (in sec)",
+      "defaultValue": "5",
+      "required": false,
+      "helpMarkDown": "During this time,the plugin is going to wait before it tries to get schedule state. If schedule is still running, plugin will wait again. By default this value is 3 seconds. It is strongly recommended not to use less value, because if plugin tries to get schedule state and the controller has not created it yet, controller will return 500 error code and your schedule will become Invalid for the plugin."
+    },
+    {
+      "name": "leapworkDoneStatusAs",
+      "type": "pickList",
+      "label": "Done status",
+      "defaultValue": "Failed",
+      "required": true,
+      "helpMarkDown": "Choose how plugin should interprete Done-status: as Failed or as Success",
+      "options": {
+        "Failed": "Failed",
+        "Success": "Success"
+      }
+    },
+    {
+      "name": "leapworkReport",
+      "type": "filePath",
+      "label": "Report file path and name",
+      "defaultValue": "report.xml",
+      "required": true,
+      "helpMarkDown": "JUnit report file. The same name and path must be entered to the JUnit report publisher"
+    },
+    {
+      "name": "leapworkSchids",
+      "type": "multiLine",
+      "label": "Schedule Ids",
+	  "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Enter here leapwork Schedule Ids. Every id must be entered from a new line. Using id is more reliable, because schedule title can be changed",
+      "properties": {
+        "resizable": "true",
+        "rows": "10",
+        "maxLength": "500"
+      }
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Script.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
