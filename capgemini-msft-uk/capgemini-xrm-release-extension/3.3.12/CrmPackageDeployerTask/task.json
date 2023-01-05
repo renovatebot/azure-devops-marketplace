@@ -1,0 +1,88 @@
+﻿{
+  "id": "2AEC407F-7763-43A5-A27F-BF45A58E4F1D",
+  "name": "CrmPackageDeployerTask",
+  "friendlyName": "Dynamics 365: PackageDeployer Deployment",
+  "description": "Package deployer deployment using embeded powershell scripts.",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "author": "capgemini-uk",
+  "version": {
+    "Major": 1,
+    "Minor": 6,
+    "Patch": 0
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+
+  ],
+  "inputs": [
+    {
+      "name": "workingDir",
+      "type": "filePath",
+      "label": "PackageDeployer Working Directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The PackageDeployer Working Directory, should contain 'PackageDeployer.exe' and the 'PkgFolder' folder."
+    },
+    {
+      "name": "packageName",
+      "type": "string",
+      "label": "Custom PackageDeployer .dll Filename",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The filename of the .dll compiled from the PackageDeployer project."
+    },
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ConnectionString to Dynamics 365 instance. [Microsoft Connection String Guide](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect#create-a-connection-string)"
+    },
+    {
+      "name": "timeOut",
+      "type": "string",
+      "label": "Deployment Timeout",
+      "defaultValue": "1:00:00",
+      "required": true,
+      "helpMarkDown": "Deployment Timeout. Format: h:mm:ss"
+    },
+    {
+      "name": "logOutputFolder",
+      "type": "string",
+      "label": "Log output directory",
+      "defaultValue": "$(Agent.ReleaseDirectory)",
+      "required": true,
+      "helpMarkDown": "The directory that the logs produced will be outputted to."
+    },
+    {
+      "name": "configSubfolder",
+      "type": "string",
+      "label": "Data Import Config Path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The path to the config file for the Capgemini.Xrm.DataMigration data import files. Leave empty if not being used."
+    },
+    {
+      "name": "syncTimeoutMinutes",
+      "type": "string",
+      "label": "Synchronous Operation TimeOut",
+      "defaultValue": "60",
+      "required": true,
+      "helpMarkDown": "The timeout for a single synchronous operation in minutes."
+    }
+  ],
+  "instanceNameFormat": "Deploy Dynamics 365 PackageDeployer $(packageName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\CrmPackageDeployerTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

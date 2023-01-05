@@ -1,0 +1,105 @@
+﻿{
+  "id": "4B65CCF6-AC2B-4DEA-97EA-B629DE973BF5",
+  "name": "DeployCrmSolutionTask",
+  "friendlyName": "Dynamics 365: Deploy Solution",
+  "description": "Deploy Dynamics 365 Solution managed or unmanaged using async import operation.",
+  "category": "Deploy",
+  "visibility": [
+    "Release"
+  ],
+  "author": "capgemini-uk",
+  "version": {
+    "Major": 2,
+    "Minor": 17,
+    "Patch": 0
+  },
+  "demands": [
+
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+
+  ],
+  "inputs": [
+    {
+      "name": "solutionName",
+      "type": "string",
+      "label": "Solution Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the Dynamics 365 Solution to deploy."
+    },
+    {
+      "name": "solutionPath",
+      "type": "filePath",
+      "label": "Solution Filepath",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The filepath to the Dynamics 365 Solution to be imported."
+    },
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ConnectionString to Dynamics 365 instance. [Microsoft Connection String Guide](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect#create-a-connection-string)"
+    },
+    {
+      "name": "overwriteUnmanagedCust",
+      "type": "boolean",
+      "label": "Overwrite Unmanaged Customisations",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether the 'Overwrite Unmanaged Customisations' will be set during import."
+    },
+    {
+      "name": "buildNumber",
+      "type": "string",
+      "label": "Release Artifact Build Number",
+      "defaultValue": "$(BUILD.BUILDNUMBER)",
+      "required": false,
+      "helpMarkDown": "The build number for the artefact that contains the solution."
+    },
+    {
+      "name": "forceUpdate",
+      "type": "boolean",
+      "label": "Force Update",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether the Update should be forced. If ticked, the deployment will be forced through even if the version number has not changed."
+    },
+    {
+      "name": "stepForUpgrade",
+      "type": "boolean",
+      "label": "Use Stage for Upgrade",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether 'Stage for Upgrade' will be used to import."
+    },
+    {
+      "name": "publishChanges",
+      "type": "boolean",
+      "label": "Publish Changes",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determins whether the changes will be published after the import is completed."
+    },
+    {
+      "name": "activateWorkflows",
+      "type": "boolean",
+      "label": "Activate Workflows",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether all workflows in the solution should be activated after the import is completed."
+    }
+  ],
+  "instanceNameFormat": "Deploy Dynamics 365 Solution $(solutionName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DeployCrmSolutionTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

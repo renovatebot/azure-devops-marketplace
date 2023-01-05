@@ -1,0 +1,126 @@
+﻿{
+  "id": "C7518B7B-6AC7-4610-B403-C3A57665615C",
+  "name": "Dynamics365DataImporter",
+  "friendlyName": "Dynamics 365: Data Importer",
+  "description": "Dynamics 365 Data Importer using Capgemini.Xrm.DataMigration Engine.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "capgemini-uk",
+  "version": {
+    "Major": 0,
+    "Minor": 16,
+    "Patch": 0
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [],
+  "inputs": [
+    {
+      "name": "jsonFolderPath",
+      "type": "filePath",
+      "label": "JSON Folderpath",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The folderpath to the exported JSON files to be imported."
+    },
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ConnectionString to Dynamics 365 instance. [Microsoft Connection String Guide](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect#create-a-connection-string)"
+    },
+    {
+      "name": "maxThreads",
+      "type": "string",
+      "label": "Max Threads",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Maximum threads to be used during import."
+    },
+    {
+      "name": "savePageSize",
+      "type": "string",
+      "label": "ExecuteMultiple Batch Size",
+      "defaultValue": "100",
+      "required": true,
+      "helpMarkDown": "The maximum number of records for each ExecuteMultiple request. Dynamics 365 default maximum is 1000."
+    },
+    {
+      "name": "ignoreSystemFields",
+      "type": "boolean",
+      "label": "Ignore System Fields",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether system fields should be ignored."
+    },
+    {
+      "name": "ignoreStatuses",
+      "type": "boolean",
+      "label": "Ignore Status Fields",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Flag that determines whether status fields should be ignored."
+    },
+    {
+      "name": "useCsv",
+      "type": "boolean",
+      "label": "Use CSV",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determines if the import is to use CSV files instead of JSON."
+    },
+    {
+      "name": "schemaFilePath",
+      "type": "filePath",
+      "label": "Schema File Path (for CSV Import only)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "If 'Use CSV' is ticked, the filpath to the schema."
+    },
+    {
+      "name": "configFilePath",
+      "type": "filePath",
+      "label": "Import Config Filepath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional: Filepath to Import Config file."
+    },
+    {
+      "name": "csvFilesToImport",
+      "type": "string",
+      "label": "CSV Files to Import",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "You can assign either 'CSV Files to Import' or 'Import File Filter' or neither, but not both."
+    },
+    {
+      "name": "filesFilter",
+      "type": "string",
+      "label": "Import File Filter",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "You can assign either 'CSV Files to Import' or 'Import File Filter' or neither, but not both."
+    },
+    {
+      "name": "treatWarningsAsErrors",
+      "type": "boolean",
+      "label": "Treat Warnings as Errors",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "A flag to determine whether warnings should be treated as errors."
+    }
+  ],
+  "instanceNameFormat": "Import Data Package $(jsonFolderPath)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DataImporter.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

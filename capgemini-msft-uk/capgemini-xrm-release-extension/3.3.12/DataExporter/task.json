@@ -1,0 +1,110 @@
+﻿{
+  "id": "7A213A6B-1769-4144-9521-88FC15B86F9E",
+  "name": "Dynamics365DataExporter",
+  "friendlyName": "Dynamics 365: Data Exporter",
+  "description": "Dynamics 365 Data Exporter using Capgemini.Xrm.DataMigration Engine.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "capgemini-uk",
+  "version": {
+    "Major": 0,
+    "Minor": 17,
+    "Patch": 0
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [],
+  "inputs": [
+    {
+      "name": "batchSize",
+      "type": "string",
+      "label": "Export Record Batch Size",
+      "defaultValue": "1000",
+      "required": true,
+      "helpMarkDown": "The number of records that can be in each export file."
+    },
+    {
+      "name": "pageSize",
+      "type": "string",
+      "label": "Export Query Page Size",
+      "defaultValue": "100",
+      "required": true,
+      "helpMarkDown": "The page size that will be used in the query to retrieve the records."
+    },
+    {
+      "name": "topCount",
+      "type": "string",
+      "label": "Export Query Top Count",
+      "defaultValue": "1000000",
+      "required": true,
+      "helpMarkDown": "The maximum amount of records that will be retrieved for an entity."
+    },
+    {
+      "name": "schemaFilePath",
+      "type": "filePath",
+      "label": "Schema Filepath",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The filepath to the schema."
+    },
+    {
+      "name": "jsonFolderPath",
+      "type": "filePath",
+      "label": "JSON Output Folderpath",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The folderpath where the exported files will be outputted."
+    },
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ConnectionString to Dynamics 365 instance. [Microsoft Connection String Guide](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect#create-a-connection-string)"
+    },
+    {
+      "name": "onlyActive",
+      "type": "boolean",
+      "label": "Only Active Records",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "A flag to determine whether only Active records should be exported."
+    },
+    {
+      "name": "configFilePath",
+      "type": "filePath",
+      "label": "Export Config Filepath",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional: Filepath to Export Config file."
+    },
+    {
+      "name": "treatWarningsAsErrors",
+      "type": "boolean",
+      "label": "Treat Warnings as Errors",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "A flag to determine whether warnings should be treated as errors."
+    },
+    {
+      "name": "useCsv",
+      "type": "boolean",
+      "label": "Use CSV",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Flag that determines if the export is to use CSV files instead of JSON."
+    }
+  ],
+  "instanceNameFormat": "Export Data Package $(jsonFolderPath)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DataExporter.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

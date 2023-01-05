@@ -1,0 +1,105 @@
+﻿{
+  "id": "49B73561-BC73-43A5-862F-95247574D899",
+  "name": "CRMAuditReportGenerator",
+  "friendlyName": "Dynamics 365: Audit Report Generator",
+  "description": "Generates detailed reports on components within a Dynamics 365 instance.",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "capgemini-uk",
+  "version": {
+    "Major": 1,
+    "Minor": 5,
+    "Patch": 0
+  },
+  "demands": [
+  ],
+  "minimumAgentVersion": "1.83.0",
+  "groups": [
+
+  ],
+  "inputs": [
+    {
+      "name": "connectionString",
+      "type": "string",
+      "label": "Connection String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "ConnectionString to Dynamics 365 instance. [Microsoft Connection String Guide](https://docs.microsoft.com/en-us/dynamics365/customer-engagement/developer/xrm-tooling/use-connection-strings-xrm-tooling-connect#create-a-connection-string)"
+    },
+    {
+      "name": "outputDir",
+      "type": "filePath",
+      "label": "OutputDir",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Output directory where the reports will be created."
+    },
+    {
+      "name": "reportName",
+      "type": "string",
+      "label": "Report Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the generated report."
+    },
+    {
+      "name": "reportsToRecipients",
+      "type": "string",
+      "label": "Recipient Email List",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The list of recipient email addresses that the generated reports will be sent to."
+    },
+    {
+      "name": "sendGridKey",
+      "type": "string",
+      "label": "SendGrid Key",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The key for the SendGrid email account that will be used to send the reports."
+    },
+    {
+      "name": "generateJsonReport",
+      "type": "boolean",
+      "label": "Generate JSON Report",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify if a JSON version of the report should be created."
+    },
+    {
+      "name": "generateXmlReport",
+      "type": "boolean",
+      "label": "Generate XML Report",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify if an XML version of the report should be created."
+    },
+    {
+      "name": "generateExcelReport",
+      "type": "boolean",
+      "label": "Generate Excel Report",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify if a Microsoft Excel version of the report should be created."
+    },
+    {
+      "name": "requiredPublishers",
+      "type": "string",
+      "label": "Publishers Filter",
+      "defaultValue": "Capgemini",
+      "required": true,
+      "helpMarkDown": "Specifies the semi-colon separated list of publishers whose Dynamics 365 solutions should be included in the audit. E.g. Microsoft;Capgemini"
+    }
+  ],
+  "instanceNameFormat": "$(reportName) Audit Report Generator",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\DocumentationExporter.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
