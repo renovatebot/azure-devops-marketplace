@@ -1,0 +1,56 @@
+{
+    "id":  "dbfd5ff9-3134-4dce-b0ca-3232a0bfd381",
+    "name":  "VSTSToolsKeep",
+    "friendlyName":  "VSTS-Tools Keep",
+    "description":  "Sets the retention for the current build to \u0027keep forever\u0027.",
+    "author":  "Moonspace Labs, LLC",
+    "helpMarkDown":  "Sets the retention for the current build to \u0027keep forever\u0027.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  4,
+                    "Patch":  2
+                },
+    "minimumAgentVersion":  "1.99.0",
+    "instanceNameFormat":  "VSTS-Tools Keep $(message)",
+    "groups":  [
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  true
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "targetbranch",
+                       "type":  "string",
+                       "label":  "Target Branch",
+                       "defaultValue":  "master",
+                       "required":  true,
+                       "helpMarkDown":  "The branch that must be built for this task to be executed (e.g. master)."
+                   },
+                   {
+                       "name":  "debugonly",
+                       "type":  "boolean",
+                       "label":  "Execute on Debug Only",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "groupName":  "advanced",
+                       "helpMarkDown":  "If checked, executes only when **system.debug** is set to **true**."
+                   }
+               ],
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\keepbuild.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}
