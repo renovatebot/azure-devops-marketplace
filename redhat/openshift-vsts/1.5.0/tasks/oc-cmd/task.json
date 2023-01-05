@@ -1,0 +1,77 @@
+{
+  "id": "ebaf1cdc-a60f-4e57-ba29-e3b8f80aeb1e",
+  "name": "oc-cmd",
+  "friendlyName": "Execute oc command",
+  "description": "OpenShift execute CLI command.",
+  "author": "Hardy Ferentschik",
+  "helpMarkDown": "See [getting started](https://github.com/redhat-developer/openshift-vsts/blob/master/docs/getting-started.md)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "preview": true,
+  "demands": [],
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 12
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "oc-cmd $(message)",
+  "inputs": [
+    {
+      "name": "openshiftService",
+      "type": "connectedService:openshift",
+      "label": "OpenShift service connection",
+      "required": true,
+      "helpMarkDown": "Select OpenShift service connection to use."
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version of oc to use",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Select the oc version to use e.g. 'v3.10.0' (leave blank for latest). You can also specify a direct URL to a oc release bundle."
+    },
+    {
+      "name": "cmd",
+      "type": "string",
+      "label": "Command to run",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the oc command to run."
+    },
+    {
+      "name": "ignoreFlag",
+      "type": "boolean",
+      "label": "Ignore non success return value",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Specify if the non success return value of the oc command run has to be ignored. E.g if the command oc create/delete/... fail because the resource has already been created/deleted/.. the pipeline will continue its execution"
+    }, 
+    {
+      "name": "uselocalOc",
+      "type": "boolean",
+      "label": "Use local oc executable",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Check if oc is already installed in the machine and use that if available"
+    },
+    {
+      "name": "proxy",
+      "type": "string",
+      "label": "Use proxy to download oc executable",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "make use of a proxy to download oc executable"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "lib/oc-exec-task.js",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
