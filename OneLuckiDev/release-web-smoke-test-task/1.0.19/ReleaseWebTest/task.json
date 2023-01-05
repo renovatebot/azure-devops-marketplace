@@ -1,0 +1,81 @@
+{
+    "id": "eea06bb8-4912-47d5-b3bf-2b742388daf3",
+    "name": "oneluckidevWebSmokeTest",
+    "friendlyName": "Release Web Smoke Test",
+    "description": "Release Task to test the availability of a web application after the deployment step so you can determine if the release was successful or not",
+    "author": "Jeff Przylucki",  
+    "category": "Test",
+    "visibility": [
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0", 
+      "Patch": "19"
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "Web Smoke Test $(message)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "url",
+            "type": "multiLine",
+            "label": "Url(s)",
+            "required": true,
+            "helpMarkDown": "Url subject to the test. Addresses must begin with the appropriate protocol (http/https).  You may include multiple urls by providing a comma separated list. (ex. 'http://server1/api/healthcheck, http://server2/api/healthcheck')"
+        },
+        {
+            "name": "expectedReturnCode",
+            "type": "string",
+            "label": "Expected Return Code",
+            "defaultValue": "200",
+            
+            "required": true,
+            "helpMarkDown": "Expected HTTP return code. ie 200.",
+            "groupName": "advanced"
+        },
+     
+        {
+            "name": "retryAttemptCount",
+            "type": "string",
+            "label": "Number of Retry Attempts",
+            "defaultValue": 3,
+            
+            "required": true,
+            "helpMarkDown": "Number of time to retry the call to the site before failing. A value of 0 will not retry.  Good values are ususally between 1 and 5.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "strictSSL",
+            "type": "boolean",
+            "label": "strictSSL ",
+            "defaultValue": "true",            
+            "required": true,
+            "helpMarkDown": "Set the value for sslStrict, turning this to false can help when you want/need to ignore some ssl certificate errors.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "retryDelay",
+            "type": "string",
+            "label": "Delay between retries (in milliseconds)",
+            "defaultValue": 1000,
+            
+            "required": true,
+            "helpMarkDown": "Time to delay after a failed call before attempting a retry",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+      "Node": {
+        "target": "./dist/webtest.js",
+        "argumentFormat": ""
+      }
+    }
+  }
