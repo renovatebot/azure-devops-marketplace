@@ -1,0 +1,211 @@
+{
+  "id": "b15628f5-ba26-4250-8e69-fb729fbda870",
+  "name": "branch-maker",
+  "friendlyName": "Branch Maker",
+  "description": "Create a new branch and allows you to apply a Branch Policy",
+  "author": "Kerwin Carpede",
+  "helpMarkDown": "",
+  "category": "Build",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "Agent"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "1",
+    "Patch": "3"
+  },
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "Branch Maker",
+  "groups": [
+    {
+      "name": "branch",
+      "displayName": "Branch",
+      "isExpanded": true
+    },
+    {
+      "name": "branchPolicy",
+      "displayName": "Branch Policy",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "repository",
+      "type": "string",
+      "label": "Repository",
+      "defaultValue": "$(Build.Repository.Name)",
+      "required": true,
+      "helpMarkDown": "Specify the name of the repository to create the branch in",
+      "groupName": "branch"
+    },
+    {
+      "name": "sourceBranchName",
+      "type": "string",
+      "label": "Source Branch",
+      "defaultValue": "master",
+      "required": true,
+      "helpMarkDown": "Specify the branch to base the new branch off. A valid branch name must be provided.",
+      "groupName": "branch"
+    },
+    {
+      "name": "newBranchName",
+      "type": "string",
+      "label": "New Branch",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specify the name of the new branch. Example release/M1",
+      "groupName": "branch"
+    },
+    {
+      "name": "applyBranchPolicy",
+      "type": "boolean",
+      "label": "Apply Branch Policy",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Apply a branch policy to the new branch e.g Require a minimum of approvers etc. Enable this to see all available options.",
+      "groupName": "branchPolicy"
+    },
+    {
+      "name": "requireMinimumReviewers",
+      "type": "boolean",
+      "label": "Require a minimum number of reviewers",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Require approval from a specified number of reviewers on pull requests.",
+      "groupName": "branchPolicy",
+      "visibleRule": "applyBranchPolicy=true"
+    },
+    {
+      "name": "MinimumApproverCount",
+      "type": "string",
+      "label": "Minimum number of reviewers",
+      "defaultValue": 2,
+      "required": true,
+      "helpMarkDown": "Specifiy how many approvers are required.",
+      "groupName": "branchPolicy",
+      "visibleRule": "requireMinimumReviewers=true"
+    },
+    {
+      "name": "creatorVoteCounts",
+      "type": "boolean",
+      "label": "Allow users to approve their own changes",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "branchPolicy",
+      "visibleRule": "requireMinimumReviewers=true"
+    },
+    {
+      "name": "allowDownvotes",
+      "type": "boolean",
+      "label": "Allow completion even if some reviewers vote Waiting or Reject",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "branchPolicy",
+      "visibleRule": "requireMinimumReviewers=true"
+    },
+    {
+      "name": "resetOnSourcePush",
+      "type": "boolean",
+      "label": "Reset code reviewer votes when there are new changes.",
+      "defaultValue": false,
+      "required": false,
+      "groupName": "branchPolicy",
+      "visibleRule": "requireMinimumReviewers=true"
+    },
+    {
+      "name": "checkForLinkedWorkItems",
+      "type": "boolean",
+      "label": "Check for linked work items",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Encourage traceability by checking for linked work items on pull requests.",
+      "groupName": "branchPolicy",
+      "visibleRule": "applyBranchPolicy=true"
+    },
+    {
+      "name": "checkForLinkedWorkItemsType",
+      "type": "pickList",
+      "label": "CheckFor LinkedWork Items Type",
+      "required": false,
+      "defaultValue": "required",
+      "options": {
+        "required": "Required",
+        "optional": "Optional"
+      },
+      "helpMarkDown": "",
+      "groupName": "branchPolicy",
+      "visibleRule": "checkForLinkedWorkItems=true"
+    },
+    {
+      "name": "checkForCommentResolution",
+      "type": "boolean",
+      "label": "Check for comment resolution",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Check to see that all comments have been resolved on pull requests.",
+      "groupName": "branchPolicy",
+      "visibleRule": "applyBranchPolicy=true"
+    },
+    {
+      "name": "checkForCommentResolutionType",
+      "type": "pickList",
+      "label": "Check for comment resolution type",
+      "required": false,
+      "defaultValue": "required",
+      "options": {
+        "required": "Required",
+        "optional": "Optional"
+      },
+      "helpMarkDown": "",
+      "groupName": "branchPolicy",
+      "visibleRule": "checkForCommentResolution=true"
+    },
+    {
+      "name": "enforceMergeStrategy",
+      "type": "boolean",
+      "label": "Enforce a merge strategy",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Check to see that all comments have been resolved on pull requests.",
+      "groupName": "branchPolicy",
+      "visibleRule": "applyBranchPolicy=true"
+    },
+    {
+      "name": "enforceMergeStrategyType",
+      "type": "pickList",
+      "label": "Merge Strategy Type",
+      "required": false,
+      "defaultValue": "noFastForwardMerge",
+      "options": {
+        "noFastForwardMerge": "No-fast-forward merge",
+        "squashMerge": "Squash Merge"
+      },
+      "helpMarkDown": "",
+      "groupName": "branchPolicy",
+      "visibleRule": "enforceMergeStrategy=true"
+    },
+    {
+      "name": "authenticationType",
+      "type": "pickList",
+      "label": "Authentication",
+      "required": "true",
+      "defaultValue": "OAuthToken",
+      "options": {
+        "OAuthToken": "OAuth Token",
+        "WindowsAuthentication": "Windows Authentication"
+      },
+      "helpMarkDown": "Specify the authentication type to use for communicating with the TFS API. Note: For OAuth Token, 'Allow scripts to access OAuth token' must be enabled in the build definition options. If 'Windows Authentication' is selected, this would be the account being used by the Build Agent.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "run.ps1"
+    }
+  }
+}
