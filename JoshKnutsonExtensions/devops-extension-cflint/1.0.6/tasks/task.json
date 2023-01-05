@@ -1,0 +1,73 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b4d2dbe4-ed52-47a2-824d-50bedb38fbf1",
+    "name": "cflint",
+    "friendlyName": "Static code analysis for CFML (a linter) for builds",
+    "description": "This extension uses the **CFLint** tool to scan CFML files and provide feedback on potential issues through the editor and Problems view of VS Code. The ways in which this is triggered are configurable in the [Settings](#settings). The defaults are only to run when CFML files are opened or saved. The linter optionally takes rule configuration via a `.cflintrc` file, for which details can be found at [**CFLint**'s repo](https://github.com/cflint/CFLint#folder-based-configuration). This extension facilitates the creation and viewing of this file via [Commands](#commands). ",
+    "author": "Josh Knutson",
+    "helpMarkDown": "[More information](https://marketplace.visualstudio.com/items?itemName=joshknutsonextensions.devops-extension-cflint) [cloc](https://github.com/AlDanial/cloc)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "node.js"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "minimumAgentVersion": "1.95.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "cflint $(arguments)",
+    "inputs": [
+        {
+            "name": "workingFolder",
+            "type": "filePath",
+            "label": "working folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Working folder where cflint jar is run. If you leave it blank it is the root of the repository.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "cflintJarDownloadUrl",
+            "type": "string",
+            "label": "Download url of cflint-jar",
+            "defaultValue": "https://github.com/cflint/CFLint/releases/download/CFLint-1.4.1/CFLint-1.4.1-all.jar",
+            "required": true,
+            "helpMarkDown": "Download URL of cflint-jar. Can be network share as well. Default value: https://github.com/cflint/CFLint/releases/download/CFLint-1.4.1/CFLint-1.4.1-all.jar",
+            "groupName": "advanced"
+        },
+        {
+            "name": "javaDownloadUrl",
+            "type": "string",
+            "label": "Download url of java exe",
+            "defaultValue": "https://github.com/joshknutson/devops-extension-cflint/raw/master/resources/java.exe",
+            "required": true,
+            "helpMarkDown": "Download URL of java exe. Can be network share as well. Default value: https://github.com/joshknutson/devops-extension-cflint/raw/master/resources/java.exe",
+            "groupName": "advanced"
+        },
+        {
+            "name": "cflintArguments",
+            "type": "string",
+            "label": "arguments",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Arguments for the cflint jar."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
