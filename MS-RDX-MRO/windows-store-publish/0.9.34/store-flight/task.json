@@ -1,0 +1,174 @@
+{
+    "id": "13dee6a7-3698-4b12-bbb4-b393560a3ebc",
+    "name": "store-flight",
+    "friendlyName": "Windows Store - Flight",
+    "description": "Make a flight submission to the Windows Store",
+    "author": "Microsoft Corporation",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "node.js"
+    ],
+    "version": {
+        "Major": "0",
+        "Minor": "2",
+        "Patch": "28"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Flight $(packagePath) to $(flightName)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "serviceEndpoint",
+            "type": "connectedService:devCenter",
+            "label": "Service endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Windows Developer Center endpoint configured with your credentials"
+        },
+        {
+            "name": "nameType",
+            "type": "pickList",
+            "label": "App identification method",
+            "helpMarkDown": "How to determine the app to publish",
+            "defaultValue": "AppId",
+            "options": {
+                "AppId": "ID",
+                "AppName": "Primary name"
+            }
+        },
+        {
+            "name": "appId",
+            "type": "string",
+            "label": "Application ID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "ID of the application, found in the URL for the application's page on the Dev Center",
+            "visibleRule": "nameType = AppId"
+        },
+        {
+            "name": "appName",
+            "type": "string",
+            "label": "Application primary name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Primary name of the application, found at the top of the application's page on the Dev Center",
+            "visibleRule": "nameType = AppName"
+        },
+        {
+            "name": "flightName",
+            "type": "string",
+            "label": "Flight name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the flight as seen on the Dev Center"
+        },
+        {
+            "name": "packagePath",
+            "type": "filePath",
+            "label": "Package file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to the application's package you want to flight. Minimatch pattern is supported."
+        },
+        {
+            "name": "force",
+            "type": "boolean",
+            "label": "Delete pending submissions",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Whether to delete an existing submission instead of failing the task"
+        },
+        {
+            "name": "additionalPackages",
+            "type": "multiLine",
+            "label": "Additional package(s)",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Paths to any additional packages required by this application (one path per line). Minimatch pattern is supported."
+        },
+        {
+            "name": "skipPolling",
+            "type": "boolean",
+            "label": "Skip polling",
+            "defaultValue": false,
+            "groupName": "advanced",
+            "required": true,
+            "helpMarkDown": "Skip polling submission after committing it to Dev Center. **Warning**: if you check this box, you will not see errors, if any, that your submission may run into. You will have to manually check the status of your submission in Dev Center."
+        },
+        {
+            "name": "deletePackages",
+            "type": "boolean",
+            "label": "Delete Packages",
+            "defaultValue": false,
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Delete old unnecessary packages from the flight group you are submitting to."
+        },
+        {
+            "name": "numberOfPackagesToKeep",
+            "type": "pickList",
+            "label": "Number of Packages to keep",
+            "defaultValue": "25",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Number of packages to keep per unique Target Device Family and Target Platform.",
+            "options": {
+                "0": "None",
+                "1": "1",
+                "2": "2",
+                "3": "3",
+                "4": "4",
+                "5": "5"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "visibleRule": "deletePackages = true"
+        },
+        {
+            "name": "isMandatoryUpdate",
+            "type": "boolean",
+            "label": "Mandatory Update",
+            "defaultValue": false,
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "Indicates whether you want to treat the packages in this submission as mandatory for self-installing app updates."
+        },
+        {
+            "name": "mandatoryUpdateDifferHours",
+            "type": "pickList",
+            "label": "The number of hours until packages become mandatory",
+            "defaultValue": "2",
+            "groupName": "advanced",
+            "required": false,
+            "helpMarkDown": "The effective time when the packages in this submission become mandatory, in hours from submission time.",
+            "options": {
+                "2": "2",
+                "6": "6",
+                "12": "12",
+                "24": "24",
+                "48": "48"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "visibleRule": "isMandatoryUpdate = true"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "local/flightUi.js",
+            "argumentFormat": ""
+        }
+    }
+}
