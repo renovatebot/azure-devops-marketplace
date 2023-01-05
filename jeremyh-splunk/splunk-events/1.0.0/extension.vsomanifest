@@ -1,0 +1,65 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "splunk-events",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "splunk-event"
+            }
+        },
+        {
+            "id": "splunk-endpoint",
+            "description": "Events Service endpoint type for Splunk Observability",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "splunk-events-api",
+                "displayName": "Splunk Observability Events API",
+                "icons": {
+                    "default": "splunk-square.png",
+                    "large": "splunk-square.png"
+                },
+                "url": {
+                    "displayName": "Splunk Observability API URL",
+                    "helpText": "URL for your Splunk Observability Instance's Ingest API (E.G. https://ingest.us1.signalfx.com/v2/)",
+                    "isVisible": "true",
+                    "required": "true"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "X-SF-Token",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "Splunk Observability Cloud API Token",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 256
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://dev.splunk.com/observability/reference/api/ingest_data/latest#endpoint-send-events\" target=\"_blank\"><b>Event API Docs</b></a>"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

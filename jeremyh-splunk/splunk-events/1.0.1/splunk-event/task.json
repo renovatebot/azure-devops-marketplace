@@ -1,0 +1,61 @@
+{
+  "id": "5c1058b2-bc81-4fcb-afed-868d7ffde4a5",
+  "name": "Splunk Observability Cloud Events",
+  "friendlyName": "Send events to Splunk Observability",
+  "description": "Send events to Splunk Observability",
+  "author": "Splunk",
+  "category": "Utility",
+  "releaseNotes": "Send events to Splunk Observability",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "runsOn": [
+    "DeploymentGroup",
+    "Server",
+    "ServerGate"
+  ],
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 22
+  },
+  "instanceNameFormat": "Send Splunk Events",
+  "inputs": [
+    {
+      "name": "splunk-events-api",
+      "type": "connectedService:splunk-events-api",
+      "label": "Splunk Observability Events API",
+      "defaultValue": "",
+      "required": "true",
+      "helpMarkDown": "Select a Splunk Observability Cloud service connection"
+    },
+    {
+      "name": "environment",
+      "type": "string",
+      "label": "environment dimension (production, test, etc)",
+      "required": true,
+      "helpMarkDown": "environment string (usually production, test, dev, etc)"
+    },
+    {
+      "name": "eventType",
+      "type": "string",
+      "label": "eventType (name of event for matching)",
+      "required": true,
+      "helpMarkDown": "eventType string defines the name of the event for matching purposes"
+    }
+  ],
+  "execution": {
+    "HttpRequest": {
+      "Execute": {
+        "EndpointId": "$(splunk-events-api)",
+        "EndpointUrl": "$(endpoint.url)event",
+        "Method": "POST",
+        "Body": "[{\"category\": \"USER_DEFINED\",\"eventType\": \"$(eventType)\",\"dimensions\": {\"environment\": \"$(environment)\",\"service\": \"API\"}}]",
+        "Headers": "{\"Content-Type\": \"application/json\"}",
+        "WaitForCompletion": "false",
+        "Expression": ""
+      }
+    }
+  }
+}
