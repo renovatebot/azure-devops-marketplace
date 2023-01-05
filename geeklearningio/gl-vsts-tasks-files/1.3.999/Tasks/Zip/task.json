@@ -1,0 +1,63 @@
+{
+  "id": "2BD10ECC-0B4D-4C9D-8833-9E55F436CB83",
+  "name": "Zip",
+  "friendlyName": "ZIP Files",
+  "description": "ZIP files from directories using minimatch filtering",
+  "helpMarkDown": "[More Information](https://github.com/geeklearningio/gl-vsts-tasks-files/wiki/ZIP-Files) (Version 1.3.999)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Geek Learning",
+  "version": {
+    "Major": 1,
+    "Minor": 3,
+    "Patch": 999
+  },
+  "demands": [
+    "npm"
+  ],
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "ZIP files from $(ZipRoot)",
+  "inputs": [
+    {
+      "name": "ZipRoot",
+      "type": "filePath",
+      "label": "Copy Root",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Root folder to apply copy patterns to.  Empty is the root of the repo.  Use variables if build steps building outside the repo. Example: $(agent.builddirectory)"
+    },
+    {
+      "name": "Contents",
+      "type": "multiLine",
+      "label": "Contents",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "File or folder paths to include as part of the artifact.  Supports multiple lines or minimatch patterns. [More Information](http://go.microsoft.com/fwlink/?LinkID=613725)"
+    },
+    {
+      "name": "ZipName",
+      "type": "string",
+      "label": "Zip Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name of the artifact to create."
+    },
+    {
+      "name": "TargetPath",
+      "type": "string",
+      "label": "Path",
+      "defaultValue": "$(Build.StagingDirectory)",
+      "required": false,
+      "helpMarkDown": "The path where to create the zip file"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "zip.js",
+      "argumentFormat": ""
+    }
+  }
+}
