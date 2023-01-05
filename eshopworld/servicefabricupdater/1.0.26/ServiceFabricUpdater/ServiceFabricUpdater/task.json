@@ -1,0 +1,125 @@
+{
+  "id": "5b931b5e-3f50-426d-9891-c4a2e0523cc1",
+  "name": "ServiceFabricUpdater",
+  "friendlyName": "Service Fabric Updater",
+  "description": "Update specified values in the Service Fabric manifest files.",
+  "helpMarkDown": "[More Information](https://github.com/eShopWorld/devopsflex-vsts-tasks)",
+  "category": "Utility",
+  "visibility": [ "Build", "Release" ],
+  "author": "Colin Farrelly",
+  "version": {
+    "Major": 1,
+    "Minor": 5,
+    "Patch": 5
+  },
+  "demands": [],
+  "inputs": [
+    {
+      "name": "AppManifestPath",
+      "type": "filePath",
+      "label": "Application Manifest path",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkdown": "Path to the application manifest file."
+    },
+    {
+      "name": "Version",
+      "type": "string",
+      "label": "Application version",
+      "defaultValue": "$(Build.BuildNumber)",
+      "required": true,
+      "helpMarkDown": "The version to either overwrite the current version with or append to it."
+    },
+    {
+      "name": "VersionType",
+      "type": "radio",
+      "label": "Application version type",
+      "defaultValue": "version",
+      "options": {
+        "version": "Full Version",
+        "revision": "Trailing Revision"
+      },
+      "required": true,
+      "helpMarkDown": "This decides wheather to overwrite the current version with the version specified above or append the version above as a revision to the current version."
+    },
+    {
+      "name": "Port",
+      "type": "string",
+      "label": "Port number",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This will update the port number the service is deployed to. If there are multiple services the port will be incremented."
+    },
+    {
+      "name": "AppParametersPath",
+      "type": "filePath",
+      "label": "Application parameters path",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkdown": "Path to the application parameters file."
+    },
+    {
+      "name": "Tenant",
+      "type": "string",
+      "label": "Tenant code",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This will add the tenant code to the name of the application."
+    },
+    {
+      "name": "Environment",
+      "type": "pickList",
+      "label": "Environment code",
+      "defaultValue": "",
+      "options": {
+        "empty": "",
+        "ci": "CI",
+        "test": "TEST",
+        "preprod": "PREPROD",
+        "sand": "SAND",
+        "prod": "PROD"
+      },
+      "required": false,
+      "helpMarkDown": "This will add the environment qualifier to the name of the application."
+    },
+    {
+      "name": "Region",
+      "type": "pickList",
+      "label": "Region name",
+      "defaultValue": "West Europe",
+      "options": {
+        "West Europe": "West Europe",
+        "East US": "East US",
+        "Australia Southeast": "Australia Southeast",
+        "Southeast Asia": "Southeast Asia"
+      },
+      "required": true,
+      "helpMarkDown": "This will set the region environment variable up."
+    }
+  ],
+  "instanceNameFormat": "Service Fabric Updater",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ServiceFabricUpdater.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  },
+  "messages": {
+    "PS_ExitCode": "PowerShell exited with code '{0}'.",
+    "PS_FormattedCommand": "Formatted command: {0}",
+    "PS_InvalidErrorActionPreference": "Invalid ErrorActionPreference '{0}'. The value must be one of: 'Stop', 'Continue', or 'SilentlyContinue'",
+    "PS_InvalidFilePath": "Invalid file path '{0}'. A valid path to the manifest file is required.",
+    "PS_MissingPortAttribute": "The port attribute does not exist on the '{0}' endpoint in the '{1}' service manifest file.",
+    "PS_UnableToDetermineExitCode": "Unexpected exception. Unable to determine the exit code from powershell.",
+    "PS_NoTenant": "No tenant provided, skipping...",
+    "PS_NoPort": "No port provided, using default port in service manifests...",
+    "PS_NoEnvironment": "No environment provided , skipping...",
+    "PS_AppManifestUpdated": "ApplicationManifest.xml located at '{0}' updated successfully.",
+    "PS_SvcManifestUpdated": "ServiceManifest.xml located at '{0}' updated successfully.",
+    "PS_UpdatingManifest": "Updating the service manifest located at '{0}'",
+    "PS_SvcManifestRegion": "Upserting region '{0}'",
+    "PS_SvcManifestRegionSuccess": "Upserting region '{0}' success!",
+    "PS_UpdatingAppParameters":  "Updating the application parameters file located at '{0}'" 
+  }
+}
