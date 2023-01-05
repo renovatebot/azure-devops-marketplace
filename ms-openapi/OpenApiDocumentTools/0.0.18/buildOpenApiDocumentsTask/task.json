@@ -1,0 +1,304 @@
+{
+    "id": "332865cc-aa31-450c-9888-2b2a51e1c5ac",
+    "name": "BuildOpenApiDocument",
+    "friendlyName": "Build OpenAPI Document",
+    "description": "Generates OpenAPI document(s) based on a build's output.",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 15
+    },
+    "instanceNameFormat": "Build OpenAPI Document: $(serviceName)",
+    "groups": [
+        {
+            "name": "csharpAnnotationsDocumentGeneration",
+            "displayName": "C# Annotations Document Generator",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "serviceName",
+            "type": "string",
+            "label": "Service Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Friendly name of the service OpenAPI document(s) are being generated for."
+        },
+        {
+            "name": "visualStudioXmlDocumentationFileNamePatterns",
+            "type": "multiLine",
+            "label": "Visual Studio XML File Name Pattern(s)",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "resizable": "true",
+                "rows": "3"
+            },
+            "helpMarkDown": "Names of Visual Studio XML files which document service REST APIs and data types. [More Information](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/xmldoc/xml-documentation-comments)\n\n**Important**\n- Each line should contain exactly one file name pattern.\n- File matching patterns may be used. [More Information](https://docs.microsoft.com/en-us/vsts/build-release/tasks/file-matching-patterns)\n\n**Tip**\nWhen multiple projects in your solution make use of Visual Studio XML output, configure your projects to have unique XML file names. Otherwise, if your build requires XML files to have the same name, be sure to configure the \"*Visual Studio XML Root Directory*\" in the *Advanced* section below, so this task can find the correct XML files."
+        },
+        {
+            "name": "assemblyFileNamePatterns",
+            "type": "multiLine",
+            "label": "Assembly File Name Pattern(s)",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "resizable": "true",
+                "rows": "3"
+            },
+            "helpMarkDown": "Names of assembly files which implement service REST APIs and data types found in Visual Studio XML Documentation files.\n\n**Important**\n- Each line should contain exactly one file name pattern.\n- File matching patterns may be used. [More Information](https://docs.microsoft.com/en-us/vsts/build-release/tasks/file-matching-patterns)\n- Be sure to specify **dependent assemblies** as well, which are required to reflect into service/contract assemblies. For example, Newtonsoft.Json.dll might be a required dependency."
+        },
+        {
+            "name": "openApiSpecificationVersion",
+            "type": "pickList",
+            "label": "OpenAPI Specification Version",
+            "defaultValue": "3.0",
+            "required": true,
+            "helpMarkDown": "OpenAPI specification version to target.",
+            "options": {
+                "3.0": "3.0"
+            }
+        },
+        {
+            "name": "format",
+            "type": "pickList",
+            "label": "OpenAPI Document Format",
+            "defaultValue": "json",
+            "required": true,
+            "helpMarkDown": "Document format to target.",
+            "options": {
+                "json": "JSON",
+                "yaml": "YAML"
+            }
+        },
+        {
+            "name": "outputDirectoryPath",
+            "type": "string",
+            "label": "Output Directory Path",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where OpenAPI document(s) will be written."
+        },
+        {
+            "name": "createOutputDirectoryIfNotExists",
+            "type": "boolean",
+            "label": "Create directory if it does not exist?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will create the directory if it does not exist.\n\n**When not set**, this task will fail if the directory does not exist already."
+        },
+        {
+            "name": "useCamelCaseForSchemaProperties_CsharpAnnotationsDocumentGenerationSetting",
+            "type": "boolean",
+            "label": "Use camel case for OpenAPI Schema properties?",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "**When set**, Schema object properties in the built OpenAPI document will be of camel case format. Recommended when a service application uses global serialization settings to enforce camel case request and response properties.\n\n**When not set**, Schema object property casing will be inferred from source code names and/or attributes (e.g. JsonProperty, etc).",
+            "groupName": "csharpAnnotationsDocumentGeneration"
+        },
+        {
+            "name": "csharpAnnotationsDocumentGenerationAdvancedConfigurationFileName",
+            "type": "string",
+            "label": "Advanced Configuration File Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of C# Annotations Document Generator advanced configuration file, which controls optional document generation features. [More Information](https://github.com/Microsoft/OpenAPI.NET.CSharpAnnotations/wiki/Advanced-Configuration-XML)",
+            "groupName": "csharpAnnotationsDocumentGeneration"
+        },
+        {
+            "name": "csharpAnnotationsDocumentGenerationAdvancedConfigurationFileSearchPath",
+            "type": "string",
+            "label": "Advanced Configuration File Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where the C# Annotations Document Generator advanced configuration file should be searched for.\n\n**Tips**\n- Be sure to override this value when multiple configuration files exist with the same name in your build output.\n- Consider using predefined build variables when your build outputs to a custom location (e.g. sources directory, binaries directory, artifacts directory, etc). [Predefined Build Variables](https://docs.microsoft.com/en-us/vsts/build-release/concepts/definitions/build/variables?tabs=batch#predefined-variables)",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "csharpAnnotationsDocumentGenerationAdvancedConfigurationFileName != \"\""
+        },
+        {
+            "name": "recursiveCsharpAnnotationsDocumentGenerationAdvancedConfigurationFileSearch",
+            "type": "boolean",
+            "label": "Perform recursive sub-directory search?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, a recursive search for the advanced configuration file will be performed starting from the *Advanced Configuration File Root Directory*.\n\n**When not set**, only the *Advanced Configuration File Root Directory* will be searched.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "csharpAnnotationsDocumentGenerationAdvancedConfigurationFileName != \"\""
+        },
+        {
+            "name": "failOnMultipleCsharpAnnotationsDocumentGenerationAdvancedConfigurationFileMatches",
+            "type": "boolean",
+            "label": "Fail when multiple files are found?",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will fail if multiple C# Annotations Document Generator advanced configuration files for the given name are found within the *Advanced Configuration File Root Directory*.\n\n**When not set**, the first match found will be used.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "csharpAnnotationsDocumentGenerationAdvancedConfigurationFileName != \"\""
+        },
+        {
+            "name": "documentDescriptionFileName",
+            "type": "string",
+            "label": "Document Description File Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Name of file containing the description content to inject into the resulting OpenAPI document's Info object. The file must be of UTF-8 encoding.\n\nPlease see various specification definitions for more details on this field:\n- [2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#infoObject)\n- [3.0.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject)\n- [3.0.1](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#infoObject)",
+            "groupName": "csharpAnnotationsDocumentGeneration"
+        },
+        {
+            "name": "documentDescriptionFileSearchPath",
+            "type": "string",
+            "label": "Description File Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where the description file should be searched for.\n\n**Tips**\n- Be sure to override this value when multiple files exist with the same name in your build output.\n- Consider using predefined build variables when your build outputs to a custom location (e.g. sources directory, binaries directory, artifacts directory, etc). [Predefined Build Variables](https://docs.microsoft.com/en-us/vsts/build-release/concepts/definitions/build/variables?tabs=batch#predefined-variables)",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "documentDescriptionFileName != \"\""
+        },
+        {
+            "name": "recursiveDocumentDescriptionFileSearch",
+            "type": "boolean",
+            "label": "Perform recursive sub-directory search?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, a recursive search for the description file will be performed starting from the *Description File Root Directory*.\n\n**When not set**, only the *Description File Root Directory* will be searched.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "documentDescriptionFileName != \"\""
+        },
+        {
+            "name": "failOnMultipleDocumentDescriptionFileMatches",
+            "type": "boolean",
+            "label": "Fail when multiple files are found?",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will fail if multiple description files for the given name are found within the *Description File Root Directory*.\n\n**When not set**, the first match found will be used.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "documentDescriptionFileName != \"\""
+        },
+        {
+            "name": "useCustomCsharpAnnotationsFilters",
+            "type": "boolean",
+            "label": "Use custom filters?",
+            "defaultValue": false,
+            "required": false,
+            "groupName": "csharpAnnotationsDocumentGeneration"
+        },
+        {
+            "name": "filterFileNamePatterns",
+            "type": "multiLine",
+            "label": "Filter File Name Pattern(s)",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "resizable": "true",
+                "rows": "3"
+            },
+            "helpMarkDown": "Names of filter assembly files which implement filter classes to apply when generating OpenAPI document(s).\n\nImportant\n- Each line should contain exactly one file name pattern.\n- Each file name pattern requires a corresponding entry in Filter Class Name(s) input field. In other words, when three file name patterns are specified here, the task will expect three class names to be defined and will pair them by matching line numbers.\n- File matching patterns may be used. [More Information](https://docs.microsoft.com/en-us/vsts/build-release/tasks/file-matching-patterns)",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "useCustomCsharpAnnotationsFilters = true"
+        },
+        {
+            "name": "filterClassNames",
+            "type": "multiLine",
+            "label": "Filter Class Name(s)",
+            "defaultValue": "",
+            "required": false,
+            "properties": {
+                "resizable": "true",
+                "rows": "3"
+            },
+            "helpMarkDown": "Names of filter classes to apply when generating OpenAPI document(s).\n\nImportant\n- Each line should contain exactly one class name.\n- Each class name requires a corresponding entry in Filter File Name Pattern(s) input field. In other words, when three class names are specified here, the task will expect three file name patterns to be defined and will pair them by matching line numbers.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "useCustomCsharpAnnotationsFilters = true"
+        },
+        {
+            "name": "filterFileSearchPath",
+            "type": "string",
+            "label": "Filter File(s) Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where filter files should be searched for.\n\n**Tips**\n- Be sure to override this value when multiple filter files exist with the same name in your build output.\n- Consider using predefined build variables when your build outputs to a custom location (e.g. sources directory, binaries directory, artifacts directory, etc). [Predefined Build Variables](https://docs.microsoft.com/en-us/vsts/build-release/concepts/definitions/build/variables?tabs=batch#predefined-variables)",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "useCustomCsharpAnnotationsFilters = true"
+        },
+        {
+            "name": "failOnMultipleFilterFileMatches",
+            "type": "boolean",
+            "label": "Fail when multiple files are found?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will fail if multiple filter files for a given name are found within the *Filter File(s) Root Directory*.\n\n**When not set**, the first match found will be used.",
+            "groupName": "csharpAnnotationsDocumentGeneration",
+            "visibleRule": "useCustomCsharpAnnotationsFilters = true"
+        },
+        {
+            "name": "fallbackToPowerShell",
+            "type": "boolean",
+            "label": "Fallback to using PowerShell.exe?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "This setting only applies to Windows agents.\n\nWhen set, the task will fallback to using powershell.exe when pwsh.exe (PowerShell Core) is not found via your PATH environment variable. Note, **PowerShell Core must be used when your assemblies target framework is .Net Core** as opposed to .Net Framework.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "openApiDocumentVersion",
+            "type": "string",
+            "label": "Document Version",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "This value will be written into the resulting OpenAPI Document's *version* field of the Info Object.\n\nPlease see various specification definitions for more details on this field:\n- [2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md#infoObject)\n- [3.0.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject)\n- [3.0.1](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#infoObject)",
+            "groupName": "advanced"
+        },
+        {
+            "name": "visualStudioXmlSearchPath",
+            "type": "string",
+            "label": "Visual Studio XML Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where Visual Studio XMLs should be searched for.\n\n**Tips**\n- Be sure to override this value when multiple Visual Studio XML files exist with the same name in your build output.\n- Consider using predefined build variables when your build outputs to a custom location (e.g. sources directory, binaries directory, artifacts directory, etc). [Predefined Build Variables](https://docs.microsoft.com/en-us/vsts/build-release/concepts/definitions/build/variables?tabs=batch#predefined-variables)",
+            "groupName": "advanced"
+        },
+        {
+            "name": "failOnMultipleVisualStudioXmlMatches",
+            "type": "boolean",
+            "label": "Fail when multiple files are found?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will fail if multiple Visual Studio XML files are found with the same name within the *Visual Studio XML Root Directory*.\n\n**When not set**, the first match found will be used.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "assemblyFileSearchPath",
+            "type": "string",
+            "label": "Assembly File(s) Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Directory path where assembly files should be searched for.\n\n**Tips**\n- Be sure to override this value when multiple assembly files exist with the same name in your build output.\n- Consider using predefined build variables when your build outputs to a custom location (e.g. sources directory, binaries directory, artifacts directory, etc). [Predefined Build Variables](https://docs.microsoft.com/en-us/vsts/build-release/concepts/definitions/build/variables?tabs=batch#predefined-variables)",
+            "groupName": "advanced"
+        },
+        {
+            "name": "failOnMultipleAssemblyFileMatches",
+            "type": "boolean",
+            "label": "Fail when multiple files are found?",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "**When set**, this task will fail if multiple assembly files are found with the same name within the *Assembly File(s) Root Directory*.\n\n**When not set**, the first match found will be used.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "Index.js"
+        }
+    }
+}
