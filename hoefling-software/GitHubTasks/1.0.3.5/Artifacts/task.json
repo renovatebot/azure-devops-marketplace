@@ -1,0 +1,80 @@
+{
+    "id": "061eb2f1-1898-4cde-9460-79282a42b0ed",
+    "name": "GitHubPublishReleaseArtifact",
+    "friendlyName": "GitHub Add Release Artifact",
+    "description": "Adds a single Release Artifact to the latest GitHub Release on your specified Repository",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Andrew Hoefling",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "GitHubReleaseArtifact",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "githubRepo",
+            "type": "string",
+            "label": "GitHub Repository Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the GitHub Repository without the organization or owner name. eg: GitHub-AzureDevOps-Tasks"
+        },
+        {
+            "name": "githubOrganization",
+            "type": "string",
+            "label": "GitHub Organization Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the GitHub Organization. eg: HoeflingSoftware"
+        },
+        {
+            "name": "githubToken",
+            "type": "string",
+            "label": "GitHub Personal Access Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Personal Access Token for the GitHub Accoung. https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
+        },
+        {
+            "name": "artifact",
+            "type": "filePath",
+            "label": "Artifact",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Source directory where the Artifact is located"
+        },
+        {
+            "name": "artifactDisplayName",
+            "type": "string",
+            "label": "Artifact Display Name",
+            "defaultValue": "Artifacts.zip",
+            "required": true,
+            "helpMarkDown": "The name of the artifact that shows up in GitHub Releases"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

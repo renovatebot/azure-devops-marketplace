@@ -1,0 +1,112 @@
+{
+    "id": "f63afbd3-a43d-481e-bc66-179141753981",
+    "name": "GitHubTagCommit",
+    "friendlyName": "GitHub Tag Commit",
+    "description": "Adds a git tag to the specified SHA commit using the GitHub API",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Andrew Hoefling",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "GitHubTagCommit",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "githubRepo",
+            "type": "string",
+            "label": "GitHub Repository Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the GitHub Repository without the organization or owner name. eg: GitHub-AzureDevOps-Tasks"
+        },
+        {
+            "name": "githubOrganization",
+            "type": "string",
+            "label": "GitHub Organization Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the GitHub Organization. eg: HoeflingSoftware"
+        },
+        {
+            "name": "githubToken",
+            "type": "string",
+            "label": "GitHub Personal Access Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The Personal Access Token for the GitHub Accoung. https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/"
+        },
+        {
+            "name": "tagName",
+            "type": "string",
+            "label": "Tag Name",
+            "defaultValue": "$(Build.BuildId)",
+            "required": true,
+            "helpMarkDown": "The name of the tag. ex: v1.0.0"
+        },
+        {
+            "name": "tagMessage",
+            "type": "string",
+            "label": "Tag Message",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The message of the git tag"
+        },
+        {
+            "name": "tagCommit",
+            "type": "string",
+            "label": "Commit SHA to Tag",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The SHA to tag"
+        },
+        {
+            "name": "taggerName",
+            "type": "string",
+            "label": "Commit Tag - Name",
+            "defaultValue": "Hosted Build Agent",
+            "required": false,
+            "helpMarkDown": "The name to display in source control"
+        },
+        {
+            "name": "taggerEmail",
+            "type": "string",
+            "label": "Commit Tag - Email",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The email to display in source control"
+        },
+        {
+            "name": "taggerDate",
+            "type": "string",
+            "label": "Commit Tag - Date",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The date to display in source control"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
