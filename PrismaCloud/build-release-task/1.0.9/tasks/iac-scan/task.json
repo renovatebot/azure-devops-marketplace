@@ -1,0 +1,101 @@
+{
+    
+    "id": "0916459c-70bb-4b0c-b005-a176f138d1f7",
+    "name": "Prisma Cloud IaC Scan",
+    "friendlyName": "Prisma Cloud IaC Scan",
+    "description": "Task to scan IaC templates within Azure Devops pipelines",
+    "helpMarkDown": "https://docs.paloaltonetworks.com/prisma/prisma-cloud/prisma-cloud-admin/prisma-cloud-devops-security/use-the-prisma-cloud-extension-for-azure-devops.html",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Prisma Cloud",
+    "version": {
+        "Major": 1,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Prisma IaC Scan",
+    "groups": [
+          {
+            "name": "failureCriteria",
+            "displayName": "Failure criteria",
+            "isExpanded": true,
+            "visibleRule": ""
+          }
+        ],
+    "inputs": [
+        {
+            "name": "Path",
+            "type": "string",
+            "label": "Directory path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Directory path where IaC templates are stored"
+        },
+        {
+            "name": "prismaCloudService",
+            "type": "connectedService:prismaCloudIacScan",
+            "label": "Prisma Cloud IaC scan",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Prisma Cloud IaC service connection to use. If drop-down is empty, please first create a service connection"
+        },
+        {
+            "name": "High",
+            "type": "number",
+            "label": "High severity",
+            "defaultValue": 1,
+            "required": true,
+            "helpMarkDown": "Provide failure threshold for high severity security issues",
+            "groupName": "failureCriteria"
+        },
+        {
+            "name": "Medium",
+            "type": "number",
+            "label": "Medium severity",
+            "defaultValue": 1,
+            "required": true,
+            "helpMarkDown": "Provide failure threshold for medium severity security issues",
+            "groupName": "failureCriteria"
+        },
+        {
+            "name": "Low",
+            "type": "number",
+            "label": "Low severity",
+            "defaultValue": 1,
+            "required": true,
+            "helpMarkDown": "Provide failure threshold for low severity security issues",
+            "groupName": "failureCriteria"
+        },
+        {
+            "name": "Operator",
+            "type": "picklist",
+            "label": "Operator",
+            "defaultValue": "or",
+            "required": true,
+            "options": {
+                "or": "or",
+                "and": "and"
+            },
+            "helpMarkDown": "provide operator for high, medium, low severity failure thresholds",
+            "groupName": "failureCriteria"
+        },
+        {
+            "name": "Tags",
+            "type": "string",
+            "label": "Tags",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide Tags for your repo here. Ex. env:prod, project:prisma"
+        }
+
+
+    ],
+    "execution": {
+        "Node10": {
+            "target": "iacScan.js"
+        }
+    }
+}
