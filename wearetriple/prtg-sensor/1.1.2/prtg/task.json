@@ -1,0 +1,107 @@
+{
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "comment": "",
+    "id": "56966f48-0694-4ca6-b667-eb4e4167ef3e",
+    "name": "Manage PRTG sensor",
+    "version": {
+        "major": 1,
+        "minor": 1,
+        "patch": 2,
+        "isTest": false
+    },
+    "demands": [ ],
+    "friendlyName": "Manage PRTG sensor",
+    "description": "Allows for pausing, resuming and monitoring PRTG sensors",
+    "helpMarkDown": "[More information..](https://github.com/wearetriple/ados-extension-prtg)",
+    "iconUrl": "https://raw.githubusercontent.com/wearetriple/ados-extension-prtg/master/assets/logo.png",
+    "category": "Deploy",
+    "author": "Triple",
+    "groups": [],
+    "inputs": [
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "PRTGUsername",
+            "label": "PRTG Username",
+            "defaultValue": "$(PRTG.Username)",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Username for PRTG authentication",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "PRTGPasshash",
+            "label": "PRTG Passhash",
+            "defaultValue": "$(PRTG.Passhash)",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Pashash for PRTG authentication",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "PRTGEndpoint",
+            "label": "PRTG Endpoint",
+            "defaultValue": "$(PRTG.Endpoint)",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Http endpoint for PRTG (https://prtg-public.example.com/api)",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "PRTGSensorId",
+            "label": "PRTG Sensor Id",
+            "defaultValue": "",
+            "required": true,
+            "type": "string",
+            "helpMarkDown": "Id of the PRTG Sensor",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {
+                "pause": "Pause sensor",
+                "resume": "Resume sensor",
+                "monitor": "Monitor sensor"
+            },
+            "properties": {},
+            "name": "Action",
+            "label": "Action",
+            "defaultValue": "",
+            "required": true,
+            "type": "pickList",
+            "helpMarkDown": "Action to be performed",
+            "groupName": ""
+        },
+        {
+            "aliases": [],
+            "options": {},
+            "properties": {},
+            "name": "MonitorPeriod",
+            "label": "Monitor Period",
+            "defaultValue": "00:10:00",
+            "required": false,
+            "type": "string",
+            "helpMarkDown": "Max time to monitor sensor (hh:mm:ss) -- will throw an error when sensor is not OK after period",
+            "groupName": ""
+        }
+    ],
+    "instanceNameFormat": "$(Action) PRTG Sensor $(PRTGSensorId)",
+    "execution": {
+        "PowerShell3": {
+            "target": "prtg.ps1"
+        }
+    }
+}
