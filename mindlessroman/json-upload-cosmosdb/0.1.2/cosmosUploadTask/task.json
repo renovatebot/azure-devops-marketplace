@@ -1,0 +1,74 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "82f8620c-5c25-e398-ef53-8a91ca253d1c",
+    "name": "AzDOCosmosDBUpload",
+    "friendlyName": "Azure DevOps CosmosDB Upload",
+    "description": "When provided a file path to a supported file type in the repository, upload the contents to a CosmosDB instance",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "runsOn": [],
+    "visibility": [],
+    "instanceNameFormat": "Upload a JSON file to CosmosDB",
+    "inputs": [
+        {
+            "name": "cosmosEndpoint",
+            "type": "string",
+            "label": "Endpoint URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The URI for the Cosmos instance as found 'Keys'"
+        },
+        {
+            "name": "cosmosKey",
+            "type": "string",
+            "label": "Primary Key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The primary key for the Cosmos instance as found 'Keys'"
+        },
+        {
+            "name": "cosmosDatabase",
+            "type": "string",
+            "label": "Database Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The database to which you will connect. If it does not exist, it will be created"
+        },
+        {
+            "name": "cosmosContainer",
+            "type": "string",
+            "label": "Container Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The container within the database to which you will connect. If it does not exist, it will be created"
+        },
+        {
+            "name": "cosmosPartition",
+            "type": "string",
+            "label": "Partition Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The partition key for the container. If one is not provided Cosmos will default to something"
+        },
+        {
+            "name": "fileLocation",
+            "type": "filePath",
+            "label": "File path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path of the script to execute. Must be a fully qualified path or relative to `$(System.DefaultWorkingDirectory)`."
+        }
+    ],
+    "groups": [],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
