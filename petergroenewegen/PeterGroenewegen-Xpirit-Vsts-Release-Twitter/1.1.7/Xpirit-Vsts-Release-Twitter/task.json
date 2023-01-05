@@ -1,0 +1,43 @@
+{
+  "id": "31f040e5-e040-4336-878a-59a492234434",
+  "name": "Twitter",
+  "friendlyName": "Twitter on build or release",
+  "description": "Send tweets on builds and release",
+  "helpMarkDown": "[More Information, setup authorization...](https://github.com/XpiritBV/Xpirit-Vsts-Release-Twitter/wiki)",
+  "category": "Utility",
+  "visibility": [ "Build", "Release" ],
+  "author": "Peter Groenewegen",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 7
+  },
+  "demands": [ ],
+  "minimumAgentVersion": "1.90.0",
+
+  "inputs": [
+    {
+      "name": "TwitterEndPoint",
+      "type": "connectedService:twitter-scheme",
+      "label": "Twitter",
+      "required": true,
+      "helpMarkDown": "The twitter authorization to use."
+    },
+    {
+      "name": "Message",
+      "type": "string",
+      "label": "Message",
+      "defaultValue": "Starting to use Twitter on build/release task #VSTSTRT @pgroene",
+      "required": true,
+      "helpMarkDown": "Tweet message, keep the #VSTSTRT to track all builds and release tweets"
+    }
+  ],
+  "instanceNameFormat": "Twitter task",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\Twitter.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
