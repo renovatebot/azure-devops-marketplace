@@ -1,0 +1,146 @@
+{
+  "id": "1ebe8fa4-6993-49e4-8aa1-fe51fd2b7720",
+  "name": "Pickles",
+  "friendlyName": "Pickles",
+  "description": "Pickles generator",
+  "author": "Improve Quality Services",
+  "helpMarkDown": "Generates your Pickles living documentation",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "21",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Generate Pickles documentation",
+  "groups": [
+    {
+      "displayName": "Test",
+      "isExpanded": false,
+      "name": "test"
+    },
+    {
+      "displayName": "Advanced",
+      "isExpanded": false,
+      "name": "advanced"
+    }
+  ],
+  "inputs": [
+    {
+      "name": "featureDir",
+      "type": "filePath",
+      "label": "Feature Directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Directory to start scanning recursively for features."
+    },
+    {
+      "name": "docFormat",
+      "type": "pickList",
+      "label": "Documentation Format",
+      "required": true,
+      "defaultValue": "Html",
+      "options": {
+        "Html": "HTML",
+        "Word": "Microsoft Word OpenXML (.docx)",
+        "Json": "Javascript Object Notation (JSON)",
+        "Excel": "Microsoft Excel OpenXML (.xlsx)",
+        "DHtml": "HTML with search",
+        "Cucumber": "Cucumber JSON export format",
+        "MarkDown": "MarkDown format (.md)"
+      },
+      "helpMarkDown": "Allows the user to select what format the generated output will be written in."
+    },
+    {
+      "name": "out",
+      "type": "string",
+      "label": "Output Directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The folder where Pickles will put the generated output."
+    },
+    {
+      "groupName": "test",
+      "name": "sutn",
+      "type": "string",
+      "label": "System Under Test Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This is the name of the system under test. Since Pickles is designed to be used with any platform/language that supports Gherkin feature files we cannot rely on reading in an assembly or a jar file to retrieve metadata about the system under test. Instead, The user can use this argument to name the system under test."
+    },
+    {
+      "groupName": "test",
+      "name": "sutv",
+      "type": "string",
+      "label": "System Under Test Version",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "This is the version of the system under test. Since Pickles is designed to be used with any platform/language that supports Gherkin feature files we cannot rely on reading in an assembly or a jar file to retrieve metadata about the system under test. Instead, The user can use this argument to set a version number for the system under test."
+    },
+    {
+      "groupName": "test",
+      "name": "resultsFile",
+      "type": "string",
+      "label": "Test Results File",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Path to the XML results file. The filename itself can be a wildcard as defined by the searchpattern of the .NET Directory.GetFiles() method. For selecting multiple resultsfiles to be processed, you can use the wildcard searchpattern, you can enter the files as a semicolon separated list or a combination of both. Selecting only a path to a folder will not work, when all files in a folder needs to be selected, append a * to the path."
+    },
+    {
+      "groupName": "test",
+      "name": "resultsFormat",
+      "type": "pickList",
+      "label": "Test Results Format",
+      "defaultValue": "",
+      "required": false,
+      "options": {
+        "NUnit": "NUnit 2 format",
+        "XUnit": "xUnit 1 format",
+        "MsTest": "Microsoft Test format",
+        "CucumberJson": "Cucumber's JSON format",
+        "SpecRun": "SpecRun format",
+        "xUnit2": "xUnit 2 format",
+        "NUnit3": "NUnit 3 format",
+        "VsTest": "VsTest console format"
+      },
+      "helpMarkDown": "The format used for the report coming out of the test run of the features. There are many different testing frameworks supported by SpecFlow, plus all of the other gherkin style frameworks out there. NUnit and xUnit output formats are accepted as well as output from MsTest and SpecRun. As of version 2.4, Pickles also supports output from VsTest.Console.exe, the new command line runner introduced by Visual Studio 2012."
+    },
+    {
+      "groupName": "advanced",
+      "name": "language",
+      "type": "string",
+      "label": "Language",
+      "defaultValue": "en",
+      "required": false,
+      "helpMarkDown": "Allows the user to tell Pickles the default language of the .feature files. Any language settings inside the .feature files take precedence."
+    },
+    {
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "As of version 2.6, Pickles includes Gherkin #-style comments. As of version 2.7, this inclusion is configurable.",
+      "label": "Enable Comments",
+      "name": "enableComments",
+      "required": false,
+      "type": "boolean"
+    },
+    {
+      "groupName": "advanced",
+      "defaultValue": "false",
+      "helpMarkDown": "As of version 2.5, Pickles includes experimental features. The goal of experimental features is to get rapid feedback about ideas. They are subject to change or removal at any time. The experimental features are not always completely thought through - including them and receiving feedback about them enables us to make better decisions about those features. This argument is a flag. Including the argument means that the experimental features should be included. If the argument is not included, then the experimental features will not be included.",
+      "label": "Include Experimental Features",
+      "name": "experimentalFeatures",
+      "required": false,
+      "type": "boolean"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "task.ps1"
+    }
+  }
+}
