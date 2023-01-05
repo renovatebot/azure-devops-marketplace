@@ -1,0 +1,80 @@
+{
+  "id": "297b5b77-37bd-4c83-9466-94c35d497e75",
+  "name": "cboroson-PD-Trigger",
+  "friendlyName": "Trigger PagerDuty Incidents",
+  "description": "Opens a PagerDuty incident using a provided integration key.",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/PD-Trigger)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 3
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "IntegrationKey",
+      "type": "string",
+      "label": "PagerDuty Integration Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "This is the secret value associated with a service integration in your PagerDuty subscription."
+    },
+    {
+      "name": "Summary",
+      "type": "string",
+      "label": "Summary",
+      "defaultValue": "Release Failure - $(Release.ReleaseName)",
+      "required": true,
+      "helpMarkDown": "This will be the title of the PagerDuty incident."
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "label": "Description",
+      "defaultValue": "An error occurred in a release task and the release did not complete.",
+      "required": true,
+      "helpMarkDown": "Additional variables or text can be included here if desired."
+    },
+    {
+      "name": "Severity",
+      "type": "pickList",
+      "label": "Severity",
+      "defaultValue": "error",
+      "options": {
+        "critical": "critical",
+        "error": "error",
+        "warning": "warning",
+        "info": "info"
+      },
+      "required": true,
+      "helpMarkDown": "Additional variables or text can be included here if desired."
+    },
+    {
+      "name": "WikiLink",
+      "type": "string",
+      "label": "Wiki Link",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Additional explanation about the failure or recovery steps can be included here as a link if desired."
+    }
+],
+  "dataSourceBindings": [
+  ],
+  "instanceNameFormat": "Open a PagerDuty Incident",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PD-Trigger.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

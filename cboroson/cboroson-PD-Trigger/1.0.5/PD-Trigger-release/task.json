@@ -1,0 +1,58 @@
+{
+  "id": "297b5b77-37bd-4c83-9466-94c35d497e75",
+  "name": "cboroson-PD-Trigger",
+  "friendlyName": "Trigger PagerDuty Incidents",
+  "description": "Opens a PagerDuty incident using a provided integration key.",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/PD-Trigger)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 5
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "IntegrationKey",
+      "type": "string",
+      "label": "PagerDuty Integration Key",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "This is the secret value associated with a service integration in your PagerDuty subscription."
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "label": "Event description",
+      "defaultValue": "Release Failure - $(Release.ReleaseName)",
+      "required": true,
+      "helpMarkDown": "This will be the title of the PagerDuty incident."
+    },
+    {
+      "name": "Details",
+      "type": "string",
+      "label": "Incident details",
+      "defaultValue": "An error occurred in a release task and the release did not complete.",
+      "required": true,
+      "helpMarkDown": "Additional variables or text can be included here if desired."
+    }
+],
+  "dataSourceBindings": [
+  ],
+  "instanceNameFormat": "Open a PagerDuty Incident",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PD-Trigger.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
