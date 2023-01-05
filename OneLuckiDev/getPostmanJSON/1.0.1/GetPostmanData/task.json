@@ -1,0 +1,82 @@
+{
+    "id": "ffe3d229-a62d-458f-a629-70f27f1cc357",
+    "name": "oneLuckiGetPostmanScripts",
+    "friendlyName": "Get Postman Scripts",
+    "description": "Task to call postman to retrieve a set of test scripts",
+    "author": "Jeff Przylucki",  
+    "category": "Utility",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0", 
+      "Patch": "1"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Get Postman Script",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "fileLocation",
+            "type": "string",
+            "label": "Script Output location",
+            "required": true,
+            "helpMarkDown": "The file location to store the JSON Postman Script.",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)"
+        },
+
+        {
+            "name": "apiKey",
+            "type": "string",
+            "label": "Postman credential api key",
+            "required": true,            
+            "helpMarkDown": "The API credential key used to perform the call to Postman.",
+            "defaultValue": ""
+        },
+        {
+            "name": "pauseDuration",
+            "type": "string",
+            "label": "API Pause Duration (in ms)",
+            "required": true, 
+            "defaultValue":"100",
+                 
+            "helpMarkDown": "Pause between API calls to Postman, may be needed to avoid 60 calls/min rate limit from Postman"
+            
+        },
+        {
+            "name": "downloadEnvironments",
+            "type": "boolean",
+            "label": "Download Environment",
+            "required": true,            
+            "helpMarkDown": "Indicates if the task should pull down Environment Variable definitions also.",
+            "defaultValue": "true"
+        },
+        
+        {
+            "name": "environmentFolder",
+            "type": "string",
+            "label": "Environment File folder name (relative to Script Output Location)",
+            "required": true, 
+            "defaultValue":"environments",
+            "visibleRule":"downloadEnvironments==true",      
+            "helpMarkDown": "Folder path where the Environment files should be saved (relative to the root where files are downloaded)."
+            
+        }
+
+    ],
+    "execution": {
+      "Node": {
+        "target": "./dist/taskEntry.js",
+        "argumentFormat": ""
+      }
+    }
+  }
