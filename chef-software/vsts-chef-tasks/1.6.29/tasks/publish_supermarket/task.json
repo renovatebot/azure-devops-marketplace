@@ -1,0 +1,61 @@
+{
+    "id": "e12c0c48-e7fc-458c-87a2-881a7ee6d7a7",
+    "name": "vsts-chef-task-cookbook-publish-supermaket",
+    "friendlyName": "Publish cookbook to Supermarket (Chef)",
+    "description": "Publish a cookbook to public or private Supermaket",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/publish-cookbook-to-supermarket)",
+    "category": "Deploy",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Publish cookbook to Supermarket",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "chefSupermarketEndpoint",
+            "type": "connectedService:chefsupermarketendpointv1",
+            "label": "Chef Supermarket",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Chef Supermaket to use"
+        },
+        {
+            "name": "chefCookbookName",
+            "type": "string",
+            "label": "Cookbook Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the cookbook to publish to the specified Supermarket"
+        },
+        {
+            "name": "chefCookbookPath",
+            "type": "filePath",
+            "label": "Cookbook path",
+            "defaultValue": "$(Build.SourcesDirectory)/cookbooks",
+            "required": true,
+            "helpMarkDown": "Path to the cookbook to upload.  By default the cookbook is expected to be in the `cookbooks` directory of the source"
+        },
+        {
+            "name": "deletePrivateKey",
+            "type": "boolean",
+            "label": "Delete Private Key",
+            "defaultValue": true,
+            "helpMarkdown": "Remove the private key from the agent when the task has completed",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "publish_supermarket.js"
+        }
+    }
+}

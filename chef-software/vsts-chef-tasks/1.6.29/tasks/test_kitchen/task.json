@@ -1,0 +1,79 @@
+{
+    "id": "c653c8af-c47a-42ef-9af1-769737a5d61d",
+    "name": "vsts-chef-task-test-kitchen",
+    "friendlyName": "Test Kitchen (Chef)",
+    "description": "Perform Text Kitchen tests for a cookbook",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/test-kitchen)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Execute Test Kitchen: $(tkCommand)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "tkAzureEndpoint",
+            "type": "connectedService:AzureRM",
+            "label": "Azure RM Endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Endpoint containing credentials to communicate with Azure to perform Test Kitchen tests"
+        },
+        {
+            "name": "tkCommand",
+            "type": "pickList",
+            "label": "Test Kitchen Command",
+            "defaultValue": "verify",
+            "required": true,
+            "options": {
+                "converge": "Converge",
+                "destroy": "Destroy",
+                "verify": "Verify",
+                "setup": "Setup",
+                "test": "Test"
+            },
+            "helpMarkDown": "Select the Test Kitchen command that should be executed"
+        },
+        {
+            "name": "tkKitchenFile",
+            "type": "string",
+            "label": "Kitchen YAML File",
+            "defaultValue": ".kitchen.yml",
+            "required": true,
+            "helpMarkDown": "Filename of the kitchen file to use for configuration",
+            "groupName": "advanced"
+        },
+        {
+            "name": "tkKitchenFolder",
+            "type": "string",
+            "label": "Test Kitchen Folder",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": false,
+            "helpMarkdown": "Folder in which the Test Kitchen command should be run. This where your kitchen configuration file is.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "tkPattern",
+            "type": "string",
+            "label": "Test Kitchen Instance Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkdown": "Instance or Regex pattern that should be applied to the command",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "test_kitchen.js"
+        }
+    }
+}

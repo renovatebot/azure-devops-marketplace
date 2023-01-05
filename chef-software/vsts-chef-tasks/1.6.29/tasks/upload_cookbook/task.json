@@ -1,0 +1,71 @@
+{
+    "id": "968b50f6-1dcc-11e7-93ae-92361f002671",
+    "name": "vsts-chef-task-cookbook-upload",
+    "friendlyName": "Upload cookbook to Chef Server (Chef)",
+    "description": "Upload a cookbook to Chef Server including dependencies",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/upload-cookbook-to-chef-server)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Upload cookbook to Chef Server",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "chefServerEndpoint",
+            "type": "connectedService:Chefserverendpointv1",
+            "label": "Chef Server endpoint",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Chef Server endpoint to use"
+        },
+        {
+            "name": "chefCookbookPath",
+            "type": "string",
+            "label": "Cookbook path",
+            "defaultValue": "$(Build.SourcesDirectory)/cookbooks",
+            "required": true,
+            "helpMarkDown": "Path to the cookbook to upload.  By default the cookbook is expected to be in the `cookbooks` directory of the source"
+        },
+        {
+            "name": "berksInstallArguments",
+            "type": "string",
+            "label": "Berkshelf Install Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify additional arguments to the `berks install` command",
+            "groupName": "advanced"
+        },
+        {
+            "name": "berksUploadArguments",
+            "type": "string",
+            "label": "Berkshelf Upload Arguments",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify additional arguments to the `berks upload` command",
+            "groupName": "advanced"
+        },
+        {
+            "name": "deletePrivateKey",
+            "type": "boolean",
+            "label": "Delete Private Key",
+            "defaultValue": true,
+            "helpMarkdown": "Remove the private key from the agent when the task has completed",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "upload_cookbook.js"
+        }
+    }
+}

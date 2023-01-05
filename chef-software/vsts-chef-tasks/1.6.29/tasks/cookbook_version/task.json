@@ -1,0 +1,39 @@
+{
+    "id": "99b27ffc-7e88-4937-ac86-f1170b41695c",
+    "name": "vsts-chef-task-cookbook-version",
+    "friendlyName": "Update cookbook version number (Chef)",
+    "description": "Updates the version of the cookbook based on the current build number",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/update-cookbook-version-number)",
+    "category": "Build",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Update cookbook version number",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "chefCookbookVersion",
+            "type": "string",
+            "label": "Cookbook version",
+            "defaultValue": "$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Version number to assign to the cookbook.  By default this uses the BuildNumber, which should be set to be a semantic version number (e.g. 1.0.3)"
+        },
+        {
+            "name": "chefCookbookMetadata",
+            "type": "filePath",
+            "label": "Metadata file",
+            "defaultValue": "$(Build.SourcesDirectory)/cookbooks/mycookbook/metadata.rb",
+            "required": true,
+            "helpMarkDown": "Path to the metadata.rb file to update"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "cookbook_version.js"
+        }
+    }
+}

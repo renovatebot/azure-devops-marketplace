@@ -1,0 +1,54 @@
+{
+    "id": "7f781340-2f1a-11e7-93ae-92361f002671",
+    "name": "vsts-chef-task-exec-inspec",
+    "friendlyName": "Execute InSpec (Chef)",
+    "description": "Execute InSpec on machines in a Deployment Group",
+    "helpMarkDown": "[More information](https://github.com/chef-partners/vsts-chef/wiki/execute-inspec)",
+    "category": "Deploy",
+    "author": "Chef",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 29
+    },
+    "instanceNameFormat": "Execute InSpec",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "inspecProfilePath",
+            "type": "string",
+            "label": "Profile Path",
+            "defaultValue": "$(System.ArtifactsDirectory)/cookbooks",
+            "required": true,
+            "helpMarkDown": "Path to the InSpec profiles that need to be executed"
+        },
+        {
+            "name": "inspecArguments",
+            "type": "string",
+            "label": "InSpec Arguments",
+            "defaultValue": ".",
+            "required": false,
+            "helpMarkDown": "Arguments that should be passed to `inspec exec`. By default this is all profiles in the directory."
+        },
+        {
+            "name": "inspecResultsFile",
+            "type": "string",
+            "label": "InSpec Results File",
+            "defaultValue": "inspec.out",
+            "required": false,
+            "helpMarkDown": "Path to file that results should be written to. If not an absolute path this will be relative to the specified Profile Path",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "exec_inspec.js"
+        }
+    }
+}

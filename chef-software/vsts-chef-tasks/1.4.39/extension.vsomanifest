@@ -1,0 +1,301 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "overview.md"
+        },
+        "license": {
+            "path": "license.txt"
+        }
+    },
+    "contributions": [
+        {
+            "id": "chef-supermarket-endpoint",
+            "description": "Service Endpoint for Chef Supermarket",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "chefsupermarketendpointv1",
+                "displayName": "Chef Supermarket",
+                "url": {
+                    "displayName": "Chef Supermarket URL",
+                    "helpText": "URL to the Chef Supermarket"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "sslVerify",
+                        "name": "SSL Verification",
+                        "description": "Enables/disables the SSL certificate verification for the Chef Supermarket.  Set to `false` if you are using self-signed certificates.  Default: `true` (Chef Server certificate must be signed by a valid Certificate Authority)",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "sslVerifyValues",
+                            "defaultValue": "1",
+                            "possibleValues": [
+                                {
+                                    "value": "1",
+                                    "displayValue": "True"
+                                },
+                                {
+                                    "value": "0",
+                                    "displayValue": "False"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username (Node name)",
+                                "description": "A username on the Chef server that has admin permissions",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Client Key",
+                                "description": "The private key (in pem format) for the specified user",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide details for accessing the public or private Chef Supermarket"
+            }
+        },
+        {
+            "id": "chef-server-endpoint",
+            "description": "Service Endpoint for Chef Server",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "chefserverendpointv1",
+                "displayName": "Chef Server",
+                "url": {
+                    "displayName": "Chef Server URL",
+                    "helpText": "URL to the Chef Server including the organization, e.g. `https://mychefserver.westus.cloudapp.azure.com/organizations/myorg`"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "sslVerify",
+                        "name": "SSL Verification",
+                        "description": "Enables/disables the SSL certificate verification for the Chef Server.  Set to `false` if you are using self-signed certificates.  Default: `true` (Chef Server certificate must be signed by a valid Certificate Authority)",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "sslVerifyValues",
+                            "defaultValue": "1",
+                            "possibleValues": [
+                                {
+                                    "value": "1",
+                                    "displayValue": "True"
+                                },
+                                {
+                                    "value": "0",
+                                    "displayValue": "False"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username (Node name)",
+                                "description": "A username on the Chef server that has admin permissions",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password or Client Key",
+                                "description": "Password or the private key (in pem format) for the specified user",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide the requested information so that VSTS/TFS can access your Chef Server instance"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-environment-cookbook-version-constraint",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/env_version_constraint"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-environment-vsts-variables",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/env_vsts_variables"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-cookbook-upload",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/upload_cookbook"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-cookbook-version",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/cookbook_version"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-exec-inspec",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/exec_inspec"
+            }
+        },
+        {
+            "id": "vsts-chef-tasks-exec-chef-client",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/exec_chef_client"
+            }
+        },
+        {
+            "id": "vsts-chef-task-cookbook-publish-supermaket",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/publish_supermarket"
+            }
+        },
+        {
+            "id": "vsts-chef-task-install-chefdk",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/install_chefdk"
+            }
+        },
+        {
+            "id": "vsts-chef-task-install-inspec",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/install_inspec"
+            }
+        },
+        {
+            "id": "vsts-chef-task-gem-install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/gem_install"
+            }
+        },
+        {
+            "id": "vsts-chef-task-exec-knife",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/exec_knife"
+            }
+        },
+        {
+            "id": "vsts-chef-task-linting",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/linting"
+            }
+        },
+        {
+            "id": "vsts-chef-task-test-kitchen",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/test_kitchen"
+            }
+        },
+        {
+            "id": "vsts-chef-task-cookbook-gems",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/cookbook_gems"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
