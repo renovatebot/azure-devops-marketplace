@@ -1,0 +1,88 @@
+{
+  "id": "5c44ef11-265e-4581-9ec0-f6fdaa0908ef",
+  "name": "key-vault-certificate-generation",
+  "friendlyName": "Azure Key Vault Certficate Generation",
+  "description": "Generates or imports a certificate to Key Vault",
+  "helpMarkDown": "[More information]https://github.com/JamieTaffurelli/azure-devops-extensions/blob/master/key-vault/README.md",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent", "MachineGroup"],
+  "author": "JamieTaffurelli",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Upload Certificate to $(keyVaultName)",
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "aliases": ["azureSubscription"],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to authenticate as",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+      }
+    },
+    {
+      "name": "keyVaultName",
+      "type": "string",
+      "label": "Key Vault Name",
+      "required": true,
+      "helpMarkDown": "The name of the Key Vault you are deploying to"
+    },
+    {
+      "name": "certificateName",
+      "type": "string",
+      "label": "Certificate Name",
+      "required": true,
+      "helpMarkDown": "The name of the certificate to appear in Key Vault"
+    },
+    {
+      "name": "uploadType",
+      "type": "radio",
+      "label": "Upload Type",
+      "required": false,
+      "defaultValue": "filePath",
+      "helpMarkDown": "Deploy a .pfx, .pem file or a base-64 encoded string",
+      "options": {
+        "filePath": "File Path",
+        "string": "Base-64 String"
+      }
+    },
+    {
+      "name": "certString",
+      "type": "string",
+      "label": "Base-64 Encoded String",
+      "required": true,
+      "helpMarkDown": "The certificate as represented in base-64 notation",
+      "visibleRule": "uploadType = string"
+    },
+    {
+      "name": "certFile",
+      "type": "filePath",
+      "label": "Certificate File Path",
+      "required": true,
+      "helpMarkDown": "Must be in .pfx or .pem format",
+      "visibleRule": "uploadType = filePath"
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Password for the certificate"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "key-vault-cert.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

@@ -1,0 +1,245 @@
+{
+  "id": "cf37066e-00d0-476d-b1fb-a210a9b765c8",
+  "name": "key-vault-key-generation",
+  "friendlyName": "Azure Key Vault Key Generation",
+  "description": "Generates or imports a key to Key Vault",
+  "helpMarkDown": "[More information]https://github.com/JamieTaffurelli/azure-devops-extensions/blob/master/key-vault/README.md",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent", "MachineGroup"],
+  "author": "JamieTaffurelli",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "instanceNameFormat": "Generate Key in $(keyVaultName)",
+  "minimumAgentVersion": "1.83.0",
+  "inputs": [
+    {
+      "name": "ConnectedServiceNameARM",
+      "aliases": ["azureSubscription"],
+      "type": "connectedService:AzureRM",
+      "label": "Azure Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to authenticate as",
+      "properties": {
+        "EndpointFilterRule": "ScopeLevel != AzureMLWorkspace"
+      }
+    },
+    {
+      "name": "keyVaultName",
+      "type": "string",
+      "label": "Key Vault Name",
+      "required": true,
+      "helpMarkDown": "The name of the Key Vault you are deploying to"
+    },
+    {
+      "name": "uploadType",
+      "type": "pickList",
+      "label": "Upload Type",
+      "required": true,
+      "defaultValue": "Generate",
+      "helpMarkDown": "Generate, import or restore from backup",
+      "options": {
+        "Generate": "Generate",
+        "Import": "Import",
+        "Restore": "Restore Backup"
+      }
+    },
+    {
+      "name": "keyName",
+      "type": "string",
+      "label": "Key Name",
+      "required": true,
+      "helpMarkDown": "The name of the key to appear in Key Vault",
+      "visibleRule": "uploadType = Generate || uploadType = Import"
+    },
+    {
+      "name": "KeySize",
+      "type": "pickList",
+      "label": "Key Size",
+      "required": true,
+      "helpMarkDown": "The size in bits of the RSA key",
+      "options": {
+        "2048": "2048",
+        "3072": "3072",
+        "4096": "4096"
+      },
+      "visibleRule": "uploadType = Generate"
+    },
+    {
+      "name": "Destination",
+      "type": "pickList",
+      "label": "Destination Type",
+      "required": true,
+      "helpMarkDown": "Place into Software or HSM for cryptography operations, HSM only valid for Premium Key Vault SKU",
+      "options": {
+        "Software": "Software",
+        "HSM": "HSM"
+      },
+      "visibleRule": "uploadType = Generate || uploadType = Import"
+    },
+    {
+      "name": "SetActivation",
+      "type": "boolean",
+      "label": "Set Activation Date",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Set an activation date for the key",
+      "visibleRule": "uploadType = Generate || uploadType = Import"
+    },
+    {
+      "name": "ActivationDateType",
+      "type": "radio",
+      "label": "Activation Date Type",
+      "defaultValue": "Relative",
+      "required": true,
+      "helpMarkDown": "Set a relative or specific activation date",
+      "visibleRule": "SetActivation = true",
+      "options": {
+        "Relative": "Relative",
+        "Specific": "Specific"
+      }
+    },
+    {
+      "name": "ActivationDateHours",
+      "type": "string",
+      "label": "Hours",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of hours from agents time to set activation date",
+      "visibleRule": "ActivationDateType = Relative"
+    },
+    {
+      "name": "ActivationDateDays",
+      "type": "string",
+      "label": "Days",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Number of days from agents time to set activation date",
+      "visibleRule": "ActivationDateType = Relative"
+    },
+    {
+      "name": "ActivationDateMonths",
+      "type": "string",
+      "label": "Months",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of months from agents time to set activation date",
+      "visibleRule": "ActivationDateType = Relative"
+    },
+    {
+      "name": "ActivationDateYears",
+      "type": "string",
+      "label": "Years",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of years from agents time to set activation date",
+      "visibleRule": "ActivationDateType = Relative"
+    },
+    {
+      "name": "ActivationDateSpecific",
+      "type": "string",
+      "label": "Date",
+      "required": true,
+      "helpMarkDown": "Date in ISO 8601 format",
+      "visibleRule": "ActivationDateType = Specific"
+    },
+    {
+      "name": "SetExpiration",
+      "type": "boolean",
+      "label": "Set Expiration Date",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Set an expiration date for the key",
+      "visibleRule": "uploadType = Generate || uploadType = Import"
+    },
+    {
+      "name": "ExpirationDateType",
+      "type": "radio",
+      "label": "Expiration Date Type",
+      "defaultValue": "Relative",
+      "required": true,
+      "helpMarkDown": "Set a relative or specific expiration date",
+      "visibleRule": "SetExpiration = true",
+      "options": {
+        "Relative": "Relative",
+        "Specific": "Specific"
+      }
+    },
+    {
+      "name": "ExpirationDateHours",
+      "type": "string",
+      "label": "Hours",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of hours from agents time to set expiration date",
+      "visibleRule": "ExpirationDateType = Relative"
+    },
+    {
+      "name": "ExpirationDateDays",
+      "type": "string",
+      "label": "Days",
+      "defaultValue": "1",
+      "required": true,
+      "helpMarkDown": "Number of days from agents time to set expiration date",
+      "visibleRule": "ExpirationDateType = Relative"
+    },
+    {
+      "name": "ExpirationDateMonths",
+      "type": "string",
+      "label": "Months",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of months from agents time to set expiration date",
+      "visibleRule": "ExpirationDateType = Relative"
+    },
+    {
+      "name": "ExpirationDateYears",
+      "type": "string",
+      "label": "Years",
+      "defaultValue": "0",
+      "required": true,
+      "helpMarkDown": "Number of years from agents time to set expiration date",
+      "visibleRule": "ExpirationDateType = Relative"
+    },
+    {
+      "name": "ExpirationDateSpecific",
+      "type": "string",
+      "label": "Date",
+      "required": true,
+      "helpMarkDown": "Date in ISO 8601 format",
+      "visibleRule": "ExpirationDateType = Specific"
+    },
+    {
+      "name": "keyFile",
+      "type": "filePath",
+      "label": "Key File Path",
+      "required": true,
+      "helpMarkDown": "Path to file for importing or restoring backup",
+      "visibleRule": "uploadType = Import || uploadType = Restore"
+    },
+    {
+      "name": "errorOnConflict",
+      "type": "boolean",
+      "label": "Error on Key Conflict",
+      "required": true,
+      "helpMarkDown": "Return an error if key with same name already exists, write warning if false",
+      "visibleRule": "uploadType = Restore"
+    }
+  ],
+  "OutputVariables": [
+    {
+      "name": "KEY_VERSION",
+      "description": "The version of the key placed into Key Vault"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "key-vault-key.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
