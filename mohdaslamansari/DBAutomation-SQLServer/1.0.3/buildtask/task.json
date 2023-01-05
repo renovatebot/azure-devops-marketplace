@@ -1,0 +1,70 @@
+{
+    "id": "{B41C2CE0-5076-4706-92E0-7F7207FFF266}",
+    "name": "DBAutomation-SQLServer-Utility",
+    "friendlyName": "DBAutomation (SQLServer) Utility",
+    "description": "Utility for automating SQL Server based database upgrade activity.",
+    "helpMarkDown": "This utility is for automating SQL Server based database upgrade activity.",
+    "category": "Deploy",
+	 "visibility": [
+    "Release"
+  ],
+  "runsOn": [
+      "Agent"
+  ],
+    "author": "mohdaslamansari",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 3
+    },
+	"instanceNameFormat": "DB Automation SQL Server $(samplestring)",
+    "inputs": [	
+	{
+      "name": "InputFolder",
+      "type": "string",
+      "label": "Script Folder Location",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the location of folder where all the SQL scripts are placed."
+    },
+    {
+      "name": "DBUserName",
+      "type": "string",
+      "label": "Database User Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the database user name. This user should have privileges to execute the scripts."
+    },
+    {
+      "name": "DBPwd",
+      "type": "string",
+      "label": "Database Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Provide the database user's password. <br>The best practice is to create a variable in the Build or Release definition, and mark it as 'Secret' to secure it, and then use it here, like '$(dbPassword)'."
+    },
+        {
+            "name": "DBServerAndInstance",
+            "type": "string",
+            "label": "DBServer And Instance",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Provide the database server and instance name."
+        },
+        {
+            "name": "DBName",
+            "type": "string",
+            "label": "Database Name",
+            "required": true,
+            "defaultValue": "",
+            "helpMarkDown": "Provide the database name."
+		}
+    ],
+    "execution": {
+        "PowerShell": {
+        "target": "$(currentDirectory)\\SQLServer_Automation.ps1",
+        "argumentFormat": "",
+        "workingDirectory": "$(currentDirectory)"
+      }
+        }
+    }
