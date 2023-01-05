@@ -1,0 +1,70 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "DE7B28A2-4CA6-4815-854F-851BA605A155",
+  "name": "Matrix42ExtensionsGeneratePackageTask",
+  "friendlyName": "Matrix42 Extensions: Build Extension Task",
+  "description": "Builds a Matrix42 DWP compatible Extension. (Configuration Package)",
+  "category": "Build",
+  "author": "Matrix42 AG",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 6
+  },
+  "instanceNameFormat": "Build Extension",
+  "inputs": [
+    {
+      "name": "extensionManifest",
+      "type": "filePath",
+      "label": "Extension Manifest (package.json)",
+      "required": true
+    },
+    {
+      "name": "extensionAdditions",
+      "type": "string",
+      "label": "Additional Directories",
+      "required": false,
+      "helpMarkDown": "Comma seperated list of directories which will be added to the Extension contents."
+    },
+    {
+      "name": "extensionBuildNumber",
+      "type": "string",
+      "label": "Optional build number which will be appended to the Extension version.",
+      "required": false,
+      "helpMarkDown": "The build number can be made out of up to 2 parts which will be added as the PATCH and REVISION part of the Extension version."
+    },
+    {
+      "name": "extensionOutput",
+      "type": "filePath",
+      "label": "Extension Output Location",
+      "required": true,
+      "helpMarkDown": "Path to the location where the build Extension will be saved. (ZIP-format)"
+    },
+    {
+      "name": "extensionManifestOutput",
+      "type": "filePath",
+      "label": "Extension Manifest Output Location",
+      "required": false,
+      "helpMarkDown": "Path to the location where the updated Extension Manifest will be saved. (package.json)"
+    },
+    {
+      "name": "developerIdentity",
+      "type": "secureFile",
+      "label": "Matrix42 Developer Identity",
+      "required": true,
+      "helpMarkDown": "The Developer Identity is used to sign the generated Extension to verify its authenticity and integrity."
+    },
+    {
+      "name": "developerIdentityPassword",
+      "type": "string",
+      "label": "Developer Identity Password",
+      "required": true,
+      "helpMarkDown": "The password of the Developer Identity used to sign the generated Extension."
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "CF4B4E23-B068-4C86-AB07-A2D140F64F52",
+  "name": "Matrix42ExtensionsPublishReleaseTask",
+  "friendlyName": "Matrix42 Extensions: Publish Release Task",
+  "description": "Publishes a release of an extension!",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Matrix42 AG",
+  "version": {
+    "Major": 1,
+    "Minor": 16,
+    "Patch": 16
+  },
+  "instanceNameFormat": "Publishing Extension",
+  "inputs": [
+    {
+      "name": "acspat",
+      "type": "connectedService:extension-gallery-service-endpoint",
+      "label": "Matrix42 Extension Gallery Connection",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Matrix42 Extension Gallery Connection to use. If needed,selecton 'manage', and add a new service endpoint. The used personal access token can be generated at https://accounts.matrix42.com"
+    },
+    {
+      "name": "extensionid",
+      "type": "string",
+      "label": "Extension Id",
+      "required": true,
+      "helpMarkDown": "Enter the extension id from the publishing portal!"
+    },
+    {
+      "name": "extensionmanifestlocation",
+      "type": "string",
+      "label": "Location of the Extension Manifest",
+      "required": true,
+      "helpMarkDown": "The location of the extension manifest"
+    },
+    {
+      "name": "extensiontag",
+      "type": "pickList",
+      "label": "Tag the Extension Release",
+      "defaultValue": "Unstable",
+      "required": true,
+      "helpMarkDown": "Select the tag of this release",
+      "options": {
+        "stable": "Stable",
+        "rc": "Release Candidate",
+        "tp": "Technical Preview",
+        "unstable": "Unstable"
+      }
+    },
+    {
+      "name": "extensionvisibility",
+      "type": "pickList",
+      "label": "Set the visibility of the Extension Release",
+      "defaultValue": "For Contributors on the Extension",
+      "required": true,
+      "helpMarkDown": "Select the visibility of this release",
+      "options": {
+        "contributors": "For Contributors on the Extension",
+        "members": "For Members of my Vendor",
+        "everyone": "For Everyone (Public)"
+      }
+    },
+    {
+      "name": "extensioncommunity",
+      "type": "boolean",
+      "label": "Publish as Community Extension",
+      "defaultValue": true,
+      "required": false
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
