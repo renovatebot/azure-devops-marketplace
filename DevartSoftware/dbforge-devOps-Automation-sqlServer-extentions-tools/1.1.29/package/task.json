@@ -1,0 +1,79 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b9c57c81-1fa4-4a7b-841e-b1724e2f9284",
+    "name": "dbForgePackage",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Package",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Package",
+    "description": "Prepare NuGet deployment package containing database script folder",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 16
+    },
+    "groups": [
+        {
+            "name": "packageGroup",
+            "displayName": "Package",
+            "isExpanded": true
+        },
+        {
+            "name": "sourceGroup",
+            "displayName": "Source",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "id",
+            "type": "string",
+            "label": "ID",
+            "defaultValue": "dbForgePackage.1.0.$(Build.BuildNumber)",
+            "required": true,
+            "helpMarkDown": "Enter output package file name. The format is {name}.{major}.{minor}.{build}. You can use the $(Build.BuildNumber) variable to customize it for a build pipeline or the $(Release.ReleaseId) variable to customize it for a release pipeline.",
+            "groupName": "packageGroup"
+        },
+        {
+            "name": "includeDocumentation",
+            "type": "boolean",
+            "label": "Include database documentation",
+            "required": false,
+            "helpMarkDown": "The documentation generated in dbForge DevOps Automation for SQL Server - Document step will be added to the package",
+            "groupName": "packageGroup"
+        },
+        {
+            "name": "sourceType",
+            "type": "pickList",
+            "label": "Database folder",
+            "defaultValue": "root",
+            "options": {
+                "root": "Database folder is my build VCS root",
+                "subroot": "Database folder is a subfolder of my build VCS root "
+            },
+            "required": false,
+            "helpMarkDown": "Select if database source project is located in repository root or subfolder path",
+            "groupName": "sourceGroup"
+        },
+        {
+            "name": "sourceScriptFolder",
+            "type": "string",
+            "label": "Subfolder location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter relative path to database source project",
+            "groupName": "sourceGroup",
+            "visibleRule": "sourceType=subroot"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

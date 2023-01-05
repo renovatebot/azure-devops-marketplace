@@ -1,0 +1,190 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "703b47b0-5d27-4110-a028-2447cf744d63",
+    "name": "dbForgeSync",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Sync",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Sync",
+    "description": "Generate schema synchronization script.",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "groups": [
+        {
+            "name": "sourceOptions",
+            "displayName": "Data Source",
+            "isExpanded": true
+        },
+        {
+            "name": "targetDbOptions",
+            "displayName": "Target",
+            "isExpanded": true
+        },
+        {
+            "name": "additionalOptions",
+            "displayName": "Additional options",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourceType",
+            "type": "pickList",
+            "label": "Source",
+            "defaultValue": "Database",
+            "options": {
+                "database": "Database",
+                "localNuGet": "Local NuGet"
+            },
+            "required": false,
+            "helpMarkDown": "Choose which type of source to use",
+            "groupName": "sourceOptions"
+        },
+        {
+            "name": "sourceLocalNugetPath",
+            "type": "string",
+            "label": "Name",
+            "defaultValue": "dbForgePackage.1.0.$(Build.BuildNumber).nupkg",
+            "required": true,
+            "helpMarkDown": "Enter full path, with file name and extension, to NuGet package with stored database source. You can use the $(Build.BuildNumber) variable to customize it for a build pipeline or the $(Release.ReleaseId) variable to customize it for a release pipeline.",
+            "groupName": "sourceOptions",
+            "visibleRule": "sourceType=localNuGet"
+        },
+        {
+            "name": "sourceServer",
+            "type": "string",
+            "label": "Source SQL Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter source database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance leave as '(local)'",
+            "groupName": "sourceOptions",
+            "visibleRule": "sourceType=database"
+        },
+        {
+            "name": "sourceDbName",
+            "type": "string",
+            "label": "Source Database",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter source database name",
+            "groupName": "sourceOptions",
+            "visibleRule": "sourceType=database"
+        },
+        {
+            "name": "sourceAuthMethod",
+            "type": "pickList",
+            "label": "Authentication method",
+            "defaultValue": "sqlServerAuth",
+            "groupName": "sourceOptions",
+            "required": true,
+            "helpMarkDown": "Select the Authentication method, either SQL Server authentication or Windows authentication",
+            "options": {
+                "sqlServerAuth": "SQL Server authentication",
+                "windowsAuth": "Windows authentication"
+            },
+            "visibleRule": "sourceType=database"
+        },
+        {
+            "name": "sourceConnUserName",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter login name to use for SQL Server authentication",
+            "groupName": "sourceOptions",
+            "visibleRule": "sourceType=database && sourceAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "sourceConnPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter password to use for SQL Server authentication.",
+            "groupName": "sourceOptions",
+            "visibleRule": "sourceType=database && sourceAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "targetServer",
+            "type": "string",
+            "label": "Target SQL Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance use '(local)'",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetDbName",
+            "type": "string",
+            "label": "Target Database",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database name",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetAuthMethod",
+            "type": "pickList",
+            "label": "Authentication method",
+            "defaultValue": "sqlServerAuth",
+            "groupName": "targetDbOptions",
+            "helpMarkDown": "Select the Authentication method, either SQL Server authentication or Windows authentication",
+            "required": true,
+            "options": {
+                "sqlServerAuth": "SQL Server authentication",
+                "windowsAuth": "Windows authentication"
+            }
+        },
+        {
+            "name": "targetConnUserName",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter login name to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "targetConnPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter password to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "additionalParams",
+            "type": "multiLine",
+            "label": "Schema Compare options",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional parameters for dbForge Schema Compare CLI",
+            "groupName": "additionalOptions"
+        },
+        {
+            "name": "filterPath",
+            "type": "string",
+            "label": "Schema Compare filter",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specifies a path to an alternative filter file which will be used for validating the schema to override *.scflt filter file present in the input",
+            "groupName": "additionalOptions"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

@@ -1,0 +1,89 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "5c826f20-4d2b-4ab6-a3f5-54956a2f65fe",
+    "name": "dbForgePublish",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Publish",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Publish",
+    "description": "Push created NuGet deployment package to an online feed.",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 15
+    },
+    "groups": [
+        {
+            "name": "packageGroup",
+            "displayName": "Package",
+            "isExpanded": true
+        },
+        {
+            "name": "nuGetFeedGroup",
+            "displayName": "NuGet Feed",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "id",
+            "type": "string",
+            "label": "ID",
+            "defaultValue": "dbForgePackage.1.0.$(Build.BuildNumber).nupkg",
+            "required": true,
+            "helpMarkDown": "Enter input package file name. The format is {name}.{major}.{minor}.{build}.nupkg. You can use the $(Build.BuildNumber) variable to customize it for a build pipeline or the $(Release.ReleaseId) variable to customize it for a release pipeline.",
+            "groupName": "packageGroup"
+        },
+        {
+            "name": "packageFolderType",
+            "type": "pickList",
+            "label": "Package folder",
+            "defaultValue": "root",
+            "options": {
+                "root": "Package folder is in my build VCS root",
+                "subroot": "Package folder is a subfolder of my VCS root"
+            },
+            "required": false,
+            "helpMarkDown": "Select if NuGet package is located in repository root or subfolder path",
+            "groupName": "packageGroup"
+        },
+        {
+            "name": "packageFolder",
+            "type": "string",
+            "label": "Subfolder location",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter path to a NuGet package",
+            "groupName": "packageGroup",
+            "visibleRule": "packageFolderType=subroot"
+        },
+        {
+            "name": "uRLOrPackagesSourceKey",
+            "type": "string",
+            "label": "URL or packages source key",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter URL or package source key for target NuGet feed",
+            "groupName": "nuGetFeedGroup"
+        },
+        {
+            "name": "aPIKey",
+            "type": "string",
+            "label": "API key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter NuGet feed API key if used",
+            "groupName": "nuGetFeedGroup"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

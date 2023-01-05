@@ -1,0 +1,113 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b55c1d3c-b074-4df6-8eaf-279de27b3762",
+    "name": "dbForgePopulate",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Test",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Test",
+    "description": "Install tSQLt framework and perform unit tests",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 19
+    },
+    "groups": [
+        {
+            "name": "targetDbOptions",
+            "displayName": "Target",
+            "isExpanded": true
+        },
+        {
+            "name": "additionalOptions",
+            "displayName": "Additional options",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "targetServer",
+            "type": "string",
+            "label": "SQL Server",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance use '(local)'",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetDbName",
+            "type": "string",
+            "label": "Database",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter target database name",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetAuthMethod",
+            "type": "pickList",
+            "label": "Authentication method",
+            "defaultValue": "sqlServerAuth",
+            "groupName": "targetDbOptions",
+            "helpMarkDown": "Select the Authentication method, either SQL Server authentication or Windows authentication",
+            "required": true,
+            "options": {
+                "sqlServerAuth": "SQL Server authentication",
+                "windowsAuth": "Windows authentication"
+            }
+        },
+        {
+            "name": "targetConnUserName",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter login name to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "targetConnPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter password to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "testsType",
+            "type": "pickList",
+            "label": "Run tests",
+            "defaultValue": "everyTest",
+            "helpMarkDown": "Select if you want to run all tests or specific ones",
+            "required": true,
+            "options": {
+                "everyTest": "Run every test",
+                "selectedOnly": "Run selected tests only"
+            },
+            "groupName": "additionalOptions"
+        },
+        {
+            "name": "selectedTests",
+            "type": "string",
+            "label": "Tests to be run",
+            "defaultValue": "",
+            "helpMarkDown": "List the tests to be run. Use a comma ',' as a separator",
+            "required": true,
+            "groupName": "additionalOptions",
+            "visibleRule": "testsType=selectedOnly"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

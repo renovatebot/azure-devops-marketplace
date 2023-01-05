@@ -1,0 +1,99 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "2dc0ee13-5011-4793-90bb-98fedaa9c3c2",
+    "name": "dbForgePopulate",
+    "friendlyName": "dbForge DevOps Automation for SQL Server - Populate",
+    "instanceNameFormat": "dbForge DevOps Automation for SQL Server - Populate",
+    "description": "Run data population test with synthetic data on newly created empty tables.",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "Devart Ltd.",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "groups": [
+        {
+            "name": "sourceOptions",
+            "displayName": "Source",
+            "isExpanded": true
+        },
+        {
+            "name": "targetDbOptions",
+            "displayName": "Target",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "projectFile",
+            "type": "string",
+            "label": "dbForge Data Generator project file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Enter path to dbForge Data Generator project file. Project file name and extension should be included in path",
+            "groupName": "sourceOptions"
+        },
+        {
+            "name": "targetServer",
+            "type": "string",
+            "label": "SQL Server",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter target database server. E.g. SERVERNAME\\INSTANCENAME. For local default instance use '(local)'",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetDbName",
+            "type": "string",
+            "label": "Database",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter target database name",
+            "groupName": "targetDbOptions"
+        },
+        {
+            "name": "targetAuthMethod",
+            "type": "pickList",
+            "label": "Authentication method",
+            "defaultValue": "sqlServerAuth",
+            "groupName": "targetDbOptions",
+            "helpMarkDown": "Select the Authentication method, either SQL Server authentication or Windows authentication",
+            "required": false,
+            "options": {
+                "sqlServerAuth": "SQL Server authentication",
+                "windowsAuth": "Windows authentication"
+            }
+        },
+        {
+            "name": "targetConnUserName",
+            "type": "string",
+            "label": "User Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter login name to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        },
+        {
+            "name": "targetConnPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Enter password to use for SQL Server authentication",
+            "groupName": "targetDbOptions",
+            "visibleRule": "targetAuthMethod=sqlServerAuth"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
