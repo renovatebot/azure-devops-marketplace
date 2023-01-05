@@ -1,0 +1,68 @@
+{
+    "id": "3a3b0220-042b-11e7-8281-514d447532dc",
+    "name": "KillProcess",
+    "friendlyName": "Use PowerShell to kill a same process on multiple remote servers",
+    "description": "Kill a process with name and path on multiple remote servers using the same credentials",
+    "helpMarkDown": "[More Information](https://www.comerco.com)",
+    "category": "Deploy",
+	"visibility": [
+		"Build",
+		"Release"
+	],
+    "author": "Comerco",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Kill Process $(ProcessName)",
+    "minimumAgentVersion": "1.104.0",
+    "inputs": [
+        {
+            "name": "ProcessName",
+            "type": "string",
+            "label": "Process Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of a process. <br>Eg: notepad."
+        },
+        {
+            "name": "ProcessPath",
+            "type": "string",
+            "label": "Process Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Absolute path of the source file on the local machine.<br>Eg: C:\\Windows\\System32\\notepad.exe"
+        },
+        {
+            "name": "AdminUserName",
+            "type": "string",
+            "label": "Login",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Administrator login for the target machine.<br>Eg: domain\\username"
+        },
+        {
+            "name": "AdminPassword",
+            "type": "string",
+            "label": "Password",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Password for administrator login for the target machine. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+        },
+      {
+        "name": "MachineNameslist",
+        "type": "string",
+        "label": "List of machine names delimited by commas(,) or semicolons(;)",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Name of the machines where the specific process is running. (ex: serverName1,serverName2,serverName3;serverName4)"
+      }
+    ],
+    "execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\task.ps1",
+			"workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
