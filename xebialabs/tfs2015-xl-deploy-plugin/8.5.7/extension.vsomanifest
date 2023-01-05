@@ -1,0 +1,122 @@
+{
+    "contributions": [
+        {
+            "description": "XL Deploy build task.",
+            "id": "C36FC88A-B479-461F-8067-8C3254AF356C",
+            "properties": {
+                "name": "xld"
+            },
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task"
+        },
+        {
+            "description": "Build and release task that imports and triggers the deployment on XL Deploy.",
+            "id": "589DCE45-4881-4410-BCF0-1AFBD0FC0F65",
+            "properties": {
+                "name": "xld-deploy"
+            },
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task"
+        },
+        {
+            "description": "Build and release task capable of creating DAR packages for XL Deploy.",
+            "id": "6D391A67-A4C0-4C48-9472-CFE5319B45F6",
+            "properties": {
+                "name": "xld-package"
+            },
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task"
+        },
+        {
+            "description": "Service Endpoint type for all XL Deploy connections",
+            "id": "xld-endpoint-type",
+            "properties": {
+                "inputDescriptors": [
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "Allows the clients to accept self-signed SSL server certificates without installing them into the Azure DevOps service role and/or Build Agent computers.",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "checkBox",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "inputDescriptors": [
+                            {
+                                "description": "Username",
+                                "id": "username",
+                                "inputMode": "textbox",
+                                "name": "Username",
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "description": "Password",
+                                "id": "password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "name": "Password",
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": false
+                                }
+                            }
+                        ],
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic"
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "endpointUrl": "deployit/repository/query?type=udm.Environment&resultsPerPage=-1",
+                        "name": "Repositories",
+                        "resultSelector": "jsonpath:$[*].ref"
+                    },
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}deployit/server/state",
+                        "resourceUrl": "",
+                        "resultSelector": "jsonpath:$[*]",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                            }
+                        ],
+                        "authenticationScheme": null
+                    }
+                ],
+                "displayName": "XL Deploy",
+                "helpMarkDown": "<a href=\"https://docs.xebialabs.com/xl-deploy/concept/team-foundation-server-2015-plugin.html\" target=\"_blank\"><b>Learn More</b></a>",
+                "name": "xldserver",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Url for the XL Deploy server to connect to."
+                }
+            },
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "type": "ms.vss-endpoint.service-endpoint-type"
+        }
+    ],
+    "manifestVersion": 1,
+    "scopes": [],
+    "contributionTypes": []
+}
