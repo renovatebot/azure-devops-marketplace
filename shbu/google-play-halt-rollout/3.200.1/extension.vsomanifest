@@ -1,0 +1,68 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/BryanSharp/google-play-vsts-extension/tree/halt_task"
+    },
+    "scope": [
+        "vso.build",
+        "vso.serviceendpoint"
+    ],
+    "contributions": [
+        {
+            "id": "google-play-rollout-update-halt",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "_build/Tasks/GooglePlayRolloutUpdate"
+            }
+        },
+        {
+            "id": "google-play-service-endpoint",
+            "description": "GooglePlayAuthenticationEndpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "google-play-halt-rollout",
+                "displayName": "Google Play halt rollout",
+                "url": "https://accounts.google.com/o/oauth2/v2/auth",
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Service Account E-mail",
+                                "description": "The e-mail address of the service account used to authenticate with the Google Play store",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Private Key",
+                                "description": "Enter the private key from the Google Play Developer Console in the format: -----BEGIN PRIVATE KEY-----\\nYourPrivateKeyHere\\n-----END PRIVATE KEY-----\\n",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
