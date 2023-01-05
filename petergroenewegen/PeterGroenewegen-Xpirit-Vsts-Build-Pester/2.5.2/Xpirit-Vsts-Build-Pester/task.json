@@ -1,0 +1,68 @@
+{
+  "id": "31f040e5-e040-4336-878a-59a493334434",
+  "name": "Pester Powershell unittest",
+  "friendlyName": "Pester powershell unittests",
+  "description": "Run Pester powershell unittests",
+  "helpMarkDown": "[More Information](https://pgroene.wordpress.com/2017/01/30/running-powershell-pester-unit-test-in-a-vsts-build-pipeline/)",
+  "category": "Test",
+  "visibility": [ "Build","Release" ],
+  "author": "Peter Groenewegen - Xpirit",
+  "version": {
+    "Major": 2,
+    "Minor": 5,
+    "Patch": 2
+  },
+  "demands": [ ],
+  "minimumAgentVersion": "1.90.0",
+
+  "inputs": [
+    {
+      "name": "ItemSpec",
+      "type": "string",
+      "label": "Test file pattern",
+      "defaultValue": "*.tests.ps1",
+      "required": true,
+      "helpMarkDown": "*.tests.ps1 will get all your tests."
+    },
+    {
+      "name": "TestParams",
+      "type": "string",
+      "label": "Testing Parameters",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Pass a comma separated list of paramters required by Pester scripts.  Example: SqlAzureRegion = 'westeurope',DbAzureRegion = 'West Europe'  "
+    },
+    {
+      "name": "IncludeTags",
+      "type": "string",
+      "label": "Include Tags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Supply tags in comma separated list.  Avoid spaces in tag"
+    },
+    {
+      "name": "ExcludeTags",
+      "type": "string",
+      "label": "Exclude Tags",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Supply tags in comma separated list.  Avoid spaces in tag"
+    },
+    {
+      "name": "FailOnError",
+      "type": "boolean",
+      "label": "Fail build on error",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Check to break build on error"
+    }
+  ],
+  "instanceNameFormat": "Pester",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\Pester.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

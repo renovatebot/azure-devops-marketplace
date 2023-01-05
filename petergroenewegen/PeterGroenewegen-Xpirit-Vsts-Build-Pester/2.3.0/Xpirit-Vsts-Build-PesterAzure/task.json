@@ -1,0 +1,71 @@
+{
+  "id": "31f040e5-e040-4336-878a-59a493334436",
+  "name": "Pester Powershell unittest on Azure",
+  "friendlyName": "Pester powershell deployment tests on Azure",
+  "description": "Run Pester powershell deployment tests on Azure",
+  "helpMarkDown": "[More Information](pgroene.wordpress.com/2017/09/08/test-azure-deployments-in-your-vsts-release-pipeline/)",
+  "category": "Test",
+  "visibility": [ "Build","Release" ],
+  "author": "Peter Groenewegen - Xpirit",
+  "version": {
+    "Major": 2,
+    "Minor": 2,
+    "Patch": 1
+  },
+  "demands": [ ],
+  "minimumAgentVersion": "1.90.0",
+  "inputs": [
+      {
+      "name": "ConnectedServiceNameSelector",
+      "type": "pickList",
+      "label": "Azure Connection Type",
+      "required": false,
+      "helpMarkDown": "",
+      "defaultValue": "ConnectedServiceName",
+      "options": {
+        "ConnectedServiceName": "Azure Classic",
+        "ConnectedServiceNameARM": "Azure Resource Manager"
+      }
+    },
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:Azure",
+      "label": "Azure Classic Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Classic subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceName"
+    },
+    {
+      "name": "ConnectedServiceNameARM",
+      "type": "connectedService:AzureRM",
+      "label": "Azure RM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Azure Resource Manager subscription to configure before running PowerShell",
+      "visibleRule": "ConnectedServiceNameSelector = ConnectedServiceNameARM"
+    },
+    {
+      "name": "ItemSpec",
+      "type": "string",
+      "label": "Test file pattern",
+      "defaultValue": "*.tests.ps1",
+      "required": true,
+      "helpMarkDown": "*.tests.ps1 will get all your tests."
+    },
+    {
+      "name": "FailOnError",
+      "type": "boolean",
+      "label": "Fail build on error",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "Check to break build on error"
+    }
+  ],
+  "instanceNameFormat": "Pester Azure",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\AzurePester.ps1"
+    }
+  }
+}
