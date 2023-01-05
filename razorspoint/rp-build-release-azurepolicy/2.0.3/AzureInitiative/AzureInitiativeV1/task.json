@@ -1,0 +1,190 @@
+{
+    "id": "28825f8c-9d9c-4561-8d2a-429aa4ca7271",
+    "name": "DeployAzureIniative",
+    "friendlyName": "Deploy Azure Initiative",
+    "description": "Deploys Azure initiative.",
+    "author": "Sebastian Schütze",
+    "helpMarkDown": "Azure Initiative is a service in Azure that you use to create, assign and, manage a set of policies. These policies enforce different rules and effects over your resources, so those resources stay compliant with your corporate standards and service level agreements. It uses the Azure PowerShell Module to deploy the definitions.<br/><br/>[More Information](https://docs.microsoft.com/azure/governance/policy/overview)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "0",
+        "Patch": "0"
+    },
+    "preview": false,
+    "minimumAgentVersion": "2.115.0",
+    "instanceNameFormat": "Deploy Azure Initiative",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "aliases": [
+                "azureSubscription"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Azure Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager connection for the deployment. <br/><br/> Note: To configure new a service connection, select the Azure subscription from the list and click 'Advanced options' and select the scope level 'ManagementGroup'. <br/><br/>If your subscription is not listed or if you want to use an existing service principal, you can setup an Azure service connection using the 'Add' or 'Manage' button. <br/><br/> <br/><br/>Service connection scoped at Subscription level are not visible in this task!",
+            "properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+        },
+        {
+            "name": "DefinitionLocation",
+            "type": "radio",
+            "label": "Definition Location",
+            "defaultValue": "ManagementGroup",
+            "required": true,
+            "helpMarkDown": "While creating an initiative or policy, it's necessary to specify the definition location. The definition location must be a management group or a subscription. This location determines the scope to which the initiative or policy can be assigned. Resources must be direct members of or children within the hierarchy of the definition location to target for assignment.<br/><br/>[More Information](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#mode)",
+            "options": {
+                "Subscription": "Subscription ",
+                "ManagementGroup": "Management group"
+            }
+        },
+        {
+            "name": "SubscriptionId",
+            "type": "string",
+            "label": "Subscription Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Id of the subscription. Only resources within that subscription can be assigned the policy.",
+            "visibleRule": "DefinitionLocation = Subscription"
+        },
+        {
+            "name": "ManagementGroupName",
+            "type": "string",
+            "label": "Management Group Id",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Id of the management group. Only resources within child management groups and child subscriptions can be assigned the policy. If you plan to apply the policy definition to several subscriptions, the location must be a management group that contains those subscriptions.",
+            "visibleRule": "DefinitionLocation = ManagementGroup"
+        },
+        {
+            "name": "DeploymentType",
+            "type": "radio",
+            "label": "Type of Deployment",
+            "defaultValue": "Full",
+            "required": true,
+            "helpMarkDown": "The type of deployment that should be made. Either everything is expected to be deployed in one file or splitted into name, scope, category, rules & definitions, parameters.",
+            "options": {
+                "Full": "Full Deployment",
+                "Splitted": "Splitted Deployment"
+            }
+        },
+        {
+            "name": "FileOrInline",
+            "type": "pickList",
+            "label": "Type",
+            "defaultValue": "File",
+            "required": true,
+            "helpMarkDown": "Type of the JSON: JSON file path or inline JSON.",
+            "options": {
+                "File": "File Path",
+                "Inline": "Inline JSON"
+            },
+            "visibleRule": "DeploymentType = Full"
+        },
+        {
+            "name": "JsonInline",
+            "type": "multiLine",
+            "label": "Inline JSON",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Allows you to specify JSON containing the definition. <br/><br/>Check the [existing schema]() for a well formatted definition.",
+            "visibleRule": "FileOrInline = Inline && DeploymentType = Full",
+            "properties": {
+                "resizable": "true",
+                "rows": "10"
+            }
+        },
+        {
+            "name": "JsonFilePath",
+            "type": "filePath",
+            "label": "JSON File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the file containing the JSON. <br/><br/>.",
+            "visibleRule": "FileOrInline = File && DeploymentType = Full"
+        },
+        {
+            "name": "Mode",
+            "type": "radio",
+            "label": "Mode",
+            "defaultValue": "Full",
+            "required": true,
+            "helpMarkDown": "The mode determines which resource types will be evaluated for a policy. The supported modes are:<br/><br/> <ul><li>all: evaluate resource groups and all resource types</li><li>indexed: only evaluate resource types that support tags and location</li></ul><br/><br/>[More Information](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#mode)",
+            "options": {
+                "all": "all",
+                "indexed": "indexed"
+            },
+            "visibleRule":"DeploymentType = Splitted"
+        },
+        {
+            "name": "Name",
+            "type": "string",
+            "label": "Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "You use the name to give it a unique identifier. Often a guid is used by Azure Policies but it can also be a more readable name.",
+            "visibleRule": "DeploymentType = Splitted"
+        },
+        {
+            "name": "DisplayName",
+            "type": "string",
+            "label": "Display Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "You use the displayName to identify the policy definition and provide context for when it's used.",
+            "visibleRule": "DeploymentType = Splitted"
+        },
+        {
+            "name": "Description",
+            "type": "string",
+            "label": "Description",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "You use the description to identify the policy definition and provide context for when it's used.",
+            "visibleRule": "DeploymentType = Splitted"
+        },  
+        {
+            "name": "Category",
+            "type": "string",
+            "label": "Category",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Category under which the definition is filed.",
+            "visibleRule": "DeploymentType = Splitted"
+        },     
+        {
+            "name": "ParametersFilePath",
+            "type": "filePath",
+            "label": "Parameters",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Parameters help simplify your policy management by reducing the number of policy definitions. Think of parameters like the fields on a form – name, address, city, state. These parameters always stay the same, however their values change based on the individual filling out the form. Parameters work the same way when building policies. By including parameters in a policy definition, you can reuse that policy for different scenarios by using different values.<br/><br/>[More Information](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#parameters)",
+            "visibleRule": "DeploymentType = Splitted"
+        },
+        {
+            "name": "InitiativePolicyDefinitionsFilePath",
+            "type": "filePath",
+            "label": "Policy Definitions",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "An array of policy definitions to group into the initiative. <br/><br/>[More Information](https://docs.microsoft.com/azure/governance/policy/concepts/definition-structure#initiatives)",
+            "visibleRule": "DeploymentType = Splitted"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "StartDeploy.ps1"
+        }
+    }
+}
