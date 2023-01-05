@@ -1,0 +1,96 @@
+{
+    "id": "33191b0c-3c57-4532-a11a-dcc5ab7fb467",
+    "name": "spira-build-task",
+    "friendlyName": "Export data to Spira",
+    "description": "Exports build results to Spira",
+    "author": "EvilDauphin",
+    "helpMarkDown": "See marketplace entry for documentation",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "1",
+        "Patch": "1"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFomat": "Spira Endpoint Task $(project)",
+    "inputs": [
+        {
+            "name": "connectedService",
+            "type": "connectedService:SpiraPlanConfig",
+            "label": "Spira Credentials",
+            "required": true,
+            "helpMarkDown": "Service endpoint connection for Spira credentials"
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Spira Project ID",
+            "required": true,
+            "helpMarkDown": "Enter the ID of the project in Spira you would like to send your test results to."
+        },
+        {
+            "name": "releaseId",
+            "type": "string",
+            "label": "Spira Release ID",
+            "required": true,
+            "helpMarkDown": "Enter the ID of the release in Spira you would like your results to be associated with."
+        },
+        {
+            "name": "baseUrl",
+            "type": "string",
+            "label": "DevOps Organization URL",
+            "required": true,
+            "helpMarkDown": "Base URL of your DevOps instance (ex. https://dev.azure.com/fabrikam or https://fabrikam.visualstudio.com)"
+        },
+        {
+            "name": "buildNumber",
+            "type": "string",
+            "label": "Build Name",
+            "required": true,
+            "defaultValue": "$(Build.BuildNumber)",
+            "helpMarkDown": "Name of the build being created. Leave at '$(Build.BuildNumber)' for same build in Spira as DevOps"
+        },
+        {
+            "name": "buildStatus",
+            "type": "string",
+            "label": "Build Status",
+            "required": true,
+            "defaultValue": "$(Agent.JobStatus)",
+            "helpMarkDown": "Status of the build being created. Just leave at '$(Agent.JobStatus)'"
+        },
+        {
+            "name": "buildId",
+            "type": "String",
+            "label": "Build ID",
+            "required": true,
+            "defaultValue": "$(Build.BuildId)",
+            "helpMarkDown": "ID of the build being created. Just leave at '$(Build.BuildId)'"
+        },
+        {
+            "name": "sourceVersion",
+            "type": "string",
+            "label": "Source Version",
+            "required": true,
+            "defaultValue": "$(Build.SourceVersion)",
+            "helpMarkDown": "Source code version of the build. Just leave at '$(Build.SourceVersion)'"
+        },
+        {
+            "name": "projectName",
+            "type": "string",
+            "label": "DevOps Project Name",
+            "required": true,
+            "defaultValue": "$(System.TeamProject)",
+            "helpMarkDown": "Name of the DevOps project for this build. Just leave at '$(System.TeamProject)'"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
