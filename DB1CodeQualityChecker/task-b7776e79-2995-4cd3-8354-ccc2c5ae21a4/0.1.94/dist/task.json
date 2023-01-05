@@ -1,0 +1,130 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "b7776e79-2995-4cd3-8354-ccc2c5ae21a4",
+    "name": "DB1CodeQualityChecker",
+    "friendlyName": "DB1 Code Quality Checker",
+    "description": "Submits your code to DB1 analyzis based on arch team perspective",
+    "helpMarkDown": "",
+    "category": "Test",
+    "author": "Nilson Junior",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 94
+    },
+    "instanceNameFormat": "DB1 Code Quality Checker",
+    "groups": [{
+        "name": "WebhookGroup",
+        "displayName": "Webhook",
+        "isExpanded": false
+    }],
+    "inputs": [{
+            "name": "sonarLoginToken",
+            "type": "string",
+            "label": "Sonar Login Token",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Sonar login token from the project",
+            "groupName": "WebhookGroup"
+        },
+        {
+            "name": "clientName",
+            "type": "string",
+            "label": "Client Name",
+            "defaultValue": "$(Build.Repository.Name)",
+            "required": true,
+            "helpMarkDown": "Your company name",
+            "groupName": "WebhookGroup"
+        },
+        {
+            "name": "applicationName",
+            "type": "string",
+            "label": "Application Name",
+            "required": true,
+            "helpMarkDown": "Your project name",
+            "groupName": "WebhookGroup"
+        },
+        {
+            "name": "baseDir",
+            "type": "string",
+            "label": "Absolute Path Project",
+            "defaultValue": "$(Build.Repository.LocalPath)",
+            "required": false,
+            "helpMarkDown": "Your directory project"
+        },
+        {
+            "name": "sourcePath",
+            "type": "string",
+            "label": "Source Path",
+            "defaultValue": "src",
+            "required": true,
+            "helpMarkDown": "Folder where the source code is created."
+        },
+        {
+            "name": "testsPath",
+            "type": "string",
+            "label": "Tests Path",
+            "defaultValue": "test",
+            "required": false,
+            "helpMarkDown": "Folder where the tests are created."
+        },
+        {
+            "name": "appLanguage",
+            "type": "pickList",
+            "label": "Project Language",
+            "options": { "js": "js", "ts": "ts", "dotnet": "dotnet" },
+            "required": false,
+            "helpMarkDown": "Extension language of project."
+        },
+        {
+            "name": "dotnetVersion",
+            "type": "pickList",
+            "label": "Dotnet version",
+            "options": { "core3_1": "core3_1", "core5": "core5", "core6": "core6" },
+            "required": false,
+            "helpMarkDown": "Version from dotnet."
+        },
+        {
+            "name": "coverageFile",
+            "type": "string",
+            "label": "Report Coverage File",
+            "defaultValue": "coverage/lcov.info",
+            "required": false,
+            "helpMarkDown": "File that contain results of tests."
+        },
+        {
+            "name": "exclusionPaths",
+            "type": "string",
+            "label": "Exclusion Paths",
+            "defaultValue": "dist/**/*,node_modules/**/*",
+            "required": false,
+            "helpMarkDown": "Folders where code analysis should ignore"
+        },
+        {
+            "name": "inclusions",
+            "type": "string",
+            "label": "Inclusions Paths",
+            "required": false,
+            "helpMarkDown": "One or more path matching patterns defining files to be included in analysis, among those found below directories specified in 'Source Path'"
+        },
+        {
+            "name": "testInclusions",
+            "type": "string",
+            "label": "Test Inclusions Paths",
+            "required": false,
+            "helpMarkDown": "One or more path matching patterns defining files to be included in analysis, among those found below directories specified in 'Tests Path'"
+        },
+        {
+            "name": "testExecutionReportPaths",
+            "type": "string",
+            "label": "Test Execution Report Paths",
+            "required": false,
+            "helpMarkDown": "Comma-delimited list of paths to execution reports in the Generic Execution Data format"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
