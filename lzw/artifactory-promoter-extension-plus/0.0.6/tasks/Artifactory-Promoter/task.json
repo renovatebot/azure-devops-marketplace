@@ -1,0 +1,143 @@
+{
+    "id": "19eb68a1-d04e-4483-8fb0-479009be6c0c",
+    "name": "ArtifactoryPromoterPlus",
+    "friendlyName": "Artifactory Promoter Plus",
+    "description": "Promote artifacts in Artifactory.",
+    "author": "lzw",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "4"
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Artifactory Promoter",
+    "inputs": [
+        {
+            "name": "artifactoryService",
+            "type": "connectedService:artifactoryService",
+            "label": "Artifactory service",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Artifactory service used for build promotion."
+        },
+        {
+            "name": "sourceRepo",
+            "type": "pickList",
+            "label": "Source repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Sets the source repository from which to promote the release published artifacts.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "sourcePath",
+            "type": "string",
+            "label": "Source Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Sets the source path from which to promote the release published artifacts."
+        },
+        {
+            "name": "targetRepo",
+            "type": "pickList",
+            "label": "Target repository",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Sets the target promotion repository.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "targetPath",
+            "type": "string",
+            "label": "Target Path",
+            "defaultValue": "$(sourcePath)",
+            "required": true,
+            "helpMarkDown": "Sets the target path from which to promote the release published artifacts."
+        },
+        {
+            "name": "status",
+            "type": "string",
+            "label": "Status",
+            "defaultValue": "Deployed",
+            "required": true,
+            "helpMarkDown": "Sets the new build status."
+        },
+        {
+            "name": "comment",
+            "type": "string",
+            "label": "Comment",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows the user to add a comment describing the reason for promotion."
+        },
+        {
+            "name": "copy",
+            "type": "pickList",
+            "label": "Method of Promotion",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Select to Copy or Move the promoted artifacts and dependencies.",
+            "options" : {
+                "true" : "Copy",
+                "false" : "Move"
+            }
+        },
+        {
+            "name": "artifacts",
+            "type": "boolean",
+            "label": "Promote Artifacts?",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Select to promote artifacts and dependencies. If this field is not selected, they will not be promoted, but instead only a promotion entry will be created."
+        },
+        {
+            "name": "dryRun",
+            "type": "boolean",
+            "label": "Dry run",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "When selected, the promotion is simulated and the build is not promoted. A failed simulation causes the task to fail."
+        },
+        {
+            "name": "failFast",
+            "type": "boolean",
+            "label": "Fail Fast",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "When selected, fail and abort the operation upon receiving an error."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "endpointId": "$(artifactoryService)",
+            "endpointURL": "{{endpoint.url}}/api/repositories",
+            "target": "targetRepo",
+            "resultSelector": "jsonpath:$[?(@.type=='VIRTUAL' || @.type=='LOCAL')]",
+            "resultTemplate": "{ \"Value\" : \"{{{key}}}\", \"DisplayValue\" : \"{{{key}}}\" }"
+        },
+        {
+            "endpointId": "$(artifactoryService)",
+            "endpointURL": "{{endpoint.url}}/api/repositories",
+            "target": "sourceRepo",
+            "resultSelector": "jsonpath:$[?(@.type=='LOCAL')]",
+            "resultTemplate": "{ \"Value\" : \"{{{key}}}\", \"DisplayValue\" : \"{{{key}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "artifactory-promoter.js",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
