@@ -1,0 +1,76 @@
+{
+    "id": "8a577db2-cddb-4402-a4c7-4ed85d01a495",
+    "name": "RunTestOnSofy",
+    "friendlyName": "Stage Test Run on Sofy.ai",
+    "description": "Add a pipeline task to test your application on Sofy.ai",
+    "helpMarkDown": "[More Information](https://www.help.sofy.ai)",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "waqas@sofy.ai",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Stage Test Run On Sofy.ai",
+    "inputs": [
+        {
+            "name": "api_key",
+            "type": "string",
+            "label": "Please enter the API key associated with your account",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Please enter your Sofy.ai API Key.<br/>To generate a new key login to your account at [Sofy.ai](https://www.sofy.ai) and select \"Regenerate key\" in Account Settings => API Key"
+        },
+        {
+            "name": "platform",
+            "type": "pickList",
+            "label": "Select Type of your application",
+            "defaultValue": "Mobile",
+            "required": true,
+            "helpMarkDown": "The type of application you would like Sofy to test. Select 'Mobile' for Android/iOS Apps and 'Website' for Web Apps",
+            "options": {
+                "mobile": "Mobile",
+                "web": "Website"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "apk_location",
+            "type": "string",
+            "label": "Path to application file",
+            "defaultValue": "",
+            "visibleRule": "platform = mobile",
+            "required": false,
+            "helpMarkDown": "Enter path relative to your build output directory with '.apk'/'.ipa', as `path/to/your/apkDirectory/` or full path to your '.apk'/'.ipa' file."
+        },
+        {
+            "name": "web_url",
+            "type": "string",
+            "label": "Website URL",
+            "defaultValue": "",
+            "visibleRule": "platform = web",
+            "required": false,
+            "helpMarkDown": "Enter a live address for your website post deployment (should follow 'https')"
+        },
+        {
+            "name": "max_nodes",
+            "type": "string",
+            "label": "Max Node depth",
+            "defaultValue": "20",
+            "visibleRule": "platform = web",
+            "required": false,
+            "helpMarkDown": "The maximum number of nodes in depth that Sofy will check across your website"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
