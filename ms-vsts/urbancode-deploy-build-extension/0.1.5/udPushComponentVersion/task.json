@@ -1,0 +1,101 @@
+{
+    "id": "ac998cef-0be9-470f-955c-cca3afe31485",
+    "name": "udPushComponentVersion",
+    "friendlyName": "IBM UrbanCode Deploy Component Version",
+    "description": "Deploy a new version of your IBM UrbanCode Deploy component, upload files, link back to build, and tag",
+    "helpMarkDown": "Deploy a new version of your IBM UrbanCode Deploy component, upload files, link back to build, and tag using the using the [IBM UrbanCode Deploy Client](http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.reference.doc/topics/cli_ch.html)<br/>For more details about this task, to report bugs, or to contribute, refer to: [https://github.com/Microsoft/vsts-urbancode-deploy](https://github.com/Microsoft/vsts-urbancode-deploy)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Microsoft",
+    "demands": [],
+    "version": {
+        "Major": 0,
+        "Minor": 121,
+        "Patch": 0
+    },
+    "groups": [
+        {
+          "name": "advanced",
+          "displayName": "Advanced",
+          "isExpanded": false
+        }
+    ],
+    "instanceNameFormat": "UrbanCode Deploy $(componentVersion)",
+    "inputs": [
+      {
+        "name": "serverEndpoint",
+        "type": "connectedService:Generic",
+        "label": "IBM UrbanCode Deploy service endpoint",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Select the service endpoint for your IBM UrbanCode Deploy server instance.  To create one, click the Manage link and create a new Generic Service Endpoint, enter the IBM UrbanCode Deploy server URL for the server URL, e.g. http://ucdserver.example.com:8080, and required credentials.  To use an authorization token, leave the user name blank, and enter the token in the password field."
+      },
+      {
+        "name": "udGlobalCommandArgs",
+        "type": "multiLine",
+        "label": "Global Arguments",
+        "defaultValue": "--verbose",
+        "required": false,
+        "helpMarkDown": "Global arguments to be used by the underlying udclient, e.g. proxy information, for details, see: http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.reference.doc/topics/cli_ch.html"
+      },
+      {
+        "name": "udComponentId",
+        "type": "string",
+        "label": "Component Name or Id",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The name or id of the UrbanCode Deploy Component to update."
+      },
+      {
+        "name": "udComponentVersionName",
+        "type": "string",
+        "label": "Component Version",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "The name UrbanCode Deploy Component Version to create.  [Variables](https://www.visualstudio.com/docs/build/define/variables) might be helpful here, e.g. $(Build.BuildNumber)"
+      },
+      {
+      "name": "fileToUpload",
+      "type": "string",
+      "label": "File to upload",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Optional file or directory to upload.  If a directory is specified, all contained files will be uploaded.  [Variables](https://www.visualstudio.com/docs/build/define/variables) might be helpful here, e.g. $(System.DefaultWorkingDirectory) For more upload options, use the IBM UrbanCode Deploy Client (udclient) task in conjunction with the [addVersionFiles command](http://www.ibm.com/support/knowledgecenter/SS4GSP_6.2.1/com.ibm.udeploy.api.doc/topics/udclient_addversionfiles.html)"
+      },
+      {
+        "name": "udOptionalTag",
+        "type": "string",
+        "label": "Component Version Tag",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Optionally, tag the Component Version."
+      },
+      {
+        "name": "workingDirectory",
+        "type": "filePath",
+        "label": "Working Directory",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "The working directory to run the IBM UrbanCode Deploy Client commands.",
+        "groupName": "advanced"
+      },
+      {
+        "name": "udclientLocation",
+        "type": "filePath",
+        "label": "IBM UrbanCode Deploy Client location",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Optionally specify the location to the IBM UrbanCode Deploy Client (udclient). If the location is not specified, udclient needs to be in the PATH.",
+        "groupName": "advanced"
+      }
+    ],
+    "execution": {
+        "Node": {
+            "target": "udPushComponentVersion.js",
+            "argumentFormat": ""
+        }
+    }
+}
