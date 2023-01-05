@@ -1,0 +1,159 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "9b2b8646-eeba-417a-aec6-2510c65a8c40",
+    "name": "ServiciosWindows",
+    "friendlyName": "Tareas Servicios Windows",
+    "description": "0.42.0 - Permite detener, eliminar, instalar e iniciar uno o más servicios windows en una máquina objetivo.",
+    "helpMarkDown": "Extensión que permite realizar tareas para servicios windows, tales como detener, eliminar, instalar e iniciar servicios. Para más información, diríjase al siguiente enlace: [Documentación](https://marketplace.visualstudio.com/items?itemName=JavierCorderoLeon-1989.tareas-servicios-windows)",
+    "category": "Utility",
+    "author": "Jose J. Cordero León",
+    "version": {
+        "Major": 0,
+        "Minor": 42,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Servicios Windows",
+    "groups": [
+        {
+            "name": "otrasConfiguraciones",
+            "displayName": "Otras configuraciones",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "opcionInstalacion",
+            "type": "radio",
+            "label": "Opción de instalación",
+            "defaultValue": "unico",
+            "required": true,
+            "helpMarkDown": "<b>Uno:</b> un solo servicio para instalar.<br><b>Varios:</b> lista de servicios a instalar en formato JSON.",
+            "options": {
+                "unico": "Uno",
+                "lista": "Varios"
+            }
+        }, {
+            "name": "ambienteInstalacion",
+            "type": "string",
+            "label": "Ambiente de instalación",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Ambiente al que pertenecerá el o los servicios windows. Por lo general, va asociado irá a un identificador único para ambiente, como el número de un SR, IR, etc."
+        }, {
+            "name": "archivoEjecutableServicio",
+            "type": "string",
+            "label": "Archivo ejecutable del servicio",
+            "defaultValue": "**.exe",
+            "required": true,
+            "visibleRule": "opcionInstalacion = unico",
+            "helpMarkDown": "Archivo <b>.exe</b> que se instalará como servicio. Debe contener la extensión, de lo contrario, la instalación fallará."
+        }, {
+            "name": "listadoServicios",
+            "type": "multiLine",
+            "label": "Listado de servicios",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "opcionInstalacion = lista",
+            "properties": {
+                "rows": "10",
+                "resizable": true
+            },
+            "helpMarkDown": "Listado de servicios windows a instalar el cual debe ser en formato JSON.<br>Para ver el formato permitido, diríjase al siguiente enlace: [Documentación](https://marketplace.visualstudio.com/items?itemName=JavierCorderoLeon-1989.tareas-servicios-windows) <br>"
+        }, {
+            "name": "nombreServicioWindows",
+            "type": "string",
+            "label": "Nombre del servicio a instalar (Service Name)",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "opcionInstalacion = unico",
+            "helpMarkDown": "Nombre que deberá llevar el servicio windows. Por lo general, coincide con el nombre del archivo .EXE"
+        }, {
+            "name": "nombreMostrarServicioWindows",
+            "type": "string",
+            "label": "Nombre del servicio para mostrar (Display Name)",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "opcionInstalacion = unico",
+            "helpMarkDown": "Nombre que deberá llevar el servicio para mostrar en la lista de los servicios windows."
+        }, {
+            "name": "descripcionServicio",
+            "type": "multiLine",
+            "label": "Descripción del servicio",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "opcionInstalacion = unico",
+            "helpMarkDown": "Descripcion a colocar para el servicio windows a instalar."
+        }, {
+            "name": "rutaArtefactoServicio",
+            "type": "filePath",
+            "label": "Ruta del artefacto del servicio o servicios",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Ruta del artefacto donde se ubican los archivos para el servicio o servicios a instalar."
+        }, {
+            "name": "rutaArchivosServicio",
+            "type": "string",
+            "label": "Ruta de instalación del servicio",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Ruta donde se colocarán los archivos en el servidor donde se instalarán los servicios."
+        }, {
+            "name": "cuentaInstalacion",
+            "type": "radio",
+            "label": "Cuenta de instalación del o de los servicios",
+            "defaultValue": "local",
+            "required": true,
+            "options": {
+                "custom": "Personalizada",
+                "local": "Cuenta local"
+            },
+            "helpMarkDown": "Cuenta de instalación de servicio o de los servicios windows.<br><b>Personalizada:</b> se deberá colocar usuario y contraseña con la que se desea instalar el servicio.<br><b>Cuenta local:</b> se usará la cuenta local del sistema (Local System)."
+        }, {
+            "name": "usuarioInstalacion",
+            "type": "string",
+            "label": "Cuenta del usuario",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "cuentaInstalacion = custom",
+            "helpMarkDown": "Cuenta de dominio o usuario local con el cual el servicio se instalará y ejecutará."
+        }, {
+            "name": "contrasenniaUsuarioInstalacion",
+            "type": "string",
+            "label": "Contraseña del usuario",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "cuentaInstalacion = custom",
+            "helpMarkDown": "Contraseña de la cuenta del usuario."
+        }, {
+            "name": "tipoInicioServicio",
+            "type": "radio",
+            "label": "Tipo de inicio",
+            "defaultValue": "automatico",
+            "required": true,
+            "options": {
+                "automatico": "Automático",
+                "manual": "Manual",
+                "deshabilitado": "Deshabilitado"
+            },
+            "helpMarkDown": "Tipo de inicio del servicio windows después de instalado. En la opción <b>Automático</b> el servicio se iniciará una vez instalado. En las demás opciones no se iniciará."
+        }, {
+            "name": "tipoProcesoServicios",
+            "type": "radio",
+            "label": "Tipo de proceso",
+            "defaultValue": "completa",
+            "required": true,
+            "options": {
+                "completa": "Completa",
+                "eliminar": "Detener y eliminar",
+                "eliminarAmbiente": "Eliminar todo"
+            },
+            "helpMarkDown": "Tipo de instalación de los servicios windows.<br><b>Completa:</b> los servicios se detienen, eliminan, vuelven a instalar y se inician.<br><b>Detener y eliminar:</b> los servicios solo serán detenidos y eliminados.<br><b>Eliminar todo:</b> detiene y eliminar los servicios, además remueve la carpeta de destino donde se almacenan los servicios.",
+            "groupName": "otrasConfiguraciones"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "script_powershell.ps1"
+        }
+    }
+}
