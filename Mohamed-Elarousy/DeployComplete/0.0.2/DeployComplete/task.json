@@ -1,0 +1,125 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "8820225c-43b5-4947-a8f2-e979132cf23a",
+    "name": "DeployComplete",
+    "friendlyName": "Deploy Complete Mail",
+    "description": "Deploy Complete Mail",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Mohamed Elarousy",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Deploy Complete Mail",
+    "groups": [
+        {
+            "name":  "mailsettings",
+            "displayName":  "Email settings",
+            "isExpanded":  true
+        }
+    ],
+    "inputs": [
+        
+        {
+            "name":  "To",
+            "type":  "string",
+            "label":  "To Address",
+            "defaultValue":  "$(StatusEmailTo)",
+            "required":  true,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "To Address"
+        },
+        {
+            "name":  "From",
+            "type":  "string",
+            "label":  "From Address",
+            "defaultValue":  "psdevops@thiqah.sa",
+            "required":  true,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "From Address"
+        },
+        {
+            "name":  "CC",
+            "type":  "string",
+            "label":  "CC Addresses",
+            "defaultValue":  "",
+            "required":  false,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "CC Addresses. Separate by semicolon (;)"
+        },
+        {
+            "name":  "Subject",
+            "type":  "string",
+            "label":  "Mail Subject",
+            "defaultValue":  "$(RELEASEDEFINITIONNAME)  Deployment is Done",
+            "required":  true,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "The subject of the email"
+        },
+        {
+            "name":  "SmtpUsername",
+            "type":  "string",
+            "label":  "SMTP Username",
+            "defaultValue":  "psdevops@thiqah.sa",
+            "required":  true,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "Username for the SMTP server"
+        },
+        {
+            "name":  "SmtpPassword",
+            "type":  "string",
+            "label":  "SMTP Password",
+            "defaultValue":  "$(PSMailPass)",
+            "required":  true,
+            "groupName":  "mailsettings",
+            "helpMarkDown":  "Password for the SMTP server"
+        },
+        {
+            "name": "Environment",
+            "type": "pickList",
+            "label": "Environment",
+            "required": true,
+            "defaultValue": "PreProduction",
+            "helpMarkDown": "Select an Environment.",
+            "options": {
+                "PreProduction": "PreProduction",
+                "Production": "Production"
+            }
+        },
+        {
+            "name":  "ComponentNames",
+            "type":  "string",
+            "label":  "Component Names",
+            "defaultValue":  "",
+            "required":  true,
+            "helpMarkDown":  "Component Names like (Component1,Component2,Component3)"
+        },
+        {
+            "name":  "ComponentVariables",
+            "type":  "string",
+            "label":  "Component Variables",
+            "defaultValue":  "",
+            "required":  true,
+            "helpMarkDown":  "Component Variables like (Variable1,Variable2,Variable3)"
+        },
+        {
+            "name":  "ComponentURLs",
+            "type":  "string",
+            "label":  "Component URLs",
+            "defaultValue":  "",
+            "required":  true,
+            "helpMarkDown":  "Component URLs like (URL1,URL2,URL3)"
+        }
+        
+    ],
+    "execution": {
+        
+        "PowerShell3": {
+            "target": "PSCode.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
