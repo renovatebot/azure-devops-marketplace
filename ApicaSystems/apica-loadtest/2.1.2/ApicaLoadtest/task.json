@@ -1,0 +1,119 @@
+﻿{
+  "id": "09ca9f48-6b38-4521-8a01-21e081ed5332",
+  "name": "ApicaLoadtest",
+  "friendlyName": "Apica Loadtest",
+  "description": "Apica Loadtest runner",
+  "helpMarkDown": "This task can be used to run an Apica Loadtest using Azure DevOps.",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "ApicaSystem",
+  "version": {
+    "Major": 2,
+    "Minor": 1,
+    "Patch": 2
+  },
+  "demands": [],
+  "minimumAgentVersion": "1.99.0",
+  "groups": [
+    {
+      "name": "environment",
+      "displayName": "Basic settings",
+      "isExpanded": "true"
+    },
+    {
+      "name": "thresholds",
+      "displayName": "Thresholds",
+      "isExpanded": "false"
+    }
+  ],
+  "inputs": [
+    {
+      "defaultValue": "https://api-ltp.apicasystem.com/v1/",
+      "helpMarkDown": "Set the appropriate ALT API base URL. This endpoint is used for the communication between the plugin and ALT. The default SaaS value is https://api-ltp.apicasystem.com/v1. You can also enter a custom URL for your on-premise ALT installation such as http://localhost:83.",
+      "label": "ALT API base URL:",
+      "name": "apiBaseUrl",
+      "required": true,
+      "type": "string",
+      "groupName": "environment"
+    },
+    {
+      "defaultValue": "",
+      "helpMarkDown": "Enter your ALT authentication token. You can copy it from your profile page in the ALT web portal. Example value: af41e8c5-c3c2-4c66-adbc-87571e84643f",
+      "label": "ALT authentication token:",
+      "name": "apiAuthenticationToken",
+      "required": true,
+      "type": "string",
+      "groupName": "environment"
+    },
+    {
+      "defaultValue": "",
+      "helpMarkDown": "The name of the load test preset as you saved it in ALT.",
+      "label": "Preset name:",
+      "name": "presetName",
+      "required": true,
+      "type": "string",
+      "groupName": "environment"
+    },
+    {
+      "defaultValue": "",
+      "helpMarkDown": "The name of the load test scenario to run the loadtest with e.g myscenario.class or scenario1.zip.",
+      "label": "Load test scenario:",
+      "name": "scenarioName",
+      "required": true,
+      "type": "string",
+      "groupName": "environment"
+    },
+    {
+      "name": "failOnLoopsThreshold",
+      "type": "boolean",
+      "label": "Fail load test on failed loops rate (%)",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If this is true then the failed loops rate will be evaluated at the end of the test. If the actual failed loops rate is higher than the threshold then the load test will be marked as failed.",
+      "groupName": "thresholds"
+    },
+    {
+      "defaultValue": "10",
+      "helpMarkDown": "Provide a numeric value [0-100] for the failed loops threshold. It will be interpreted as a percentage value. The actual failed loops rate is calculated as # of failed loops / # total loops.",
+      "label": "Failed loops rate (%)",
+      "name": "failedLoopsRate",
+      "required": false,
+      "visibleRule": "failOnLoopsThreshold=true",
+      "type": "string",
+      "groupName": "thresholds"
+    },
+    {
+      "name": "failOnAvgPageResponseTime",
+      "type": "boolean",
+      "label": "Fail load test on average page response time (sec)",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If this is true then the average response per page will be evaluated at the end of the test. If the actual page response time is higher than the threshold then the load test will be marked as failed.",
+      "groupName": "thresholds"
+    },
+    {
+      "defaultValue": "10",
+      "helpMarkDown": "Provide a numeric value for the page response time threshold. It will be interpreted as an absolute value in seconds.",
+      "label": "Avg. response time per page (sec)",
+      "name": "avgResponseTimePerPageThreshold",
+      "required": false,
+      "visibleRule": "failOnAvgPageResponseTime=true",
+      "type": "string",
+      "groupName": "thresholds"
+    }
+  ],
+  "instanceNameFormat": "Run Apica Loadtest with preset $(presetName) and scenario $(scenarioName)",
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\RunLoadtest.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}
