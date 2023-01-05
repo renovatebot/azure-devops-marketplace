@@ -1,0 +1,115 @@
+{
+	"id": "35d27b4a-51dc-4eca-85a6-5635231b613d",
+	"name": "AssignBlueprint",
+	"friendlyName": "Assign Azure Blueprint",
+	"description": "Assigns an Azure Blueprint",
+	"helpMarkDown": "",
+	"category": "Build",
+	"visibility": [
+		"Preview",
+		"Build",
+		"Release"
+	],
+	"author": "Neil Peterson",
+	"version": {
+		"Major": 1,
+		"Minor": 7,
+		"Patch": 1
+	},
+	"instanceNameFormat": "Assign Azure Blueprint",
+	"inputs": [{
+			"name": "ConnectedServiceName",
+			"aliases": ["azureSubscription"],
+			"type": "connectedService:AzureRM",
+			"label": "Azure Service Connection (location of Blueprint)",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Azure service connection for the Blueprints task. This can be an Azure Management Group or Subscription.",
+			"properties": {
+                "EndpointFilterRule": "ScopeLevel == ManagementGroup || ScopeLevel != ManagementGroup"
+            }
+		},
+		{
+			"name": "AssignmentName",
+			"type": "string",
+			"label": "Assignment Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Assignment name."
+		},
+		{
+			"name": "BlueprintName",
+			"type": "string",
+			"label": "Blueprint Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Blueprint name."
+		},
+		{
+			"name": "BlueprintVersion",
+			"type": "string",
+			"label": "Blueprint Version",
+			"defaultValue": "Latest",
+			"required": false,
+			"helpMarkDown": "Blueprint version. If this value is equal to latest, the latest published version will be used."
+		},
+		{
+			"name": "ParametersFile",
+			"type": "filePath",
+			"label": "Assignment File Path",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "A JSON file containing the assignment details and parameter values."
+		},
+		{
+			"name": "AlternateSubscription",
+			"type": "boolean",
+			"label": "Provide Subscription ID (requires Management Group scope)",
+			"defaultValue": "false",
+			"required": true,
+			"helpMarkDown": "When using a Service Connection that is scoped to a management group, specify the child subscription for the Blueprint assignment."
+		},
+		{
+			"name": "SubscriptionID",
+			"type": "string",
+			"label": "Subscription Id",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "When using a Service Connection that is scoped to a management group, specify the child subscription for the Blueprint assignment.",
+			"visibleRule": "AlternateSubscription = true"
+		},
+		{
+			"name": "Wait",
+			"type": "boolean",
+			"label": "Wait for assignment",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "Wait for assignment to complete before moving to the next task."
+		},
+		{
+			"name": "Timeout",
+			"type": "int",
+			"label": "Time in seconds before wait timeout",
+			"defaultValue": "240",
+			"required": false,
+			"helpMarkDown": "Time in seconds before wait timeout.",
+			"visibleRule": "Wait = true"
+		},
+		{
+			"name": "StopOnFailure",
+			"type": "boolean",
+			"label": "Stop on Failure",
+			"defaultValue": "false",
+			"required": false,
+			"helpMarkDown": "Select to fail the build when an assignment failure occours.",
+			"visibleRule": "Wait = true"
+		}
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\assignBlueprint.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
