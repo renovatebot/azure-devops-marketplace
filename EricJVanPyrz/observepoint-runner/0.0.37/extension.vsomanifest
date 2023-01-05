@@ -1,0 +1,63 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://gitlab.com/vanpyrzericj/azuredevops-observepoint"
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for ObservePoint connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "observepoint",
+                "displayName": "ObservePoint",
+                "url": {
+                    "displayName": "API Endpoint",
+                    "value": "https://api.observepoint.com",
+                    "helpText": "ObservePoint's Base URL. Typically you won't need to change this."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "You can retrieve your api key by going to your profile screen in ObservePoint.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "api_key {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "description": "Task with a dynamic property getting data from an endpoint REST data source",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTaskFolder"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
