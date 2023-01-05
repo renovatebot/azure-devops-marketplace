@@ -1,0 +1,86 @@
+{
+  "id": "c24b4bc6-4f4b-4a06-a38d-7eb157b3f342",
+  "name": "CopyEntityFrameworkMigrate",
+  "friendlyName": "Copy Entity Framework migrate.exe",
+  "description": "Copy migrate.exe from the Entity Framework nuget package to the specified output folder",
+  "author": "Tobania",
+  "helpMarkDown": "Copy migrate.exe from the Entity Framework nuget package to the specified output folder",
+  "category": "Utility",
+  "visibility": [
+    "Build"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Copy Entity Framework migrate.exe",
+  "groups": [
+    {
+      "name": "nuget",
+      "displayName": "NuGet",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "PackagesConfig",
+      "type": "filePath",
+      "label": "NuGet packages.config",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "nuget",
+      "helpMarkDown": "The path of the packages.config file from the .NET project that contains the EntityFramework migrations"
+    },
+    {
+      "name": "PackagesFolder",
+      "type": "filePath",
+      "label": "NuGet packages folder",
+      "defaultValue": "$(Build.SourcesDirectory)\\packages",
+      "required": true,
+      "groupName": "nuget",
+      "helpMarkDown": "The directory in which the source files are kept. Used to determine the location of migrate.exe"
+    },
+    {
+      "name": "EFPackageName",
+      "type": "string",
+      "label": "EntityFramework Package Id",
+      "defaultValue": "EntityFramework",
+      "required": true,
+      "groupName": "nuget",
+      "helpMarkDown": "The id of the Entity Framework NuGet package"
+    },
+    {
+      "name": "OutputDirectory",
+      "type": "filePath",
+      "label": "Output directory",
+      "defaultValue": "$(Build.ArtifactStagingDirectory)\\Migrate",
+      "required": true,
+      "helpMarkDown": "The directory in which migrate.exe will be copied. It is NOT recommended to use the bin folder of a project. Migrate.exe will be copied into the correct folder during the release"
+    },
+    {
+      "name": "UseVerbose",
+      "type": "boolean",
+      "label": "Verbose",
+      "required": false,
+      "defaultValue": false,
+      "groupName": "advanced",
+      "helpMarkDown": "Enable or disable verbose logging"
+    }
+
+  ],
+  "execution": {
+    "PowerShell": {
+      "target": "$(currentDirectory)\\CopyEntityFrameworkMigrate.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
