@@ -1,0 +1,168 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "a19539ac-dae9-449a-8d63-a6ab5e1a6481",
+    "name": "DTSTranslation",
+    "friendlyName": "Translate with Dynamics 365 Translation Service (Preview)",
+    "description": "Creates and submits a translation request through Dynamics Translation Service",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 27
+    },
+    "groups": [
+        {
+            "name": "recycle",
+            "displayName": "Recycle Translation Memory",
+            "isExpanded": true
+        },
+        {
+            "name": "mainFiles",
+            "displayName": "Resource files",
+            "isExpanded": true
+            
+        }
+
+    ],
+    "instanceNameFormat": "DTS DevOps Translation",
+
+    "inputs": [
+        {
+            "name": "LCSConnection",
+            "type": "connectedService:dts-lcsserviceendpoint",
+            "label": "LCS Service Connection",
+            "required": true,
+            "helpMarkDown": "Select a Dynamics Lifecycle Services connection to be used"
+        },
+        {
+            "name": "requestName",
+            "type": "string",
+            "label": "Request Name",
+            "required": true,
+            "defaultValue": "DTS Translation Request",
+            "helpMarkDown": "Enter a name for your request"
+        },
+        {
+            "name": "productType",
+            "type": "pickList",
+            "label": "Product Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the product you are targeting"
+        },
+        {
+            "name": "productVersion",
+            "type": "pickList",
+            "label": "Product Version",
+            "visibleRule": "productType != \"\"",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select version of the product you are targeting"
+        },
+        {
+            "name": "sourceLanguage",
+            "type": "pickList",
+            "label": "Source Language",
+            "defaultValue": "",
+            "visibleRule": "productType != \"\"",
+            "required": true,
+            "helpMarkDown": "Select the language being translated from"
+        },
+        {
+            "name": "targetLanguage",
+            "type": "pickList",
+            "defaultValue": "",
+            "visibleRule": "sourceLanguage != \"\"",
+            "required": false,
+            "label": "Target Language",
+            "helpMarkDown": "Select the langauge to translate into"
+
+        },
+        {
+            "name": "targetLanguageList",
+            "type": "string",
+            "visibleRule": "sourceLanguage != \"\"",
+            "label": "Multiple Target Languages",
+            "helpMarkDown": "Enter a comma seperated list of langauge codes, overrides target language input. E.g: \"fr,ja,pt-BR\""
+        },
+        {
+            "name": "translationType",
+            "type": "pickList",
+			"required": true,
+            "label": "Translation Type",
+			"defaultValue": "ui",
+			"helpMarkDown": "Select the Request Type",
+            "options": {
+                "ui": "User Interface"
+            }
+        },
+
+        {
+            "name": "sourceFile",
+            "type": "string",
+            "defaultValue": "$(Build.SourcesDirectory)/resources/**/*.label.txt",
+            "required": true,
+            "label": "Path to resource files. You may use wildcards"
+
+        },
+        {
+            "name": "tmFile",
+            "type": "string",
+            "required": false,
+            "label": "Path to translation memory files (Optional)",
+            "helpMarkDown": "Enter a path to the translation memory files. You may use wildcards"
+
+        },
+        {
+            "name": "translationOutputPath",
+            "type": "string",
+            "required": true,
+            "defaultValue": "$(Build.ArtifactStagingDirectory)",
+            "label": "Output Path"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "sourceLanguage",
+            "endpointId": "$(LCSConnection)",
+            "dataSourceName": "LanguageListSource",
+            "parameters": {
+                "productType": "$(productType)"   
+            },
+            "resultTemplate": "{\"DisplayValue\":\"{{{name}}} ({{{code}}})\", \"Value\":\"{{{code}}}\"}"
+        },
+        {
+            "target": "targetLanguage",
+            "endpointId": "$(LCSConnection)",
+            "dataSourceName": "TargetLanguageListSource",
+            "parameters": {
+                "productType": "$(productType)",
+                "sourceLanguage": "$(sourceLanguage)"   
+            },
+            "resultTemplate": "{\"DisplayValue\":\"{{{name}}} ({{{code}}})\", \"Value\":\"{{{code}}}\"}"
+        },
+        {
+            "target": "productType",
+            "endpointId": "$(LCSConnection)",
+            "dataSourceName": "ProductListSource",
+            "resultTemplate": "{\"DisplayValue\":\"{{{productName}}}\", \"Value\":\"{{{id}}}\"}"
+        },
+        {
+            "target": "productVersion",
+            "endpointId": "$(LCSConnection)",
+            "dataSourceName": "ProductVersionListSource",
+            "resultTemplate": "{\"DisplayValue\":\"{{{productName}}}\", \"Value\":\"{{{id}}}\"}",
+            "parameters": {
+                    "productType": "$(productType)"
+                }
+        }
+    ],
+    
+    "execution": {
+        "Node": {
+            "target": "main.js"
+        }
+    }
+}
