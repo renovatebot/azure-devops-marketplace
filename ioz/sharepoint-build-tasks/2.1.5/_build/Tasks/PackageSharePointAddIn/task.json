@@ -1,0 +1,153 @@
+{
+    "id":  "264c5eea-33ff-46f3-98fd-de1819e6dd85",
+    "name":  "PackageSharePointAddIn",
+    "friendlyName":  "Package SharePoint Add-In",
+    "description":  "Build and package a SharePoint Add-In",
+    "helpMarkDown":  "[More Information](https://github.com/iozag/sharepoint-build-tasks)",
+    "category":  "Build",
+    "visibility":  [
+                       "Build"
+                   ],
+    "author":  "ARGUSnet AG",
+    "version":  {
+                    "Major":  "2",
+                    "Minor":  "1",
+                    "Patch":  "5"
+                },
+    "demands":  [
+                    "msbuild",
+                    "visualstudio"
+                ],
+    "minimumAgentVersion":  "1.83.0",
+    "groups":  [
+                   {
+                       "name":  "publishing",
+                       "displayName":  "Publishing",
+                       "isExpanded":  true
+                   },
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "solution",
+                       "type":  "filePath",
+                       "label":  "Solution",
+                       "defaultValue":  "**\\*.sln",
+                       "required":  true,
+                       "helpMarkDown":  "Relative path from repo root of the solution or SharePoint Add-In project to build and package.  Wildcards can be used.  For example, `**\\*.sln` for all solution files in all sub folders or `**\\*.csproj` for all project files in all sub folders."
+                   },
+                   {
+                       "name":  "platform",
+                       "type":  "string",
+                       "label":  "Platform",
+                       "defaultValue":  "",
+                       "required":  false
+                   },
+                   {
+                       "name":  "configuration",
+                       "type":  "string",
+                       "label":  "Configuration",
+                       "defaultValue":  "",
+                       "required":  false
+                   },
+                   {
+                       "name":  "clean",
+                       "type":  "boolean",
+                       "label":  "Clean",
+                       "defaultValue":  "false",
+                       "required":  false
+                   },
+                   {
+                       "name":  "restoreNugetPackages",
+                       "type":  "boolean",
+                       "label":  "Restore NuGet Packages",
+                       "defaultValue":  "true",
+                       "required":  false
+                   },
+                   {
+                       "name":  "vsVersion",
+                       "type":  "pickList",
+                       "label":  "Visual Studio Version",
+                       "required":  false,
+                       "helpMarkDown":  "If the preferred version cannot be found, the latest version found will be used instead.",
+                       "defaultValue":  "15.0",
+                       "options":  {
+                                       "latest":  "Latest",
+                                       "15.0":  "Visual Studio 2017",
+                                       "14.0":  "Visual Studio 2015",
+                                       "12.0":  "Visual Studio 2013",
+                                       "11.0":  "Visual Studio 2012"
+                                   }
+                   },
+                   {
+                       "name":  "usePublishProfile",
+                       "type":  "boolean",
+                       "label":  "Use publish profile",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Activate if the Add-In should be build using a certain publish profile. If not set, the Add-In will be built using no publish profile, even if one is set in the project source.",
+                       "groupName":  "publishing"
+                   },
+                   {
+                       "name":  "publishProfile",
+                       "type":  "string",
+                       "label":  "Publish Profile",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "usePublishProfile = true",
+                       "helpMarkDown":  "Publish profile which should be used to package the Add-In.",
+                       "groupName":  "publishing"
+                   },
+                   {
+                       "name":  "publishDir",
+                       "type":  "string",
+                       "label":  "Publish Directory",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Path into which the SharePoint Add-In should be deployed. Relative to the path of the SharePoint Add-In project.",
+                       "groupName":  "publishing"
+                   },
+                   {
+                       "name":  "msbuildArgs",
+                       "type":  "string",
+                       "label":  "MSBuild Arguments",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Additional arguments passed to MSBuild.",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "msbuildArchitecture",
+                       "type":  "pickList",
+                       "label":  "MSBuild Architecture",
+                       "defaultValue":  "x86",
+                       "required":  false,
+                       "helpMarkDown":  "Optionally supply the architecture (x86, x64) of MSBuild to run.",
+                       "groupName":  "advanced",
+                       "options":  {
+                                       "x86":  "MSBuild x86",
+                                       "x64":  "MSBuild x64"
+                                   }
+                   },
+                   {
+                       "name":  "logProjectEvents",
+                       "type":  "boolean",
+                       "label":  "Record Project Details",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "groupName":  "advanced"
+                   }
+               ],
+    "instanceNameFormat":  "Package SharePoint Add-In $(solution)",
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\PackageSharePointAddIn.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}

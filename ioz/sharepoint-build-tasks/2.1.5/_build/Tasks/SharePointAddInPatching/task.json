@@ -1,0 +1,56 @@
+{
+    "id":  "1c99a02e-9cd4-48b7-acd9-589376cb874d",
+    "name":  "SharePointAddInPatching",
+    "friendlyName":  "SharePoint Add-In Patching",
+    "description":  "Set URL and Client ID of a SharePoint Add-In",
+    "helpMarkDown":  "Allows to change the URL and Client ID of SharePoint Add-Ins. [More Information](https://github.com/iozag/sharepoint-build-tasks)",
+    "category":  "Build",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "IOZ AG",
+    "version":  {
+                    "Major":  "2",
+                    "Minor":  "1",
+                    "Patch":  "5"
+                },
+    "demands":  [
+
+                ],
+    "minimumAgentVersion":  "1.83.0",
+    "inputs":  [
+                   {
+                       "name":  "AddInFile",
+                       "type":  "filePath",
+                       "label":  "File pattern",
+                       "defaultValue":  "**\\*.app",
+                       "required":  true,
+                       "helpMarkDown":  "Relative path from repo root to the SharePoint AppManifest or Add-In file which should be updated.  Wildcards can be used.  For example `**\\AppManifest.xml` for all AppManifests or `**\\*.app` for all Add-In files in all sub folders."
+                   },
+                   {
+                       "name":  "Url",
+                       "type":  "string",
+                       "label":  "Url",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Url of the website which should be set in the Add-In files."
+                   },
+                   {
+                       "name":  "ClientId",
+                       "type":  "string",
+                       "label":  "ClientId",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Client ID which should be set in the Add-In files."
+                   }
+               ],
+    "instanceNameFormat":  "Patch SharePoint Add-In $(AddInFile)",
+    "execution":  {
+                      "PowerShell":  {
+                                         "target":  "$(currentDirectory)\\SharePointAddInPatching.ps1",
+                                         "argumentFormat":  "",
+                                         "workingDirectory":  "$(currentDirectory)"
+                                     }
+                  }
+}
