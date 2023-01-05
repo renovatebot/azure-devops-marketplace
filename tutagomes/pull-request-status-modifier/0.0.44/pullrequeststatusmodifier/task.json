@@ -1,0 +1,144 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "efcb6845-915e-45da-90a4-f9f17076f22a",
+    "name": "pull-request-status-modifier",
+    "friendlyName": "Pull Request Status Modifier",
+    "description": "A Pull Request Status Modifier",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Arthur Faria",
+    "version": {
+        "Major": 0,
+        "Minor": 14,
+        "Patch": 4
+    },
+    "instanceNameFormat": "PR Status Modifier",
+    "groups": [
+        {
+            "name": "parameters",
+            "displayName": "Parameters",
+            "isExpanded": true,
+            "visibleRule": "getDefaults = false"
+        }
+    ],
+    "inputs": [
+        {
+            "name": "msgvalidacao",
+            "type": "string",
+            "label": "Validation Description",
+            "defaultValue": "Homologação Aprovada?",
+            "required": true,
+            "helpMarkDown": "Homologação Aprovada?"
+        },
+        {
+            "name": "getDefaults",
+            "type": "boolean",
+            "label": "Get Pull Request parameters from Release",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If enabled, will try to get ProjectId, RepoId and branches from environment variables."
+        },
+        {
+            "name": "projectId",
+            "type": "string",
+            "label": "Project Id",
+            "defaultValue": "$(System.TeamProjectId)",
+            "required": true,
+            "visibleRule": "getDefaults = false",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "sourcebranch",
+            "type": "string",
+            "label": "Source Branch",
+            "defaultValue": "$(Build.SourceBranchName)",
+            "required": true,
+            "visibleRule": "getDefaults = false",
+            "helpMarkDown": "Origin branch of Pull Request   - On Build Pipelines: $(Build.SourceBranch)   - On Release Pipelines: $(Build.SourceBranch)"
+        },
+        {
+            "name": "targetbranch",
+            "type": "string",
+            "label": "Target Branch",
+            "defaultValue": "$(System.PullRequest.TargetBranch)",
+            "required": true,
+            "visibleRule": "getDefaults = false",
+            "helpMarkDown": "Target branch of Pull Request   - On Build Pipelines: $(System.PullRequest.TargetBranch)   - On Release Pipelines: $(Build.PullRequest.TargetBranch)"
+        },
+        {
+            "name": "repoId",
+            "type": "string",
+            "label": "Repository Id",
+            "defaultValue": "$(Build.Repository.ID)",
+            "required": true,
+            "visibleRule": "getDefaults = false",
+            "helpMarkDown": "ID of Repository"
+        },
+        {
+			"name": "prstatus",
+			"type": "pickList",
+			"label": "Pull Request Status",
+            "required": true,
+            "defaultValue": "1",
+            "helpMarkDown": "Select your Pull Request status to set",
+            "options": {
+				"1": "Pending",
+                "2": "Success",
+                "4": "Error",
+                "3": "Failed",
+                "0": "Not Set"
+            }
+		},
+        {
+			"name": "autocomplete",
+			"type": "pickList",
+			"label": "Enable auto complete",
+            "required": true,
+            "defaultValue": "3",
+            "helpMarkDown": "If set Enable: Will set the PR to auto complete  If set Disable: Will set the PR to manual complete  If set Do Nothing: Will do nothing",
+            "options": {
+				"1": "Enable",
+                "2": "Disable",
+                "3": "Do Nothing"
+            }
+        },
+        {
+            "name": "deletesourcebranch",
+            "type": "boolean",
+            "label": "Delete Source Branch",
+            "defaultValue": "false",
+            "visibleRule": "autocomplete = 1",
+            "required": false,
+            "helpMarkDown": "If enabled, the auto completion of PR will delete the source branch."
+        },
+        {
+            "name": "mergestrategy",
+            "type": "pickList",
+            "label": "Merge Strategy",
+            "defaultValue": "1",
+            "visibleRule": "autocomplete = 1",
+            "required": false,
+            "helpMarkDown": "Will set this Merge Strategy when enabling the auto complete (Default = No Fast Foward)",
+            "options": {
+				"1": "No Fast Foward",
+                "2": "Squash",
+                "3": "Rebase",
+                "4": "Rebase Merge"
+            }
+        },
+        {
+            "name": "closeworkitens",
+            "type": "boolean",
+            "label": "Close Related Work Itens",
+            "defaultValue": "false",
+            "visibleRule": "autocomplete = 1",
+            "required": false,
+            "helpMarkDown": "If enabled, the auto completion of PR will move all related Work Itens to Done."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

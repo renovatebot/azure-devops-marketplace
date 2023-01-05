@@ -1,0 +1,80 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "83e0a866-5ae1-4480-90d2-ddad2352c10b",
+    "name": "release-name-modifier",
+    "friendlyName": "Release Name Modifier",
+    "description": "Update your release name with pull request source branch name",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Arthur Faria",
+    "version": {
+        "Major": 0,
+        "Minor": 4,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Release Name Modifier",
+    "inputs": [
+        {
+            "name": "enablecomment",
+            "type": "boolean",
+            "label": "Comment on Pull Request?",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "If enabled, will try to comment on Pull Request."
+        },
+        {
+            "name": "comment",
+            "type": "string",
+            "label": "Comment",
+            "defaultValue": "%sourcebranch%",
+            "required": false,
+            "visibleRule": "enablecomment = true",
+            "helpMarkDown": "Pull request auto comment. %sourcebranch% will insert the source branch name"
+        },
+        {
+            "name": "releasename",
+            "type": "string",
+            "label": "Release Name",
+            "defaultValue": "%sourcebranch%-$(Build.BuildId)",
+            "required": false,
+            "helpMarkDown": "New Release Name. %sourcebranch% will insert the source branch name. **Make sure it is unique!**"
+        },
+        {
+            "name": "projectId",
+            "type": "string",
+            "label": "Project Id",
+            "defaultValue": "$(System.TeamProjectId)",
+            "required": true,
+            "helpMarkDown": ""
+        },
+        {
+            "name": "sourcebranch",
+            "type": "string",
+            "label": "Source Branch",
+            "defaultValue": "$(Build.SourceBranch)",
+            "required": true,
+            "helpMarkDown": "Origin branch of Pull Request   - On Build Pipelines: $(Build.SourceBranch)   - On Release Pipelines: $(Build.SourceBranch)"
+        },
+        {
+            "name": "targetbranch",
+            "type": "string",
+            "label": "Target Branch",
+            "defaultValue": "$(System.PullRequest.TargetBranch)",
+            "required": true,
+            "helpMarkDown": "Target branch of Pull Request   - On Build Pipelines: $(System.PullRequest.TargetBranch)   - On Release Pipelines: $(Build.PullRequest.TargetBranch)"
+        },
+        {
+            "name": "repoId",
+            "type": "string",
+            "label": "Repository Id",
+            "defaultValue": "$(Build.Repository.ID)",
+            "required": true,
+            "helpMarkDown": "ID of Repository"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}

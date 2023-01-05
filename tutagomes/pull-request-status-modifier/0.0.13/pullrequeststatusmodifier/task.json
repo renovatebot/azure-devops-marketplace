@@ -1,0 +1,78 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "efcb6845-915e-45da-90a4-f9f17076f22a",
+    "name": "pull-request-status-modifier",
+    "friendlyName": "Pull Request Status Modifier",
+    "description": "A Pull Request Status Modifier",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Arthur Faria",
+    "version": {
+        "Major": 0,
+        "Minor": 8,
+        "Patch": 0
+    },
+    "instanceNameFormat": "PR Status Modifier",
+    "inputs": [
+        {
+            "name": "msgvalidacao",
+            "type": "string",
+            "label": "Validation Description",
+            "defaultValue": "Homologação Aprovada?",
+            "required": true,
+            "helpMarkDown": "Homologação Aprovada?"
+        },
+        {
+            "name": "projectId",
+            "type": "string",
+            "label": "Project Id",
+            "defaultValue": "$(System.TeamProjectId)",
+            "required": true,
+            "helpMarkDown": ""
+        },
+        {
+            "name": "sourcebranch",
+            "type": "string",
+            "label": "Source Branch",
+            "defaultValue": "$(Build.SourceBranchName)",
+            "required": true,
+            "helpMarkDown": "Origin branch of Pull Request   - On Build Pipelines: $(Build.SourceBranch)   - On Release Pipelines: $(Build.SourceBranch)"
+        },
+        {
+            "name": "targetbranch",
+            "type": "string",
+            "label": "Target Branch",
+            "defaultValue": "$(System.PullRequest.TargetBranch)",
+            "required": true,
+            "helpMarkDown": "Target branch of Pull Request   - On Build Pipelines: $(System.PullRequest.TargetBranch)   - On Release Pipelines: $(Build.PullRequest.TargetBranch)"
+        },
+        {
+            "name": "repoId",
+            "type": "string",
+            "label": "Repository Id",
+            "defaultValue": "$(Build.Repository.ID)",
+            "required": true,
+            "helpMarkDown": "ID of Repository"
+        },
+        {
+			"name": "prstatus",
+			"type": "pickList",
+			"label": "Pull Request Status",
+            "required": true,
+            "defaultValue": "1",
+            "helpMarkDown": "Select your Pull Request status to set",
+            "options": {
+				"1": "Pending",
+                "2": "Success",
+                "4": "Error",
+                "3": "Failed",
+                "0": "Not Set"
+            }
+		}
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
