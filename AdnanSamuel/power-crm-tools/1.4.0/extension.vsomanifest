@@ -1,0 +1,147 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/SamuelAdnan/powercrmtools-manuel/blob/main/README.md"
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint PowerCrmTools",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "crmserviceconn",
+                "displayName": "Power Crm connection",
+                "url": {
+                    "displayName": "Crm Url",
+                    "helpText": "Url for crm envirnoment e.g: https://crmname.crm4.dynamics.com"
+                },
+                "dataSources": [
+                    {
+                        "name": "CrmWebHooks",
+                        "endpointUrl": "{{endpoint.url}}api/data/v9.1/serviceendpoints?$filter=contract%20eq%208&$select=url",
+                        "resultSelector": "jsonpath:$.value[*].url"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Apitoken",
+                                "description": "leave blank, will be populated afterwards",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": ""
+            }
+        },
+        {
+            "id": "power-crm-tools-installer-task",
+            "description": "A task needed to install and configure tools and dependencies for Power Crm Tools",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmToolsInstaller"
+            }
+        },
+        {
+            "id": "power-crm-tools-register-webhook",
+            "description": "Register webhook with output variables $(powercrmwebhookName) and $(powercrmwebhookId)",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerRegisterWebHook"
+            }
+        },
+        {
+            "id": "power-crm-tools-register-step",
+            "description": "Register plugin step with output variable, $(powercrmstepId)",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmRegisterStep"
+            }
+        },
+        {
+            "id": "power-crm-tools-register-image1",
+            "description": "Register crm plugin image",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmToolsRegisterImage"
+            }
+        },
+        {
+            "id": "power-crm-service-endpoint-task",
+            "description": "Register service endpoint with output variables $(powercrmendpointId) and $(powercrmendpointName)",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmRegisterServiceEndpoint"
+            }
+        },
+        {
+            "id": "power-crm-tools-webapi-installer",
+            "description": "A task needed to setup dataverse interactive webapi. Must be initialize first.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmToolsWebAPI"
+            }
+        },
+        {
+            "id": "power-crm-tools-webapi-register-step",
+            "description": "A interactive task to register step to webhook or service endpoint with output variable, $(powercrmstepId)..",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmWebAPIRegisterStep"
+            }
+        },
+        {
+            "id": "power-crm-tools-webapi-register-image",
+            "description": "An interactive task to register crm plugin image interactively.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmToolsWebAPIRegisterImage"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

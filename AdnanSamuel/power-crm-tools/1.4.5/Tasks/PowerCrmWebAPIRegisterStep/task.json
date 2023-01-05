@@ -1,0 +1,235 @@
+{
+  "id": "d2e221af-671c-4a4c-9f8b-49dc1c77a696",
+  "name": "power-crm-tools-webapi-register-step",
+   "public": true,
+  "friendlyName": "Power Crm WebAPI. An interactive task to register step for webhook or service endpoint with output variable $(powercrmstepId).",
+  "description": "An interactive task to register step for webhook or service endpoint with output variable $(powercrmstepId).",
+  "author": "Adnan Samuel",
+  "helpMarkDown": "A interactive task to register step for webhook or service endpoint with output variable $(powercrmstepId)",
+  "category": "Build,Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "2",
+    "Patch": "9"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Crm WebAPI Register Step",
+  "inputs": [
+  {
+      "name": "CrmTaskService",
+      "type": "connectedService:crmserviceconn",
+      "label": "PowerPlatform endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the PowerPlatform service end point to use. If needed, selecton 'manage', and add a new service endpoint of type 'Power Crm connection'",
+	  "properties": {
+        "EditableOptions": "False"
+      }
+  },
+  {
+            "name": "1crmconnectionstring9",
+            "type": "string",
+            "label": "OAuth Crm Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAuth Crm Connection"
+  },
+  {
+      "name": "1registrationtype",
+      "type": "radio",
+      "label": "Registration Type",
+      "required": true,
+      "defaultValue": "0",
+      "helpMarkDown": "Seclect to register webhook or service endpoint",
+      "options": {
+        "0": "WebHook (Synchronous or Asynchronous)",
+        "1": "ServiceEndpoint (Asynchronous (post) only)"
+      }
+    },    
+    {
+      "name": "showwehooks",
+      "type": "pickList",
+      "label": "Select WebHook",
+      "required": false,
+      "helpMarkDown": "Select to view available webhooks in crm.",
+      "properties": {
+        "EditableOptions": "true"
+      },
+	  "visibleRule": "1registrationtype=0"
+    },
+	{
+      "name": "showserviceendpoints",
+      "type": "pickList",
+      "label": "Select ServiceEndpoints",
+      "required": false,
+      "helpMarkDown": "Select to view available service endpoints in crm.",
+      "properties": {
+        "EditableOptions": "true"
+      },
+	  "visibleRule": "1registrationtype=1"
+    },
+    
+	{
+            "name": "1crmentityname3",
+            "type": "pickList",
+            "label": "Select entity/table in crm",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select entity/table in crm", 
+			"properties": {
+				"EditableOptions": true				
+			},
+    },
+	{
+            "name": "1crmentitymessage3",
+            "type": "string",
+            "label": "Entity Message e.g: (update, create ...) lower case",
+            "defaultValue": "update",
+            "required": true,
+            "helpMarkDown": "(Always lower case) (update, create, delete ...)"
+    },	
+	
+	{
+            "name": "1crmentityatt8",            
+            "label": "Comma separted filtering attributes. e.g: statuscode, createdon",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "(Comma separted filtering attributes. e.g: statuscode, createdon, modifiedon)",			
+			  "type": "multiLine",	  
+			  "properties": {
+				"resizable": true,
+				"rows": "2"
+				},
+				"visibleRule": "1crmentitymessage3=update"
+	},
+	{
+      "name": "1usercontextinfo",
+      "type": "radio",
+      "label": "Run User's Context",
+      "required": true,
+      "defaultValue": "0",
+      "helpMarkDown": "Run User's Context",
+      "options": {
+        "0": "Calling User",
+        "1": "Others"
+      }
+    },
+	{
+            "name": "1userinfo3",
+            "type": "pickList",
+            "label": "System Users",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select crm system users",
+			"visibleRule": "1usercontextinfo=1"
+    },	
+	{
+      "name": "1pluginexecutionmode",
+      "type": "pickList",
+      "label": "Execution Mode",
+      "defaultValue": "0",
+      "helpMarkDown": "Run step in Asynchronous mode.",
+      "required": false,
+      "options": {
+        "0": "Synchronous" ,
+		"1": "Asynchronous"		
+      },
+	  "visibleRule": "1registrationtype=0"
+    },
+	{
+      "name": "1pluginexecutionmodeasync",
+      "type": "pickList",
+      "label": "Execution Mode",
+      "defaultValue": "99",
+      "helpMarkDown": "Run step in Asynchronous mode.",
+      "required": false,
+      "options": {
+        "99": "Asynchronous"             
+      },
+	  "visibleRule": "1registrationtype=1"
+    },
+	{
+      "name": "1pluginpipielinestage",
+      "type": "pickList",
+      "label": "Execution pipieline stage",
+      "defaultValue": "40",
+      "helpMarkDown": "Plugin execution stage of execution",
+      "required": false,
+      "options": {
+        "10": "PreValidation",
+        "20": "PreOperation",
+        "40": "PostOperation"        
+      },
+	  "visibleRule": "1registrationtype=0 && 1pluginexecutionmode=0"
+    },
+	{
+      "name": "1pluginpipielinestageasync",
+      "type": "pickList",
+      "label": "Execution pipieline stage",
+      "defaultValue": "40",
+      "helpMarkDown": "Plugin execution stage of execution",
+      "required": false,
+      "options": {       
+        "40": "PostOperation"        
+      },
+	  "visibleRule": "1registrationtype=1 && 1pluginpipielinestageasync=1"
+    },
+	{
+            "name": "1crmexerank7",
+            "type": "string",
+            "label": "Execution order",
+            "defaultValue": "1",
+            "required": true,
+            "helpMarkDown": ""
+    },
+	{
+      "name": "1deleteasycopt1",
+      "type": "boolean",
+      "label": "Delete AsyncOperation if StatusCode = Successful",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Delete AsyncOperation if StatusCode = Successful",
+      "visibleRule": "1pluginexecutionmode = 1 || 1pluginexecutionmodeasync=99"
+    }	
+  ],
+  "dataSourceBindings": [    
+	 {
+		"target": "showwehooks",
+		"endpointId": "$(CrmTaskService)",
+		"endpointUrl": "{{endpoint.url}}/api/data/v9.2/serviceendpoints?$filter=contract eq 8&$select=name",
+		"resultSelector": "jsonpath:$.value[*].name"		
+	},
+	{
+		"target": "showserviceendpoints",
+		"endpointId": "$(CrmTaskService)",
+		"endpointUrl": "{{endpoint.url}}/api/data/v9.2/serviceendpoints?$select=name&$filter=contract eq 1 or contract eq 4 or contract eq 5 or contract eq 6 or contract eq 7 or contract eq 3",
+		"resultSelector": "jsonpath:$.value[*].name"		
+	},
+	{
+		"target": "1crmentityname3",
+		"endpointId": "$(CrmTaskService)",
+		"endpointUrl": "{{endpoint.url}}/api/data/v9.2/EntityDefinitions?$select=LogicalName",
+		"resultSelector": "jsonpath:$.value[*].LogicalName"
+		
+		
+	},	
+    {
+		"target": "1userinfo3",
+		"endpointId": "$(CrmTaskService)",
+		"endpointUrl": "{{endpoint.url}}/api/data/v9.2/systemusers?$select=fullname",
+		"resultSelector": "jsonpath:$.value[*].fullname"		
+	}
+   	
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PowerCrmWebAPIRegisterStep.ps1",
+	"workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

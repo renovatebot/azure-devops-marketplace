@@ -1,0 +1,186 @@
+{
+  "id": "ddcc8973-36eb-47fb-8d52-0ac405ef1d65",
+  "name": "power-crm-service-endpoint-task",
+   "public": true,
+  "friendlyName": "Register service endpoint with output variables $(powercrmendpointId) and $(powercrmendpointName)",
+  "description": "Register service endpoint with output variables $(powercrmendpointId) and $(powercrmendpointName).",
+  "author": "Adnan Samuel",
+  "helpMarkDown": "Register service endpoint with output variables $(powercrmendpointId) and $(powercrmendpointName)",
+  "category": "Build,Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "3"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Power Crm Service Endpoint Registration",
+  "inputs": [
+  {
+            "name": "1crmconnectionstring9",
+            "type": "string",
+            "label": "OAuth Crm Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OAuth Crm Connection"
+    },
+   {
+            "name": "1Name9",
+            "type": "string",
+            "label": "Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of Service end point"
+    },
+	{
+            "name": "1namespaceaddress5",
+            "type": "string",
+            "label": "Full NameSpace Address",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "In case of realy(OneWay/Twoway) please change suffix sb:// to https:// "
+    },
+	{
+      "name": "1Destinationtype",
+      "type": "pickList",
+      "label": "Destination Type",
+      "defaultValue": "6",
+      "helpMarkDown": "Type of the endpoint contract",
+      "required": true,
+      "options": {
+        "6": "Queue",
+        "5": "Topic",
+        "1": "OneWay" ,
+		"4": "TwoWay",
+        "3": "Rest",
+        "7": "EventHub"  		
+      }
+    },	
+	{
+            "name": "1queuname5",
+            "type": "string",
+            "label": "Queue Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "",
+			"visibleRule": "1Destinationtype=6"
+    },
+	{
+            "name": "1topicname5",
+            "type": "string",
+            "label": "Topic Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "",
+			"visibleRule": "1Destinationtype=5"
+    },
+	{
+            "name": "1eventhubname5",
+            "type": "string",
+            "label": "EventHub Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "",
+			"visibleRule": "1Destinationtype=7"
+    },
+	{
+            "name": "1pathname5",
+            "type": "string",
+            "label": "Path Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to the service endpoint",
+			"visibleRule": "1Destinationtype=1 || 1Destinationtype=4 || 1Destinationtype=3"
+    },
+	{
+      "name": "1messageformat3",
+      "type": "pickList",
+      "label": "Message Format",
+      "defaultValue": "1",
+      "helpMarkDown": "Content type of the message",
+      "required": false,
+      "options": {
+        "1": ".Net Binary",
+        "2": "Json",
+        "3": "XML" 				
+      },
+	  "visibleRule": "1Destinationtype=6 || 1Destinationtype=5 || 1Destinationtype=7"
+    },
+	{
+      "name": "1authorizationtype3",
+      "type": "pickList",
+      "label": "Authorization Type",
+      "defaultValue": "2",
+      "helpMarkDown": "Authorization Type via SAS key or Token",
+      "required": true,
+      "options": {        
+		"2":"SASKey",
+		"3":"SASToken",
+      }
+	  
+    },
+	{
+            "name": "1saskeyname5",
+            "type": "string",
+            "label": "SASKEY Name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Shared Access Key Name",
+			"visibleRule": "1authorizationtype3=2"
+    },
+	{
+            "name": "1sastokenname5",
+            "type": "string",
+            "label": "SAS token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Shared Access Token",
+			"visibleRule": "1authorizationtype3=3"
+    },
+	{
+            "name": "1saskeyval5",
+            "type": "string",
+            "label": "SAS Key (44 characters in length)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A valid Shared Access Key is 44 characters in length",
+			"visibleRule": "1authorizationtype3=2"
+    },
+	{
+      "name": "1userinfo3",
+      "type": "pickList",
+      "label": "User Information Sent",
+      "defaultValue": "1",
+      "helpMarkDown": "User Information Sent",
+      "required": true,
+      "options": {
+        "1": "None",
+        "2": "UserId"		
+      }
+
+    },
+	{
+            "name": "1servdescription8",            
+            "label": "Description",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "",			
+			  "type": "multiLine",	  
+			  "properties": {
+				"resizable": true,
+				"rows": "2"
+				}
+	}	
+  ],
+
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\PowerCrmRegisterServiceEndpoints.ps1",
+	"workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
