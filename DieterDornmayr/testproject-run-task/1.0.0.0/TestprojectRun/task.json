@@ -1,0 +1,79 @@
+{
+    "id": "0ac7e960-2688-4cb8-a4d1-3e6708af0b9a",
+    "name": "testproject-run",
+    "friendlyName": "TestProject Start Job",
+    "description": "Task for performing a Call to start a TestProject Job.",
+    "author": "Dieter Dornmayr",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "TestProject Run Job",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "projectID",
+            "type": "string",
+            "label": "Project ID",
+            "required": true,
+            "helpMarkDown": "The ID of the TestProject Project which contains the Test Job"
+        },
+        {
+            "name": "jobID",
+            "type": "string",
+            "label": "Job ID",
+            "required": true,
+            "helpMarkDown": "The ID of the TestProject Test Job"
+        },
+        {
+            "name": "authKey",
+            "type": "password",
+            "label": "API Key",
+            "required": true,
+            "helpMarkDown": "The API Key to provide access to your TestProject account "
+        },
+        {
+            "name": "expectedReturnCode",
+            "type": "string",
+            "label": "Expected Return Code",
+            "defaultValue": "200",
+            "pattern": "^([1-5][0-9][0-9])$",
+            "required": true,
+            "helpMarkDown": "The Expected HTTP return code. ie 200. Accepted values: 100-599.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Timeout",
+            "defaultValue": 30,
+            "pattern": "^([1-9]|[1-9][0-9]|[1-6][0-9][0-9])$",
+            "required": true,
+            "helpMarkDown": "Time in seconds before request times out. Accepted values: 1-600",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\task.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
