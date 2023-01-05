@@ -1,0 +1,167 @@
+{
+    "id": "dc81d3d1-de91-4433-ad96-b1c83e7ba74f",
+    "name": "outsystems-task",
+    "friendlyName": "OutSystems Release Task",
+    "description": "Deploy your OutSystems Applications with a Deployment Plan",
+    "helpMarkDown": "[More Information](https://github.com/OutSystems/vsts/wiki/Getting-Started)",
+    "category": "Deploy",
+    "visibility": [
+        "Release"
+    ],
+    "author": "OutSystems",
+    "version": {
+        "Major": 2,
+        "Minor": 1,
+        "Patch": 18
+    },
+    "releaseNotes": "Multi OS App support",
+    "demands": [],
+    "minimumAgentVersion": "1.99.0",
+    "inputs": [
+        {
+            "name": "outsystemsServiceEndpoint",
+            "type": "connectedService:Outsystems",
+            "label": "OutSystems Connection",
+            "required": true,
+            "helpMarkDown": "Select a OutSystems service connection."
+        },
+        {
+            "name": "outsystemsApplication",
+            "type": "pickList",
+            "label": "Application(s)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select one or more OutSystems applications to deploy. [Learn more.](https://github.com/OutSystems/vsts/wiki/Getting-Started)",
+            "properties": {
+                "MultiSelectFlatList": "True",
+                "DisableManageLink": "True",
+                "EditableOptions": "false"
+            }
+        },
+        {
+            "name": "outsystemsTagAndDeploy",
+            "type": "boolean",
+            "label": "Tag and Deploy",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Should the task tag a version in the source environment, prior to deployment?"
+        },
+        {
+            "name": "outsystemsDeployPlanChangeLog",
+            "type": "string",
+            "label": "Change Log",
+            "visibleRule": "outsystemsTagAndDeploy = true",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Change log of the version to be created and tagged.",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            }
+        },
+        {
+            "name": "outsystemsAutomaticVersioning",
+            "type": "boolean",
+            "label": "Automatic Versioning",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Follow OutSystems application automatic versioning. Version format is supported as [Major].[Minor] (.[Revision])."
+        },
+        {
+            "name": "outsystemsAppVersionName",
+            "type": "string",
+            "label": "Application Version",
+            "visibleRule": "outsystemsAutomaticVersioning = false",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "OutSystems Application Version. Supported format is [Major].[Minor] (.[Revision]). Consider taking advantage of VSTS variables like $(Release.ReleaseName) that you can define in General tab. Example: 0.0.$(rev:rr)",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            }
+        },
+        {
+            "name": "outsystemsDeployNotes",
+            "type": "string",
+            "label": "Deploy Notes",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "OutSystems Deployment Plan Notes.",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            }
+        },
+        {
+            "name": "outsystemsSourceEnvironment",
+            "type": "pickList",
+            "label": "Source Environment",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the source environment for this deployment."
+        },
+        {
+            "name": "outsystemsTargetEnvironment",
+            "type": "pickList",
+            "label": "Target Environment",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the target environment for this deployment."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "outsystemsApplication",
+            "endpointId": "$(outsystemsServiceEndpoint)",
+            "dataSourceName": "OSLifetimeApps",
+            "parameters": {
+                "OutsystemsEndpoint": "$(outsystemsServiceEndpoint)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{Key}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+        },
+        {
+            "target": "outsystemsExistingAppVersion",
+            "endpointId": "$(outsystemsServiceEndpoint)",
+            "dataSourceName": "OSLifetimeAppsVersions",
+            "parameters": {
+                "outsystemsApplication": "$(outsystemsApplication)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{Key}}}\", \"DisplayValue\" : \"{{{Version}}}\" }"
+        },
+        {
+            "target": "outsystemsSourceEnvironment",
+            "endpointId": "$(outsystemsServiceEndpoint)",
+            "dataSourceName": "osLifetimeEnvironments",
+            "parameters": {
+                "OutsystemsEndpoint": "$(outsystemsServiceEndpoint)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{Key}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+        },
+        {
+            "target": "outsystemsTargetEnvironment",
+            "endpointId": "$(outsystemsServiceEndpoint)",
+            "dataSourceName": "osLifetimeEnvironments",
+            "parameters": {
+                "OutsystemsEndpoint": "$(outsystemsServiceEndpoint)"
+            },
+            "resultTemplate": "{ \"Value\" : \"{{{Key}}}\", \"DisplayValue\" : \"{{{Name}}}\" }"
+        }
+    ],
+    "instanceNameFormat": "Deploy OutSystems App:",
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "OSAppVersionAlreadyExists": "The version '%s' of application '%s' already exists. Insert a new version.",
+        "OSFailureAppNotModified": "The application '%s' was not modified. Maybe syncronizing your environments will do.",
+        "OSFailureAppsNotModified": "The applications '%s' were not modified. Maybe syncronizing your environments will do.",
+        "OSFailureDeployPlanExecution": "The OutSystems platform could not execute the deployment: '%s'",
+        "OSFailureAppVersionNotFound": "The version '%s' of application '%s' was not found.",
+        "OSSuccessfulDeployment":"The deployment plan execution ended with status '%s'",
+        "OSFailedDeployment":"The deployment plan failed status '%s'",
+        "OSUnabletoMonitorProgress":"Unable to monitor deployment plan execution progress. Last known state: '%s'",
+        "OSNotDetected": "OutSystems Platform not detected (unable to reach endpoint)"
+    }
+}
