@@ -1,0 +1,354 @@
+{
+    "id": "BCB9BCD6-0DCC-4C3A-8E13-C900DF4DD6D9",
+    "name": "DataMigrationTool",
+    "friendlyName": "Cosmos DB Data Migration Tool",
+    "description": "With the Azure Cosmos DB Data Migration tool, you can easily migrate data to Azure Cosmos DB",
+    "author": "Winvision BV",
+    "helpMarkDown": "[Support](https://github.com/Winvision/vsts-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 13
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Cosmos DB Data Migration Tool",
+    "groups": [
+        {
+            "name": "sourceSettings",
+            "displayName": "Source information",
+            "isExpanded": true
+        },
+        {
+            "name": "destinationSettings",
+            "displayName": "Destination information",
+            "isExpanded": true
+        },
+        {
+            "name": "logSettings",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "logErrorLog",
+            "type": "filePath",
+            "label": "Errorlog",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Name of the CSV file to redirect data transfer failures",
+            "groupName": "logSettings"
+        },
+        {
+            "name": "logOverwriteErrorLog",
+            "type": "boolean",
+            "label": "Overwrite Errorlog",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Optional. Overwrite error log file",
+            "groupName": "logSettings"
+        },
+        {
+            "name": "sourceType",
+            "type": "pickList",
+            "label": "Source Type",
+            "defaultValue": "JsonFile",
+            "options": {
+                "JsonFile": "JsonFile: Reads data from JSON files, either one or multiple",
+                "DocumentDB": "Cosmos DB: Reads data from Cosmos DB collections"
+            },
+            "required": true,
+            "helpMarkDown": "Source type for data migration",
+            "groupName": "sourceSettings",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "sourceJsonFiles",
+            "type": "string",
+            "label": "Json files",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "One or more file search patterns to read JSON from.",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = JsonFile"
+        },
+        {
+            "name": "sourceJsonDecompress",
+            "type": "boolean",
+            "label": "Decompress",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Optional. If source files should be decompressed with GZip",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = JsonFile"
+        },
+        {
+            "name": "sourceDocumentDBConnectionstring",
+            "type": "string",
+            "label": "ConnectionString",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Connection string (example: \"AccountEndpoint=xyz;AccountKey=xyz;Database=xyz\")",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB"
+        },
+        {
+            "name": "sourceDocumentDBCollection",
+            "type": "string",
+            "label": "Collection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Regex pattern to match one or more documents collection names",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB"
+        },
+        {
+            "name": "sourceDocumentDBQueryType",
+            "type": "radio",
+            "label": "Query type",
+            "defaultValue": "inline",
+            "options": {
+                "inline": "Enter Query",
+                "filepath": "Select Query File"
+            },
+            "required": true,
+            "helpMarkDown": "Query type: File path or inline",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "sourceDocumentDBQuery",
+            "type": "multiLine",
+            "label": "Enter Query",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Documents query to execute",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB && sourceDocumentDBQueryType = inline"
+        },
+        {
+            "name": "sourceDocumentDBQueryFile",
+            "type": "filePath",
+            "label": "Select Query File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Documents query to execute",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB && sourceDocumentDBQueryType = filepath"
+        },
+        {
+            "name": "sourceDocumentDBInternalFields",
+            "type": "boolean",
+            "label": "Internal fields",
+            "defaultValue": "false",
+            "helpMarkDown": "Optional. Preserve internal CosmosDB fields in the output",
+            "groupName": "sourceSettings",
+            "visibleRule": "sourceType = DocumentDB"
+        },
+        {
+            "name": "destinationType",
+            "type": "pickList",
+            "label": "Destination Type",
+            "defaultValue": "DocumentDB",
+            "options": {
+                "JsonFile": "JsonFile: Stores data in a single JSON file with root array element",
+                "DocumentDB": "Cosmos DB: Uploads data into partitioned CosmosDB collection"
+            },
+            "required": true,
+            "helpMarkDown": "Destination type for data migration",
+            "groupName": "destinationSettings",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "destinationJsonFiles",
+            "type": "filePath",
+            "label": "Json file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the file to write data to.",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = JsonFile"
+        },
+        {
+            "name": "destinationJsonCompress",
+            "type": "boolean",
+            "label": "Compress",
+            "defaultValue": "true",
+            "helpMarkDown": "Optional. If target file should be compressed with GZip",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = JsonFile"
+        },
+        {
+            "name": "destinationJsonPrettify",
+            "type": "boolean",
+            "label": "Prettify",
+            "defaultValue": "false",
+            "helpMarkDown": "Optional. If JSON in the target file should be indented",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = JsonFile"
+        },
+        {
+            "name": "destinationJsonOverwrite",
+            "type": "boolean",
+            "label": "Overwrite",
+            "defaultValue": "false",
+            "helpMarkDown": "Optional. Overwrite target file",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = JsonFile"
+        },
+        {
+            "name": "destinationDocumentDBConnectionstring",
+            "type": "string",
+            "label": "ConnectionString",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Connection string (example: \"AccountEndpoint=xyz;AccountKey=xyz;Database=xyz\")",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBCollection",
+            "type": "string",
+            "label": "Collection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name of the documents collection",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBCollectionThroughput",
+            "type": "string",
+            "label": "Collection Throughput",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional, default is 1000. Specifies maximum throughput of the collection",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBPartitionKey",
+            "type": "string",
+            "label": "PartitionKey",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Path to the property to use as hash partitioning key (example: \"/deviceId\")",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBIndexingPolicyType",
+            "type": "radio",
+            "label": "Indexing policy",
+            "defaultValue": "inline",
+            "options": {
+                "inline": "Enter Indexing Policy",
+                "filePath": "Select Policy File"
+            },
+            "required": true,
+            "helpMarkDown": "Indexing policy type: File path or inline",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "destinationDocumentDBIndexingPolicy",
+            "type": "multiLine",
+            "label": "Indexing Policy",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Indexing policy for the collection",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB && destinationDocumentDBIndexingPolicyType = inline"
+        },
+        {
+            "name": "destinationDocumentDBIndexingPolicyFile",
+            "type": "filePath",
+            "label": "Indexing Policy File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Path to the file containing indexing policy for the collection",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB && destinationDocumentDBIndexingPolicyType = filePath"
+        },
+        {
+            "name": "destinationDocumentDBIdField",
+            "type": "string",
+            "label": "Id Field",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Name of the source field that should be treated as document ID",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBDisableIdGeneration",
+            "type": "boolean",
+            "label": "Disable Id Generation",
+            "defaultValue": "true",
+            "helpMarkDown": "Optional. Disable automatic generation of document ids",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBUpdateExisting",
+            "type": "boolean",
+            "label": "Update Existing",
+            "defaultValue": "false",
+            "helpMarkDown": "Optional. Update existing documents with the same ID",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBParallelRequests",
+            "type": "string",
+            "label": "Parallel Requests",
+            "defaultValue": "",
+            "helpMarkDown": "Optional, default is 10. Number of parallel document create requests",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB"
+        },
+        {
+            "name": "destinationDocumentDBDates",
+            "type": "pickList",
+            "label": "Dates",
+            "defaultValue": "String",
+            "options": {
+                "String": "String",
+                "Epoch": "Epoch",
+                "Both": "Both"
+            },
+            "helpMarkDown": "Optional, default is String. Specifies how timestamps should be persisted: String, Epoch, Both",
+            "groupName": "destinationSettings",
+            "visibleRule": "destinationType = DocumentDB",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {
+        "Info_UsingToolPath": "Using tool path: %s"
+    }
+}

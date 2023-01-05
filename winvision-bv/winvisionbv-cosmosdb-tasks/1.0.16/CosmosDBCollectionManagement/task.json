@@ -1,0 +1,134 @@
+{
+    "id": "DC86E5F9-18E2-492B-8D35-588E526AA3B1",
+    "name": "CosmosDBCollectionManagement",
+    "friendlyName": "Cosmos DB Collection Management",
+    "description": "With the Azure Cosmos DB Collection Management, you can easily create/delete or update Azure Cosmos DB Collections",
+    "author": "Winvision BV",
+    "helpMarkDown": "[Support](https://github.com/Winvision/vsts-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 16
+    },
+    "minimumAgentVersion": "1.83.0",
+    "instanceNameFormat": "Cosmos DB Collection Management: $(actionType) collection $(cosmosDBCollection)",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "actionType",
+            "type": "pickList",
+            "label": "Action",
+            "defaultValue": "Create",
+            "options": {
+                "Create": "Create collection",
+                "Delete": "Delete collection",
+                "Update": "Update collection"
+            },
+            "required": true,
+            "helpMarkDown": "Action to be performed",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "cosmosDBConnectionstring",
+            "type": "string",
+            "label": "ConnectionString",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Connection string (example: \"AccountEndpoint=xyz;AccountKey=xyz;Database=xyz\")"
+        },
+        {
+            "name": "cosmosDBCollection",
+            "type": "string",
+            "label": "Collection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Regex pattern to match one or more documents collection names"
+        },
+        {
+            "name": "cosmosDBCollectionCreateIfNotExists",
+            "type": "boolean",
+            "label": "Create collection if it doesn't exists",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Create the collection if it doesn't exist",
+            "visibleRule": "actionType = Update"
+        },
+        {
+            "name": "cosmosDBCollectionThroughput",
+            "type": "string",
+            "label": "Collection Throughput",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional, default is 1000. Specifies maximum throughput of the collection",
+            "visibleRule": "actionType != Delete"
+        },
+        {
+            "name": "cosmosDBPartitionKey",
+            "type": "string",
+            "label": "PartitionKey",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Path to the property to use as hash partitioning key (example: \"/deviceId\")",
+            "visibleRule": "actionType = Create || cosmosDBCollectionCreateIfNotExists = true"
+        },
+        {
+            "name": "cosmosDBTimeToLive",
+            "type": "string",
+            "label": "Time to live",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. The time to live for documents in seconds, use -1 to use the default TTL",
+            "visibleRule": "actionType != Delete"
+        },
+        {
+            "name": "cosmosDBIndexingPolicyType",
+            "type": "radio",
+            "label": "Indexing policy",
+            "defaultValue": "inline",
+            "options": {
+                "inline": "Enter Indexing Policy",
+                "filePath": "Select Policy File"
+            },
+            "required": true,
+            "helpMarkDown": "Indexing policy type: File path or inline",
+            "visibleRule": "actionType != Delete",
+            "properties": {
+                "EditableOptions": "False"
+            }
+        },
+        {
+            "name": "cosmosDBIndexingPolicy",
+            "type": "multiLine",
+            "label": "Indexing Policy",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Indexing policy for the collection",
+            "visibleRule": "actionType != Delete && cosmosDBIndexingPolicyType = inline"
+        },
+        {
+            "name": "cosmosDBIndexingPolicyFile",
+            "type": "filePath",
+            "label": "Indexing Policy File",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Optional. Path to the file containing indexing policy for the collection",
+            "visibleRule": "actionType != Delete && cosmosDBIndexingPolicyType = filePath"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    },
+    "messages": {}
+}
