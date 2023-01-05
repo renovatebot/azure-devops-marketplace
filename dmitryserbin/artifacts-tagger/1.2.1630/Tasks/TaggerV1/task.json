@@ -1,0 +1,94 @@
+{
+  "id": "4c8d0083-cfe0-4f29-ac58-f97b4e1ec512",
+  "name": "artifactstagger",
+  "friendlyName": "Artifacts Tagger",
+  "instanceNameFormat": "Tag Release Artifact",
+  "description": "Tag Azure DevOps build artifacts from a release or YAML pipeline",
+  "helpMarkDown": "For aditional information and support please refer to <https://github.com/dmitryserbin/azdev-artifacts-tagger> project repository.",
+  "category": "Release",
+  "author": "Dmitry Serbin",
+  "preview": false,
+  "version": {
+    "Major": 1,
+    "Minor": 3,
+    "Patch": 1630
+  },
+  "groups": [
+    {
+      "name": "Tags",
+      "displayName": "Tags",
+      "isExpanded": true
+    },
+    {
+      "name": "Advanced",
+      "displayName": "Advanced",
+      "isExpanded": true
+    }
+  ],
+  "inputs": [
+    {
+      "name": "EndpointType",
+      "type": "radio",
+      "label": "Azure DevOps endpoint type",
+      "helpMarkDown": "Select endpoint type to connect Azure DevOps: \nIntegrated = default `SystemVssConnection` service endpoint for `Project Collection Build Service` user account; \nService = user-defined personal access token (PAT) service endpoint \n\nNote: requires `View builds`, `View build definition` and `Update build information` build pipeline permissions",
+      "options": {
+        "integrated": "Integrated Endpoint",
+        "service": "Service Endpoint"
+      },
+      "defaultValue": "integrated",
+      "required": true
+    },
+    {
+      "name": "ConnectedService",
+      "type": "connectedService:ExternalTfs",
+      "label": "Service endpoint",
+      "helpMarkDown": "Select service endpoint for Azure DevOps account",
+      "visibleRule": "EndpointType = service",
+      "required": true
+    },
+    {
+      "name": "StageNameTag",
+      "type": "boolean",
+      "label": "Add stage name tag",
+      "helpMarkDown": "Tag all build artifacts with current stage name (use `Release.EnvironmentName` (classic) or `System.StageName` (YAML) pipeline variable)",
+      "defaultValue": true,
+      "groupName": "Tags",
+      "required": false
+    },
+    {
+      "name": "ReleaseNameTag",
+      "type": "boolean",
+      "label": "Add release name tag",
+      "helpMarkDown": "Tag all build artifacts with current release name (use `Release.ReleaseName` (classic) or `Build.BuildNumber` (YAML) variable)",
+      "defaultValue": false,
+      "groupName": "Tags",
+      "required": false
+    },
+    {
+      "name": "CustomTags",
+      "type": "multiLine",
+      "label": "Specify custom tags",
+      "helpMarkDown": "Tag all build artifacts (release) or current run (YAML) with specified tags (new line separated)",
+      "properties": {
+        "rows": 6,
+        "maxLength": 1000
+      },
+      "groupName": "Tags",
+      "required": false
+    },
+    {
+      "name": "RemoveDuplicates",
+      "type": "boolean",
+      "label": "Remove duplicates",
+      "helpMarkDown": "Remove duplicated tags from all build artifact definition builds",
+      "defaultValue": true,
+      "required": false,
+      "groupName": "Advanced"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "task.js"
+    }
+  }
+}
