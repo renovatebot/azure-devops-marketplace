@@ -1,0 +1,50 @@
+{
+	"id": "a9889483-d913-4e6e-bbb7-648442b683b3",
+	"name": "ReleaseMasterBuild",
+	"friendlyName": "Release Master Build",
+	"description": "Trigger release pipeline for master builds only",
+	"helpMarkDown": "[More Information](https://github.com/IvanBoyko/vsts-trigger)",
+	"category": "Utility",
+	"visibility": [ "Build", "Release" ],
+	"author": "Ivan Boyko",
+	"version": {
+		"Major": 0,
+		"Minor": 2,
+		"Patch": 1
+	},
+	"minimumAgentVersion": "1.95.0",
+	"inputs": [
+		{
+			"name": "ConnectedServiceName",
+			"type": "connectedService:Generic",
+			"label": "Current VSTS connection",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "VSTS connection on current instance"
+		},
+		{
+			"name": "ReleaseDefinitionName",
+			"type": "string",
+			"label": "Release Definition Name",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "Release definition name"
+		},
+		{
+			"name": "BranchThatTriggersRelease",
+			"type": "string",
+			"label": "Git branch that triggers Release",
+			"defaultValue": "refs/heads/master",
+			"required": true,
+			"helpMarkDown": "Full Git name of the branch that will trigger a Release"
+		}
+	],
+	"instanceNameFormat": "Release Master Build: $(ReleaseDefinitionName)",
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\ReleaseTrigger.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
