@@ -1,0 +1,64 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "SDElementsProjectRiskCheck",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "SDElementsProjectRiskCheck"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service Endpoint type for SD Elements connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "SDElements",
+                "displayName": "SD Elements",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "URL for the SD Elements server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}api/v2/users/me/",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API key for connection",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Token {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
