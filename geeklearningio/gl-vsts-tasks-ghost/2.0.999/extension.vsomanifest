@@ -1,0 +1,91 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/geeklearningio/gl-vsts-tasks-ghost"
+    },
+    "contributions": [
+        {
+            "id": "ghost-endpoint-type",
+            "description": "Ghost blog connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ghost",
+                "displayName": "Ghost",
+                "url": {
+                    "displayName": "Blog url",
+                    "required": true,
+                    "helpText": "Url of your blog homepage. If your blog is hosted on example.com, type https://example.com"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "Blog admin token",
+                        "inputDescriptors": [
+                            {
+                                "id": "token",
+                                "name": "Token",
+                                "description": "Your administrator token. Please refer to <a href=\"https://docs.ghost.org/api/javascript/content/#authentication\" target=\"_blank\"><b>Ghost Admin API Documentation</b></a>",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "[v1, deprecated] username/password",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Your administrator account login name.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Your administrator account password.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://msdn.microsoft.com/Library/vs/alm/Release/author-release-definition/understanding-tasks#serviceconnections\" target=\"_blank\"><b>Learn More</b></a>",
+                "icon": "extension-icon.png"
+            }
+        },
+        {
+            "description": "Upload a theme to a Ghost blog.",
+            "id": "ghost-theme-uploader-task",
+            "properties": {
+                "name": "Tasks/GhostThemeUploader"
+            },
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "type": "ms.vss-distributed-task.task"
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
