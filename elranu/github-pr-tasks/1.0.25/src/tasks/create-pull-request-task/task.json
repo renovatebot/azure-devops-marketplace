@@ -1,0 +1,117 @@
+{
+    "id": "35ceba32-9bd4-415b-a7c7-06f60b1c8668",
+    "name": "Create-pull-request",
+    "friendlyName": "Create a Github Pull request",
+    "description": "Create a Github Pull request",
+    "helpMarkDown": "Github Pull Request",
+    "category": "Utility",
+    "author": "Mariano Julio Vicario",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 25
+    },
+    "instanceNameFormat": "Create pull request",
+    "inputs": [{
+            "name": "githubEndpoint",
+            "type": "connectedService:github",
+            "label": "GitHub Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the service endpoint for your GitHub connection. <br>To create one, click the Manage link and create a new service endpoint."
+        },
+        {
+            "name": "githubRepository",
+            "type": "pickList",
+            "label": "Repository",
+            "defaultValue": "",
+            "visibleRule": "githubEndpoint != \"\"",
+            "required": true,
+            "helpMarkDown": "Name of the GitHub repository. <br>If empty, it will be extracted from <strong>package.json</strong> (the repository.url field).",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "headBranch",
+            "type": "pickList",
+            "label": "Head Branch",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "githubRepository != \"\"",
+            "helpMarkDown": "The <strong>from</strong> branch",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "baseBranch",
+            "type": "pickList",
+            "label": "Base branch",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "githubRepository != \"\"",
+            "helpMarkDown": "The <strong>TO</strong> branch. Typically the master branch.",
+            "properties": {
+                "DisableManageLink": "True"
+            }
+        },
+        {
+            "name": "upsert",
+            "type": "boolean",
+            "label": "Upsert",
+            "defaultValue": "false",
+            "visibleRule": "githubRepository != \"\"",
+            "helpMarkDown": "If the PR exists it will updated. If this option is not set to true and the PR already exists with  the same Head and Base branch it will throw an error"
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "label": "Pull request title",
+            "defaultValue": "",
+            "visibleRule": "githubRepository != \"\"",
+            "required": true,
+            "helpMarkDown": "The title of the Pull request"
+        },
+        {
+            "name": "body",
+            "type": "multiLine",
+            "label": "Pull request body",
+            "defaultValue": "",
+            "visibleRule": "githubRepository != \"\"",
+            "required": true,
+            "helpMarkDown": "Pull request description"
+        }
+    ],
+    "OutputVariables": [{
+      "name": "PULL_REQUEST_ID",
+      "description": "Id of the created/updated pull request"
+    }],
+    "sourceDefinitions": [{
+            "target": "githubRepository",
+            "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/repositories?serviceEndpointId=$(githubEndpoint)",
+            "selector": "jsonpath:$.repositories[*].id",
+            "keySelector": "jsonpath:$.repositories[*].id",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "headBranch",
+            "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/branches?serviceEndpointId=$(githubEndpoint)&repository=$(githubRepository)&api-version=5.0-preview.1",
+            "selector": "jsonpath:$.value[*]",
+            "keySelector": "jsonpath:$.value[*]",
+            "authKey": "tfs:teamfoundation"
+        },
+        {
+            "target": "baseBranch",
+            "endpoint": "/$(system.teamProject)/_apis/sourceProviders/GitHub/branches?serviceEndpointId=$(githubEndpoint)&repository=$(githubRepository)&api-version=5.0-preview.1",
+            "selector": "jsonpath:$.value[*]",
+            "keySelector": "jsonpath:$.value[*]",
+            "authKey": "tfs:teamfoundation"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
