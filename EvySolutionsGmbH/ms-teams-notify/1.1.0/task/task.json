@@ -1,0 +1,93 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "e25bc063-dce6-4417-90ae-f492cb634134",
+    "name": "TeamsNotifier",
+    "friendlyName": "Teams Notifier",
+    "description": "Notifies a Microsoft Teams Channel about about a specific build artifact",
+    "helpMarkDown": "Notifies a Microsoft Teams Channel (Office 365) about about a specific build artifact. Uses a simple AdaptiveCard format.",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "evy Solutions GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "",
+    "inputs": [
+        {
+            "name": "teamsChannelName",
+            "type": "string",
+            "label": "Teams Webhook Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Teams Webhook Name of the notification target channel"
+        },
+        {
+            "name": "teamsChannelWebhook",
+            "type": "string",
+            "label": "Teams Webhook URI",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Teams Webhook URI of the notification target channel"
+        },
+        {
+            "name": "templatePayLoadFilePath",
+            "type": "string",
+            "label": "Teams Message Payload Template File Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Full Path to a json Teams Message [AdaptiveCard](https://docs.microsoft.com/de-de/adaptive-cards/templating/) Template Path"
+        },
+        {
+            "name": "iconImageSrc",
+            "type": "string",
+            "label": "Icon image Sourc",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Icon image source path which will be used as ${photo} for templating"
+        },
+        {
+            "name": "additionalHyperlink",
+            "type": "string",
+            "label": "Additional Hyperlink (URL)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional Hyperlink (URL) which will be available for templating"
+        },
+        {
+            "name": "additionalInfo",
+            "type": "string",
+            "label": "Additional Text",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional text, hint or info which will be available for templating"
+        },
+        {
+            "name": "additionalImageSrc",
+            "type": "string",
+            "label": "Additional Image Src Href",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Additional image source which will be available for templating"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "teamsNotifier.js"
+        }
+    },
+    "messages": {
+        "TeamsNotifierSucceeded": "Notified Channel. Response Code %s",
+        "TeamsNotifierOddJobStatus": "No notification will be sent to Microsoft Teams channel '%s' due to build status '%s'.",
+        "TeamsNotifierMissingInputVariable": "Invalid input received. Missing %s.",
+        "TeamsNotifierFailed": "Failed to notify Microsoft Teams Channel %s. Cause: %s",
+        "TeamsNotifierInvalidTemplateFile": "Failed to parse json template '%s'. Please also consider that UTF-8 without BOM is required. Cause: %s"
+    }
+}
