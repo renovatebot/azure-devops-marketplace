@@ -1,0 +1,113 @@
+{
+    "id": "d09a7949-d043-4058-b56c-103b0da04686",
+    "name": "highlightcodescan",
+    "friendlyName": "CAST Highlight Code Scan",
+    "description": "This task will run a CAST Highlight code scan on your project sources to build software analytics",
+    "helpMarkDown": "",
+    "category": "Tool",
+	"visibility": [
+		"Build"
+	],
+    "author": "CAST Highlight",
+    "version": {
+        "Major": 5,
+        "Minor": 4,		
+        "Patch": 48
+    },
+    "instanceNameFormat": "CAST Highlight Code Scan",
+    "groups": [
+        {
+            "name": "scansettings",
+            "displayName": "Scan Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "upload",
+            "displayName": "Result Upload Options",
+            "isExpanded": true
+        },
+        {
+            "name": "proxy",
+            "displayName": "Proxy Configuration",
+            "isExpanded": false
+        }    ],
+    "inputs": [
+        {
+            "name": "snapshotLabel",
+            "type": "string",
+            "label": "Snapshot Label",
+            "defaultValue": "$(System.TeamProject) $(Build.SourceBranchName) $(Build.BuildNumber)",
+            "required": false,
+            "helpMarkDown": "Define the label of the project version/snapshot as it will appear in Highlight.",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "sourcedir",
+            "type": "filePath",
+            "label": "Source Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Define the source directory to scan. If left empty, Highlight will scan the root source directory.",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "exclusiondir",
+            "type": "string",
+            "label": "Folder Exclusions",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Define the source folders you want to exclude from the code scan, separated with a ',' (e.g. tests, third-party libraries, etc.)",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "scantechnologies",
+			"type": "string",
+			"label": "Specific technologies to scan",
+            "defaultValue": "ObjCCpp, Ruby, PL1, PHP, Cobol, VbDotNet, Groovy, PlSql, CS, Java, TSql, Python, Abap, Kotlin, CCpp, JSP, Ksh, TypeScript, JS, Swift",
+            "required": false,
+            "helpMarkDown": "Define the technologies you want to include in the scan (if left empty, all supported technologies will be scanned)",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "keywordscanfile",
+			"type": "string",
+			"label": "Path to your Keyword Scan XML file on the Azure Agent (e.g. C:\\temp\\Highlight\\KeywordScan.xml)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Define path and file name for the Keyword Scan XML configuration file)",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "perlinstalldir",
+			"type": "string",
+			"label": "Path to Perl library",
+            "defaultValue": "C:\\Program Files\\CAST\\HighlightAgent\\strawberry\\perl",
+            "required": false,
+            "helpMarkDown": "Define the path to Perl's Strawberry library required to run CAST Highlight analyzers",
+            "groupName": "scansettings"
+        },
+        {
+            "name": "upload",
+            "type": "boolean",
+            "label": "Automatic Scan Result Upload",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "When activated, this option will automatically upload the scan results to the Highlight platform (make sure you've defined the required application and account parameters in the build definition variables)",
+            "groupName": "upload"
+        },
+        {
+            "name": "proxypassword",
+			"type": "string",
+			"label": "Proxy Password",
+            "defaultValue": "$(highlightHttpProxyPassword)",
+            "required": false,
+            "helpMarkDown": "Proxy password (if required). Replace by $(highlightHttpsProxyPassword) if you're using proxy over HTTP",
+            "groupName": "proxy"
+        }
+		],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
