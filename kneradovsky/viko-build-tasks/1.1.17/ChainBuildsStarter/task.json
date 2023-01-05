@@ -1,0 +1,61 @@
+{
+    "id": "77ac150d-b4c7-4628-8272-5385adafbec0",
+    "name": "ChainBuildsStarter",
+    "friendlyName": "Chain Builds Starter",
+    "description": "Starts builds entered in the Build List parameter",
+    "helpMarkDown": "",
+    "category": "Build",
+    "author": "kneradovsky",
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 9
+    },
+    "instanceNameFormat": "Starts builds: $(buildList)",
+    "groups": [
+        {
+            "name":"advanced",
+            "displayName": "Advanced",
+            "isExpanded" : false
+        }     
+    ],
+    "inputs": [
+        {
+            "name": "buildList",
+            "type": "string",
+            "label": "Build list",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Comma separated list of the build definition names to start"
+        },
+        {
+            "name": "buildParameters",
+            "type": "multiLine",
+            "label": "Build parameters",
+            "defaultValue": "{}",
+            "required": false,
+            "helpMarkDown": "Specify child build parameters, as JSON Object. sample structure: { buildDefName1 : { parameter1 : value1, parameter2 : value2}, buildDefName2 : { parameter1 : value1, parameter2 : value2}}",
+            "groupName": "advanced",
+            "properties": {
+                "resizable": "true",
+                "rows": "4"
+            }
+        }
+        
+    ],
+    "execution": {
+        "Node": {
+            "target": "queuebuilds.js"
+        }
+    },
+    "messages" : {
+        "ScenarioTemplate": "Scenario: %s_%s \n %s \n ",
+        "taskSucceeded": "All done",
+        "taskFailed": "Task Failed",
+        "Builds": "Queued builds %s",
+        "queueBuild": "started build %s",
+        "buildQueueFailed": "Build %s queueing failed",
+        "previousBuilds" : "Previously queued builds: %s"
+    }
+
+}
