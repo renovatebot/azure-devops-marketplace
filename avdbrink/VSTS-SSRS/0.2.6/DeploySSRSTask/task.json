@@ -1,0 +1,126 @@
+﻿{
+	"id": "8F19139C-FAEE-4F55-9066-BBD0AEB80036",
+	"name": "SSRSDeploy",
+	"friendlyName": "SSRS deployment",
+	"description": "Deploy a SQL Server Report Project to the server",
+	"author": "avdbrink",
+	"helpMarkDown": "",
+	"category": "Deploy",
+	"visibility": [
+		"Release"
+	],
+	"runsOn": [
+		"Agent",
+		"DeploymentGroup"
+	],
+	"demands": [],
+	"version": {
+		"Major": "0",
+		"Minor": "2",
+		"Patch": "6"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "SSRS Deploy of project $(Project)",
+	"groups": [],
+	"inputs": [
+    {
+      "name": "Project",
+      "type": "filePath",
+      "label": "Project, Solution or Folder",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Provide the .rptproj file containing the project to be deployed\nProvide the .sln file if you have a solution to deploy\nProvide a folder to be searched for report projects."
+    },
+    {
+      "name": "Configuration",
+      "type": "string",
+      "label": "Configuration",
+      "required": true,
+      "defaultValue": "Release",
+      "helpMarkDown": "Provide the name of the configuration as defined in VS NOTE: Even is OverWriteProjectConfiguration is set to true, this value has to be set for the right bin folder to be picked"
+    },
+    {
+      "name": "OverwriteProjectConfiguration",
+      "type": "boolean",
+      "label": "Overwrite project config",
+      "defaultValue": "true",
+      "helpMarkDown": "If true (default): all configuration values from this page will be used. If false: all configuration values from the Report project will be used. EXCEPTION: The OutputPath variable from the project wil be used to locate the binaries, even if this value is true."
+    },
+    {
+      "name": "TargetServerURL",
+      "type": "string",
+      "label": "Server URL",
+      "required": true,
+      "defaultValue": "http://localhost/reportserver",
+      "helpMarkDown": "Provide the Report Server name like, http://machinename/reportserver. Specifying http://localhost/reportserver will connect to the Default SQL Server instance on the machine."
+    },
+    {
+      "name": "TargetFolder",
+      "type": "string",
+      "label": "Target folder",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Provide the name of the folder the report should be deployed to"
+    },
+    {
+      "name": "DataSourceFolder",
+      "type": "string",
+      "label": "DataSource folder",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Provide the name of the folder the datasources should be deployed to"
+    },
+    {
+      "name": "DataSetFolder",
+      "type": "string",
+      "label": "Dataset folder",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Provide the name of the folder the datasets should be deployed to"
+    },
+    {
+      "name": "OverwriteDataSources",
+      "type": "boolean",
+      "label": "Overwrite DataSources",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the option to deploy datasources even if they are already there on the target server."
+    },
+    {
+      "name": "OverwriteDatasets",
+      "type": "boolean",
+      "label": "Overwrite Datasets",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Select the option to deploy datasets even if they are already there on the target server."
+    },
+    {
+      "name": "CreateSubfolders",
+      "type": "boolean",
+      "label": "Create subfolder if multiple reports",
+      "defaultValue": "true",
+      "required": true,
+      "helpMarkDown": "If checked a subfolder will be created for deployed projects if they contain more than 1 report file (*.rdl). If only one report file is found no subfolder will be created. The name of the  subfolder will be the same as the name of the reporting project. This will be done on a per project base."
+    }],
+	"execution": {
+		"PowerShell3": {
+			"target": "$(currentDirectory)\\DeploySSRSTask.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	},
+	"messages": {
+        "StartingTask": "Starting DeploySSRSTask",
+        "Project0AccessDenied": "Cannot access project file path: {0}",
+        "ProjectFile0": "Project file path: {0}",
+        "Devenv0NotFound": "Devenv.com not found on server: {0}",
+		"Devenv0Used": "Using devenv.com located at {0}",
+		"CreatingXmlFromAsDatabase": "Creating .xmla file from .asdatabase...",
+        "DeployingDatabase0": "Deploying {0} database ...",
+        "Database0DeploySuccess": "{0} database has been deployed successfully",
+        "ErrorDuringDeployment":  "Error(s) occurred while deploying database! See above error codes for details",
+        "InternalError0": "Task_InternalError {0}",
+        "EndingTask": "Ending DeploySSRSTask"
+    }
+
+}
