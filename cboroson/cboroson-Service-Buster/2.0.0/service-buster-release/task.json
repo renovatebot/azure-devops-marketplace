@@ -1,0 +1,119 @@
+{
+  "id": "F96CDB89-585F-42BA-8531-8E58216AFE6A",
+  "name": "cboroson-Service-Buster",
+  "friendlyName": "Azure Service Buster",
+  "description": "Allows for the configuration of an Azure Service Bus from a specially formatted json file",
+  "helpMarkDown": "[More Information, setup...](https://github.com/cboroson/ServiceBuster)",
+  "category": "Utility",
+  "author": "Craig Boroson",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "demands": [ "azureps" ],
+  "visibility": [
+    "Release",
+    "Build"
+  ],
+  "minimumAgentVersion": "1.102.0",
+  "groups": [
+  ],
+  "inputs": [
+    {
+      "name": "ConnectedServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "AzureRM Subscription",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the Azure Resource Manager subscription."
+    },
+    {
+      "name": "resourceGroupName",
+      "type": "pickList",
+      "label": "Resource Group",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the Azure Resource Group that contains the Service Bus namespace specified above."
+
+    },
+    {
+      "name": "Namespace",
+      "type": "string",
+      "label": "Service Bus Namespace",
+      "defaultValue": "",
+      "required": true,
+      "properties": {
+        "EditableOptions": "True"
+      },
+      "helpMarkDown": "Enter or Select the name of an existing Azure Service Bus namespace."
+    },
+    {
+      "name": "DefinitionFile",
+      "type": "filePath",
+      "label": "Definition File",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Location of the json file containing the configuration settings"
+    },
+    {
+      "name": "EnableDeadLettering",
+      "type": "boolean",
+      "label": "Enable Dead Lettering",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Expired messages are moved to the Dead Letter Queue instead of being deleted."
+    },
+    {
+      "name": "MessageTTL",
+      "type": "integer",
+      "label": "Message TTL (Days before sending to Dead Letter Queue)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Specifies the duration (in days) after which the message is sent to the dead letter queue, starting from when the message is sent to Service Bus."
+    },
+    {
+      "name": "AutoDeleteOnIdle",
+      "type": "integer",
+      "label": "Automatically delete idle queues and topics",
+      "defaultValue": "10675199",
+      "required": true,
+      "helpMarkDown": "Specifies the duration (in days) after which unused queues and topics are deleted from the Service Bus."
+    },
+    {
+      "name": "RemoveUndefinedObjects",
+      "type": "boolean",
+      "label": "Remove Undefined Objects",
+      "defaultValue": "false",
+      "required": true,
+      "helpMarkDown": "Remove Queues, Topics and Subscriptions that are not present in the configuration file"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "resourceGroupName",
+      "endpointId": "$(ConnectedServiceName)",
+      "dataSourceName": "AzureResourceGroups"
+    },
+    {
+      "target": "Namespace",
+      "endpointId": "$(ConnectedServiceName)",
+      "endpointUrl": "{{endpoint.url}}/subscriptions/$(endpoint.subscriptionId)/resourceGroups/$(ResourceGroupName)/providers/Microsoft.ServiceBus/namespaces?api-version=2017-04-01",
+      "resultSelector": "jsonpath:$.value[*].name",
+      "parameters": {
+          "ResourceGroupName": "$(ResourceGroupName)"
+      }
+    }        
+  ],
+  "instanceNameFormat": "Configure Azure Service Bus: $(Namespace)",
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ManageQueuesAndTopics.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
