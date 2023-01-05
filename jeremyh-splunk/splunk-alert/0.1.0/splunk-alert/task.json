@@ -1,0 +1,53 @@
+{
+  "id": "a34abb7a-7ee9-4369-994e-3f3ed6bf7651",
+  "name": "Splunk Observability",
+  "friendlyName": "Check Splunk Observability Alert",
+  "description": "Check Splunk Observability Alert",
+  "author": "Splunk",
+  "category": "Utility",
+  "releaseNotes": "Check Splunk Observability Alert as deployment gate",
+  "visibility": [
+      "Build",
+      "Release"
+  ],
+  "runsOn": [
+      "Server",
+      "ServerGate"
+  ],
+  "version": {
+      "Major": 0,
+      "Minor": 1,
+      "Patch": 0
+  },
+  "instanceNameFormat": "Query Splunk Observability monitors",
+  "inputs": [
+      {
+          "name": "splunk-detector-api",
+          "type": "connectedService:splunk-api",
+          "label": "Splunk API",
+          "defaultValue": "",
+          "required": "true",
+          "helpMarkDown": "Select a Splunk API Service connection"
+      },
+      {
+          "name": "detectorId",
+          "type": "string",
+          "label": "Detector ID",
+          "required": true,
+          "helpMarkDown": "Detector ID is the string used to reference a detector in a url. I.E. When editing a detector find its ID in the url."
+      }
+  ],
+  "execution": {
+      "HttpRequest": {
+          "Execute": {
+              "EndpointId": "$(splunk-detector-api)",
+              "EndpointUrl": "$(endpoint.url)/detector/$(detectorId)/incidents",
+              "Method": "GET",
+              "Body": "",
+              "Headers": "{\"Content-Type\": \"application/json\"}",
+              "WaitForCompletion": "false",
+              "Expression": "not(eq(jsonpath('$.[0].active')[0], 'true'))"
+          }
+      }
+  }
+}
