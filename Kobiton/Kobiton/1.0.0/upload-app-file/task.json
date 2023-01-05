@@ -1,0 +1,53 @@
+{
+    "id": "eadc9625-f22e-4ae3-8552-ffc93e6d1180",
+    "name": "upload-app-file",
+    "friendlyName": "Kobiton App Version Uploader",
+    "description": "This task is used to upload new app version of your existed app on Kobiton App Repository",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "tech@kobiton.com",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 12
+    },
+    "instanceNameFormat": "Kobiton App Version Uploader",
+    "inputs": [
+        {
+            "name": "kobitonEndpoint",
+            "aliases": [
+                "Kobiton"
+            ],
+            "type": "connectedService:kobiton",
+            "label": "Kobiton API credentials",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Set your Kobiton credentials for authorization purposes. The Username and API key will be consumed by `KOBITON_USERNAME` and `KOBITON_API_KEY` environment variables in your test script. To get your Kobiton Username and API Key, please follow instructions at `IV. Configure Test Script for Kobiton` section on [our blog](https://kobiton.com/blog/tutorial/parallel-testing-selenium-webdriver/)"
+        },
+        {
+            "name": "filePath",
+            "type": "filePath",
+            "label": "File path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to your App file (apk/ipa)"
+        },
+        {
+            "name": "appID",
+            "type": "string",
+            "label": "AppID",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Your existed AppID on Kobiton App Repository. This value will be consumed as the `KOBITON_SESSION_APPLICATION` environment variable in your test script.",
+            "validation": {
+                "expression": "isMatch(value, '^[0-9]{0,}$', 'IgnoreCase')",
+                "message": "App ID must contains only numeric characters."
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
