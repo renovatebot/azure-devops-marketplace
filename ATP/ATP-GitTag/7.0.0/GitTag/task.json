@@ -1,0 +1,91 @@
+{
+	"id": "be6aa0ca-e62f-414d-aaa6-e9524b556482",
+	"name": "GitTag",
+	"friendlyName": "Git Tag",
+	"description": "A simple task that tags a commit",
+	"author": "ATP P&I IT",
+	"helpMarkDown": "tags the current commit with a specified tag. ### Prerequisites * Repository must be VSTS Git. * Allow scripts to access Oauth must be **Enabled** * Project Collection Build Service must have **Contribute** & **Create Tag** set to **Allow** or **Inherit Allow** for that particular repository",
+	"category": "Utility",
+	"visibility": [
+		"Build"
+	],
+	"demands": [],
+	"version": {
+		"Major": "7",
+		"Minor": "0",
+		"Patch": "0"
+	},
+	"minimumAgentVersion": "1.95.0",
+	"instanceNameFormat": "GitTag $(message)",
+	"inputs": [
+	{
+		"name": "workingdir",
+		"type": "string",
+		"label": "Working Directory",
+		"defaultValue": "$(SYSTEM.DEFAULTWORKINGDIRECTORY)",
+		"required": true,
+		"helpMarkDown": "The working directory (The git root)."
+	},
+	{
+		"name":"tagUser",
+		"type": "string",
+		"label": "Tag User",
+		"defaultValue": "VSTS",
+		"required": false,
+		"helpMarkDown": "The user that tagged (Just for git history purposes)"
+	},
+	{
+		"name":"tagEmail",
+		"type": "string",
+		"label": "Tag Email",
+		"defaultValue": "noreply@example.com",
+		"required": false,
+		"helpMarkDown": "The user that tagged email (Just for git history purposes)"
+	},
+	{
+		"name": "tag",
+		"type": "string",
+		"label": "Tag",
+		"defaultValue": "$(build.buildNumber)",
+		"required": true,
+		"helpMarkDown": "Tag to tag current commit with."
+	},
+	{
+		"name": "tagMessage",
+		"type": "string",
+		"label": "Tag Message",
+		"defaultValue": "$(build.buildNumber)",
+		"required": false,
+		"helpMarkDown": "The message to add to the tag."
+	},
+	{
+		"name": "useLightweightTags",
+		"type": "boolean",
+		"label": "Use Lightweight Tags",
+		"defaultValue": false,
+		"required": false,
+		"helpMarkDown": "If this is set, tagging will be done using lightweight tags instead of annoted tags."
+	},
+	{
+		"name": "forceTagCreation",
+		"type": "boolean",
+		"label": "Force",
+		"defaultValue": false,
+		"required": false,
+		"helpMarkDown": "If this is true, replace an existing tag with the given name (instead of failing)."
+	},
+    {
+      "name": "currentcommit",
+      "type": "string",
+      "label": "Current commit",
+      "defaultValue": "$(build.sourceversion)",
+      "required": false,
+      "helpMarkDown": "The current commit id. If not set the HEAD will be use."
+    }
+	],
+	"execution": {
+		"PowerShell3": {
+			"target": "tagging.ps1"
+		}
+	}
+}
