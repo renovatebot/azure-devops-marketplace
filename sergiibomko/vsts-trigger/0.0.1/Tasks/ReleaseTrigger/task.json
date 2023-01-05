@@ -1,0 +1,43 @@
+{
+	"id": "b2d2e081-c1e0-4daf-b444-c492a02e47f8",
+	"name": "ReleaseTrigger",
+	"friendlyName": "Release Trigger",
+	"description": "Release Trigger.",
+	"helpMarkDown": "[More Information](https://github.com/aquiladev/vsts-trigger)",
+	"category": "Utility",
+	"visibility": [ "Build", "Release" ],
+	"author": "Sergii Bomko",
+	"version": {
+		"Major": 0,
+		"Minor": 0,
+		"Patch": 1
+	},
+	"minimumAgentVersion": "1.95.0",
+	"inputs": [
+		{
+			"name": "ReleaseDefinition",
+			"type": "pickList",
+			"label": "Release Definition",
+			"defaultValue": "",
+			"required": true,
+			"properties": {
+				"EditableOptions": "False"
+			}
+		}
+	],
+	"sourceDefinitions": [
+		{
+			"target": "ReleaseDefinition",
+			"endpoint": "$(SYSTEM_TEAMFOUNDATIONSERVERURI)$(BUILD_REPOSITORY_NAME)/_apis/Release/definitions?api-version=3.0-preview.1",
+			"selector": "jsonpath:$.value[*].name"
+		}
+	],
+	"instanceNameFormat": "Trigger: $(ReleaseDefinition)",
+	"execution": {
+		"PowerShell": {
+			"target": "$(currentDirectory)\\ReleaseTrigger.ps1",
+			"argumentFormat": "",
+			"workingDirectory": "$(currentDirectory)"
+		}
+	}
+}
