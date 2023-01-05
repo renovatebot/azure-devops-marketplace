@@ -1,0 +1,69 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "f3da490b-e193-425e-aa92-0adcf0139819",
+    "name": "GitTagVersionExtractor",
+    "friendlyName": "Git Tag Version Extractor",
+    "description": "Extracts latest git tag, if its meets the version pattern",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "evy Solutions GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 2
+    },
+    "runsOn": [
+        "Agent"
+    ],
+    "instanceNameFormat": "git tag --sort=v:refname",
+    "inputs": [
+        {
+            "name": "exportsToVariableName",
+            "type": "string",
+            "label": "Target Variable Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the variable the extracted version should be exported"
+        },
+        {
+            "name": "versionRange",
+            "type": "string",
+            "label": "Semver Version Range to indicated version",
+            "defaultValue": "^1.x",
+            "required": false,
+            "helpMarkDown": "A semver version range pattern to identity the latest version tag. For more info please consult [node modules documentation](https://github.com/npm/node-semver)"
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The working directory into which git should be executed"
+        },
+        {
+            "name": "failWhenAbsent",
+            "type": "boolean",
+            "label": "Fail when the no version tag could be extracted",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Switch to control weather this build task should fail, if now git version tag is present"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "versionextractor.js"
+        }
+    },
+    "messages": {
+        "GitToolsIsRequired": "Task only works with installed git tool.",
+        "InvalidVersionRange": "Invalid version range %s.",
+        "GitToolFailed": "git failed to fetch latest tags.",
+        "MissingInputVariable": "Invalid input received. Missing %s",
+        "Succeeded": "Saved latest version tag: %s into variable %s"
+    }
+}
