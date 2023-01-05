@@ -1,0 +1,191 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "chef-endpoint",
+            "description": "Service Endpoint for Chef Tasks",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "chefendpointv1",
+                "displayName": "Chef Endpoint",
+                "url": {
+                    "displayName": "Target URL",
+                    "helpText": "URL to the Chef Server or Supermarket, for example."
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "sslVerify",
+                        "name": "SSL Verification",
+                        "description": "Enable or disable SSL verification for the specified URL. If using self-signed certificates this should be set to false.",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        },
+                        "values": {
+                            "inputId": "sslVerifyValues",
+                            "defaultValue": true,
+                            "possibleValues": [
+                                {
+                                    "value": true,
+                                    "displayValue": "True"
+                                },
+                                {
+                                    "value": false,
+                                    "displayValue": "False"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username (node or client) on the targeted server",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or private key (in PEM format) for the given username",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide details for accessing a server in the Chef ecosystem, e.g. `chef-server` or `chef-supermarket`.<br />When providing details for a Chef Server remember to include the organization"
+            }
+        },
+        {
+            "id": "habitat-origin",
+            "description": "Habitat Origin",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "habitatoriginendpointv1",
+                "displayName": "Habitat Origin",
+                "url": {
+                    "displayName": "Habitat Depot URL",
+                    "helpText": "URL to the Habitat depot that will be used to deploy to"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "originName",
+                        "name": "Origin Name",
+                        "description": "Name of the Habitat origin",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "revision",
+                        "name": "Revision",
+                        "description": "Revision of the origin to use",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "publicKey",
+                        "name": "Public Key",
+                        "description": "Public item of the origin key pair",
+                        "inputMode": "textarea",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "signingKey",
+                                "name": "Signing Key",
+                                "description": "Signing item of the origin key pair",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "authToken",
+                                "name": "Habitat Auth Token",
+                                "description": "Authentication token for publishing Habitat packages.",
+                                "inputMode": "textbox",
+                                "isConfidential": "true",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Please provide the requested information so that Habitat packages can be built and deployed. The Habitat Auth Token should be created from your profile at https://bldr.habitat.sh/#/profile"
+            }
+        },
+        {
+            "id": "install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/install"
+            }
+        },
+        {
+            "id": "execute",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/execute"
+            }
+        },
+        {
+            "id": "helpers",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/helpers"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

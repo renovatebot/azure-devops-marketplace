@@ -1,0 +1,79 @@
+{
+    "id": "b3f0ceef-e22a-43c5-ab37-96287e35d494",
+    "name": "component",
+    "friendlyName": "Execute Chef Component",
+    "description": "This task allows the execution of any Chef component",
+    "helpMarkDown": "[More Information](https://chef-partners.github.io/azuredevops-chef-extension/execute-task.html",
+    "category": "Azure Pipelines",
+    "author": "Chef",
+    "version": {
+        "Major": 3,
+        "Minor": 0,
+        "Patch": 37
+    },
+    "instanceNameFormat": "Execute $(component)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "component",
+            "type": "pickList",
+            "label": "Chef Component",
+            "defaultValue": "",
+            "helpMarkdown": "Select the software component to execute",
+            "options": {
+                "berks": "Berkshelf",
+                "chef": "Chef",
+                "chefclient": "Chef Infra Client",
+                "habitat": "Habitat",
+                "inspec": "InSpec",
+                "knife": "Knife",
+                "kitchen": "Test-Kitchen"
+            },
+            "required": true
+        },
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "defaultValue": "",
+            "helpMarkdown": "Arguments to pass to the component to execute"
+        },
+        {
+            "name": "envvars",
+            "type": "multiLine",
+            "label": "Environment Variables",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Allows the configuration of environment variables for the task.<br />Each key/value pair should be on a new line.<br />For example `KITCHEN_YAML=$(Build.SourcesDirectory)/build/kitchen.yml`",
+            "groupName": "advanced"
+        },
+        {
+            "name": "workingdir",
+            "type": "string",
+            "label": "Working Directory",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "If set the execution of the specified command will be run within this directory",
+            "groupName": "advanced"
+        },
+        {
+            "name": "sudo",
+            "type": "boolean",
+            "label": "Use Sudo",
+            "defaultValue": false,
+            "helpMarkdown": "Use Sudo to perform the installation. (Only valid on Linux build agents).",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "execute.js"
+        }
+    }
+}
