@@ -1,0 +1,88 @@
+{
+    "id": "6E9144D5-E822-4838-BE87-CA5F8FEF046B",
+    "name": "DNX.Tasks.GenerateChangeLog",
+    "friendlyName": "DNX Tasks Generate Change Log",
+    "description": "Generate a markdown file with all changeset for this build.",
+    "helpMarkDown": "Version: 0.1.30  \nTo use this task **Allow Scripts to Access OAuth Token** has to be enabled in **Options** of this build definition.",
+    "category": "Build",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "visibility": [
+        "Build"
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.95.4",
+    "groups": [
+        {
+            "name": "markdown",
+            "displayName": "Markdown",
+            "isExpanded": true
+        },
+        {
+            "name": "json",
+            "displayName": "JSON",
+            "isExpanded": true
+        }
+
+    ],
+    "inputs": [
+        {
+            "name": "OutputFile",
+            "label": "Output File",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\ChangeLog.md",
+            "helpMarkdown": "Location and name of the file to write.",
+            "required": true
+        },
+        {
+            "name": "CreateMdFile",
+            "type": "boolean",
+            "label": "Create MarkDown File",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Check this if you want to generate the Change Log in Markdown format.",
+            "groupName": "markdown"
+        },
+        {
+            "name": "IncludeLinks",
+            "type": "boolean",
+            "label": "Links to Commits",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Check this if you want to include links to the commits.",
+            "groupName": "markdown",
+            "visibleRule": "CreateMdFile = true"
+        },
+        {
+            "name": "AppendMdFile",
+            "type": "boolean",
+            "label": "Append To .md File",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "When checked the new contend will be added to an existing file, otherwise the file will be overwritten.",
+            "groupName": "markdown",
+            "visibleRule": "CreateMdFile = true"
+        },
+        {
+            "name": "CreateJsonFile",
+            "type": "boolean",
+            "label": "Create JSON File",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Check this if you want to generate the Change Log in JSON format.",
+            "groupName": "json"
+        }
+    ],
+    "instanceNameFormat": "DNX Tasks Generate Change Log",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\GenerateChangeLog.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

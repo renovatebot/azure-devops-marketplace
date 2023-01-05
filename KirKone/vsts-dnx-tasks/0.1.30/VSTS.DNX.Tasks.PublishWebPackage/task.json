@@ -1,0 +1,174 @@
+{
+    "id": "EDEE4D57-FD49-466B-BFC3-1CBBA4E8C24A",
+    "name": "DNX.Tasks.PublishWebPackage",
+    "friendlyName": "DNX Tasks Azure PublishWebPackage",
+    "description": "Publish a Dotnet package to Azure Website",
+    "helpMarkDown": "Version: 0.1.30",
+    "category": "Deploy",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "azureps"
+    ],
+    "minimumAgentVersion": "1.95.4",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:Azure",
+            "label": "Azure Classic Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Azure Classic subscription to configure before running PowerShell"
+        },
+        {
+            "name": "WebSiteLocation",
+            "type": "pickList",
+            "label": "Web App Location",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select a region for deployment. Possible options are **East US**, **East US 2**, **Central US**, **South Central US**, **West US**, **North Europe**, **West Europe** and others.",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "WebSiteName",
+            "type": "pickList",
+            "label": "Web App Name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "SlotName",
+            "type": "pickList",
+            "label": "Deployment Slot",
+            "defaultValue": "",
+            "helpMarkdown": "Slotname where to deploy. Leave empty if not used. Set 'production' is you want to target the default slot.",
+            "required": false,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "Dev": "Dev",
+                "Staging": "Staging",
+                "Production": "Production"
+            }
+        },
+        {
+            "name": "Source",
+            "label": "Source",
+            "type": "filePath",
+            "defaultValue": "$(Build.StagingDirectory)\\Publish",
+            "helpMarkdown": "The source folder with the content to deploy or a .zip file to deploy.",
+            "required": true
+        },
+        {
+            "name": "Destination",
+            "label": "Destination",
+            "type": "string",
+            "defaultValue": "site/wwwroot",
+            "helpMarkdown": "The destination folder where to put the files in the Azure Web App. Default is 'site/wwwroot'",
+            "required": true,
+            "groupName": "advanced"
+        },
+        {
+            "name": "UseAppOffline",
+            "type": "boolean",
+            "label": "Use App_Offline.htm",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Place an App_Offline.htm before deployment to shut down application while deployment.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "UseCustomAppOfflineFile",
+            "type": "boolean",
+            "label": "Custom App_Offline.htm",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Use an custom source for the App_Offline.htm.",
+            "groupName": "advanced",
+            "visibleRule": "UseAppOffline = true"
+        },
+        {
+            "name": "AppOfflineFile",
+            "label": "Source File for App_Offline.htm",
+            "type": "filePath",
+            "defaultValue": "",
+            "helpMarkdown": "The content of this file is placed as App_Offline.htm while deployment.  <br>Leave this field blank to use the default App_Offline.htm",
+            "required": false,
+            "groupName": "advanced",
+            "visibleRule": "UseCustomAppOfflineFile = true"
+        },
+        {
+            "name": "StopBeforeDeploy",
+            "type": "boolean",
+            "label": "Stop Before Deploy",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Stop website before deployment to avoid 'File in use' Error.",
+            "groupName": "advanced",
+            "visibleRule": "UseAppOffline = false"
+        },
+        {
+            "name": "CleanBeforeDeploy",
+            "type": "boolean",
+            "label": "Clean Before Deploy",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "The destination folder will be cleaned before the deployment.<br>Warning:<br>All files and folders will be deleted within the destination folder.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "ForceRestart",
+            "type": "boolean",
+            "label": "Restart After Deploy",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "Restart website after deployment.",
+            "groupName": "advanced",
+            "visibleRule": "UseAppOffline = false"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebSiteName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureWebSiteNames",
+            "parameters": {
+                "WebSiteLocation": "$(WebSiteLocation)"
+            }
+        },
+        {
+            "target": "WebSiteLocation",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureLocations"
+        }
+    ],
+    "instanceNameFormat": "Publish Web Package: $(WebSiteName)",
+    "execution": {
+        "AzurePowerShell": {
+            "target": "$(currentDirectory)\\PublishWebPackage.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}

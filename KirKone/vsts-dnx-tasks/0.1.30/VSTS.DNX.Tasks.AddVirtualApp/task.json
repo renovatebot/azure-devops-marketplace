@@ -1,0 +1,118 @@
+{
+    "id": "C3D82484-5A68-4B0F-9D7C-F4C78BC6D831",
+    "name": "DNX.Tasks.AddVirtualApp",
+    "friendlyName": "DNX Tasks Add Virtual Application",
+    "description": "Add a virtual application to an existing Azure web App",
+    "helpMarkDown": "Version: 0.1.30",
+    "category": "Deploy",
+    "author": "Kirsten Kluge",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 30
+    },
+    "preview": "true",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "demands": [],
+    "minimumAgentVersion": "1.95.4",
+    "inputs": [
+        {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription."
+        },
+        {
+            "name": "WebAppName",
+            "type": "pickList",
+            "label": "App Service name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select the name of an existing Azure App Service."
+        },
+        {
+            "name": "DeployToSlotFlag",
+            "type": "boolean",
+            "label": "Deploy to slot",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Select the option to deploy to an existing slot other than the Production slot. If this option is not selected, then the Azure App Service Production slot will be used."
+        },
+        {
+            "name": "ResourceGroupName",
+            "type": "pickList",
+            "label": "Resource group",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select the Azure Resource group that contains the Azure App Service specified above.",
+            "visibleRule": "DeployToSlotFlag = true"
+        },
+        {
+            "name": "SlotName",
+            "type": "pickList",
+            "label": "Slot",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select an existing Slot other than the Production slot.",
+            "visibleRule": "DeployToSlotFlag = true"
+        },
+        {
+            "name": "VirtualApplicationName",
+            "type": "string",
+            "label": "Virtual application name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Specify the name of the Virtual application that will be created."
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        },
+        {
+            "target": "ResourceGroupName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppResourceGroup",
+            "parameters": {
+                "WebAppName": "$(WebAppName)"
+            }
+        },
+        {
+            "target": "SlotName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppSlotsId",
+            "parameters": {
+                "WebAppName": "$(WebAppName)",
+                "ResourceGroupName": "$(ResourceGroupName)"
+            },
+            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
+        }
+    ],
+    "instanceNameFormat": "Add Virtual App: $(VirtualApplicationName)",
+    "execution": {
+        "AzurePowerShell": {
+            "target": "$(currentDirectory)\\AddVirtualApp.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
