@@ -1,0 +1,82 @@
+{
+    "id": "853A9434-D77D-4D8C-BC93-A2CB977CF921",
+    "name": "Promote",
+    "publisher": "Haplo",
+    "friendlyName": "Promote packages",
+    "description": "Promote a NuGet package.",
+    "category": "Package",
+    "visibility": [
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "Haplo",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Promote package",
+    "groups": [
+        {
+            "name": "general",
+            "displayName": "General",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "feed",
+            "type": "pickList",
+            "label": "Feed",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The feed the package lives on.",
+            "groupName": "general"
+        },
+        {
+            "name": "view",
+            "type": "pickList",
+            "label": "Release View",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "View to promote the package to.",
+            "groupName": "general"
+        },
+        {
+            "name": "package",
+            "type": "filePath",
+            "label": "Package",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to the package to promote.",
+            "groupName": "general"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "feed",
+            "endpointId": "tfs:feed",
+            "endpointUrl": "{{endpoint.url}}/_apis/packaging/feeds",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "view",
+            "endpointId": "tfs:feed",
+            "parameters": {
+                "feed": "$(feed)"
+            },
+            "endpointUrl": "{{endpoint.url}}/_apis/Packaging/Feeds/{{{feed}}}/views",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "Task.js"
+        }
+    }
+}
