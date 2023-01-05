@@ -1,0 +1,162 @@
+{
+  "id": "37d05ecc-a4e5-4171-a224-f0da8538ef7f",
+  "name": "WindowsShareManagement",
+  "friendlyName": "Windows Share Management",
+  "description": "Create and/or maintain a Windows SMB Share.",
+  "author": "Peter Barendse",
+  "helpMarkDown": "Create and/or maintain a Windows SMB Share, using WinRM.",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "2"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "groups": [
+    {
+      "name": "ServerSettings",
+      "displayName": "Server Settings",
+      "isExpanded": true
+    },
+    {
+      "name": "BasicShareSettings",
+      "displayName": "Share Management",
+      "isExpanded": true
+    }
+  ],
+  "instanceNameFormat": "Windows Share Management",
+  "inputs": [
+    {
+      "name": "Servers",
+      "type": "string",
+      "label": "Server(s)",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Enter the server names. Multiple entries should be comma seperated (server.domain.loc)."
+    },
+    {
+      "name": "ServerUserName",
+      "type": "string",
+      "label": "Username",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "User needs local administrator permissions (domain\\user)"
+    },
+    {
+      "name": "ServerPassword",
+      "type": "string",
+      "label": "Password",
+      "required": true,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": ""
+    },
+    {
+      "name": "UseSSL",
+      "type": "boolean",
+      "label": "Use HTTPS",
+      "defaultValue": "false",
+      "required": false,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Use HTTP or HTTPS for the WinRM connection with the machine(s)."
+    },
+    {
+      "name": "CheckCA",
+      "type": "boolean",
+      "label": "Skip CA check",
+      "defaultValue": "true",
+      "required": false,
+      "GroupName": "ServerSettings",
+      "helpMarkDown": "Select the option to skip validating the authenticity of the machine's certificate from a trusted certification authority. The parameter is required for the WinRM HTTPS protocol.",
+      "visibleRule": "UseSSL = true"
+    },
+    {
+      "name": "ShareName",
+      "type": "string",
+      "label": "Share Name",
+      "defaultValue": "",
+      "required": true,
+      "GroupName": "BasicShareSettings",
+      "helpMarkDown": "Provide a share name."
+    },
+    {
+      "name": "Description",
+      "type": "string",
+      "label": "Share Description",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicShareSettings",
+      "helpMarkDown": "Task description"
+    },
+    {
+      "name": "FolderLocation",
+      "type": "filePath",
+      "label": "Folder Location",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Folder that needs to be shared. It will be created if it doesn't exist yet .",
+      "groupName": "BasicShareSettings"
+    },
+    {
+      "name": "ReadPermissions",
+      "type": "multiLine",
+      "label": "Read permissions",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicShareSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "2"
+      },
+      "helpMarkDown": "Define the users or groups who are granted read permissions. Multiple entries are allowed and need to be comma seperated (domain\\user1,domain\\group1)."
+    },
+    {
+      "name": "ChangePermissions",
+      "type": "multiLine",
+      "label": "Change permissions",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicShareSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "2"
+      },
+      "helpMarkDown": "Define the users or groups who are granted change/modify permissions. Multiple entries are allowed and need to be comma seperated (domain\\user1,domain\\group1)."
+    },
+    {
+      "name": "FullAccessPermissions",
+      "type": "multiLine",
+      "label": "Full Access Permissions",
+      "defaultValue": "Everyone",
+      "required": false,
+      "GroupName": "BasicShareSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "2"
+      },
+      "helpMarkDown": "Define the users or groups who are granted full access permissions. Multiple entries are allowed and need to be comma seperated (domain\\user1,domain\\group1). <br><br> Note: BUILTIN\\Administrators receive these permissions by default."
+    },
+    {
+      "name": "NoAccessPermissions",
+      "type": "multiLine",
+      "label": "Deny permissions",
+      "defaultValue": "",
+      "required": false,
+      "GroupName": "BasicShareSettings",
+      "properties": {
+        "resizable": "true",
+        "rows": "2"
+      },
+      "helpMarkDown": "Define the users or groups who are granted Deny permissions. Multiple entries are allowed and need to be comma seperated (domain\\user1,domain\\group1)."
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\WindowsShareManagement.ps1"
+    }
+  }
+}
