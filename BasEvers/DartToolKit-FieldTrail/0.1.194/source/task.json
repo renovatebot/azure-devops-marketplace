@@ -1,0 +1,58 @@
+{
+    "id": "14880d61-32fc-47d4-afd4-ae27aaf12528",
+    "name": "DartToolKit-FieldTrail",
+    "friendlyName": "DART Tool Kit (FieldTrail)",
+    "description": "For building DART projects",
+    "helpMarkDown": "[More Info](https://dev.azure.com/basevers/DART_WebApp_Build/_wiki/wikis/DART_WebApp_Build.wiki?wikiVersion=GBwikiMaster&pagePath=%2FGetting%20Started)",
+    "category": "Build",
+    "author": "Bas Evers",
+    "preview": true,
+    "showEnvironmentVariables": true,
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 194
+    },
+    "minimumAgentVersion": "1.90.0",
+    "instanceNameFormat": "DartToolKit (FieldTrail) $(sdkVersion)",
+    "inputs": [
+        {
+            "name": "sdkVersion",
+            "type": "string",
+            "label": "DART-SDK version '2.0.0' '2.1.0'",
+            "defaultValue": "2.1.0",
+            "required": true,
+            "helpMarkDown": "Specifies which DART-SDK version to use. Example: <1.24.3>, <2.0.0> or <2.2.0-dev.1.1>"
+        },
+        {
+            "name": "preserveSDK",
+            "type": "bool",
+            "label": "Preserve DART-SDK after build  'true' or 'false'",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "If set to 'false', the DART-SDK will be preserved. On a hosted agent, the DART-SDK will not be preserved"
+        },
+        {
+            "name": "buildSpec",
+            "type": "string",
+            "label": "Build Specification",
+            "defaultValue": "dart --version; pub cache repair; pub get; pub global activate webdev; pub global run webdev build --output=web:build",
+            "required": true,
+            "helpMarkDown": "The build execution sequence",
+            "properties": {
+                "resizable": true,
+                "rows": "5"
+            }
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "SdkNotFound": "Cant locate the specified DART-SDK",
+        "BuildFailed": "Command %s exited with code %s."
+    }
+}
