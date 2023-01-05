@@ -1,0 +1,150 @@
+{
+    "id": "acdefe1b-3f7e-474e-b545-5816baa90334",
+    "name": "efcore-migration-script-generator-task",
+    "friendlyName": "Entity Framework Core Migrations Script Generator",
+    "description": "Tool for projects that use Entity Framework Core Code-First. Generates migration scripts which can be used to update a database (for instance with the task 'Azure SQL Database Deployment').",
+    "helpMarkDown": "[More Information](https://github.com/pekspro/EF-Migrations-Script-Generator-Task)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "PEK's Productions",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "instanceNameFormat": "Generate Migration Scripts",
+    "groups": [
+        {
+            "name": "generalAdvanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        },
+        {
+            "name": "generalDependencies",
+            "displayName": "Dependencies",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [{
+            "name": "projectpath",
+            "type": "filePath",
+            "label": "Main Project Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Path to project (for instance a .csproj file) containing DbContexts."
+        },
+        {
+            "name": "databasecontexts",
+            "type": "multiLine",
+            "label": "DbContexts",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Name(s) of DbContexts, one per line."
+        },
+        {
+            "name": "startupprojectpath",
+            "type": "filePath",
+            "label": "Startup Project Path",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Path to an executable project that references the Main Project containing your DbContext(s) (for instance a .csproj file). If the DbContext(s) are defined in the Main Project, then this setting is not necessary."
+        },
+        {
+            "name": "targetfolder",
+            "type": "string",
+            "label": "Target Folder",
+            "defaultValue": "$(build.artifactstagingdirectory)/migrations",
+            "required": true,
+            "helpMarkDown": "Where migration scripts should be saved. One .sql file will be generated for each DbContext you specify, named the same as your DbContext class. For example, if your DbContext is named MyTestDbContext, then the output file will be named MyTestDbContext.sql."
+        },
+        {
+            "name": "build",
+            "type": "boolean",
+            "label": "Build project",
+            "defaultValue": "true",
+            "helpMarkDown": "If the projects should be built before the scripts are generated. If this is running in a build pipeline, often this could be unchecked."
+        },
+        {
+            "name": "installdependencies",
+            "type": "boolean",
+            "groupName": "generalDependencies",
+            "label": "Install dependencies for .NET Core 3 or later",
+            "required": false,
+            "helpMarkDown": "If you are using **.NET Core 3 or later**, the global tool **dotnet-ef** needs be installed before migrations script could be generated. Check this setting to do this automatically."
+        },
+        {
+            "name": "eftoolversion",
+            "type": "string",
+            "groupName": "generalDependencies",
+            "label": "Version",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Version of **dotnet-ef** to be installed. Example **3.1.14** or **6.0.0**. Leave empty for latest version.",
+            "visibleRule": "installdependencies = true"
+        },
+        {
+            "name": "nugetconfiguration",
+            "type": "filePath",
+            "groupName": "generalDependencies",
+            "label": "NuGet configuration file",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "NuGet configuration file to be used when dotnet-ef is installed. Not used in build. Normally not needed.",
+            "visibleRule": "installdependencies = true"
+        },
+        {
+            "name": "startMigration",
+            "type": "string",
+            "groupName": "generalAdvanced",
+            "label": "Start migration",
+            "required": false,
+            "helpMarkDown": "From which migration script should be generated. Example **AddSecondName** or **20210408185844_AddSecondName**. Leave empty for using the default '0'. Note that this will be used on all DbContexts."
+        },
+        {
+            "name": "endMigration",
+            "type": "string",
+            "groupName": "generalAdvanced",
+            "label": "End migration",
+            "required": false,
+            "helpMarkDown": "To which migration script should be generated. Example **AddThirdName** or **20210408185937_AddThirdName**. Leave empty for using the last migration. Note that this will be used on all DbContexts."
+        },
+        {
+            "name": "configuration",
+            "type": "string",
+            "groupName": "generalAdvanced",
+            "label": "Build configuration",
+            "required": false,
+            "helpMarkDown": "Build configuration to use. For instance **Release** or **Debug**. Normally this could be empty."
+        },
+        {
+            "name": "idempotent",
+            "type": "boolean",
+            "groupName": "generalAdvanced",
+            "label": "Make script idempotent",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Generate a script that can be used on a database at any migration. Recommended."
+        },
+        {
+            "name": "workingDirectory",
+            "type": "filePath",
+            "label": "Working directory",
+            "helpMarkDown": "Current working directory where the script is run. Normally this could be empty. But if you are getting error like **Specify which project file to use**, try a different directory.",
+            "required": "false",
+            "groupName": "generalAdvanced"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js",
+            "argumentFormat": ""
+        }
+    }
+}
