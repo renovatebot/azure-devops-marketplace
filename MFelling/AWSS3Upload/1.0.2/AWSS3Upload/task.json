@@ -1,0 +1,53 @@
+{
+    "id": "417db4b2-39a7-4109-914f-6d2122b9304d",
+    "name": "S3Upload",
+    "friendlyName": "AWS S3 Upload",
+    "description": "Build task to upload a file to an S3 bucket in AWS.",
+    "helpMarkDown": "[More Information](http://docs.aws.amazon.com/powershell/latest/userguide/pstools-s3-upload-object.html)",
+    "category": "Utility",
+    "visibility":[
+        "Build"
+				],
+    "author": "Marcus Felling",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 2
+    },
+    "minimumAgentVersion": "1.91.0",
+    "inputs": [
+        {
+            "name": "BucketName",
+            "type": "string",
+            "label": "Bucket Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The name of the S3 Bucket"
+        },
+        {
+            "name": "File",
+            "type": "string",
+            "label": "File to upload",
+            "defaultValue": "$(Build.ArtifactStagingDirectory)/examplefile.txt",
+            "required": true,
+            "helpMarkDown": "Name of the file in the local file system."
+        },
+        {
+            "name": "Key",
+            "type": "string",
+            "label": "Name of S3 Object (Key)",
+            "defaultValue": "examplefile.txt",
+            "required": true,
+            "helpMarkDown": "Name that the corresponding object will have in Amazon S3."
+        }
+    ],
+    "instanceNameFormat":  "Upload file to S3 bucket",
+	"execution":  {
+					  "PowerShell3":  {
+										  "target":  "$(currentDirectory)\\S3UploadTask.ps1"
+									  }
+                  },
+    "messages": {
+        "Upload": "Upload Complete",
+    }
+}
