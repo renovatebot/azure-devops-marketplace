@@ -1,0 +1,82 @@
+{
+    "id": "416b14b0-7411-4148-bdbe-42f73fd86c77",
+    "name": "BTDFProjectFileUpdater",
+    "friendlyName": "BTDF Project File Version Updater",
+    "description": "Modifies the Product Version, Project Version and Product ID in the BTDFProj file prior to creating the MSI.",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "author": "Rob Loach",
+    "version": {
+      "Major": 0,
+      "Minor": 1,
+      "Patch": 5
+    },
+    "instanceNameFormat": "Update BTDF Project File",
+    "groups":[
+      {
+        "name": "MethodOfVersionOption",
+        "displayName" : "Versioning Method",
+        "isExpanded": true
+      }
+    ],
+    "inputs": [
+      {
+          "name": "ProjectFile",
+          "type": "filePath",
+          "label": "Path to .btdfproj file",
+          "defaultValue": "",
+          "helpMarkDown": "Path to the .btdfproj file (ex: Build.SourcesDirectory\\src\\Deployment\\Deployment.btdfproj)",
+          "required": true
+      },
+      {
+          "name": "MethodOfVersionNumber",
+          "type": "pickList",
+          "label": "Method of versioning",
+          "defaultValue": "BuildNumber",
+          "helpMarkDown": "This will generate an MSI compatible version.\n\nIf you choose 'Use an environment variable', you must select an environment variable and ensure it contains the version number you want to use.\n\nIf you choose 'Use the build number', this will use the build number to version your package. **Note:** Under Options set the build number format to be '[$(BuildDefinitionName)_$(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)](https://go.microsoft.com/fwlink/?LinkID=627416)' or the version format of your choosing.\n\nIf you choose 'Use properties from GitVersion', then properties generated from GitVersion will be used.  Read more about [GitVersion](https://gitversion.readthedocs.io/en/latest/) and [SemVer](http://semver.org/spec/v1.0.0.html) for more information.",
+          "required": true,
+          "groupName": "MethodOfVersionOption",
+          "options": {
+              "BuildNumber": "Use the build number",
+              "Environment": "Use an environment variable",
+              "GitVersion": "Use properties from GitVersion"
+          }
+      },
+      {
+          "name": "VersionNumberEnvVar",
+          "type": "string",
+          "label": "Environment variable",
+          "defaultValue": "",
+          "helpMarkDown": "Enter the variable name without $, $env, or %.",
+          "required": false,
+          "groupName": "MethodOfVersionOption",
+          "visibleRule": "MethodOfVersionNumber=Environment"
+      },
+      {
+          "name": "CombinePatchBuildNumbers",
+          "type": "boolean",
+          "label": "Combine the Patch and Build Numbers",
+          "defaultValue": "false",
+          "helpMarkDown": "Combine the Patch and Build Numbers into one number from Major.Minor.Patch.Build.",
+          "required":  false
+      },
+      {
+          "name": "UpdateProjectVersion",
+          "type": "boolean",
+          "label": "Update the Project Version as well as Product Version",
+          "defaultValue": "true",
+          "helpMarkDown": "Updates the Project Version as well as the Product Version. This allows generated start menu items to be unique across versions.",
+          "required":  false
+      }
+    ],
+    "execution": {
+      "Node10": {
+        "target": "index.js"
+      }
+    }
+  }
+  
