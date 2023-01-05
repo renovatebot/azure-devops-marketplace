@@ -1,0 +1,93 @@
+{
+    "id": "F7B6A475-645D-45C0-B953-8AF17C516865",
+    "name": "JBossManagementCLI",
+    "friendlyName": "JBoss EAP / WildFly Management CLI",
+    "description": "Run command(s) via JBoss EAP 7 / Wildfly 8 HTTP management endpoint.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Microsoft",
+    "demands": [],
+    "version": {
+        "Major": 1,
+        "Minor": 112,
+        "Patch": 0 
+    },
+    "instanceNameFormat": "Running management commands.",
+    "inputs": [
+      {
+        "name": "credsType",
+        "type": "pickList",
+        "label": "Authentication Method",
+        "defaultValue": "serviceEndpoint",
+        "required": true,
+        "helpMarkDown": "Use JBoss and WildFly service endpoint connection or enter connection credentials.",
+        "options": {
+            "serviceEndpoint": "JBoss and WildFly Connection",
+            "inputs": "Credentials"
+        }
+      },
+      {
+        "name": "jbossEndpoint",
+        "type": "connectedService:jbosseapwildflyendpoint",
+        "label": "JBoss EAP/WildFly Endpoint",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Service endpoint for your JBoss EAP 7 / WildFly 8+ instance.",
+        "visibleRule": "credsType = serviceEndpoint"
+      },
+      {
+        "name": "jbossServerUrl",
+        "type": "string",
+        "label": "JBoss EAP/WildFly Server URL",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "URL for HTTP Management endpoint.",
+        "visibleRule": "credsType = inputs"
+      },
+      {
+        "name": "jbossManagementUser",
+        "type": "string",
+        "label": "Management User",
+        "defaultValue": "",
+        "required": true,
+        "visibleRule": "credsType = inputs"
+      },
+      {
+        "name": "jbossPassword",
+        "type": "string",
+        "label": "Password",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Enter the JBoss management user password. Use a new build variable with its lock enabled on the Variables tab to encrypt this value.",
+        "visibleRule": "credsType = inputs"
+      },
+      {
+        "name": "commands",
+        "type": "multiLine",
+        "label": "Commands to run",
+        "defaultValue": "",
+        "required": true,
+        "helpMarkDown": "Specify commands to execute, one command per line.",
+        "properties": {
+            "resizable": "true",
+            "rows" : "4"
+        }
+      }
+    ],
+    "execution": {
+        "Node": {
+            "target": "jbossmanagementcli.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "EndpointNotFound": "The JBoss / WildFly management endpoint could not be found.",
+        "EndpointDoesNotDefineURL": "The JBoss / WildFly management endpoint URL could not be found.",
+        "Success": "Successfully ran command(s).",
+        "Failure": "Failed to run command(s)."
+    }
+}
