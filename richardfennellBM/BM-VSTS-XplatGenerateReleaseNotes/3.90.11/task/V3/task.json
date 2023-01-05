@@ -1,0 +1,410 @@
+{
+    "id":  "7b0a5887-75c4-4ade-a915-f92a93c934cb",
+    "name":  "XplatGenerateReleaseNotes",
+    "friendlyName":  "Generate Release Notes (Crossplatform)",
+    "description":  "Generates a release notes file in a format of your choice from the build or release history",
+    "helpMarkDown":  "Version: 3.90.11. [More Information](https://github.com/rfennell/AzurePipelines/wiki/GenerateReleaseNotes---Node-based-Cross-Platform-Task/)",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "Black Marble",
+    "version":  {
+                    "Major":  "3",
+                    "Minor":  "90",
+                    "Patch":  "11"
+                },
+    "minimumAgentVersion":  "1.82.0",
+    "groups":  [
+                   {
+                       "name":  "advanced",
+                       "displayName":  "Advanced",
+                       "isExpanded":  false
+                   },
+                   {
+                       "name":  "handlebars",
+                       "displayName":  "Handlebars",
+                       "isExpanded":  false
+                   },
+                   {
+                       "name":  "outputs",
+                       "displayName":  "Outputs",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "outputfile",
+                       "type":  "string",
+                       "label":  "Output file",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The name of the Markdown file to export e.g. $(Build.ArtifactStagingDirectory)/releasenotes.md if within a build workflow "
+                   },
+                   {
+                       "name":  "outputVariableName",
+                       "type":  "string",
+                       "label":  "Output variable",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The name of the variable that the markdown output should be assigned to for use later in your workflow.",
+                       "groupName":  "outputs"
+                   },
+                   {
+                       "name":  "templateLocation",
+                       "type":  "pickList",
+                       "label":  "Template Location",
+                       "defaultValue":  "File",
+                       "required":  true,
+                       "options":  {
+                                       "File":  "File",
+                                       "InLine":  "InLine"
+                                   },
+                       "helpMarkDown":  "Select the template file source, file in source control or in line."
+                   },
+                   {
+                       "name":  "templatefile",
+                       "type":  "filePath",
+                       "label":  "Template file",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The name of the Markdown template.",
+                       "visibleRule":  "templateLocation = File"
+                   },
+                   {
+                       "name":  "inlinetemplate",
+                       "type":  "multiLine",
+                       "label":  "Template",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "The Markdown template.",
+                       "visibleRule":  "templateLocation = InLine"
+                   },
+                   {
+                       "name":  "checkStage",
+                       "type":  "boolean",
+                       "label":  "Check Stage",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "If true a comparison is made against the last build that was successful to the current stage, or overrideStageName if specified (Build Only, for this to work the stage name must be unique in the pipeline)"
+                   },
+                   {
+                       "name":  "overrideStageName",
+                       "type":  "string",
+                       "label":  "Name of stage (override)",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "If set uses this stage name to find the last successful deployment, as opposed to the currently active stage",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "stopOnRedeploy",
+                       "type":  "boolean",
+                       "label":  "No generation on re-deploy",
+                       "defaultValue":  "False",
+                       "required":  false,
+                       "helpMarkDown":  "Do not generate release notes of a re-deploy. If this is set, and a re-deploy occurs the task will succeeds with a warning",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "sortCS",
+                       "type":  "boolean",
+                       "label":  "Sort CS",
+                       "defaultValue":  "False",
+                       "required":  false,
+                       "helpMarkDown":  "If true will Changeset/Commits by data, if false then it will leave them in the API default order",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "sortWi",
+                       "type":  "boolean",
+                       "label":  "Sort WI",
+                       "defaultValue":  "False",
+                       "required":  false,
+                       "helpMarkDown":  "If true will sort work items by type, if false then it will leave the work items in default order",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "showOnlyPrimary",
+                       "type":  "boolean",
+                       "label":  "Show Primary only",
+                       "defaultValue":  "False",
+                       "required":  false,
+                       "helpMarkDown":  "If true only show WI/CS associated with primary release artifact",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "searchCrossProjectForPRs",
+                       "type":  "boolean",
+                       "label":  "Cross Project For PRs",
+                       "defaultValue":  "False",
+                       "required":  false,
+                       "helpMarkDown":  "If true will try to match commits to Azure DevOps PR cross project within the organisation, if false only searches the Team Project",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "gitHubPat",
+                       "type":  "string",
+                       "label":  "GitHub PAT",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "To expand commit messages stored in a private GitHub repos a PAT needs to be provided, it is not required for repo stored in Azure DevOps or public GitHub repos",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "bitbucketUser",
+                       "type":  "string",
+                       "label":  "Bitbucket User",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "To expand commit messages stored in a private Bitbucket repos a user and app secret need to be provided, it is not required for repo stored in Azure DevOps or public Bitbucket repos",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "bitbucketSecret",
+                       "type":  "string",
+                       "label":  "Bitbucket App Secret",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "To expand commit messages stored in a private Bitbucket repos a user and app secret need to be provided, it is not required for repo stored in Azure DevOps or public Bitbucket repos",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "dumpPayloadToConsole",
+                       "type":  "boolean",
+                       "label":  "Dump Payload to Console",
+                       "defaultValue":  "false",
+                       "groupName":  "advanced",
+                       "required":  true,
+                       "helpMarkDown":  "If true the data objects passed to the file generator is dumped to the log"
+                   },
+                   {
+                       "name":  "dumpPayloadToFile",
+                       "type":  "boolean",
+                       "label":  "Dump Payload to File",
+                       "defaultValue":  "false",
+                       "groupName":  "advanced",
+                       "required":  true,
+                       "helpMarkDown":  "If true the data objects passed to the file generator is dumped to a JSON file"
+                   },
+                   {
+                       "name":  "dumpPayloadFileName",
+                       "type":  "string",
+                       "label":  "Payload Dump File",
+                       "defaultValue":  "$(Build.ArtifactStagingDirectory)/payload.json",
+                       "required":  false,
+                       "helpMarkDown":  "The filename to dump the data objects passed to the file generator",
+                       "groupName":  "advanced",
+                       "visibleRule":  "dumpPayloadToFile = True"
+                   },
+                   {
+                       "name":  "replaceFile",
+                       "type":  "boolean",
+                       "label":  "Replace the output file",
+                       "defaultValue":  "True",
+                       "required":  true,
+                       "helpMarkDown":  "Replace the output file"
+                   },
+                   {
+                       "name":  "appendToFile",
+                       "type":  "boolean",
+                       "label":  "Append to end of the output file",
+                       "defaultValue":  "True",
+                       "required":  true,
+                       "helpMarkDown":  "Append to end of file in the output file if not replacing file",
+                       "visibleRule":  "replaceFile = False"
+                   },
+                   {
+                       "name":  "customHandlebarsExtensionCodeAsFile",
+                       "type":  "string",
+                       "label":  "Custom Handlebars Extension Code (As File)",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A file with custom Handlebars extension written as a JavaScript module e.g. module.exports = {foo() {return \u0027Returns foo\u0027;}};",
+                       "groupName":  "handlebars"
+                   },
+                   {
+                       "name":  "customHandlebarsExtensionCode",
+                       "type":  "multiLine",
+                       "label":  "Custom Handlebars Extension",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A custom Handlebars extension written as a JavaScript module e.g. module.exports = {foo() {return \u0027Returns foo\u0027;}};",
+                       "groupName":  "handlebars"
+                   },
+                   {
+                       "name":  "customHandlebarsExtensionFile",
+                       "type":  "string",
+                       "label":  "Custom Handlebars Extension File",
+                       "defaultValue":  "customHandlebarsExtension",
+                       "required":  false,
+                       "helpMarkDown":  "The filename (without extension) for any custom Handlebars extension written",
+                       "groupName":  "handlebars"
+                   },
+                   {
+                       "name":  "customHandlebarsExtensionFolder",
+                       "type":  "string",
+                       "label":  "Folder for Custom Handlebars Extension",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The folder to save custom Handlebars extension file. If empty defaults to customHandlebarsExtensionFolder the agents temp folder \u0027${process.env.AGENT_WORKFOLDER}/_temp\u0027",
+                       "groupName":  "handlebars"
+                   },
+                   {
+                       "name":  "getParentsAndChildren",
+                       "type":  "boolean",
+                       "label":  "Find related WI",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "Find the parents and child workitems for any workitems associated with a build",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "getAllParents",
+                       "type":  "boolean",
+                       "label":  "Find all Parent WI",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "Find the parents all workitems associated with a build, recursing back to workitem with no parents e.g. up to Epics",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "tags",
+                       "type":  "string",
+                       "label":  "Tags",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A comma separated list of pipeline tags that must all be matched when looking for previous successful builds, only used if checkStage=true",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "overridePat",
+                       "type":  "string",
+                       "label":  "Override Pat",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "It is possible to inject a Personal Access Token to use in place of the Build Agent OAUTH token. This option will only be used in very rare situations usually after a support issue has been raised",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "overrideActiveBuildReleaseId",
+                       "type":  "string",
+                       "label":  "Override Active Build/ Release ID",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "For releases or multi-stage YAML this parameter provides a means to set the ID of the \u0027active running release\u0027 to compare against. If the specified release/build is not found then the task will exit with an error. Default is empty/not set disabling this override behaviour",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "overrideBuildReleaseId",
+                       "type":  "string",
+                       "label":  "Override Build/ Release ID",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "For releases or multi-stage YAML this parameter provides a means to set the ID of the \u0027last good release\u0027 to compare against. If the specified release/build is not found then the task will exit with an error. Default is empty/not set disabling this override behaviour",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "getIndirectPullRequests",
+                       "type":  "boolean",
+                       "label":  "Get Indirect Pull Requests",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "If enabled an attempt will be made to populate a list of indirectly associated PRs i.e PR that are associated with a PR\u0027s associated commits",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "maxRetries",
+                       "type":  "string",
+                       "label":  "Max. Retries",
+                       "defaultValue":  "20",
+                       "required":  false,
+                       "helpMarkDown":  "The number of time to retry any REST API calls that timeout. Set to zero for no retries, defaults to 20",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "pauseTime",
+                       "type":  "string",
+                       "label":  "Pause Time",
+                       "defaultValue":  "5000",
+                       "required":  false,
+                       "helpMarkDown":  "No longer used, but left in to avoid breaking YAML builds",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "stopOnError",
+                       "type":  "boolean",
+                       "label":  "Stop on Handlebars Error",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "If enabled will stop the pipeline if there is a Handlebars template error, if false the task will log the error but continue",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "considerPartiallySuccessfulReleases",
+                       "type":  "boolean",
+                       "label":  "Consider Partially Successful Release",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "If enabled both successful and partial successful release will be considered when looking for historic releases",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "checkForManuallyLinkedWI",
+                       "type":  "boolean",
+                       "label":  "Check for Manually Linked WI",
+                       "defaultValue":  "False",
+                       "required":  true,
+                       "helpMarkDown":  "By default WI associated manually with a build/release will not appear in release notes. If this parameter is true they will be added.",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "wiqlWhereClause",
+                       "type":  "string",
+                       "label":  "WIQL Where Clause",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "A where clause to get a get a list of work items using a WIQL Query e.g. `[System.TeamProject] = \u0027Project Name\u0027 and [System.WorkItemType] = \u0027Product Backlog Item\u0027`. Note you cannot use the all the @ parameter such as `@project`, `@currentIteration` or `@Me`, but `@Today` works.",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "wiqlFromTarget",
+                       "type":  "pickList",
+                       "label":  "WIQL From Target",
+                       "defaultValue":  "WorkItems",
+                       "required":  true,
+                       "helpMarkDown":  "The FROM target for the WIQL Query.  e.g. `SELECT [System.Id] FROM workitems WHERE ...`",
+                       "groupName":  "advanced",
+                       "options":  {
+                                       "WorkItems ":  "WorkItems",
+                                       "WorkItemLinks":  "WorkItemLinks"
+                                   }
+                   },
+                   {
+                       "name":  "getPRDetails",
+                       "type":  "boolean",
+                       "label":  "Find associated PRs",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "If true all PRs in the project, or organisation, will be scanned for associations. There is an option to disable this feature as this scan is slow and not always required (Default true)",
+                       "groupName":  "advanced"
+                   },
+                   {
+                       "name":  "getTestedBy",
+                       "type":  "boolean",
+                       "label":  "Find Tests associated to WI",
+                       "defaultValue":  "true",
+                       "required":  false,
+                       "helpMarkDown":  "If true any Test Case WIs linked to associated WIs by a \u0027Tested By\u0027 relation will be added to the \u0027testedByWorkItems\u0027 array (Default true)",
+                       "groupName":  "advanced"
+                   }
+               ],
+    "instanceNameFormat":  "Generate Release Notes based on Release Comparison API",
+    "execution":  {
+                      "Node10":  {
+                                     "target":  "GenerateReleaseNotes.js",
+                                     "argumentFormat":  ""
+                                 }
+                  }
+}
