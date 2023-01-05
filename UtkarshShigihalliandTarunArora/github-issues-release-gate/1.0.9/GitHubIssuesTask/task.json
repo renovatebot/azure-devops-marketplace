@@ -1,0 +1,54 @@
+{
+	"id": "6aaacd39-5014-4271-b466-45267f1f74a9",
+	"name": "githubissuesreleasegate",
+	"friendlyName": "Search GitHub issues",
+	"description": "Query GitHub issues based on the search query",
+	"helpMarkDown": "[More Information](https://www.visualstudiogeeks.com)",
+	"category": "Utility",
+	"preview": "true",
+	"visibility": [
+		"Release"
+	],
+	"runsOn": [
+		"Server",
+		"ServerGate"
+	],
+	"author": "utkarshshigihalliandtarunarora",
+	"version": {
+		"Major": 1,
+		"Minor": 0,
+		"Patch": 9
+	},
+	"instanceNameFormat": "Search issues in GitHub repository",
+	"inputs": [
+		{
+			"name": "searchquery",
+			"type": "string",
+			"label": "Search Query",
+			"defaultValue": "",
+			"required": true,
+			"helpMarkDown": "GitHub compatible search query. [More Information](https://developer.github.com/v3/search/#search-issues)"
+		},
+		{
+			"name": "successCriteria",
+			"type": "string",
+			"label": "Success criteria",
+			"defaultValue": "",
+			"required": false,
+			"helpMarkDown": "Criteria which defines when to pass the task. No criteria means response content does not influence the result. Example:- For response {\"status\" : \"successful\"}, the expression can be eq(root['status'], 'successful'). [More Information](https://go.microsoft.com/fwlink/?linkid=842996)​"
+		}
+	],
+	"execution": {
+		"HttpRequest": {
+			"Execute": {
+				"EndpointId": "",
+				"EndpointUrl": "https://vsgeeks-github-depg8-001.azurewebsites.net/api/SearchGitHubIssues?$(searchquery)",
+				"Method": "GET",
+				"Body": "",
+				"Headers": "{\"Content-Type\":\"application/json\"}",
+				"WaitForCompletion": "false",
+				"Expression": "$(successCriteria)"
+			}
+		}
+	}
+}
