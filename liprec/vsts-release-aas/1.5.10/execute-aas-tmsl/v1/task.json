@@ -1,0 +1,294 @@
+{
+    "id": "92d41ce5-204b-4284-8caf-9920225e9d01",
+    "name": "execute-aas-tsml",
+    "friendlyName": "TMSL Script",
+    "description": "Executes a TMSL Script against an Azure Analysis Services instance or Power BI Premium dataset",
+    "author": "Jan Pieter Posthuma",
+    "helpMarkDown": "[More Information](https://github.com/liprec/vsts-release-aas)",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [
+        "azureps"
+    ],
+    "version": {
+        "Major": "1",
+        "Minor": "5",
+        "Patch": "10"
+    },
+    "minimumAgentVersion": "2.115.0",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "aas",
+            "displayName": "Analysis Service Details",
+            "isExpanded": true
+        },
+        {
+            "name": "query",
+            "displayName": "Script Details",
+            "isExpanded": true
+        },
+        {
+            "name": "firewall",
+            "displayName": "Firewall",
+            "isExpanded": false
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        },
+        {
+            "name": "old",
+            "displayName": "Deprecated inputs",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "ConnectedServiceNameSelector",
+            "aliases": [
+                "connectedServiceNameSelector"
+            ],
+            "type": "pickList",
+            "label": "Service Connection Type",
+            "required": true,
+            "helpMarkDown": "",
+            "defaultValue": "ConnectedServiceNameARM",
+            "options": {
+                "connectedServiceNameARM": "Azure Resource Manager",
+                "connectedServiceNamePBI": "Power BI"
+            },
+            "groupname": "azure"
+        },
+        {
+            "name": "ConnectedServiceNameARM",
+            "aliases": [
+                "connectedServiceNameARM"
+            ],
+            "type": "connectedService:AzureRM",
+            "label": "Service Connection",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Service Connection to the Azure Analysis Services",
+            "visibleRule": "ConnectedServiceNameSelector = connectedServiceNameARM",
+            "groupname": "azure"
+        },
+        {
+            "name": "connectedServiceNamePBI",
+            "type": "connectedService:powerplatform-spn",
+            "label": "Service Connection",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Select the Service Connection to the Power BI tenant.\n\nInstall [Power Platform Build Tools](https://marketplace.visualstudio.com/items?itemName=microsoft-IsvExpTools.PowerPlatform-BuildTools) for the service connection",
+            "visibleRule": "ConnectedServiceNameSelector = connectedServiceNamePBI",
+            "groupname": "azure"
+        },
+        {
+            "name": "aasServer",
+            "type": "string",
+            "label": "Analysis Services URL",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "URL for either Azure Analysis Services or Power BI Premium Connection.\n\nExample: 'asazure://westeurope.asazure.windows.net/fabrikam' or 'powerbi://api.powerbi.com/v1.0/myorg/fabrikam'",
+            "groupname": "aas"
+        },
+        {
+            "name": "loginType",
+            "type": "pickList",
+            "label": "Login type",
+            "defaultValue": "user",
+            "groupname": "aas",
+            "options": {
+                "user": "Named user",
+                "spn": "Service Principal",
+                "inherit": "Inherit from connection"
+            }
+        },
+        {
+            "name": "tenantId",
+            "type": "string",
+            "label": "Azure AD TenantID",
+            "required": true,
+            "visibleRule": "loginType = spn",
+            "groupname": "aas"
+        },
+        {
+            "name": "appId",
+            "type": "string",
+            "label": "Application ID",
+            "required": true,
+            "visibleRule": "loginType = spn",
+            "helpMarkDown": "Specify the Application ID of the Service Pricipal",
+            "groupname": "aas"
+        },
+        {
+            "name": "appKey",
+            "type": "string",
+            "label": "Application Key",
+            "required": true,
+            "visibleRule": "loginType = spn",
+            "helpMarkDown": "Key for the Service Principal. It can accept variable defined in Build/Release Definitions as e.g. '$(spkey). You may mark the variable type as 'secret' to secure it",
+            "groupname": "aas"
+        },
+        {
+            "name": "adminName",
+            "type": "string",
+            "label": "Analysis Services Admin",
+            "required": true,
+            "visibleRule": "loginType = user",
+            "helpMarkDown": "Specify the Analysis Services admin login",
+            "groupname": "aas"
+        },
+        {
+            "name": "adminPassword",
+            "type": "string",
+            "label": "Analysis Services Admin Password",
+            "required": true,
+            "visibleRule": "loginType = user",
+            "helpMarkDown": "Password for the Analysis Services Admin. It can accept variable defined in Build/Release Definitions as e.g. '$(passwordVariable). You may mark the variable type as 'secret' to secure it",
+            "groupname": "aas"
+        },
+        {
+            "name": "queryType",
+            "type": "pickList",
+            "label": "Type",
+            "groupname": "query",
+            "options": {
+                "tmsl": "TMSL Script File",
+                "inline": "Inline TMSL Script",
+                "folder": "Folder with TMSL Files"
+            }
+        },
+        {
+            "name": "tmslFile",
+            "type": "filePath",
+            "label": "TMSL File",
+            "helpMarkDown": "Location of the TMSL file on the automation agent or on a UNC path accessible to the automation agent like, \\\\BudgetIT\\Web\\Deploy\\Fabrikam.tmsl. Predefined system variables like, $(agent.releaseDirectory) can also be used here",
+            "groupname": "query",
+            "visibleRule": "queryType = tmsl"
+        },
+        {
+            "name": "tmslScript",
+            "type": "multiLine",
+            "label": "Inline TMSL Script",
+            "helpMarkDown": "Enter the TMSL script to execute on the Azure Analysis Service instance selected above",
+            "groupname": "query",
+            "visibleRule": "queryType = inline"
+        },
+        {
+            "name": "tmslFolder",
+            "type": "filePath",
+            "label": "Path to Folder",
+            "helpMarkDown": "Enter the path to a folder with the TMSL script to needs to be execute on the Azure Analysis Services instance selected above",
+            "groupname": "query",
+            "visibleRule": "queryType = folder"
+        },
+        {
+            "name": "ipDetectionMethod",
+            "type": "pickList",
+            "label": "Specify Firewall Rules Using",
+            "required": true,
+            "groupName": "firewall",
+            "defaultValue": "autoDetect",
+            "options": {
+                "autoDetect": "Auto Detect",
+                "ipAddressRange": "IP Address Range"
+            },
+            "helpMarkDown": "For successful execution of the task, we need to enable administrators to access the Azure Analysis Services from the IP Address of the automation agent.<br>By selecting auto-detect you can automatically add firewall exception for range of possible IP Address of automation agent ​or else you can specify the range explicitly"
+        },
+        {
+            "name": "startIpAddress",
+            "type": "string",
+            "label": "Start IP Address",
+            "required": true,
+            "groupName": "firewall",
+            "defaultValue": "",
+            "visibleRule": "ipDetectionMethod = ipAddressRange",
+            "helpMarkDown": "The starting IP Address of the automation agent machine pool like 196.21.30.50"
+        },
+        {
+            "name": "endIpAddress",
+            "type": "string",
+            "label": "End IP Address",
+            "required": true,
+            "groupName": "firewall",
+            "defaultValue": "",
+            "visibleRule": "ipDetectionMethod = ipAddressRange",
+            "helpMarkDown": "The ending IP Address of the automation agent machine pool like 196.21.30.65"
+        },
+        {
+            "name": "deleteFirewallRule",
+            "type": "boolean",
+            "label": "Delete Rule After Task Ends",
+            "required": false,
+            "groupName": "firewall",
+            "defaultValue": "true",
+            "helpMarkDown": "If selected, the added exception for IP addresses of the automation agent will be removed for corresponding Azure Analysis Services"
+        },
+        {
+            "name": "tsmlFile",
+            "type": "filePath",
+            "label": "Old variable containing the TMSL File",
+            "helpMarkDown": "[DEPRECATED] Not used anymore, please use 'tmslFile'",
+            "groupname": "old"
+        },
+        {
+            "name": "tsmlScript",
+            "type": "multiLine",
+            "label": "Old variable containing the TMSL inline script",
+            "helpMarkDown": "[DEPRECATED] Not used anymore, please use 'tmslScript'",
+            "groupname": "old"
+        },
+        {
+            "name": "targetAzurePs",
+            "aliases": [
+                "azurePowerShellVersion"
+            ],
+            "type": "radio",
+            "label": "Azure PowerShell Version",
+            "defaultValue": "latestVersion",
+            "required": false,
+            "options": {
+                "latestVersion": "Latest installed version",
+                "otherVersion": "Specify other version"
+            },
+            "groupName": "old",
+            "helpMarkDown": "[DEPRECATED] Not used anymore. Task is running with Windows PowerShell 5.1"
+        },
+        {
+            "name": "customTargetAzurePs",
+            "aliases": [
+                "preferredAzurePowerShellVersion"
+            ],
+            "type": "string",
+            "label": "Preferred Azure PowerShell Version",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "targetAzurePs = otherVersion",
+            "groupName": "old",
+            "helpMarkDown": "[DEPRECATED] Not used anymore. Task is running with Windows PowerShell 5.1"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroupName",
+            "endpointId": "$(ConnectedServiceNameARM)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "instanceNameFormat": "Execute TMSL Script to $(aasServer)",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\execute-aas-tmsl.ps1",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
