@@ -1,0 +1,87 @@
+{
+    "id": "5f320fcc-408c-4dac-9d1a-4f7c74370af7",
+    "name": "NotifyBuildStatusToBitbucketRestApi",
+    "friendlyName": "Notify build status to Bitbucket",
+    "description": "Invoke a Bitbucket REST API as a part of your pipeline to update the build status for the currently built git commit. This is a server-based (agentless) task and can therefore only be used in an agentless job.",
+    "author": "Swint De Coninck",
+    "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?linkid=870236)",
+    "category": "Azure Pipelines",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Server",
+        "ServerGate"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 9,
+        "Patch": 6
+    },
+    "instanceNameFormat": "Notify build status to Bitbucket: $(bitbucketBuildStatus)",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "connectedServiceName",
+            "aliases": [
+                "serviceConnection",
+                "genericService"
+            ],
+            "type": "connectedService:Generic",
+            "label": "Generic service connection",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Select a generic service connection that should be used to pick the URL and construct authorization header for the http request."
+        },
+        {
+            "name": "bitbucketBuildStatus",
+            "type": "pickList",
+            "label": "Build status",
+            "required": "true",
+            "defaultValue": "INPROGRESS",
+            "options": {
+                "INPROGRESS": "INPROGRESS",
+                "SUCCESSFUL": "SUCCESSFUL",
+                "FAILED": "FAILED"
+            },
+            "helpMarkDown": "Select the build status that should be sent to Bitbucket."
+        },
+        {
+            "name": "bitbucketBuildKey",
+            "type": "string",
+            "label": "Bitbucket build key",
+            "required": "true",
+            "defaultValue": "",
+            "helpMarkDown": "Select the build key that should be sent to Bitbucket. The new build status will replace the previously submitted build status for that commit hash and build key. If a single commit was built by multiple build plans, you can POST multiple results for the same commit. Each result must have a different key attribute."
+        },
+        {
+            "name": "bitbucketBuildName",
+            "type": "string",
+            "label": "Bitbucket build name",
+            "required": "true",
+            "defaultValue": "Azure DevOps build $(Build.BuildId)",
+            "helpMarkDown": "Select the build key that should be sent to Bitbucket. The new build status will replace the previously submitted build status for that commit hash and build key. If a single commit was built by multiple build plans, you can POST multiple results for the same commit. Each result must have a different key attribute."
+        },
+        {
+            "name": "bitbucketBuildDescription",
+            "type": "string",
+            "label": "Bitbucket build description",
+            "required": "false",
+            "defaultValue": "",
+            "helpMarkDown": "Select the build description that should be sent to Bitbucket."
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+            "Execute": {
+                "EndpointId": "TaskInputs['connectedServiceName']",
+                "EndpointUrl": "$(endpoint.url)/rest/build-status/1.0/commits/$(Build.SourceVersion)",
+                "Method": "POST",
+                "Body": "{\"state\": \"$(bitbucketBuildStatus)\",\"key\": \"$(bitbucketBuildKey)\",\"name\":\"$(bitbucketBuildName)\",\"url\": \"$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&_a=summary\",\"description\": \"$(bitbucketBuildDescription)\"}",
+                "Headers": "{\"Content-Type\":\"application/json\"}",
+                "WaitForCompletion": "false",
+                "Expression": ""
+            }
+        }
+    }
+}
