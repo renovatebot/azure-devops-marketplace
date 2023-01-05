@@ -1,0 +1,62 @@
+{
+    "id": "50a4f510-142a-11e8-85fe-290cdea90d78",
+    "name": "Sitecore Package Deployer",
+    "friendlyName": "Sitecore Package Deployer",
+    "description": "This task runs the Sitecore Package Deployer on your Sitecore instance, then reports on it's progress",
+    "author": "Christopher Pateman",
+    "helpMarkDown": "[More Information](https://www.teamdevelopmentforsitecore.com/Blog/sitecore-package-deployer)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "demands": [],
+    "version": {
+        "Major": "0",
+        "Minor": "0",
+        "Patch": "6"
+    },
+    "minimumAgentVersion": "1.95.0",
+    "instanceNameFormat": "Sitecore Package Deployer Task $(message)",
+    "groups": [],
+    "inputs": [
+        {
+            "name": "SitecoreUrl",
+            "type": "string",
+            "label": "Sitecore URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "This is your Sitecore instance base url e.g. https://www.mywebsite.com"
+        },
+        {
+            "name": "Force",
+            "type": "boolean",
+            "label": "Force Package Deployer Process",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "This will force the Sitecore Package Deployer to run even if it is busy."
+        },
+        {
+            "name": "CheckPackageComplete",
+            "type": "boolean",
+            "label": "Check Package Deployer Progress",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "This will monitor the Sitecore Package Deployer Folder for it progress in processing the update packages."
+        },
+        {
+            "name": "SitecorePackageDeployerPath",
+            "type": "filePath",
+            "label": "Sitecore Package Deployer Path",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "This is the location where the Update files will be deployed e.g. /data/SitecorePackageDeployer.",
+            "visibleRule": "CheckPackageComplete = true"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "packageDeployer.ps1"
+        }
+    }
+}
