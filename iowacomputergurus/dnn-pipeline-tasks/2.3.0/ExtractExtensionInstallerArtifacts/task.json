@@ -1,0 +1,101 @@
+{
+    "id": "8de2a935-98e7-4232-9431-7658ac2add52",
+    "name": "Extract-Dnn-Extension-Install-Artifects",
+    "friendlyName": "Copy DNN Extension Artifacts",
+    "description": "Build task that that will help locate DNN Extension Installer artifacts and copy them to the Artifacts Staging Directory for publishing.  Based on the CopyFiles task",
+    "helpMarkDown": "[More Information](https://github.com/IowaComputerGurus/Azure-DevOps-Extensions)",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "IowaComputerGurus, Inc.",
+    "version": {
+        "Major": 2,
+        "Minor": 2,
+        "Patch": 1
+    },
+    "releaseNotes": "Initial public release",
+    "demands": [],
+    "minimumAgentVersion": "1.91.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SourceFolder",
+            "type": "filePath",
+            "label": "Source Folder",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The source folder that the copy pattern(s) will be run from.  Empty is the root of the repo, typically this is blank  Use [variables](https://go.microsoft.com/fwlink/?LinkID=550988) if files are not in the repo. Example: $(agent.builddirectory)"
+        },
+        {
+            "name": "Contents",
+            "type": "multiLine",
+            "label": "Contents",
+            "defaultValue": "**\\packages\\*_install.zip",
+            "required": true,
+            "helpMarkDown": "File paths to include as part of the copy. Supports multiple lines of match patterns, however typically the default will work. [More Information](https://go.microsoft.com/fwlink/?LinkID=708389)"
+        },
+        {
+            "name": "TargetFolder",
+            "type": "string",
+            "label": "Target Folder",
+            "defaultValue": "$(build.artifactstagingdirectory)",
+            "required": true,
+            "helpMarkDown": "Target folder or UNC path files will copy to, default option is set for later Publishing. You can use [variables](http://go.microsoft.com/fwlink/?LinkID=550988)."
+        },
+        {
+            "name": "CleanTargetFolder",
+            "type": "boolean",
+            "label": "Clean Target Folder",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Delete all existing files in target folder before copy",
+            "groupName": "advanced"
+        },
+        {
+            "name": "OverWrite",
+            "type": "boolean",
+            "label": "Overwrite",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Replace existing file in target folder",
+            "groupName": "advanced"
+        },
+        {
+            "name": "flattenFolders",
+            "type": "boolean",
+            "label": "Flatten Folders",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Flatten the folder structure and copy all files into the specified target folder. By default this is true for ease of artifact download",
+            "groupName": "advanced"
+        }
+    ],
+    "instanceNameFormat": "Copy DNN Installers to: $(TargetFolder)",
+    "execution": {
+        "Node": {
+            "target": "copyfiles.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "LookingIn": "Searching for files in folder: %s",
+        "MatchPattern": "Using Matching Pattern: %s",
+        "FoundNFiles": "found %d files",
+        "CleaningTargetFolder": "Cleaning target folder: %s",
+        "FileAlreadyExistAt": "File %s already exist at %s",
+        "CopyingTo": "Copying %s to %s",
+        "TargetIsDir": "Unable to copy file %s to %s. The target path already exists as a directory.",
+        "NoFilesFound": "No files were found using the search pattern and target directory"
+    }
+}
