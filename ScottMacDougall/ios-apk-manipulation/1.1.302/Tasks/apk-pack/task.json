@@ -1,0 +1,80 @@
+{
+    "id": "662de9c5-0a46-4e8f-aedf-96f8b36ea946",
+    "name": "PackUnpackApkFile",
+    "friendlyName": "Pack or unpack an apk file.",
+    "description": "Pack or unpack an apk file after modifications have been made",
+    "helpMarkDown": "",
+    "category": "build",
+    "author": "Scott MacDougall",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 302
+    },
+    "instanceNameFormat": "Pack or unpack apk file",
+    "demands": [
+        "java"
+    ],
+    "inputs": [
+        {
+            "name": "packOrUnpack",
+            "type": "radio",
+            "label": "Pack or unpack",
+            "required": false,
+            "defaultValue": "source",
+            "helpMarkDown": "Select whether you want to pack or unpack an apk",
+            "options": {
+                "pack": "Pack",
+                "unpack": "Unpack"
+            }
+        },
+        {
+            "name": "apkPath",
+            "type": "filePath",
+            "label": "Path to apk",
+            "visibleRule": "packOrUnpack = unpack",
+            "required": true,
+            "helpMarkDown": "Relative path to the apk file you want to unpack."
+        },
+        {
+            "name": "unpackedApkPath",
+            "type": "filePath",
+            "label": "Path to unpacked APK",
+            "defaultValue": "$(UNPACKED_APK_PATH)",
+            "visibleRule": "packOrUnpack = pack",
+            "required": true,
+            "helpMarkDown": "Relative path to the apk file you want to pack."
+        },
+        {
+            "name": "apkName",
+            "type": "string",
+            "label": "APK Name",
+            "defaultValue": "$(UNPACKED_APK_NAME)",
+            "visibleRule": "packOrUnpack = pack",
+            "required": true,
+            "helpMarkDown": "The name you'd like to give the newly packaged apk."
+        },
+        {
+            "name": "apkToolArgs",
+            "type": "string",
+            "label": "ApkTool Arguments",
+            "defaultValue": "",
+            "helpMarkDown": "Additional aruments to pass to ApkTool",
+            "groupName": "advanced"
+        }
+    ],
+    "outputVariables": [
+        {
+            "name": "repackagedAPKFile",
+            "description": "The resulting apk file after assets update. This needs to be re-signed."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "apk-pack.js"
+        }
+    },
+    "messages": {
+        "InvalidFilePath": "Invalid file path"
+    }
+}
