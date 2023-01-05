@@ -1,0 +1,150 @@
+{
+    "id": "304DF4EB-62E8-450C-9D79-8F186798F803",
+    "name": "PublishFeaturesToAugurk",
+    "friendlyName": "Publish Features To Augurk",
+    "description": "Publishes Gherkin .feature files to Augurk.",
+    "categories": [ "Utility" ],
+    "deprecated": true,
+    "author": "Jonathan Mezach, Mark Taling",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 5
+    },
+    "instanceNameFormat": "Publish features from $(features) to Augurk",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+  "inputs": [
+    {
+      "name": "features",
+      "type": "filePath",
+      "label": "Feature(s)",
+      "defaultValue": "**\\*.feature",
+      "required": true,
+      "helpMarkDown": "Relative path from repo root of the feature file(s) to publish. Wildcards can be used. For example, `**\\*.feature` for all feature files in all sub folders."
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Augurk",
+      "label": "Augurk Instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Augurk instance to which the features should be published."
+    },
+    {
+      "name": "productName",
+      "type": "pickList",
+      "label": "Product Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the product under which the features should be published to Augurk.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "productDescription",
+      "type": "filePath",
+      "label": "Product Description",
+      "required": false,
+      "helpMarkDown": "Path to a Markdown file containing a description of the product being published to Augurk."
+    },
+    {
+      "name": "useFolderStructure",
+      "type": "boolean",
+      "label": "Use folder structure",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Indicates whether the folder structure in which the feature files are placed is used to create groups within Augurk. If this option is checked, the name of the parent folders of each feature file is used as a group name. Otherwise set the group name explicitly below."
+    },
+    {
+      "name": "groupName",
+      "type": "string",
+      "label": "Group Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the group under which the features should be published to Augurk.",
+      "visibleRule": "useFolderStructure = false"
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Version of the feature files being published. Supports variables (in the format $(<variable-name>)."
+    },
+    {
+      "name": "embedImages",
+      "type": "boolean",
+      "label": "Embed images",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Enable this option if you want images referenced in feature files to be embedded so they can be viewed in Augurk."
+    },
+    {
+      "name": "useIntegratedSecurity",
+      "type": "boolean",
+      "label": "Use Integrated Security",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Indicates whether integrated security should be used when communicating with the Augurk instance.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "language",
+      "type": "string",
+      "label": "Language",
+      "defaultValue": "en-US",
+      "required": true,
+      "helpMarkDown": "Language in which the feature files have been written. For example: `en-US` or `nl-NL`.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "augurkLocation",
+      "type": "filePath",
+      "label": "augurk.exe Location",
+      "defaultValue": "**/packages/**/tools/augurk.exe",
+      "required": true,
+      "helpMarkDown": "Path to where the command line augurk.exe tool is located. This is usually installed through the Augurk.CommandLine NuGet package. If this package is installed the default will suffice, otherwise another path must be specified.",
+      "groupName": "advanced"
+    },
+    {
+      "name": "additionalArguments",
+      "type": "string",
+      "label": "Additional argument(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Any additional command line arguments you want to pass to augurk.exe",
+      "groupName": "advanced"
+    },
+    {
+      "name": "treatWarningsAsErrors",
+      "type": "boolean",
+      "label": "Treat warning(s) as error(s)",
+      "defaultValue": false,
+      "required": true,
+      "helpMarkDown": "Indicates whether warnings issued by this task should be treated as errors.",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "productName",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "Augurk Products"
+    }
+  ],
+  "execution": {
+      "PowerShell": {
+          "target": "$(currentDirectory)\\PublishFeaturesToAugurk.ps1",
+          "argumentFormat": "",
+          "workingDirectory": "$(currentDirectory)"
+      }
+  }    
+}

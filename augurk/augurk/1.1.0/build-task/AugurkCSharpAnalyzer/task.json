@@ -1,0 +1,91 @@
+{
+  "id": "3b04573e-7699-440a-93ae-8f7b06259078",
+  "name": "AugurkCSharpAnalyzer",
+  "friendlyName": "Run Augurk C# Analysis",
+  "description": "Performs a static code analysis over your test automation and uploads the results to Augurk allowing you to visualize dependencies between features",
+  "category": "Utility",
+  "author": "Augurk",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 2
+  },
+  "demands": [
+    "augurk-csharpanalyzer"
+  ],
+  "instanceNameFormat": "Analyze $(solution) and upload to Augurk",
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "solution",
+      "type": "filePath",
+      "label": "Solution(s)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Path to the solution file that should be analyzed"
+    },
+    {
+      "name": "specificationProject",
+      "type": "string",
+      "label": "Test project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the project containing the SpecFlow test automation"
+    },
+    {
+      "name": "connectedServiceName",
+      "type": "connectedService:Augurk",
+      "label": "Augurk Instance",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Augurk instance to which the results should be uploaded."
+    },
+    {
+      "name": "productName",
+      "type": "picklist",
+      "label": "Product Name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the product under which the features have been published to Augurk.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+    {
+      "name": "version",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Version of the feature files that have been uploaded to Augurk. Supports variables (in the format $(<variable-name>)."
+    },
+    {
+      "name": "additionalArguments",
+      "type": "string",
+      "label": "Additional argument(s)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Any additional command line arguments you want to pass to Augurk.CSharpAnalyzer",
+      "groupName": "advanced"
+    }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "productName",
+      "endpointId": "$(connectedServiceName)",
+      "dataSourceName": "Augurk Products"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "csharpanalyzer.js",
+      "argumentFormat": ""
+    }
+  }
+}
