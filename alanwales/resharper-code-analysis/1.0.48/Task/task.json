@@ -1,0 +1,85 @@
+﻿{
+    "id": "357E581F-2683-4AC4-AFF6-2C2445F063C5",
+    "name": "ResharperCli",
+    "friendlyName": "Resharper Code Quality Analysis",
+    "description": "Runs the Resharper Command-Line Tool and fails the build if code quality issues are found",
+    "helpMarkDown": "[More Information](https://www.jetbrains.com/resharper/features/command-line.html)",
+    "category": "Build",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Alan Wales",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 48
+    },
+    "demands": [
+    ],
+    "minimumAgentVersion": "1.83.0",
+        "groups": [
+        {
+            "name": "configurationOptions",
+            "displayName": "Configuration",
+            "isExpanded": true
+        },
+        {
+            "name": "advancedOptions",
+            "displayName": "Advanced Options",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "SolutionOrProjectPath",
+            "type": "filePath",
+            "label": "Path to .sln or .csproj file",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to find the solution or project file to inspect code against.",
+            "groupName":  "configurationOptions"
+        },
+        {
+            "name": "FailBuildLevelSelector",
+            "type": "pickList",
+            "label": "Fail build severity",
+            "required": true,
+            "helpMarkDown": "Issues found at or above this severity level will fail the build",
+            "defaultValue": "Warning",
+            "options": {
+                "Hint": "Hint",
+                "Suggestion": "Suggestion",
+                "Warning": "Warning",
+                "Error": "Error"
+            },
+            "groupName": "configurationOptions"
+        },
+        {
+            "name": "CommandLineInterfacePath",
+            "type": "filePath",
+            "label": "Path to command line tool",
+            "defaultValue": "$(Build.SourcesDirectory)/Lib/Resharper",
+            "required": false,
+            "helpMarkDown": "Path to the folder which contains the command-line tool which can be a path inside the repository (hosted controller) or a known location on the build agent (custom controller). Inspectcode.exe must be available in this folder.",
+            "groupName":  "advancedOptions"
+        },
+        {
+            "name": "AdditionalArguments",
+            "type": "string",
+            "label": "Additional arguments",
+            "defaultValue": "/disable-settings-layers:SolutionPersonal",
+            "required": false,
+            "helpMarkDown": "Path to the folder which contains the command-line tool. Inspectcode.exe must be available in this folder.",
+            "groupName":  "advancedOptions"
+        }
+    ],
+    "instanceNameFormat": "Automated code quality checks",
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\RunResharperCodeAnalysisTool.ps1",
+            "argumentFormat": "-commandLineInterfacePath $(CommandLineInterfacePath) -solutionOrProjectPath $(SolutionOrProjectPath) -failBuildLevelSelector $(FailBuildLevelSelector) -additionalArguments $(AdditionalArguments) -buildId $(Build.BuildId)",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
