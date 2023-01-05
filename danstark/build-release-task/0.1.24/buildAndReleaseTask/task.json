@@ -1,0 +1,99 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "bec0730c-83af-458f-92b8-37e81a9fed9d",
+    "name": "CoverageConverterDS",
+    "friendlyName": "Coverage ConverterDS",
+    "description": "Convert .coverage file into .coveragexml for use in Code Coverage Report",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "danstark",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 24
+    },
+    "instanceNameFormat": "Echo $(samplestring)",
+    "inputs": [
+        {
+            "name": "searchFolderForTestFiles",
+            "type": "string",
+            "label": "Search Folder for Test Files",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "This should be the root for find the Test Files. This is not the full path. This also will be used to find the .coverage file."
+        },
+        {
+            "name": "vsTestExeFileLocation",
+            "type": "string",
+            "label": "vsTest Exe File Location",
+            "defaultValue": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow\\vstest.console.exe",
+            "required": true,
+            "helpMarkDown": "Change if needed, the VS is installed by default in windows machine."
+        },
+        {
+            "name": "vsTestArgs",
+            "type": "string",
+            "label": "vsTest Args",
+            "defaultValue": "/EnableCodeCoverage",
+            "required": true,
+            "helpMarkDown": "This will generate the .coverage file"
+        },
+        {
+            "name": "listTestFiles",
+            "type": "multiLine",
+            "label": "Test files",
+            "defaultValue": "**\\bin\\**\\*.Tests*.dll",
+            "required": true,
+            "helpMarkDown": "Change if needed",
+            "properties": {
+                "rows": "3",
+                "resizable": "true"
+            }
+        },
+        {
+            "name": "searchFolderForCodeCoverageFile",
+            "type": "string",
+            "label": "Search Folder for Test Files",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": true,
+            "helpMarkDown": "This should be the root for find the Code Coverage Files."
+        },
+        {
+            "name": "temporaryFolderForCodeCoverage",
+            "type": "string",
+            "label": "Temporary Code Coverage File Location",
+            "defaultValue": "Agent.TempDirectory",
+            "required": true,
+            "helpMarkDown": ""
+        },
+        {
+            "name": "temporaryFileCoveragexml",
+            "type": "string",
+            "label": "Temporary CoverageXml File Location",
+            "defaultValue": "\\TestResults\\DynamicCodeCoverage.coveragexml",
+            "required": true,
+            "helpMarkDown": "The begin will be the temporaryFolderForCodeCoverage + whatever you add here e.g $(Agent.TempDirectory)\\TestResults\\DynamicCodeCoverage.coveragexml, where $(Agent.TempDirectory) will be something like d:\\a\\1"
+        },
+        {
+            "name": "codeCoverageArgs",
+            "type": "string",
+            "label": "Code Coverage Exe File Location",
+            "defaultValue": "analyze /output:",
+            "required": true,
+            "helpMarkDown": "Keep the /output: as last argument."
+        },
+        {
+            "name": "codeCoverageExeFileLocation",
+            "type": "string",
+            "label": "Code Coverage Exe File Location",
+            "defaultValue": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\Team Tools\\Dynamic Code Coverage Tools\\CodeCoverage.exe",
+            "required": true,
+            "helpMarkDown": "Change if needed, the VS is installed by default in windows machine."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
