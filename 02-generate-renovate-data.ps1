@@ -11,10 +11,12 @@ function add-version
 
     if (-not $renovateData."$name")
     {
-        $renovateData."$name" = @()
+        $renovateData."$name" = [string[]]@()
     }
     
-    $renovateData."$name" = ($renovateData."$name", @($version)) | Sort-Object -Unique
+    [string[]]$currentversions = $renovateData."$name"
+    $currentversions += $version
+    $renovateData."$name" = $currentversions | Sort-Object -Unique
 }
 
 $renovateData = @{}
