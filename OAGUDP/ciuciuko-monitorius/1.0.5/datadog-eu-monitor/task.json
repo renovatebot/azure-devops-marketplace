@@ -1,0 +1,70 @@
+{
+    "id": "73e6f621-c3ae-4f00-ad09-0e76d62ab62b",
+    "name": "DatadogEu",
+    "friendlyName": "Query Datadog monitors-eu",
+    "description": "Query Datadog monitors to check for warnings or alerts",
+    "author": "Datadog",
+    "helpUrl": "https://docs.microsoft.com/azure/devops/pipelines/tasks/utility/azure-monitor",
+    "helpMarkDown": "[Learn more about this task](https://go.microsoft.com/fwlink/?linkid=870240)",
+    "category": "Utility",
+    "releaseNotes": "Query Datadog monitors to check for warnings or alerts",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server",
+        "ServerGate"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 21
+    },
+    "instanceNameFormat": "Query Datadog-EU monitors",
+    "inputs": [
+        {
+            "name": "connectedServiceDatadogEu",
+            "type": "connectedService:DatadogEu",
+            "label": "DatadogEu",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Select a Datadog service connection"
+        },
+        {
+            "name": "monitorID",
+            "type": "string",
+            "label": "Monitor ID",
+            "required": true,
+            "helpMarkDown": "Navigate to https://app.datadoghq.com/monitors/manage. Select the monitor of interest. In the resulting details page, the monitor ID can be found below the name of the monitor"
+        },
+        {
+            "name": "severityThreshold",
+            "type": "pickList",
+            "label": "Severity threshold",
+            "required": true,
+            "defaultValue": "alert",
+            "options": {
+                "alert": "Alert",
+                "warn": "Warn"
+            },
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "helpMarkDown": "State of the monitor at which the task is failed."
+        }
+    ],
+    "execution": {
+        "HttpRequest": {
+            "Execute": {
+                "EndpointId": "$(connectedServiceDatadogEu)",
+                "EndpointUrl": "$(endpoint.url)/monitor/$(monitorID)",
+                "Method": "GET",
+                "Body": "",
+                "Headers": "",
+                "WaitForCompletion": "false",
+                "Expression": "not(or(and(eq('$(severityThreshold)', 'warn'), in(root['overall_state'], 'Alert', 'Warn')), and(eq('$(severityThreshold)', 'alert'), eq(root['overall_state'], 'Alert'))))"
+            }
+        }
+    }
+}
