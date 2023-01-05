@@ -1,0 +1,92 @@
+{
+  "id": "ACEE093C-D84E-456E-B6F3-1D65969291BD",
+  "name": "XmlPatch",
+  "friendlyName": "Patch XML Files",
+  "description": "Patch XML files using XPath and JSON patch syntaxes",
+  "helpMarkDown": "[More Information](https://github.com/geeklearningio/gl-vsts-tasks-file-patch/wiki/Patch-XML-Files) (Version 1.1.3000)",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Geek Learning",
+  "version": {
+    "Major": 1,
+    "Minor": 1,
+    "Patch": 3000
+  },
+  "demands": [
+    "npm"
+  ],
+  "minimumAgentVersion": "1.91.0",
+  "instanceNameFormat": "Patch files $(XmlTargetFilters)",
+  "inputs": [
+    {
+      "name": "SyntaxType",
+      "type": "pickList",
+      "label": "Syntax type",
+      "defaultValue": "Standard",
+      "required": true,
+      "helpMarkDown": "The syntax used for the patch content. See documentation for more information.",
+      "options": {
+        "standard": "Standard Syntax",
+        "slick": "Slick Syntax"
+      }
+    },
+    {
+      "name": "XmlWorkingDir",
+      "type": "filePath",
+      "label": "Patch working directory",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Working directory. Example: $(Build.SourcesDirectory)"
+    },
+    {
+      "name": "XmlTargetFilters",
+      "type": "multiLine",
+      "label": "Target files",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Patch target files. Example: config*.xml"
+    },
+    {
+      "name": "Namespaces",
+      "type": "multiLine",
+      "label": "Xml Namespaces (As a Json map)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Xml namespaces as a json map.",
+      "properties": {
+        "resizable": "true",
+        "rows": "5",
+        "maxLength": "5000"
+      }
+    },
+    {
+      "name": "JsonPatchContent",
+      "type": "multiLine",
+      "label": "Patch Content",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Patch content.",
+      "properties": {
+        "resizable": "true",
+        "rows": "10",
+        "maxLength": "5000"
+      }
+    },
+    {
+      "name": "OutputPatchFile",
+      "type": "boolean",
+      "label": "Output patched file in logs",
+      "defaultValue": "false",
+      "helpMarkDown": "Output patched file in logs"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "xmlPatch.js",
+      "argumentFormat": ""
+    }
+  }
+}
