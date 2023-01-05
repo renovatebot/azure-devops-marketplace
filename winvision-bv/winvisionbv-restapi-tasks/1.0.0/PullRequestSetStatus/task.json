@@ -1,0 +1,151 @@
+{
+    "id": "7B3152DD-A0EB-47BA-8D6D-B16F94224AC3",
+    "name": "PullRequestSetStatus",
+    "friendlyName": "Set Pull Request Status",
+    "description": "Set the status of a Pull Request",
+    "author": "Winvision",
+    "helpMarkDown": "[Support](https://github.com/Winvision/vsts-tasks)",
+    "category": "Utility",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent"
+    ],
+    "minimumAgentVersion": "1.83.2",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "instanceNameFormat": "Set status of Pull Request",
+    "groups": [
+        {
+            "name": "connection",
+            "displayName": "Connection Settings",
+            "isExpanded": true
+        },
+        {
+            "name": "pullRequest",
+            "displayName": "Pull Request Settings",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "serverUrl",
+            "type": "string",
+            "label": "Server URL",
+            "required": true,
+            "helpMarkDown": "URL to the TFS or VSTS server (https://tfsserver.ext/collection or https://account.visualstudio.com/DefaultCollection).",
+            "groupName": "connection"
+        },
+        {
+            "name": "token",
+            "type": "string",
+            "label": "Personal Access Token",
+            "required": true,
+            "helpMarkDown": "The personal access token to connect with, this token needs at least the 'Code (read and write)' (code_write) scope.",
+            "groupName": "connection"
+        },
+        {
+            "name": "repositoryByName",
+            "type": "boolean",
+            "label": "Repository by name",
+            "defaultValue": "false",
+            "required": true,
+            "helpMarkDown": "Whether to select your Git repository by name instead of id.",
+            "groupName": "connection"
+        },
+        {
+            "name": "repositoryId",
+            "type": "string",
+            "label": "Repository ID",
+            "required": true,
+            "helpMarkDown": "The ID of the Git Repository (GUID).",
+            "visibleRule": "repositoryByName = false",
+            "groupName": "connection"
+        },
+        {
+            "name": "repositoryName",
+            "type": "string",
+            "label": "Repository name",
+            "required": true,
+            "helpMarkDown": "The name of the Git Repository.",
+            "visibleRule": "repositoryByName = true",
+            "groupName": "connection"
+        },
+        {
+            "name": "projectName",
+            "type": "string",
+            "label": "Project name",
+            "required": true,
+            "helpMarkDown": "The name of the source Project.",
+            "visibleRule": "repositoryByName = true",
+            "groupName": "connection"
+        },
+        {
+            "name": "pullRequestId",
+            "type": "string",
+            "label": "Pull Request ID",
+            "required": true,
+            "helpMarkDown": "The number of the Pull Request.",
+            "groupName": "pullRequest"
+        },
+        {
+            "name": "state",
+            "type": "radio",
+            "label": "State",
+            "defaultValue": "notSet",
+            "required": true,
+            "helpMarkDown": "The state to set.",
+            "options": {
+                "error": "Error",
+                "failed": "Failed",
+                "notApplicable": "Not Applicable",
+                "notSet": "Not Set",
+                "pending": "Pending",
+                "succeeded": "Succeeded"
+            },
+            "groupName": "pullRequest"
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "label": "Description",
+            "required": true,
+            "helpMarkDown": "The description of the Pull Request Status.",
+            "groupName": "pullRequest"
+        },
+        {
+            "name": "name",
+            "type": "string",
+            "label": "Name",
+            "required": true,
+            "helpMarkDown": "The name of the Pull Request Status.",
+            "groupName": "pullRequest"
+        },
+        {
+            "name": "genre",
+            "type": "string",
+            "label": "Genre",
+            "required": true,
+            "helpMarkDown": "The genre of the Pull Request Status.",
+            "groupName": "pullRequest"
+        },
+        {
+            "name": "targetUrl",
+            "type": "string",
+            "label": "Target URL",
+            "required": true,
+            "helpMarkDown": "The target URL of the Pull Request Status.",
+            "groupName": "pullRequest"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
