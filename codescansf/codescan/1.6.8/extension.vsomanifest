@@ -1,0 +1,110 @@
+{
+    "manifestVersion": 1,
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://www.code-scan.com/contact/"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/VillageChief/sonar-scanner-vsts"
+    },
+    "baseUri": "https://app.codescan.io",
+    "scopes": [
+        "vso.build",
+        "vso.code",
+        "vso.test"
+    ],
+    "contributions": [
+        {
+            "id": "674f161f-1733-4238-a8f8-2b37fe5f02c1",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/prepare"
+            }
+        },
+        {
+            "id": "6d6bf390-8504-42e2-bfcf-9be00dd89226",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analyze"
+            }
+        },
+        {
+            "id": "65751afb-5038-48f6-ae57-342a3a210165",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/publish"
+            }
+        },
+        {
+            "id": "6cf9c451-5b60-4eb6-a1b2-265f6a507b22",
+            "description": "Service endpoint type for CodeScanCloud Connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "codescancloud",
+                "displayName": "CodeScanCloud",
+                "icon": "icons/CodeScanCloud_endpoint.png",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://app.codescan.io",
+                    "isVisible": false
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}api/organizations/search?member=true",
+                        "resultSelector": "jsonpath:$.organizations[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.apitoken \":\" }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CodeScanCloud Token",
+                                "description": "Authentication Token generated through CodeScanCloud (go to My Account > Security > Generate Tokens)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Go to <a href=\"https://app.codescan.io/account/security/\" target=\"_blank\">your CodeScan Cloud account security page</a> to generate a token."
+            }
+        },
+        {
+            "id": "b8c99f95-9530-4f0b-b75f-32a9c7e196bb",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/salesforce"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
