@@ -1,0 +1,105 @@
+{
+    "id": "25104ad4-8a3e-4543-9405-419adbe1b2fd",
+    "name": "WebAppVFSDelete",
+    "friendlyName": "Delete Item from Azure Web App",
+    "description": "Delete Item from Azure Web App through Kudu VFS Rest API",
+    "helpMarkDown": "Version: 2.0. [More Information](https://github.com/Geertvdc/VSTS-Build-AzureWebAppVFS)",
+    "category": "Utility",
+    "author": "Geert van der Cruijsen",
+    "version": {
+        "Major": 2,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "visibility": [
+      "Build",
+      "Release"
+    ],
+    "demands": [ "azureps" ],
+    "minimumAgentVersion": "1.102.0",
+    "groups": [
+        {
+            "name": "Advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+  {
+            "name": "ConnectedServiceName",
+            "type": "connectedService:AzureRM",
+            "label": "Azure subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
+        },
+        {
+            "name": "WebAppName",
+            "type": "pickList",
+            "label": "App Service name",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Enter or Select the name of an existing Azure App Service."
+        },
+        {
+            "name": "filePath",
+            "type": "string",
+            "label": "File URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "the file or directory path after the wwwroot/ of your Azure Web app. paths ending with / are marked as directories"
+        },
+        {
+            "name": "deleteRecursive",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Recursive Delete",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "delete all subfolders and files in selected directory"
+        },
+        {
+            "name": "continueIfFileNotExist",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Skip non existing path",
+            "defaultValue": true,
+            "required": false,
+            "helpMarkDown": "If file that is being deleted does not exist on path continue on 404 error?"
+        },
+        {
+            "name": "allowUnsafe",
+            "type": "boolean",
+            "groupName" : "Advanced",
+            "label": "Allow Self Signed Certificates",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "enable this to ignore self signed certification errors"
+        },
+        {
+            "name": "alternativeKuduUrl",
+            "type": "string",
+            "label": "Alternative Kudu URL",
+            "groupName" : "Advanced",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "value of SCM endpoint if it is not website.scm.azurewebsites.net (fill in only last part starting with scm.)"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "WebAppName",
+            "endpointId": "$(ConnectedServiceName)",
+            "dataSourceName": "AzureRMWebAppNames"
+        }
+    ],
+    "instanceNameFormat": "Delete file from Azure Web App",
+    "execution": {
+        "PowerShell3": {
+            "target": "$(currentDirectory)\\deleteFile.ps1"
+        }
+    }
+}
