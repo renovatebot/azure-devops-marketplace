@@ -1,0 +1,76 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "ExecuteTask"
+            }
+        },
+        {
+            "id": "ea-service-endpoint-custom",
+            "description": "Service endpoint type for EA api connections (Custom Build)",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "EA_CustomBuild",
+                "displayName": "EA server connection (Custom Build)",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the EA api to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "EA Entities",
+                        "endpointUrl": "{{endpoint.url}}/api/background/candidates?type={{endpoint.runInstanceType}}",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "runInstanceType",
+                        "name": "Type of entity to run in EA",
+                        "description": "Select the type of entity to run in EA",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "runInstanceTypeValues",
+                            "possibleValues": [
+                                {
+                                    "value": "project",
+                                    "displayValue": "Project"
+                                },
+                                {
+                                    "value": "job",
+                                    "displayValue": "Scheduler job"
+                                },
+                                {
+                                    "value": "script",
+                                    "displayValue": "Script"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

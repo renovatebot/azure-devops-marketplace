@@ -1,0 +1,125 @@
+{
+    "id": "c1581b7a-0c70-41a1-89da-cd04c1865b8a",
+    "name": "EA_Run",
+    "friendlyName": "EA execution service (Custom build)",
+    "description": "Running entities on XPLUS EA system",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "XPLUS SA",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 4
+    },
+    "instanceNameFormat": "Run on Executive Automats system",
+    "groups": [
+      {
+          "name": "testSelection",
+          "displayName": "Test selection",
+          "isExpanded": true
+      }
+    ],
+    "inputs": [
+          {
+            "name": "AzureDevops",
+            "type": "connectedService:externaltfs",
+            "label": "Azure api service",
+            "defaultValue": "",
+            "required": true
+          },
+          {
+            "name": "EA",
+            "type": "connectedService:EA_CustomBuild",
+            "label": "EA api service",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the EA endpoint to use. If needed, click on 'manage', and add a new service endpoint of type 'Service endpoint type for EA api connections'"
+          },
+          {
+            "name": "testSelector",
+            "type": "pickList",
+            "label": "Select tests using",
+            "defaultValue": "testRun",
+            "required": true,
+            "helpMarkDown": "<ul><li><b>Test assembly: </b>Use this option to specify one or more test assemblies that contain your tests. You can optionally specify a filter criteria to select only specific tests.</li><li><b>Test plan: </b>Use this option to run tests from your test plan that have an automated test method associated with it.</li><li><b>Test run: </b>Use this option when you are setting up an environment to run tests from the Test hub. This option should not be used when running tests in a continuous integration / continuous deployment (CI/CD) pipeline.</li>",
+            "groupName": "testSelection",
+            "options": {
+              "testPlan": "Test plan",
+              "manual": "Manual"
+            },
+            "properties": {
+                "EditableOptions": "True"
+            }
+          },
+          {
+            "name": "entity",
+            "type": "pickList",
+            "groupName": "testSelection",
+            "label": "EA executable to run",
+            "required": true,
+            "helpMarkDown": "Select the EA executable entity to run.",
+            "visibleRule": "testSelector = manual"
+          },
+          {
+            "name": "testPlan",
+            "type": "pickList",
+            "label": "Test plan",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select a test plan containing test suites with automated test cases.",
+            "groupName": "testSelection",
+            "properties": {
+                "DisableManageLink": "True",
+                "EditableOptions": "True"
+            },
+            "visibleRule": "testSelector = testPlan"
+          },
+          {
+              "name": "testSuite",
+              "type": "pickList",
+              "label": "Test suite",
+              "defaultValue": "",
+              "required": true,
+              "helpMarkDown": "Select one or more test suites containing automated test cases. Test case work items must be associated with an automated test method. [Learn more.](https://go.microsoft.com/fwlink/?linkid=847773",
+              "groupName": "testSelection",
+              "properties": {
+                  "MultiSelect": "True",
+                  "DisableManageLink": "True",
+                  "EditableOptions": "True"
+              },
+              "visibleRule": "testSelector = testPlan"
+          }
+    ],
+    "dataSourceBindings": [
+        {
+          "target": "entity",
+          "endpointId": "$(EA)",
+          "dataSourceName": "EA Entities",
+          "resultTemplate": "{ \"Value\" : \"{{id}};{{type}};{{host}};{{token}}\", \"DisplayValue\": \"{{displayName}}\"}"
+        },
+        {
+          "target": "testPlan",
+          "endpointId": "tfs:teamfoundation",
+          "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans?filterActivePlans=true&api-version=3.0-preview.2&$skip={{skip}}&$top=1000",
+          "resultSelector": "jsonpath:$.value[*]",
+          "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{id}}} - {{{name}}}\" }",
+          "callbackContextTemplate": "{\"skip\": \"{{add skip 1000}}\"}",
+          "callbackRequiredTemplate": "{{isEqualNumber result.count 1000}}",
+          "initialContextTemplate": "{\"skip\": \"0\"}"
+      },
+      {
+          "target": "testSuite",
+          "endpointId": "tfs:teamfoundation",
+          "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/test/plans/{{testPlan}}/suites?$asTreeView=true&api-version=3.0-preview.2",
+          "parameters": {
+              "testPlan": "$(testPlan)"
+          },
+          "resultSelector": "jsonpath:$.value[*]"
+      }
+      ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
