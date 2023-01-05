@@ -1,0 +1,65 @@
+{
+    "id": "DC2AE2D3-39BD-4B8A-9515-B708BF733A36",
+    "name": "SmokeWebTest",
+    "friendlyName": "Smoke Web Test",
+    "description": "Simple http request to test response of a service.",
+    "author": "Miguel Cruz",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Agent",
+        "MachineGroup"
+    ],
+    "version": {
+        "Major": 1,
+        "Minor": 5,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Smoke Web Test",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Url",
+            "required": true,
+            "helpMarkDown": "Url subject to the test. ie http://yourdomain.com/api"
+        },
+        {
+            "name": "expectedReturnCode",
+            "type": "string",
+            "label": "Expected Return Code",
+            "defaultValue": "200",
+            "pattern": "^([1-5][0-9][0-9])$",
+            "required": true,
+            "helpMarkDown": "Expected HTTP return code. ie 200. Accepted values: 100-599.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "timeout",
+            "type": "string",
+            "label": "Timeout",
+            "defaultValue": 100,
+            "pattern": "^([1-9]|[1-9][0-9]|[1-6][0-9][0-9])$",
+            "required": true,
+            "helpMarkDown": "Time in seconds before request times out. Accepted values: 1-600",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell": {
+            "target": "$(currentDirectory)\\task.ps1",
+            "argumentFormat": "",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
