@@ -1,0 +1,60 @@
+{
+  "id": "820c2258-b229-422e-917a-c2eaf3824998",
+  "name": "SendMessage",
+  "friendlyName": "Send message on a list of specified remote servers",
+  "description": "Send a message using msg command on a list of specified remote servers with the same credentials",
+  "helpMarkDown": "[More Information](https://www.comerco.com)",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Comerco",
+  "version": {
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 4
+  },
+  "instanceNameFormat": "Send Message $(ProcessName)",
+  "minimumAgentVersion": "1.104.0",
+  "inputs": [
+    {
+      "name": "Message",
+      "type": "multiLine",
+      "label": "Message",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The message. <br>Eg: Your message."
+    },
+    {
+      "name": "AdminUserName",
+      "type": "string",
+      "label": "Login",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Administrator login for the target machine.<br>Eg: domain\\username"
+    },
+    {
+      "name": "AdminPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Password for administrator login for the target machine. <br>It can accept variable defined in Build/Release definitions as '$(passwordVariable)'. <br>You may mark variable type as 'secret' to secure it. "
+    },
+    {
+      "name": "MachineNameslist",
+      "type": "string",
+      "label": "List of machine names name delimited by commas(,) or semicolons(;)",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Names of the machines where to send the message. (ex: serverName1,serverName2,serverName3;serverName4)"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\task.ps1",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
