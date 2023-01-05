@@ -1,0 +1,126 @@
+{
+    "id": "025bc3d2-c942-42d2-9b76-97db7e884483",
+    "name": "queue-build",
+    "friendlyName": "Queue Build(s)",
+    "description": "Start new build(s) in your Team Project",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "jb",
+    "version": {
+        "Major": 1,
+        "Minor": 8,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Queue build(s) $(buildDefinitionName)",
+    "minimumAgentVersion": "2.112.0",
+    "groups": [{
+            "name": "auth",
+            "displayName": "Authentication & Authorization",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [{
+            "name": "buildDefinitionName",
+            "type": "multiLine",
+            "label": "Build Definition Name",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The path to your build definitions. Multiple definitions are separated by a new line. For further instructions check the extension page."
+        },
+        {
+            "name": "buildConfigurationType",
+            "type": "radio",
+            "label": "Configuration type",
+            "defaultValue": "singleBackslashJson",
+            "required": false,
+            "helpMarkDown": "Specify the build configuration interpretation type. E.g.: Use JavaScript if you need to support a single backslash.",
+            "options": {
+                "json": "JSON",
+                "singleBackslashJson": "Single \\ JSON"
+            }
+        },
+        {
+            "name": "buildConfiguration",
+            "type": "multiLine",
+            "label": "Configuration",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify queue build parameters. \n Example: \n { \"sourceBranch\": null, \"sourceVersion\": null, \"parameters\": { \"system.debug\": true } }. \n\n Further information: https://github.com/bamminger/vsts-queue-build"
+        },
+        {
+            "name": "teamProjectType",
+            "type": "radio",
+            "label": "Team Project type",
+            "defaultValue": "current",
+            "required": false,
+            "helpMarkDown": "Team project selection type. \n\n Current = Team project of the Build/Release definition, \n Defined = Team project specified in text field \n JSON Configuration = Team project defined in Configuration field \n\n Further information: https://github.com/bamminger/vsts-queue-build",
+            "options": {
+                "current": "Current",
+                "defined": "Defined",
+                "configuration": "JSON Configuration"
+            }
+        },
+        {
+            "name": "teamProject",
+            "type": "string",
+            "label": "Team Project Name",
+            "required": true,
+            "helpMarkDown": "Name of the team project where the builds should be queued.",
+            "visibleRule": "teamProjectType = defined"
+        },
+        {
+            "name": "async",
+            "type": "boolean",
+            "label": "Async",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "The async flag defines whether the build task waits till the builds are finished or just queues them."
+        },
+        {
+            "name": "requestedFor",
+            "type": "boolean",
+            "label": "Use Requester User",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Activate this checkbox to use the same requester user for the queue builds that was used for the current build/release.",
+            "groupName": "auth"
+        },
+        {
+            "name": "authToken",
+            "type": "string",
+            "label": "Auth Token",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Use a specific authentication token.",
+            "groupName": "auth"
+        },
+        {
+            "name": "buildIdOutputVariable",
+            "type": "string",
+            "label": "Build Id Output Variable",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Variable name used to write the resulting build id's.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "debug",
+            "type": "boolean",
+            "label": "Debug",
+            "defaultValue": false,
+            "required": true,
+            "helpMarkDown": "Enable debug mode. Additional information about your build definitions and the processed input will be provided.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "task/queue-build.task.js"
+        }
+    }
+}
