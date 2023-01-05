@@ -1,0 +1,110 @@
+{
+    "manifestVersion": 1,
+    "visibility": [
+        "Build and release"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/YannickRe/vsts-sharepoint-alm"
+    },
+    "scope": [
+        "vso.build",
+        "vso.serviceendpoint"
+    ],
+    "contributions": [
+        {
+            "id": "tenant-scoped-actions",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/catalog-scoped-actions"
+            }
+        },
+        {
+            "id": "sharepoint-scoped-actions",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/site-scoped-actions"
+            }
+        },
+        {
+            "id": "sharepoint-online-site-service-endpoint",
+            "description": "SharePointOnlineSiteAuthenticationEndpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "sharepoint-online-site",
+                "displayName": "SharePoint Online Site",
+                "url": {
+                    "displayName": "SharePoint Online Site Url",
+                    "helpText": "Url for the SharePoint Online Site to connect to."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "clientid",
+                                "name": "Client Id",
+                                "description": "Client Id",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apitoken",
+                                "name": "Client Secret",
+                                "description": "Client Secret.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
