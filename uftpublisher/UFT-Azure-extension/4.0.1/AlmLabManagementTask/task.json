@@ -1,0 +1,169 @@
+﻿{
+  "id": "91008DAF-AFF5-4E1A-A6FF-8ACF9D229E3C",
+  "name": "AlmLabManagementTask",
+  "friendlyName": "UFT One ALM Lab Management Run",
+  "description": "Use this build step to run ALM server-side functional test sets",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-alm-lm.htm#mt-item-1",
+  "demands": [
+    "UFT_LAUNCHER"
+  ],
+  "inputs": [
+    {
+      "name": "varAlmServ",
+      "type": "string",
+      "label": "ALM Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The address of your ALM server, in the format http://(ALM server name):(port)/qcbin"
+    },
+    {
+      "name": "varSSOEnabled",
+      "type": "boolean",
+      "label": "SSO Enabled",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "Obtain the Client ID and API key secret from your ALM site administrator"
+    },
+    {
+      "name": "varClientID",
+      "type": "string",
+      "label": "Client ID",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = true",
+      "helpMarkDown": "The Client ID that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varApiKeySecret",
+      "type": "string",
+      "label": "Api Key Secret",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = true",
+      "helpMarkDown": "The API Secret Key for the client that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varUserName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "varSSOEnabled = false",
+      "helpMarkDown": "The user name that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varPass",
+      "type": "password",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "varSSOEnabled = false",
+      "helpMarkDown": "The password for the user that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varDomain",
+      "type": "string",
+      "label": "Domain",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM domain in which the tests to run are stored"
+    },
+    {
+      "name": "varProject",
+      "type": "string",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM project in which the tests to run are stored"
+    },
+    {
+      "name": "varRunType",
+      "type": "radio",
+      "label": "Run Type",
+      "defaultValue": "TEST_SET",
+      "required": false,
+      "helpMarkDown": "The run mode (Suite run or Build Verification Suite) to use when running the test",
+      "options": {
+        "TEST_SET": "Test set",
+        "BVS": "Build verification suite"
+      }
+    },
+    {
+      "name": "varTSEntity",
+      "type": "string",
+      "label": "Test Set ID",
+      "defaultValue": "",
+      "visibleRule": "varRunType!=BVS",
+      "required": true,
+      "helpMarkDown": "The ID number (found in ALM) for the test set"
+    },
+    {
+      "name": "varBVSEntity",
+      "type": "string",
+      "label": "Build Verification Suite ID",
+      "defaultValue": "",
+      "visibleRule": "varRunType=BVS",
+      "required": true,
+      "helpMarkDown": "The ID number (found in ALM) for the build verification suite"
+    },
+    {
+      "name": "varDescription",
+      "type": "string",
+      "label": "Description",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The description of this test set/build verification suite"
+    },
+    {
+      "name": "varTimeslotDuration",
+      "type": "string",
+      "label": "Timeslot Duration (in minutes, minimum = 30)",
+      "defaultValue": "30",
+      "required": true,
+      "helpMarkDown": "The amount of time needed on the host to run this test set/verification suite"
+    },
+    {
+      "name": "varEnvironmentConfigurationID",
+      "type": "string",
+      "label": "Environment Configuration ID",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "To find the ID of your environment configuration, right-click the entity, copy the URL, and paste it to a text editor. Use the number associated with the EntityID at the end of the URL"
+    },
+    {
+      "name": "varClientType",
+      "type": "string",
+      "label": "Client Type",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Client type is required for some ALM above 12.60 in authentication."
+    },
+    {
+      "name": "varReportName",
+      "type": "string",
+      "label": "Report Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The name of the file containing the ALM report link"
+    }
+  ],
+  "instanceNameFormat": "Run From ALM Lab Management",
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}

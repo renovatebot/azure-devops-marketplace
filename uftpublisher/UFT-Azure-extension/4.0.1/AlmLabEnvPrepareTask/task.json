@@ -1,0 +1,573 @@
+﻿{
+  "id": "2A12D98C-8838-40BA-BE69-C0B5D88743F5",
+  "name": "AlmLabEnvPrepareTask",
+  "friendlyName": "UFT One ALM Lab Environment Preparation",
+  "description": "Use this build step to assign values to AUT Environment Configuration in ALM",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-alm-lm.htm#mt-item-0",
+  "demands": [
+    "UFT_LAUNCHER"
+  ],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "params",
+      "displayName": "Add Parameters",
+      "isExpanded": false
+    }
+  ],
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "ALM Lab Environment Preparation $(message)",
+  "inputs": [
+    {
+      "name": "varAlmserv",
+      "type": "string",
+      "label": "ALM Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The address of your ALM server, in the format http:s//(ALM server name):(port)/qcbin"
+    },
+    {
+      "name": "varUserName",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The username that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varPass",
+      "type": "password",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The password for the user that will access this ALM server during the build step run"
+    },
+    {
+      "name": "varDomain",
+      "type": "string",
+      "label": "Domain",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM domain in which the tests to run are stored"
+    },
+    {
+      "name": "varProject",
+      "type": "string",
+      "label": "Project",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The ALM project in which the tests to run are stored"
+    },
+    {
+      "name": "varEnvId",
+      "type": "string",
+      "label": "AUT Environment ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Assign ID of an AUT Environment that exists in the ALM project you selected"
+    },
+    {
+      "name": "javaHomeSelection",
+      "type": "radio",
+      "label": "Choose your configuration type:",
+      "required": true,
+      "defaultValue": "Existing",
+      "helpMarkDown": "Sets JAVA_HOME either by selecting a JDK version that will be discovered during builds or by manually entering a JDK path",
+      "options": {
+        "NewConf": "Create a new configuration",
+        "Existing": "Use an existing configuration"
+      }
+    },
+    {
+      "name": "createNewNamed",
+      "type": "string",
+      "label": "New configuration name:",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The name for the configuration to be created",
+      "visibleRule": "javaHomeSelection = NewConf"
+    },
+    {
+      "name": "jdkUserInputPath",
+      "type": "string",
+      "label": "Configuration ID:",
+      "required": true,
+      "defaultValue": "",
+      "helpMarkDown": "Sets JAVA_HOME to the given path",
+      "visibleRule": "javaHomeSelection = Existing"
+    },
+    {
+      "name": "varPathToJSON",
+      "type": "string",
+      "label": "Path to JSON File",
+      "defaultValue": "",
+      "groupName": "advanced",
+      "required": false,
+      "helpMarkDown": "A path to the JSON file that will be loaded in order to assign values to all the AUT Environment Parameters of From JSON type"
+    },
+    {
+      "name": "AddParam1",
+      "type": "boolean",
+      "label": "Add 1 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType1",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam1 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the 'Path to JSON' field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName1",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam1 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it is defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue1",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam1 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam2",
+      "type": "boolean",
+      "label": "Add 2 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType2",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam2 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName2",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam2 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue2",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam2 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam3",
+      "type": "boolean",
+      "label": "Add 3 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType3",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam3 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName3",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam3 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue3",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam3 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam4",
+      "type": "boolean",
+      "label": "Add 4 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType4",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam4 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName4",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam4 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue4",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam4 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam5",
+      "type": "boolean",
+      "label": "Add 5 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType5",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam5 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName5",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam5 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue5",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam5 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam6",
+      "type": "boolean",
+      "label": "Add 6 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType6",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam6 = true",
+      "helpMarkDown": "Manual - the value you will assign for Parameter value field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName6",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam6 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue6",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam6 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam7",
+      "type": "boolean",
+      "label": "Add 7 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType7",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam7 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName7",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam7 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue7",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam7 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam8",
+      "type": "boolean",
+      "label": "Add 8 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType8",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam8 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName8",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam8 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue8",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam8 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam9",
+      "type": "boolean",
+      "label": "Add 9 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType9",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam9 = true",
+      "helpMarkDown": "Manual - the value you will assign for Parameter value field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName9",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam9 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue9",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam9 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "AddParam10",
+      "type": "boolean",
+      "label": "Add 10 Parameter",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "params"
+    },
+    {
+      "name": "paramType10",
+      "type": "radio",
+      "label": "Parameter Type",
+      "required": true,
+      "groupName": "params",
+      "defaultValue": "JSON",
+      "visibleRule": "AddParam10 = true",
+      "helpMarkDown": "Manual - the value you will assign for 'Parameter value' field will be used as it is. Environment - the Parameter Value you will assign will be looked for in the environment parameters and the resolved value will be used (If you named your parameter MY_PARAMETER, use the exact the same value here - MY_PARAMETER). JSON - the Parameter Value will be looked for in the JSON file you specified in the the Path to JSON field",
+      "options": {
+        "JSON": "From JSON",
+        "Environment": "Environment",
+        "Manual": "Manual"
+      }
+    },
+    {
+      "name": "paramName10",
+      "type": "string",
+      "label": "Parameter Name",
+      "defaultValue": "Parameters/",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam10 = true",
+      "helpMarkDown": "The name must be set in the same hierarchical structure as it defined in ALM (Parameters tab of the AUT Environment). For example: Parameters/Parameter_name"
+    },
+    {
+      "name": "paramValue10",
+      "type": "string",
+      "label": "Parameter Value",
+      "defaultValue": "",
+      "required": true,
+      "groupName": "params",
+      "visibleRule": "AddParam10 = true",
+      "helpMarkDown": "If you are using a From JSON type, specify here the path for the element you would like to get. Make sure you are using JsonPath style for defining it"
+    },
+    {
+      "name": "paramOnlyFirst",
+      "type": "boolean",
+      "label": "Get only the first value in case an array will be returned",
+      "defaultValue": "false",
+      "required": true,
+      "groupName": "advanced",
+      "helpMarkDown": "Check this option if you want extended logging enabled"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

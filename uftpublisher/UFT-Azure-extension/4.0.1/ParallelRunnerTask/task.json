@@ -1,0 +1,278 @@
+﻿{
+  "id": "8A2A673B-D762-486B-854D-75C57E8D6B8A",
+  "name": "ParallelRunnerTask",
+  "friendlyName": "UFT One Parallel Test Run",
+  "description": "Run UFT One tests from file system using parallel runner",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-local.htm",
+  "demands": "UFT_LAUNCHER",
+  "inputs": [
+    {
+      "name": "envType",
+      "type": "radio",
+      "label": "Test type",
+      "defaultValue": "web",
+      "required": true,
+      "helpMarkDown": "Choose the test type to be run in parallel",
+      "options": {
+        "web": "GUI Web",
+        "mobile": "GUI Mobile"
+      }
+    },
+    {
+      "name": "testPathInput",
+      "type": "multiLine",
+      "label": "Tests",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "List of tests or folders that contain tests, to run. Each line should contain a single test, folder, or MTB file"
+    },
+    {
+      "name": "chrome",
+      "type": "boolean",
+      "label": "Chrome",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "chromeH",
+      "type": "boolean",
+      "label": "Chrome Headless",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "chromium",
+      "type": "boolean",
+      "label": "Chromium Edge",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "edge",
+      "type": "boolean",
+      "label": "Edge",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "firefox",
+      "type": "boolean",
+      "label": "Firefox",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "firefox64",
+      "type": "boolean",
+      "label": "Firefox 64",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "iExplorer",
+      "type": "boolean",
+      "label": "Internet Explorer",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "iExplorer64",
+      "type": "boolean",
+      "label": "Internet Explorer 64",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "safari",
+      "type": "boolean",
+      "label": "Safari",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": null,
+      "visibleRule": "envType = web"
+    },
+    {
+      "name": "mcDevices",
+      "type": "multiLine",
+      "label": "Devices",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "envType = mobile",
+      "helpMarkDown": "Specify the list of devices, each line should represent one single device's information. Parallel Runner runs the test(s) multiple times, to test on all specified devices"
+    },
+    {
+      "name": "mcServerUrl",
+      "type": "string",
+      "label": "Server",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "envType = mobile",
+      "helpMarkDown": "The address of your Mobile Center server, in the format http[s]://(MC server name):(port)"
+    },
+    {
+      "name": "mcUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "envType = mobile",
+      "helpMarkDown": "The username that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "envType = mobile",
+      "helpMarkDown": "The password for the user that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcTenantId",
+      "type": "int",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "envType = mobile",
+      "validation": {
+        "expression": "or(eq(value, ''), and(isMatch(value, '^\\d*$', 'IgnoreCase'), isInRange(value, 1, 2147483647)))",
+        "message": "This field must be a valid and positive number (maximum 2147483647)"
+      },
+      "helpMarkDown": "The tenant ID used to connect to the UFT Mobile server with multi-tenant mode enabled"
+    },
+    {
+      "name": "useMcProxy",
+      "type": "boolean",
+      "label": "Use proxy settings",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "envType = mobile",
+      "helpMarkDown": "Choose whether to use a proxy for connecting to the Mobile Center server"
+    },
+    {
+      "name": "mcProxyUrl",
+      "type": "string",
+      "label": "Proxy Sever",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "envType = mobile && useMcProxy = true",
+      "helpMarkDown": "The address of your proxy server, in the format (proxy server name):(port)"
+    },
+    {
+      "name": "useMcProxyCredentials",
+      "type": "boolean",
+      "label": "Use proxy credentials",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Choose whether to specify credentials for connecting to the proxy server",
+      "visibleRule": "envType = mobile && useMcProxy = true"
+    },
+    {
+      "name": "mcProxyUsername",
+      "type": "string",
+      "label": "Proxy Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "envType = mobile && useMcProxy = true && useMcProxyCredentials = true",
+      "helpMarkDown": "The username that will access this proxy server during the build step run"
+    },
+    {
+      "name": "mcProxyPassword",
+      "type": "string",
+      "label": "Proxy Password",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "envType = mobile && useMcProxy = true && useMcProxyCredentials = true",
+      "helpMarkDown": "The password for the user that will access this proxy server during the build step run"
+    },
+    {
+      "name": "timeOutIn",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Timeout value in seconds. If left empty, there is no timeout"
+    },
+    {
+      "name": "enableFailedTestsReport",
+      "type": "boolean",
+      "label": "Generate 'Failed Tests' report",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Choose whether to generate a report which provides information on your tests' failed steps. You can view these results in the Extensions tab."
+    },
+    {
+      "name": "uploadArtifact",
+      "type": "radio",
+      "label": "Do you want to upload the UFT One report to the storage account?",
+      "defaultValue": "no",
+      "required": true,
+      "options": {
+        "yes": "Yes",
+        "no": "No"
+      },
+      "helpMarkDown": "Choose whether you want or not to upload the report on your Azure storage account."
+    },
+    {
+      "name": "artifactType",
+      "type": "pickList",
+      "label": "Artifacts to upload",
+      "defaultValue": "onlyReport",
+      "required": false,
+      "visibleRule": "uploadArtifact = yes",
+      "helpMarkDown": "Choose what artifact will be uploaded to the storage account",
+      "options": {
+        "onlyReport": "Only UFT One html report",
+        "onlyArchive": "Only UFT One archive",
+        "bothReportArchive": "Both UFT One report and archive"
+      }
+    },
+    {
+      "name": "reportFileName",
+      "type": "string",
+      "label": "Report file name",
+      "defaultValue": "$(System.DefinitionName)",
+      "visibleRule": "artifactType = onlyReport || artifactType = bothReportArchive",
+      "helpMarkDown": "Choose a name for the UFT One report file"
+    }
+  ],
+
+  "instanceNameFormat": "Run Using Parallel Runner",
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

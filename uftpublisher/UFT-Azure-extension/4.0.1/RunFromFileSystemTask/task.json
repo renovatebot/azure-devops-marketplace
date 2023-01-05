@@ -1,0 +1,362 @@
+﻿{
+  "id": "CFBE1493-3BB1-44D5-AC87-7F14A148A6F2",
+  "name": "RunFromFileSystemTask",
+  "friendlyName": "UFT One File System Run",
+  "description": "Run UFT One tests from file system",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-local.htm",
+  "demands": "UFT_LAUNCHER",
+  "groups": [
+    {
+      "name": "mobileCenter",
+      "displayName": "Mobile Center",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "testPathInput",
+      "type": "multiLine",
+      "label": "Tests",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "List of tests or folders that contain tests, to run. Each line should contain a single test, folder, or MTB file"
+    },
+    {
+      "name": "timeOutIn",
+      "type": "string",
+      "label": "Timeout",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Timeout value in seconds. If left empty, there is no timeout"
+    },
+    {
+      "name": "enableFailedTestsReport",
+      "type": "boolean",
+      "label": "Generate 'Failed Tests' report",
+      "defaultValue": true,
+      "required": false,
+      "helpMarkDown": "Choose whether to generate a report which provides information on your tests' failed steps. You can view these results in the Extensions tab."
+    },
+    {
+      "name": "uploadArtifact",
+      "type": "radio",
+      "label": "Do you want to upload the UFT One report to the storage account?",
+      "defaultValue": "no",
+      "required": true,
+      "options": {
+        "yes": "Yes",
+        "no": "No"
+      },
+      "helpMarkDown": "Choose whether you want or not to upload the report on your Azure storage account."
+    },
+    {
+      "name": "artifactType",
+      "type": "pickList",
+      "label": "Artifacts to upload",
+      "defaultValue": "onlyReport",
+      "required": false,
+      "visibleRule": "uploadArtifact = yes",
+      "helpMarkDown": "Choose what artifact will be uploaded to the storage account",
+      "options": {
+        "onlyReport": "Only UFT One html report",
+        "onlyArchive": "Only UFT One archive",
+        "bothReportArchive": "Both UFT One report and archive"
+      }
+    },
+    {
+      "name": "reportFileName",
+      "type": "string",
+      "label": "Report file name",
+      "defaultValue": "$(System.DefinitionName)",
+      "visibleRule": "artifactType = onlyReport || artifactType = bothReportArchive",
+      "helpMarkDown": "Choose a name for the UFT One report file"
+    },
+    {
+      "name": "mcServerUrl",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Server",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The address of your Mobile Center server, in the format http[s]://(MC server name):(port)"
+    },
+    {
+      "name": "mcAuthType",
+      "groupName": "mobileCenter",
+      "type": "radio",
+      "label": "Authentication type",
+      "defaultValue": "basic",
+      "required": true,
+      "options": {
+        "basic": "Basic authentication",
+        "key": "Access key authentication"
+      },
+      "helpMarkDown": "Select the authentication mode to use for connecting to UFT Mobile"
+    },
+    {
+      "name": "mcUsername",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "mcAuthType = basic",
+      "helpMarkDown": "The username that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcPassword",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "mcAuthType = basic",
+      "helpMarkDown": "The password for the user that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcTenantId",
+      "groupName": "mobileCenter",
+      "type": "int",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "mcAuthType = basic",
+      "validation": {
+        "expression": "or(eq(value, ''), and(isMatch(value, '^\\d*$', 'IgnoreCase'), isInRange(value, 1, 2147483647)))",
+        "message": "This field must be a valid and positive number (maximum 2147483647)"
+      },
+      "helpMarkDown": "The tenant ID used to connect to the UFT Mobile server with multi-tenant mode enabled"
+    },
+    {
+      "name": "mcAccessKey",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Access Key",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "mcAuthType = key",
+      "helpMarkDown": "The Access Key will provide access to this Mobile Center server during the build step run"
+    },
+    {
+      "name": "useMcProxy",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Use proxy settings",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Choose whether to use a proxy for connecting to the Mobile Center server"
+    },
+    {
+      "name": "mcProxyUrl",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Proxy Sever",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "useMcProxy = true",
+      "helpMarkDown": "The address of your proxy server, in the format (proxy server name):(port)"
+    },
+    {
+      "name": "useMcProxyCredentials",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Use proxy credentials",
+      "defaultValue": false,
+      "required": false,
+      "helpMarkDown": "Choose whether to specify credentials for connecting to the proxy server",
+      "visibleRule": "useMcProxy = true"
+    },
+    {
+      "name": "mcProxyUsername",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Proxy Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "useMcProxy = true && useMcProxyCredentials = true",
+      "helpMarkDown": "The username that will access this proxy server during the build step run"
+    },
+    {
+      "name": "mcProxyPassword",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Proxy Password",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "useMcProxy = true && useMcProxyCredentials = true",
+      "helpMarkDown": "The password for the user that will access this proxy server during the build step run"
+    },
+    {
+      "name": "mcDevice",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Device",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify one single device's information"
+    },
+    {
+      "name": "mcAppType",
+      "groupName": "mobileCenter",
+      "type": "pickList",
+      "label": "Launch on start",
+      "defaultValue": "home",
+      "required": false,
+      "helpMarkDown": "The app you want to launch automatically at the start of your test",
+      "options": {
+        "home": "Home Screen",
+        "system": "System App",
+        "custom": "UFT Mobile App"
+      }
+    },
+    {
+      "name": "mcSysApp",
+      "groupName": "mobileCenter",
+      "type": "pickList",
+      "label": "System Application",
+      "defaultValue": "browser",
+      "required": false,
+      "visibleRule": "mcAppType = system",
+      "helpMarkDown": "The pre-installed system application that you want to test on your device",
+      "options": {
+        "browser": "Browser",
+        "settings": "Settings",
+        "sms": "SMS",
+        "phone": "Phone",
+        "mail": "Mail",
+        "calendar": "Calendar",
+        "camera": "Camera"
+      }
+    },
+    {
+      "name": "mcApp",
+      "groupName": "mobileCenter",
+      "type": "string",
+      "label": "Main UFT Mobile Application",
+      "defaultValue": "Identifier: \"com.google.android.apps.maps\", Packaged: \"Yes\"",
+      "required": false,
+      "visibleRule": "mcAppType = custom",
+      "helpMarkDown": "The main application that you want to test.<br>Provide the app's identifier, as returned by the Get Mobile Resources task, and optionally, specify whether the app should be packaged.<br>**Example:**<br/>`Identifier:\"com.ebay.mobile\", Packaged:\"No\"`",
+      "validation": {
+        "expression": "or(eq(value, ''), isMatch(value, '^\\s?Identifier\\s?:\\s?\"[^\\s\"]+\"\\s*(,\\s?Packaged\\s?:\\s?\"(Yes|No)\"\\s*)?$', 'IgnoreCase'))",
+        "message": "Expected format -> Identifier:\"<app identifier>\", Packaged:\"Yes/No\" (Identifier is required, Packaged is optional)"
+      }
+    },
+    {
+      "name": "mcExtraApps",
+      "groupName": "mobileCenter",
+      "type": "multiLine",
+      "label": "Additional UFT Mobile Applications",
+      "defaultValue": "Identifier: \"app2\", Packaged: \"Yes\"\nIdentifier: \"app3\", Packaged: \"No\"",
+      "required": false,
+      "helpMarkDown": "Additional applications that you want to test.<br>Provide the apps' identifiers, as returned by the Get Mobile Resources task, and optionally, specify whether the app should be packaged.<br>**Example:**<br/>`Identifier:\"com.ebay.mobile\", Packaged:\"No\"`<br/>`Identifier:\"com.mf.iShopping\", Packaged:\"Yes\"`",
+      "validation": null
+    },
+    {
+      "name": "mcInstall",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Install"
+    },
+    {
+      "name": "mcRestart",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Restart"
+    },
+    {
+      "name": "mcUninstall",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Uninstall"
+    },
+    {
+      "name": "mcLogDeviceMetrics",
+      "groupName": "mobileCenter",
+      "defaultValue": false,
+      "type": "boolean",
+      "label": "Log device metrics",
+      "visibleRule": "mcTenantId = 2147483648"
+    },
+    {
+      "name": "mcCPU",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "CPU",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcMemory",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Memory",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcFreeMemory",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Free Memory",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcLogs",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Logs",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcWifiState",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Wifi State",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcThermalState",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Thermal State",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    },
+    {
+      "name": "mcFreeDiskSpace",
+      "groupName": "mobileCenter",
+      "type": "boolean",
+      "label": "Free Disk Space",
+      "visibleRule": "mcLogDeviceMetrics = true"
+    }
+  ],
+
+  "instanceNameFormat": "Run From File System",
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    },
+    "PublishTest": {
+      "target": "publish.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}

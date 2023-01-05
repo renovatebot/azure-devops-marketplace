@@ -1,0 +1,114 @@
+﻿{
+  "id": "33EE3299-D0B4-4E23-B5F1-580E758D5406",
+  "name": "GetMobileDevicesTask",
+  "friendlyName": "UFT Mobile Get Resources",
+  "description": "Use this build step to retrieve resources from a Mobile Center server",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "author": "Micro Focus",
+  "version": {
+    "Major": 4,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "helpUrl": "https://admhelp.microfocus.com/uft/en/latest/UFT_Help/Content/UFT_Tools/Azure_DevOps_Extension/uft-azure-devops-run-local.htm",
+  "inputs": [
+    {
+      "name": "mcServerUrl",
+      "type": "string",
+      "label": "Mobile Center Server",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The address of your Mobile Center server, in the format http[s]://(MC server name):(port)"
+    },
+    {
+      "name": "mcAuthType",
+      "type": "radio",
+      "label": "Authentication type",
+      "defaultValue": "basic",
+      "required": true,
+      "options": {
+        "basic": "Basic authentication",
+        "key": "Access key authentication"
+      },
+      "helpMarkDown": "Select the authentication mode to use for connecting to UFT Mobile"
+    },
+    {
+      "name": "mcUsername",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "mcAuthType = basic",
+      "helpMarkDown": "The username that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcPassword",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "mcAuthType = basic",
+      "helpMarkDown": "The password for the user that will access this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcTenantId",
+      "type": "int",
+      "label": "Tenant Id",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "mcAuthType = basic",
+      "validation": {
+        "expression": "or(eq(value, ''), and(isMatch(value, '^\\d*$', 'IgnoreCase'), isInRange(value, 1, 2147483647)))",
+        "message": "This field must be a valid and positive number (maximum 2147483647)"
+      },
+      "helpMarkDown": "The tenant ID used to connect to the UFT Mobile server with multi-tenant mode enabled"
+    },
+    {
+      "name": "mcAccessKey",
+      "type": "string",
+      "label": "Access Key",
+      "defaultValue": "",
+      "required": true,
+      "visibleRule": "mcAuthType = key",
+      "helpMarkDown": "The Access Key will provide access to this Mobile Center server during the build step run"
+    },
+    {
+      "name": "mcResources",
+      "type": "pickList",
+      "label": "Resources to retrieve",
+      "defaultValue": "onlyDevices",
+      "required": false,
+      "helpMarkDown": "Choose what resources will be retrieved from the Mobile Center server",
+      "options": {
+        "onlyDevices": "Only devices",
+        "onlyApps": "Only applications",
+        "bothDevicesAndApps": "Both devices and applications"
+      }
+    },
+    {
+      "name": "includeOfflineDevices",
+      "type": "boolean",
+      "label": "Include disconnected devices in response",
+      "defaultValue": false,
+      "required": false,
+      "visibleRule": "mcResources = onlyDevices || mcResources = bothDevicesAndApps",
+      "helpMarkDown": "Choose whether to include the disconnected devices within the list of devices retrieved by running this task"
+    }
+  ],
+
+  "instanceNameFormat": "Get Mobile Resources",
+  "execution": {
+    "PowerShell3": {
+      "target": "localTask.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)",
+      "platforms": [
+        "windows"
+      ]
+    }
+  }
+}
