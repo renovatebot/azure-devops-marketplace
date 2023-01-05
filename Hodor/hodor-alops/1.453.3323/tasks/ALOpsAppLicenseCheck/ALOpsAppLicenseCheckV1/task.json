@@ -1,0 +1,95 @@
+{
+    "id":  "c5941156-348d-4a9d-8c35-a463b8ffab40",
+    "name":  "ALOpsAppLicenseCheck",
+    "friendlyName":  "ALOps App License Check",
+    "description":  "Check App files agains a license",
+    "author":  "Hodor",
+    "helpMarkDown":  "Check App files agains a license.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App License Check",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "licensefile",
+                       "type":  "string",
+                       "label":  "License File",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Set the BC License File. Path or Url. $(licensefile) $(licensefile) $(licensefile)"
+                   },
+                   {
+                       "name":  "artifact_path",
+                       "type":  "string",
+                       "label":  "Path to publish",
+                       "defaultValue":  "$(System.ArtifactsDirectory)",
+                       "required":  false,
+                       "helpMarkDown":  "Path for App Artifact. $(artifact_path) $(artifact_path) $(artifact_path)"
+                   },
+                   {
+                       "name":  "artifact_filter",
+                       "type":  "string",
+                       "label":  "App filter",
+                       "defaultValue":  "*.app",
+                       "required":  true,
+                       "helpMarkDown":  "Filter used for locating App file relative to $(artifact_path). $(artifact_filter) $(artifact_filter) $(artifact_filter)"
+                   },
+                   {
+                       "name":  "artifact_include",
+                       "type":  "string",
+                       "label":  "App Include",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Include-Filter used for locating App file relative to $(artifact_path). $(artifact_include) $(artifact_include) $(artifact_include)"
+                   },
+                   {
+                       "name":  "artifact_exclude",
+                       "type":  "string",
+                       "label":  "App Exclude",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Exclude-Filter used for locating App file relative to $(artifact_path). $(artifact_exclude) $(artifact_exclude) $(artifact_exclude)"
+                   },
+                   {
+                       "name":  "exclude_ranges",
+                       "type":  "string",
+                       "label":  "Exclude ranges",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Exclude-Ranges from LicenseCheck (Buffer / Tempory tables). Format: 60000..60099,70000..70100 $(exclude_ranges) $(exclude_ranges) $(exclude_ranges)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "6b69974a-a83a-49cd-be90-45caf1eaac9b.ps1"
+                                      }
+                  }
+}

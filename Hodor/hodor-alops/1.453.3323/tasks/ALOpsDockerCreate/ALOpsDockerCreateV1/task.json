@@ -1,0 +1,223 @@
+{
+    "id":  "f4c04016-bb3f-4614-b978-ce92409ce78a",
+    "name":  "ALOpsDockerCreate",
+    "friendlyName":  "ALOps Docker Create",
+    "description":  "Create Docker image from Business Central Artifacts",
+    "author":  "Hodor",
+    "helpMarkDown":  "Create Docker image based on NAV/BC Artifacts.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps Docker Create",
+    "inputs":  [
+                   {
+                       "name":  "artifactspecification",
+                       "type":  "pickList",
+                       "label":  "Artifact Specification",
+                       "defaultValue":  "Specific",
+                       "options":  {
+                                       "Specific":  "Specific",
+                                       "Hint":  "Hint"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Set Artifact resolve method. $(artifactspecification) $(artifactspecification) $(artifactspecification)"
+                   },
+                   {
+                       "name":  "artifactversion",
+                       "type":  "string",
+                       "label":  "Artifact Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "artifactspecification = Specific",
+                       "helpMarkDown":  "BC/NAV Version, eg: 9, 10.4, NAV2016, 16.4.24524. $(artifactversion) $(artifactversion) $(artifactversion)"
+                   },
+                   {
+                       "name":  "artifacttype",
+                       "type":  "pickList",
+                       "label":  "Artifact Type",
+                       "defaultValue":  "OnPrem",
+                       "options":  {
+                                       "OnPrem":  "OnPrem",
+                                       "Sandbox":  "Sandbox"
+                                   },
+                       "required":  false,
+                       "visibleRule":  "artifactspecification = Specific",
+                       "helpMarkDown":  "Set Artifact Type. $(artifacttype) $(artifacttype) $(artifacttype)"
+                   },
+                   {
+                       "name":  "artifactcountry",
+                       "type":  "string",
+                       "label":  "Artifact Country",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "artifactspecification = Specific",
+                       "helpMarkDown":  "The Country for the Artifact. $(artifactcountry) $(artifactcountry) $(artifactcountry)"
+                   },
+                   {
+                       "name":  "versionselect",
+                       "type":  "string",
+                       "label":  "Select Version",
+                       "defaultValue":  "Latest",
+                       "required":  false,
+                       "visibleRule":  "artifactspecification = Specific",
+                       "helpMarkDown":  "The version to be selected from the Artifacts. $(versionselect) $(versionselect) $(versionselect)"
+                   },
+                   {
+                       "name":  "artifacthint",
+                       "type":  "string",
+                       "label":  "Artifact Hint",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "artifactspecification = Hint",
+                       "helpMarkDown":  ". $(artifacthint) $(artifacthint) $(artifacthint)"
+                   },
+                   {
+                       "name":  "multitenant",
+                       "type":  "boolean",
+                       "label":  "Multi Tenant",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Create a Multi-Tenant image. $(multitenant) $(multitenant) $(multitenant)"
+                   },
+                   {
+                       "name":  "memory",
+                       "type":  "string",
+                       "label":  "Docker Memory",
+                       "defaultValue":  "8G",
+                       "required":  false,
+                       "helpMarkDown":  "Set maximum memory for Container. $(memory) $(memory) $(memory)"
+                   },
+                   {
+                       "name":  "imageprefix",
+                       "type":  "string",
+                       "label":  "Image Prefix",
+                       "defaultValue":  "myImage",
+                       "required":  false,
+                       "helpMarkDown":  "New image name, tag defined by $(imagenametemplate). $(imageprefix) $(imageprefix) $(imageprefix)"
+                   },
+                   {
+                       "name":  "dockerregistry",
+                       "type":  "string",
+                       "label":  "Docker Registry",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Docker registry Pull/Push, example: \u0027bcinsider.azurecr.io\u0027, or \u0027repo.mydomain.com\u0027 $(dockerregistry) $(dockerregistry) $(dockerregistry)"
+                   },
+                   {
+                       "name":  "dockerusername",
+                       "type":  "string",
+                       "label":  "Docker Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Docker login username. $(dockerusername) $(dockerusername) $(dockerusername)"
+                   },
+                   {
+                       "name":  "dockerpassword",
+                       "type":  "string",
+                       "label":  "Docker Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Docker login password. $(dockerpassword) $(dockerpassword) $(dockerpassword)"
+                   },
+                   {
+                       "name":  "storageaccount",
+                       "type":  "string",
+                       "label":  "Storage Account",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Non Default Storage Account. $(storageaccount) $(storageaccount) $(storageaccount)"
+                   },
+                   {
+                       "name":  "sastoken",
+                       "type":  "string",
+                       "label":  "SAS Token",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "SAS Token used to access Storage Account. $(sastoken) $(sastoken) $(sastoken)"
+                   },
+                   {
+                       "name":  "forcecreateimage",
+                       "type":  "boolean",
+                       "label":  "Force Image Creation",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Forces image creation, skipping Pull image. $(forcecreateimage) $(forcecreateimage) $(forcecreateimage)"
+                   },
+                   {
+                       "name":  "myscripts",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "My Scripts",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify myScripts to be added to the image. $(myscripts) $(myscripts) $(myscripts)"
+                   },
+                   {
+                       "name":  "imagenametemplate",
+                       "type":  "string",
+                       "label":  "Imagename Template",
+                       "defaultValue":  "%IMAGE_PREFIX%:%ARTIFACT_TYPE%-%ARTIFACT_VERSION%-%ARTIFACT_COUNTRY%-%OS_VERSION%-%OS_LTSC%",
+                       "required":  false,
+                       "helpMarkDown":  "Template for defining Image names or using a fixed name $(imagenametemplate) $(imagenametemplate) $(imagenametemplate)"
+                   },
+                   {
+                       "name":  "licensefile",
+                       "type":  "string",
+                       "label":  "BC License File",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC License File to be included in the Image $(licensefile) $(licensefile) $(licensefile)"
+                   },
+                   {
+                       "name":  "includetesttoolkit",
+                       "type":  "boolean",
+                       "label":  "Include TestToolkit",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Included the TestToolkit in created image. $(includetesttoolkit) $(includetesttoolkit) $(includetesttoolkit)"
+                   },
+                   {
+                       "name":  "includetestlibrariesonly",
+                       "type":  "boolean",
+                       "label":  "Include Test-Libraries only",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Included only the Test-Libraries in created image. $(includetestlibrariesonly) $(includetestlibrariesonly) $(includetestlibrariesonly)"
+                   },
+                   {
+                       "name":  "includetestframeworkonly",
+                       "type":  "boolean",
+                       "label":  "Include Test-Framework only",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Included only the Test-Framework in created image. $(includetestframeworkonly) $(includetestframeworkonly) $(includetestframeworkonly)"
+                   },
+                   {
+                       "name":  "includeperformancetoolkit",
+                       "type":  "boolean",
+                       "label":  "Include Performance-Toolkit",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Include Performance-Toolkit in created image. $(includeperformancetoolkit) $(includeperformancetoolkit) $(includeperformancetoolkit)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "23f5e23d-5ad1-40be-89df-4bdcc63972ef.ps1"
+                                      }
+                  }
+}

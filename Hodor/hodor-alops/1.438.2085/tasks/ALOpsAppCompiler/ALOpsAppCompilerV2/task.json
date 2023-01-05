@@ -1,0 +1,162 @@
+{
+    "id":  "6ccb97e4-cd3b-4f5c-82d0-3b733949d45d",
+    "name":  "ALOpsAppCompiler",
+    "friendlyName":  "ALOps App Compiler",
+    "description":  "Compile AL Extension(s) for Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Compile Business Central extension(s) from AL code.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  2,
+                    "Minor":  0,
+                    "Patch":  2085
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Compiler",
+    "inputs":  [
+                   {
+                       "name":  "artifactversion",
+                       "type":  "string",
+                       "label":  "Artifact Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC/NAV Version, eg: 9, 10.4, NAV2016, 16.4.24524. $(artifactversion)"
+                   },
+                   {
+                       "name":  "artifacttype",
+                       "type":  "pickList",
+                       "label":  "Artifact Type",
+                       "defaultValue":  "OnPrem",
+                       "options":  {
+                                       "OnPrem":  "OnPrem",
+                                       "Sandbox":  "Sandbox"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Set Artifact Type. $(artifacttype)"
+                   },
+                   {
+                       "name":  "artifactcountry",
+                       "type":  "string",
+                       "label":  "Artifact Country",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "The Country for the Artifact. $(artifactcountry)"
+                   },
+                   {
+                       "name":  "versionselect",
+                       "type":  "string",
+                       "label":  "Select Version",
+                       "defaultValue":  "Latest",
+                       "required":  false,
+                       "helpMarkDown":  "The version to be selected from the Artifacts. $(versionselect)"
+                   },
+                   {
+                       "name":  "alternativevsixurl",
+                       "type":  "string",
+                       "label":  "VSIX Url",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Alternative VSIX download url. Overrules BC Artificat VSIX. $(alternativevsixurl)"
+                   },
+                   {
+                       "name":  "alsourcepath",
+                       "type":  "string",
+                       "label":  "AL Source Path",
+                       "defaultValue":  "$(System.DefaultWorkingDirectory)",
+                       "required":  false,
+                       "helpMarkDown":  " $(alsourcepath)"
+                   },
+                   {
+                       "name":  "ruleset",
+                       "type":  "string",
+                       "label":  "Force Ruleset",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overrule the Ruleset from VSCode settings. Path relative to [alsourcepath] $(ruleset)"
+                   },
+                   {
+                       "name":  "appversiontemplate",
+                       "type":  "string",
+                       "label":  "App Version",
+                       "defaultValue":  "1.0.*.0",
+                       "required":  true,
+                       "helpMarkDown":  "Template for versioning Apps. \u0027*\u0027 is replaced by the current Build Number. $(appversiontemplate)"
+                   },
+                   {
+                       "name":  "appfilenametemplate",
+                       "type":  "string",
+                       "label":  "App Filename",
+                       "defaultValue":  "%APP_PUBLISHER%_%APP_NAME%_%APP_VERSION%_%BC_TYPE%_%BC_VERSION%_%BC_COUNTRY%.app",
+                       "required":  true,
+                       "helpMarkDown":  "Template for App filename. $(appfilenametemplate)"
+                   },
+                   {
+                       "name":  "alcodeanalyzer",
+                       "type":  "string",
+                       "label":  "AL Code Analysis",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "AL Analyzer(s) used for compiling. (Example: CodeCop,UICop) $(alcodeanalyzer)"
+                   },
+                   {
+                       "name":  "alcachepath",
+                       "type":  "string",
+                       "label":  "AL Cache Path",
+                       "defaultValue":  "$(System.DefaultWorkingDirectory)",
+                       "required":  false,
+                       "helpMarkDown":  " $(alcachepath)"
+                   },
+                   {
+                       "name":  "publishartifact",
+                       "type":  "boolean",
+                       "label":  "Publish Artifact",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated App Artifact to DevOps. $(publishartifact)"
+                   },
+                   {
+                       "name":  "publishxlif",
+                       "type":  "boolean",
+                       "label":  "Publish XLIF",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated XLIF to DevOps. $(publishxlif)"
+                   },
+                   {
+                       "name":  "failonwarnings",
+                       "type":  "boolean",
+                       "label":  "Fail on Warnings",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Fail task when any warning occurs. $(failonwarnings)"
+                   },
+                   {
+                       "name":  "storageaccount",
+                       "type":  "string",
+                       "label":  "Storage Account",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Non Default Storage Account. $(storageaccount)"
+                   },
+                   {
+                       "name":  "sastoken",
+                       "type":  "string",
+                       "label":  "SAS Token",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "SAS Token used to access Storage Account. $(sastoken)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "4f4cf950-3055-4e77-90e1-14453a035c32.ps1"
+                                      }
+                  }
+}

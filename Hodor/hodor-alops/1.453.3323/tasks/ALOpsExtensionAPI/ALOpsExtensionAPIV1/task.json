@@ -1,0 +1,232 @@
+{
+    "id":  "1d5eaeea-4266-4583-bacd-62ed666ed439",
+    "name":  "ALOpsExtensionAPI",
+    "friendlyName":  "ALOps Extension API",
+    "description":  "Get/Publish extensions with the Business Central API",
+    "author":  "Hodor",
+    "helpMarkDown":  "Get/Publish extensions with the Business Central API.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps Extension API",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "interaction",
+                       "type":  "pickList",
+                       "label":  "API Interaction",
+                       "defaultValue":  "get",
+                       "options":  {
+                                       "get":  "Get",
+                                       "publish":  "Publish",
+                                       "batch":  "Batch Publish"
+                                   },
+                       "required":  true,
+                       "helpMarkDown":  "Set Interaction Method to use. (Get/Publish/Batch Publish). $(interaction) $(interaction) $(interaction)"
+                   },
+                   {
+                       "name":  "api_endpoint",
+                       "type":  "string",
+                       "label":  "API Endpoint",
+                       "defaultValue":  "https://api.businesscentral.dynamics.com/v2.0/$(azure_tenant_id)/Sandbox/api",
+                       "required":  true,
+                       "helpMarkDown":  "Set API Endpoint. (protocol://host:port/serverinstance/api) $(api_endpoint) $(api_endpoint) $(api_endpoint)"
+                   },
+                   {
+                       "name":  "dev_endpoint",
+                       "type":  "string",
+                       "label":  "DEV Endpoint",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set DEV Endpoint. (protocol://host:port/serverinstance/dev) $(dev_endpoint) $(dev_endpoint) $(dev_endpoint)"
+                   },
+                   {
+                       "name":  "dev_schemeupdatemode",
+                       "type":  "pickList",
+                       "label":  "DEV Schema Update Mode",
+                       "defaultValue":  "synchronize",
+                       "options":  {
+                                       "synchronize":  "Synchronize",
+                                       "recreate":  "Recreate",
+                                       "forcesync":  "ForceSync"
+                                   },
+                       "required":  true,
+                       "helpMarkDown":  "Set Schema Update Mode to use with DEVPort deploy. (synchronize/recreate/forcesync) $(dev_schemeupdatemode) $(dev_schemeupdatemode) $(dev_schemeupdatemode)"
+                   },
+                   {
+                       "name":  "apiversion",
+                       "type":  "string",
+                       "label":  "API Version",
+                       "defaultValue":  "v1.0",
+                       "required":  true,
+                       "helpMarkDown":  "Version of the API to use (beta / v1.0 / v2.0) $(apiversion) $(apiversion) $(apiversion)"
+                   },
+                   {
+                       "name":  "authentication",
+                       "type":  "pickList",
+                       "label":  "API Authentication",
+                       "defaultValue":  "oauth",
+                       "options":  {
+                                       "basic":  "Basic",
+                                       "oauth":  "OAuth",
+                                       "windows":  "Windows Default Credentials",
+                                       "usernamepassword":  "Username/Password"
+                                   },
+                       "required":  true,
+                       "helpMarkDown":  "Set authentication Method to use. Default [Windows]. $(authentication) $(authentication) $(authentication)"
+                   },
+                   {
+                       "name":  "azure_tenant_id",
+                       "type":  "string",
+                       "label":  "Tenant Id",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure Tenant Id. Only required for BC SaaS $(azure_tenant_id) $(azure_tenant_id) $(azure_tenant_id)",
+                       "visibleRule":  "authentication=basic || authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_id",
+                       "type":  "string",
+                       "label":  "Client Id",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Id. $(azure_app_client_id) $(azure_app_client_id) $(azure_app_client_id)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_secret",
+                       "type":  "string",
+                       "label":  "Client Secret",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Secret. $(azure_app_client_secret) $(azure_app_client_secret) $(azure_app_client_secret)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_certificate",
+                       "type":  "string",
+                       "label":  "Client Certificate",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Certificate. $(azure_app_client_certificate) $(azure_app_client_certificate) $(azure_app_client_certificate)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "azure_app_client_certificate_password",
+                       "type":  "string",
+                       "label":  "Client Certificate Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Azure AD Application Client Certificate Password. $(azure_app_client_certificate_password) $(azure_app_client_certificate_password) $(azure_app_client_certificate_password)",
+                       "visibleRule":  "authentication=oauth"
+                   },
+                   {
+                       "name":  "username",
+                       "type":  "string",
+                       "label":  "Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Username. Leave empty for Service-2-Service authentication. $(username) $(username) $(username)",
+                       "visibleRule":  "authentication=basic || authentication=oauth || authentication=usernamepassword"
+                   },
+                   {
+                       "name":  "password",
+                       "type":  "string",
+                       "label":  "Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central User Password. Leave empty for Service-2-Service authentication. $(password) $(password) $(password)",
+                       "visibleRule":  "authentication=basic || authentication=oauth || authentication=usernamepassword"
+                   },
+                   {
+                       "name":  "bccompany",
+                       "type":  "string",
+                       "label":  "BC Company (Id or Name)",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Company (Id or Name). $(bccompany) $(bccompany) $(bccompany)"
+                   },
+                   {
+                       "name":  "artifact_path",
+                       "type":  "string",
+                       "label":  "Path to publish",
+                       "defaultValue":  "$(System.ArtifactsDirectory)",
+                       "required":  false,
+                       "helpMarkDown":  "Path for App Artifact. $(artifact_path) $(artifact_path) $(artifact_path)",
+                       "visibleRule":  "interaction=publish || interaction=batch"
+                   },
+                   {
+                       "name":  "artifact_filter",
+                       "type":  "string",
+                       "label":  "App filter",
+                       "defaultValue":  "*.app",
+                       "required":  true,
+                       "helpMarkDown":  "Filter used for locating App file relative to $(path_to_publish). $(artifact_filter) $(artifact_filter) $(artifact_filter)",
+                       "visibleRule":  "interaction=publish"
+                   },
+                   {
+                       "name":  "showdeploymentstatus",
+                       "type":  "boolean",
+                       "label":  "Show Deployment Status",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Show Extension Deployment Status. $(showdeploymentstatus) $(showdeploymentstatus) $(showdeploymentstatus)"
+                   },
+                   {
+                       "name":  "checksecondsdelay",
+                       "type":  "string",
+                       "label":  "Check Delay (Sec)",
+                       "defaultValue":  "30",
+                       "required":  false,
+                       "helpMarkDown":  "Seconds of delay betweel deployment status checks. $(checksecondsdelay) $(checksecondsdelay) $(checksecondsdelay)"
+                   },
+                   {
+                       "name":  "maxtries",
+                       "type":  "string",
+                       "label":  "Max tries for status check",
+                       "defaultValue":  "20",
+                       "required":  false,
+                       "helpMarkDown":  "Max tries for status check. $(maxtries) $(maxtries) $(maxtries)"
+                   },
+                   {
+                       "name":  "replacepackageid",
+                       "type":  "boolean",
+                       "label":  "Replace PackageID",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Force a new PackageID for each deployment. $(replacepackageid) $(replacepackageid) $(replacepackageid)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "e16bb085-6bfa-4e6e-a3b3-8b5f3111e5f0.ps1"
+                                      }
+                  }
+}

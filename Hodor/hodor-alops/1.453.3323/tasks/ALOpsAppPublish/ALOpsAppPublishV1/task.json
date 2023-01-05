@@ -1,0 +1,170 @@
+{
+    "id":  "c004e2d2-e842-40f0-9ed4-89fb9bdd2e33",
+    "name":  "ALOpsAppPublish",
+    "friendlyName":  "ALOps App Publish",
+    "description":  "Publish AL Extension to Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Publish Business Central extension to service tier.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Publish",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "installpublishedapps",
+                       "type":  "boolean",
+                       "label":  "Install Published Apps",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Install Published Applications. $(installpublishedapps) $(installpublishedapps) $(installpublishedapps)"
+                   },
+                   {
+                       "name":  "installaltesttool",
+                       "type":  "boolean",
+                       "label":  "Install AL TestTool",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Install the AL TestTool for v15. $(installaltesttool) $(installaltesttool) $(installaltesttool)"
+                   },
+                   {
+                       "name":  "install_al_app_names",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "AL Apps to Install",
+                       "defaultValue":  "Tests-TestLibraries\r\nSystem Application Test\r\nSystem Application Test Library\r\nAny\r\nLibrary Assert\r\nTest Runner\r\n",
+                       "required":  false,
+                       "helpMarkDown":  "Specify additional docker parameters. $(install_al_app_names) $(install_al_app_names) $(install_al_app_names)",
+                       "visibleRule":  "installaltesttool = true"
+                   },
+                   {
+                       "name":  "strictappnames",
+                       "type":  "boolean",
+                       "label":  "Only install Specified Apps",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Only install Specified Apps. $(strictappnames) $(strictappnames) $(strictappnames)"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "artifact_path",
+                       "type":  "string",
+                       "label":  "Path to publish",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Path for storing App Artifact. $(artifact_path) $(artifact_path) $(artifact_path)"
+                   },
+                   {
+                       "name":  "nav_artifact_app_filter",
+                       "type":  "string",
+                       "label":  "App filter",
+                       "defaultValue":  "*.app",
+                       "required":  true,
+                       "helpMarkDown":  "Filter used for locating App file relative to $(path_to_publish). $(nav_artifact_app_filter) $(nav_artifact_app_filter) $(nav_artifact_app_filter)",
+                       "visibleRule":  "installaltesttool = false"
+                   },
+                   {
+                       "name":  "skip_verification",
+                       "type":  "boolean",
+                       "label":  "Skip Verification",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Skip CodeSign Verification of Business Central App. $(skip_verification) $(skip_verification) $(skip_verification)"
+                   },
+                   {
+                       "name":  "forceinstall",
+                       "type":  "boolean",
+                       "label":  "Force Install",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Always install Apps regards of current state. $(forceinstall) $(forceinstall) $(forceinstall)"
+                   },
+                   {
+                       "name":  "forcesync",
+                       "type":  "boolean",
+                       "label":  "Force Sync",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Sets the Sync-Mode to Force, enables pushing breaking changes. $(forcesync) $(forcesync) $(forcesync)"
+                   },
+                   {
+                       "name":  "publish_scope",
+                       "type":  "pickList",
+                       "required":  false,
+                       "label":  "Publish Scope",
+                       "defaultValue":  "Global",
+                       "options":  {
+                                       "Global":  "Global",
+                                       "Tenant":  "Tenant"
+                                   },
+                       "helpMarkDown":  "Set the scope for publishing extensions. $(publish_scope) $(publish_scope) $(publish_scope)"
+                   },
+                   {
+                       "name":  "tenant",
+                       "type":  "string",
+                       "label":  "Tenant",
+                       "defaultValue":  "default",
+                       "required":  false,
+                       "helpMarkDown":  "Tenant to publish to when Scope is set to Tenant. $(tenant) $(tenant) $(tenant)"
+                   },
+                   {
+                       "name":  "batch_publish_folder",
+                       "type":  "string",
+                       "label":  "Path containing Apps to publish",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Path containing Apps to publish. $(batch_publish_folder) $(batch_publish_folder) $(batch_publish_folder)"
+                   },
+                   {
+                       "name":  "publisherazureactivedirectorytenantid",
+                       "type":  "string",
+                       "label":  "Publisher Azure AD TenantId",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Publisher Azure AD TenantId. $(publisherazureactivedirectorytenantid) $(publisherazureactivedirectorytenantid) $(publisherazureactivedirectorytenantid)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "f35a0bdd-4e4a-4e1c-b37f-9ef0019ee610.ps1"
+                                      }
+                  }
+}

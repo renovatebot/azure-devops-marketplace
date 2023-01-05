@@ -1,0 +1,80 @@
+{
+    "id":  "1da752a0-03bf-429c-a239-b5f06d43d629",
+    "name":  "ALOpsLicenseImport",
+    "friendlyName":  "ALOps License Import",
+    "description":  "ALOps License Import",
+    "author":  "Hodor",
+    "helpMarkDown":  "Import Business Central license (.flf).",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  425,
+                    "Patch":  910
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps License Import",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "license_path",
+                       "type":  "filePath",
+                       "label":  "FLF Path",
+                       "required":  false,
+                       "defaultValue":  "",
+                       "helpMarkDown":  "Path of the FLF license to import. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory) or a downloadable Url. $(license_path)"
+                   },
+                   {
+                       "name":  "remove_license_file",
+                       "type":  "boolean",
+                       "label":  "Remove License File",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Remove license file after import. $(remove_license_file)"
+                   },
+                   {
+                       "name":  "print_license_info",
+                       "type":  "boolean",
+                       "label":  "Print License Info",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Set if License is printed into the pipeline. $(print_license_info)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "a2b7e014-88c1-46e9-89ff-c231b5495fc7.ps1"
+                                      }
+                  }
+}

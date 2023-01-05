@@ -1,0 +1,89 @@
+{
+    "id":  "721fa714-3dd3-4593-84cc-be4e849c732e",
+    "name":  "ALOpsAppRuntimePackage",
+    "friendlyName":  "ALOps App Runtime Package",
+    "description":  "Create Runtime Package from AL Extension",
+    "author":  "Hodor",
+    "helpMarkDown":  "Get a NAV App runtime package for onprem deployment.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Runtime Package",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the name of a Business Central Server instance. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "nav_tenant",
+                       "type":  "string",
+                       "label":  "NAV Tenant",
+                       "defaultValue":  "default",
+                       "required":  true,
+                       "helpMarkDown":  "Specifies the ID of a specific tenant that you want to act on, such as Tenant1. $(nav_tenant) $(nav_tenant) $(nav_tenant)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "targetproject",
+                       "type":  "filePath",
+                       "label":  "Target Project",
+                       "required":  false,
+                       "defaultValue":  "./app.json",
+                       "helpMarkDown":  "Path of the project to export as RuntimePackage. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory). $(targetproject) $(targetproject) $(targetproject)"
+                   },
+                   {
+                       "name":  "showmycode",
+                       "type":  "boolean",
+                       "label":  "Show my Code",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Overwrites the ShowMyCode value in the manifest. $(showmycode) $(showmycode) $(showmycode)"
+                   },
+                   {
+                       "name":  "publish_artifact",
+                       "type":  "boolean",
+                       "label":  "Publish Artifact",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated Runtime-App Artifact to DevOps. $(publish_artifact) $(publish_artifact) $(publish_artifact)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "f184750e-8ce7-4d49-957b-95a51d9bae9a.ps1"
+                                      }
+                  }
+}

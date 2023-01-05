@@ -1,0 +1,275 @@
+{
+    "id":  "0c42062e-04ee-4507-af30-009a5d8f1983",
+    "name":  "ALOpsDockerStart",
+    "friendlyName":  "ALOps Docker Start",
+    "description":  "Start a Business Central container",
+    "author":  "Hodor",
+    "helpMarkDown":  "Start Business Central docker container.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps Docker Start",
+    "groups":  [
+                   {
+                       "name":  "database_server",
+                       "displayName":  "Database Server",
+                       "isExpanded":  false
+                   }
+               ],
+    "inputs":  [
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)"
+                   },
+                   {
+                       "name":  "ignore_no_container_warning",
+                       "type":  "boolean",
+                       "label":  "Ignore no Container Warning",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Do not trigger warning when container with [fixed_tag] is not found. $(ignore_no_container_warning) $(ignore_no_container_warning) $(ignore_no_container_warning)"
+                   },
+                   {
+                       "name":  "docker_image",
+                       "type":  "string",
+                       "label":  "Docker Image",
+                       "defaultValue":  "$(ALOPS_BC_IMAGE)",
+                       "required":  false,
+                       "helpMarkDown":  "Business Central docker Image to Start. $(docker_image) $(docker_image) $(docker_image)"
+                   },
+                   {
+                       "name":  "accept_image_eula",
+                       "type":  "boolean",
+                       "label":  "Accept Image Eula",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Accept Eula of docker image. $(accept_image_eula) $(accept_image_eula) $(accept_image_eula)"
+                   },
+                   {
+                       "name":  "accept_image_outdated",
+                       "type":  "boolean",
+                       "label":  "Accept Image Outdated",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Accept Outdated image. $(accept_image_outdated) $(accept_image_outdated) $(accept_image_outdated)"
+                   },
+                   {
+                       "name":  "enable_symbol_loading",
+                       "type":  "boolean",
+                       "label":  "Enable Symbol Loading",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Enable Symbol Loading. $(enable_symbol_loading) $(enable_symbol_loading) $(enable_symbol_loading)"
+                   },
+                   {
+                       "name":  "enable_api_services",
+                       "type":  "boolean",
+                       "label":  "Enable API Services",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Enable API Services. $(enable_api_services) $(enable_api_services) $(enable_api_services)"
+                   },
+                   {
+                       "name":  "multitenant",
+                       "type":  "boolean",
+                       "label":  "Multi Tenant",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Create a Multi-Tenant container. $(multitenant) $(multitenant) $(multitenant)"
+                   },
+                   {
+                       "name":  "docker_pull",
+                       "type":  "boolean",
+                       "label":  "Pull Image",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Force Pull docker image. $(docker_pull) $(docker_pull) $(docker_pull)"
+                   },
+                   {
+                       "name":  "dockerauthentication",
+                       "type":  "pickList",
+                       "label":  "docker Authentication",
+                       "defaultValue":  "None",
+                       "options":  {
+                                       "None":  "None",
+                                       "Endpoint":  "Endpoint",
+                                       "UsernamePassword":  "Username/Password"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Set authentication Method to use. $(dockerauthentication) $(dockerauthentication) $(dockerauthentication)"
+                   },
+                   {
+                       "name":  "docker_login",
+                       "type":  "connectedService:generic",
+                       "label":  "Docker Login",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "dockerauthentication = Endpoint",
+                       "helpMarkDown":  "Select the generic login to use for docker. If needed, click on \u0027manage\u0027, and add a new Service Endpoint of type \u0027Generic\u0027 $(docker_login) $(docker_login) $(docker_login)"
+                   },
+                   {
+                       "name":  "docker_username",
+                       "type":  "string",
+                       "label":  "Docker Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "dockerauthentication = UsernamePassword",
+                       "helpMarkDown":  "Docker login username. $(docker_username) $(docker_username) $(docker_username)"
+                   },
+                   {
+                       "name":  "docker_password",
+                       "type":  "string",
+                       "label":  "Docker Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "dockerauthentication = UsernamePassword",
+                       "helpMarkDown":  "Docker login password. $(docker_password) $(docker_password) $(docker_password)"
+                   },
+                   {
+                       "name":  "docker_registry",
+                       "type":  "string",
+                       "label":  "Docker Registry",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "visibleRule":  "dockerauthentication = UsernamePassword",
+                       "helpMarkDown":  "Docker registry for login, example: \u0027bcinsider.azurecr.io\u0027 $(docker_registry) $(docker_registry) $(docker_registry)"
+                   },
+                   {
+                       "name":  "memory_gb",
+                       "type":  "string",
+                       "label":  "Memory Limit (GB)",
+                       "defaultValue":  "-1",
+                       "required":  false,
+                       "helpMarkDown":  "Set maximum memory for container in GB. $(memory_gb) $(memory_gb) $(memory_gb)"
+                   },
+                   {
+                       "name":  "container_restart",
+                       "type":  "pickList",
+                       "label":  "Container Restart",
+                       "defaultValue":  "no",
+                       "options":  {
+                                       "no":  "No",
+                                       "on-failure":  "On Failure",
+                                       "unless-stopped":  "Unless Stopped",
+                                       "always":  "Always"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Set docker container restart preference. $(container_restart) $(container_restart) $(container_restart)"
+                   },
+                   {
+                       "name":  "licensefile",
+                       "type":  "string",
+                       "label":  "License File",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set the BC License File. Path or Url. $(licensefile) $(licensefile) $(licensefile)"
+                   },
+                   {
+                       "name":  "docker_parameters",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "Docker Parameters",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Specify additional docker parameters. $(docker_parameters) $(docker_parameters) $(docker_parameters)"
+                   },
+                   {
+                       "name":  "sql_server",
+                       "type":  "string",
+                       "label":  "SQL Server",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "External SQL Server. $(sql_server) $(sql_server) $(sql_server)"
+                   },
+                   {
+                       "name":  "sql_server_instance",
+                       "type":  "string",
+                       "label":  "SQL Instance",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "External SQL Server Instance. $(sql_server_instance) $(sql_server_instance) $(sql_server_instance)"
+                   },
+                   {
+                       "name":  "sql_database",
+                       "type":  "string",
+                       "label":  "Database Name",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "External SQL Database. $(sql_database) $(sql_database) $(sql_database)"
+                   },
+                   {
+                       "name":  "sql_database_user",
+                       "type":  "string",
+                       "label":  "Database User",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "External SQL Database User. $(sql_database_user) $(sql_database_user) $(sql_database_user)"
+                   },
+                   {
+                       "name":  "sql_database_user_password",
+                       "type":  "string",
+                       "label":  "Database Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "External SQL Database Password. $(sql_database_user_password) $(sql_database_user_password) $(sql_database_user_password)"
+                   },
+                   {
+                       "name":  "sql_backup_file",
+                       "type":  "string",
+                       "label":  "Restore BAK",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "database_server",
+                       "helpMarkDown":  "Restore BAK file on startup. $(sql_backup_file) $(sql_backup_file) $(sql_backup_file)"
+                   },
+                   {
+                       "name":  "encryption_key",
+                       "type":  "string",
+                       "label":  "Encryption Key",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Encryption key for Service Tier. $(encryption_key) $(encryption_key) $(encryption_key)"
+                   },
+                   {
+                       "name":  "taskscheduler",
+                       "type":  "pickList",
+                       "label":  "Set TaskScheduler",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule EnableTaskScheduler by setting other option than \u0027Keep\u0027. $(taskscheduler) $(taskscheduler) $(taskscheduler)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "2ff286c9-37dd-4728-9200-5c3b04d302a9.ps1"
+                                      }
+                  }
+}

@@ -1,0 +1,228 @@
+{
+    "id":  "6ccb97e4-cd3b-4f5c-82d0-3b733949d45d",
+    "name":  "ALOpsAppCompiler",
+    "friendlyName":  "ALOps App Compiler",
+    "description":  "Compile AL Extensions for Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Compile a Business Central extension from AL code.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  440,
+                    "Patch":  2175
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Compiler",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "targetproject",
+                       "type":  "filePath",
+                       "label":  "Target Project",
+                       "required":  false,
+                       "defaultValue":  "./app.json",
+                       "helpMarkDown":  "Path of the project to compile. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory). $(targetproject)"
+                   },
+                   {
+                       "name":  "nav_computername",
+                       "type":  "string",
+                       "label":  "Computer Name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Target Business Central Server running service tier. $(nav_computername)"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "nav_tenant",
+                       "type":  "string",
+                       "label":  "NAV Tenant",
+                       "defaultValue":  "default",
+                       "required":  true,
+                       "helpMarkDown":  "NAV Tenant used for symbols and compiling the app. $(nav_tenant)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "nav_ports_dev",
+                       "type":  "int",
+                       "label":  "NAV Dev-Port",
+                       "defaultValue":  "7049",
+                       "required":  true,
+                       "helpMarkDown":  "NAV Port used for DEV-Service. $(nav_ports_dev)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "bc_username",
+                       "type":  "string",
+                       "label":  "BC Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC Username for ServiceTier connection. $(bc_username)"
+                   },
+                   {
+                       "name":  "bc_password",
+                       "type":  "string",
+                       "label":  "BC Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC User Password for ServiceTier connection. $(bc_password)"
+                   },
+                   {
+                       "name":  "al_compiler_version",
+                       "type":  "string",
+                       "label":  "AL Compiler",
+                       "defaultValue":  "0.12.15355",
+                       "required":  true,
+                       "helpMarkDown":  "AL Compiler version used for compiling. $(al_compiler_version)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "ruleset",
+                       "type":  "string",
+                       "label":  "Force Ruleset",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overrule the Ruleset from VSCode settings. Path relative to [alsourcepath] $(ruleset)"
+                   },
+                   {
+                       "name":  "al_analyzer",
+                       "type":  "string",
+                       "label":  "AL Analyzer",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "AL Analyzer(s) used for compiling. (Example: CodeCop,UICop) $(al_analyzer)"
+                   },
+                   {
+                       "name":  "nav_app_version",
+                       "type":  "string",
+                       "label":  "App Version",
+                       "defaultValue":  "1.0.*.0",
+                       "required":  true,
+                       "helpMarkDown":  "Template for versioning NAV-Apps. \u0027*\u0027 is replaced by the current Build Number. $(nav_app_version)"
+                   },
+                   {
+                       "name":  "vsix_download_path",
+                       "type":  "string",
+                       "label":  "VSIX Url",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Alternative VSIX download url. $(vsix_download_path)"
+                   },
+                   {
+                       "name":  "use_ssl",
+                       "type":  "boolean",
+                       "label":  "Use SSL",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Use SSL for Business Central connections. $(use_ssl)"
+                   },
+                   {
+                       "name":  "download_test_symbols",
+                       "type":  "boolean",
+                       "label":  "Download Test Symbols",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Download Test Symbols explicitly (without Test-Version reference in App.json). $(download_test_symbols)"
+                   },
+                   {
+                       "name":  "usecompression",
+                       "type":  "boolean",
+                       "label":  "Compress Source File for Transfer",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "visibleRule":  "usedocker = true",
+                       "helpMarkDown":  "Compress Source-Folder for transfer to docker container. $(usecompression)"
+                   },
+                   {
+                       "name":  "publish_artifact",
+                       "type":  "boolean",
+                       "label":  "Publish Artifact",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated App Artifact to DevOps. $(publish_artifact)"
+                   },
+                   {
+                       "name":  "failed_on_warnings",
+                       "type":  "boolean",
+                       "label":  "Fail on Warnings",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Fail task when any warning occurs. $(failed_on_warnings)"
+                   },
+                   {
+                       "name":  "app_file_suffix",
+                       "type":  "string",
+                       "label":  "Suffix for App filename",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set a suffix tag on the compiled App filename. $(app_file_suffix)"
+                   },
+                   {
+                       "name":  "updatebuildnumber",
+                       "type":  "boolean",
+                       "label":  "Update Build Number",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Update the Build number with the current version. $(updatebuildnumber)"
+                   },
+                   {
+                       "name":  "setup_working_folder",
+                       "type":  "boolean",
+                       "label":  "Setup Working Folder",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "visibleRule":  "usedocker = true",
+                       "helpMarkDown":  "Copy working folder to Docker container. $(setup_working_folder)"
+                   },
+                   {
+                       "name":  "showmycode",
+                       "type":  "pickList",
+                       "label":  "Show My Code",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule ShowMyCode by setting other option than \u0027Keep\u0027. $(showmycode)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "92df6ae9-431a-4fb9-9fc3-6250e8c0c005.ps1"
+                                      }
+                  }
+}

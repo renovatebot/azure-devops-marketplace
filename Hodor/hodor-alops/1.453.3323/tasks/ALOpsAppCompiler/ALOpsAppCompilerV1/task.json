@@ -1,0 +1,339 @@
+{
+    "id":  "6ccb97e4-cd3b-4f5c-82d0-3b733949d45d",
+    "name":  "ALOpsAppCompiler",
+    "friendlyName":  "ALOps App Compiler",
+    "description":  "Compile AL Extensions for Business Central",
+    "author":  "Hodor",
+    "helpMarkDown":  "Compile a Business Central extension from AL code.",
+    "category":  "Utility",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "demands":  [
+
+                ],
+    "version":  {
+                    "Major":  1,
+                    "Minor":  453,
+                    "Patch":  3323
+                },
+    "minimumAgentVersion":  "1.95.0",
+    "instanceNameFormat":  "ALOps App Compiler",
+    "inputs":  [
+                   {
+                       "name":  "usedocker",
+                       "type":  "boolean",
+                       "label":  "In Docker",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Run task in Docker container. $(usedocker) $(usedocker) $(usedocker)"
+                   },
+                   {
+                       "name":  "fixed_tag",
+                       "type":  "string",
+                       "label":  "Fixed Container Tag",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Allows recycling of docker containers. $(fixed_tag) $(fixed_tag) $(fixed_tag)",
+                       "visibleRule":  "usedocker = true"
+                   },
+                   {
+                       "name":  "targetproject",
+                       "type":  "filePath",
+                       "label":  "Target Project",
+                       "required":  false,
+                       "defaultValue":  "./app.json",
+                       "helpMarkDown":  "Path of the project to compile. Must be a fully qualified path or relative to $(System.DefaultWorkingDirectory). $(targetproject) $(targetproject) $(targetproject)"
+                   },
+                   {
+                       "name":  "nav_computername",
+                       "type":  "string",
+                       "label":  "Computer Name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Target Business Central Server running service tier. $(nav_computername) $(nav_computername) $(nav_computername)"
+                   },
+                   {
+                       "name":  "nav_serverinstance",
+                       "type":  "string",
+                       "label":  "Server Instance",
+                       "defaultValue":  "BC140",
+                       "required":  true,
+                       "helpMarkDown":  "Business Central Server Instance Name. $(nav_serverinstance) $(nav_serverinstance) $(nav_serverinstance)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "nav_tenant",
+                       "type":  "string",
+                       "label":  "NAV Tenant",
+                       "defaultValue":  "default",
+                       "required":  true,
+                       "helpMarkDown":  "NAV Tenant used for symbols and compiling the app. $(nav_tenant) $(nav_tenant) $(nav_tenant)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "nav_ports_dev",
+                       "type":  "int",
+                       "label":  "NAV Dev-Port",
+                       "defaultValue":  "7049",
+                       "required":  true,
+                       "helpMarkDown":  "NAV Port used for DEV-Service. $(nav_ports_dev) $(nav_ports_dev) $(nav_ports_dev)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "bc_username",
+                       "type":  "string",
+                       "label":  "BC Username",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC Username for ServiceTier connection. $(bc_username) $(bc_username) $(bc_username)"
+                   },
+                   {
+                       "name":  "bc_password",
+                       "type":  "string",
+                       "label":  "BC Password",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "BC User Password for ServiceTier connection. $(bc_password) $(bc_password) $(bc_password)"
+                   },
+                   {
+                       "name":  "al_compiler_version",
+                       "type":  "string",
+                       "label":  "AL Compiler",
+                       "defaultValue":  "0.12.15355",
+                       "required":  true,
+                       "helpMarkDown":  "AL Compiler version used for compiling. $(al_compiler_version) $(al_compiler_version) $(al_compiler_version)",
+                       "visibleRule":  "usedocker = false"
+                   },
+                   {
+                       "name":  "ruleset",
+                       "type":  "string",
+                       "label":  "Force Ruleset",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overrule the Ruleset from VSCode settings. Path relative to [alsourcepath] $(ruleset) $(ruleset) $(ruleset)"
+                   },
+                   {
+                       "name":  "suppresswarnings",
+                       "type":  "string",
+                       "label":  "suppress Warnings",
+                       "defaultValue":  "KEEP",
+                       "required":  false,
+                       "helpMarkDown":  "Overrule the \u0027suppresswarnings\u0027 setting. $(suppresswarnings) $(suppresswarnings) $(suppresswarnings)"
+                   },
+                   {
+                       "name":  "al_analyzer",
+                       "type":  "string",
+                       "label":  "AL Analyzer",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "AL Analyzer(s) used for compiling. (Example: CodeCop,UICop) $(al_analyzer) $(al_analyzer) $(al_analyzer)"
+                   },
+                   {
+                       "name":  "nav_app_version",
+                       "type":  "string",
+                       "label":  "App Version",
+                       "defaultValue":  "1.0.*.0",
+                       "required":  true,
+                       "helpMarkDown":  "Template for versioning NAV-Apps. \u0027*\u0027 is replaced by the current Build Number. $(nav_app_version) $(nav_app_version) $(nav_app_version)"
+                   },
+                   {
+                       "name":  "vsix_download_path",
+                       "type":  "string",
+                       "label":  "VSIX Url",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Alternative VSIX download url. \u0027Latest\u0027 can be specified. $(vsix_download_path) $(vsix_download_path) $(vsix_download_path)"
+                   },
+                   {
+                       "name":  "use_ssl",
+                       "type":  "boolean",
+                       "label":  "Use SSL",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "visibleRule":  "usedocker = false",
+                       "helpMarkDown":  "Use SSL for Business Central connections. $(use_ssl) $(use_ssl) $(use_ssl)"
+                   },
+                   {
+                       "name":  "download_test_symbols",
+                       "type":  "boolean",
+                       "label":  "Download Test Symbols",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Download Test Symbols explicitly (without Test-Version reference in App.json). $(download_test_symbols) $(download_test_symbols) $(download_test_symbols)"
+                   },
+                   {
+                       "name":  "usecompression",
+                       "type":  "boolean",
+                       "label":  "Compress Source File for Transfer",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "visibleRule":  "usedocker = true",
+                       "helpMarkDown":  "Compress Source-Folder for transfer to docker container. $(usecompression) $(usecompression) $(usecompression)"
+                   },
+                   {
+                       "name":  "publish_artifact",
+                       "type":  "boolean",
+                       "label":  "Publish Artifact",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated App Artifact to DevOps. $(publish_artifact) $(publish_artifact) $(publish_artifact)"
+                   },
+                   {
+                       "name":  "publishxlif",
+                       "type":  "boolean",
+                       "label":  "Publish XLIF",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Publish generated XLIF to DevOps. $(publishxlif) $(publishxlif) $(publishxlif)"
+                   },
+                   {
+                       "name":  "failed_on_warnings",
+                       "type":  "boolean",
+                       "label":  "Fail on Warnings",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "helpMarkDown":  "Fail task when any warning occurs. $(failed_on_warnings) $(failed_on_warnings) $(failed_on_warnings)"
+                   },
+                   {
+                       "name":  "app_file_suffix",
+                       "type":  "string",
+                       "label":  "Suffix for App filename",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Set a suffix tag on the compiled App filename. $(app_file_suffix) $(app_file_suffix) $(app_file_suffix)"
+                   },
+                   {
+                       "name":  "updatebuildnumber",
+                       "type":  "boolean",
+                       "label":  "Update Build Number",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Update the Build number with the current version. $(updatebuildnumber) $(updatebuildnumber) $(updatebuildnumber)"
+                   },
+                   {
+                       "name":  "setup_working_folder",
+                       "type":  "boolean",
+                       "label":  "Setup Working Folder",
+                       "defaultValue":  false,
+                       "required":  false,
+                       "visibleRule":  "usedocker = true",
+                       "helpMarkDown":  "Copy working folder to Docker container. $(setup_working_folder) $(setup_working_folder) $(setup_working_folder)"
+                   },
+                   {
+                       "name":  "showmycode",
+                       "type":  "pickList",
+                       "label":  "Show My Code",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule ShowMyCode by setting other option than \u0027Keep\u0027. $(showmycode) $(showmycode) $(showmycode)"
+                   },
+                   {
+                       "name":  "resourceexposurepolicy_allowdebugging",
+                       "type":  "pickList",
+                       "label":  "Allow Debugging",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule allowDebugging by setting other option than \u0027Keep\u0027. $(resourceexposurepolicy_allowdebugging) $(resourceexposurepolicy_allowdebugging) $(resourceexposurepolicy_allowdebugging)"
+                   },
+                   {
+                       "name":  "resourceexposurepolicy_allowdownloadingsource",
+                       "type":  "pickList",
+                       "label":  "Allow Downloading Source",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule allowDownloadingSource by setting other option than \u0027Keep\u0027. $(resourceexposurepolicy_allowdownloadingsource) $(resourceexposurepolicy_allowdownloadingsource) $(resourceexposurepolicy_allowdownloadingsource)"
+                   },
+                   {
+                       "name":  "resourceexposurepolicy_includesourceinsymbolfile",
+                       "type":  "pickList",
+                       "label":  "Include Source In SymbolFile",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Enable":  "Enable",
+                                       "Disable":  "Disable"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Overrule includeSourceInSymbolFile by setting other option than \u0027Keep\u0027. $(resourceexposurepolicy_includesourceinsymbolfile) $(resourceexposurepolicy_includesourceinsymbolfile) $(resourceexposurepolicy_includesourceinsymbolfile)"
+                   },
+                   {
+                       "name":  "internalsvisibleto",
+                       "type":  "pickList",
+                       "label":  "Internals Visible To",
+                       "defaultValue":  "Keep",
+                       "options":  {
+                                       "Keep":  "Keep",
+                                       "Remove":  "Remove"
+                                   },
+                       "required":  false,
+                       "helpMarkDown":  "Remove internalsVisibleTo by setting other option than \u0027Keep\u0027. $(internalsvisibleto) $(internalsvisibleto) $(internalsvisibleto)"
+                   },
+                   {
+                       "name":  "preprocessorsymbols",
+                       "type":  "string",
+                       "label":  "PreProcessorSymbols",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overwrite the preprocessorSymbols in app.json, comma seperated string. Set to \u0027NONE\u0027 to remove. $(preprocessorsymbols) $(preprocessorsymbols) $(preprocessorsymbols)"
+                   },
+                   {
+                       "name":  "applicationinsightskey",
+                       "type":  "string",
+                       "label":  "ApplicationInsightsKey",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Overwrite the ApplicationInsightsKey in app.json. Set to \u0027NONE\u0027 to remove InsightsKey. $(applicationinsightskey) $(applicationinsightskey) $(applicationinsightskey)"
+                   },
+                   {
+                       "name":  "printappmanifest",
+                       "type":  "boolean",
+                       "label":  "Print App.json",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Print the final app.json before compile. $(printappmanifest) $(printappmanifest) $(printappmanifest)"
+                   },
+                   {
+                       "name":  "output_alc_logs",
+                       "type":  "boolean",
+                       "label":  "Output ALC logs",
+                       "defaultValue":  true,
+                       "required":  false,
+                       "helpMarkDown":  "Output ALC logs. $(output_alc_logs) $(output_alc_logs) $(output_alc_logs)"
+                   },
+                   {
+                       "name":  "additionalprobingpaths",
+                       "type":  "multiLine",
+                       "properties":  {
+                                          "resizable":  true,
+                                          "rows":  "3"
+                                      },
+                       "label":  "Additional Probing Paths",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Add additional Assembly probing Paths. $(additionalprobingpaths) $(additionalprobingpaths) $(additionalprobingpaths)"
+                   }
+               ],
+    "execution":  {
+                      "PowerShell3":  {
+                                          "target":  "a15f2e36-55a7-4626-9067-7650c7d4b2e6.ps1"
+                                      }
+                  }
+}
