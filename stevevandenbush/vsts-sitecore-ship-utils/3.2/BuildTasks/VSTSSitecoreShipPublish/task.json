@@ -1,0 +1,113 @@
+{
+  "id": "e5bd7351-5d7f-4e5c-a0bc-7341f9c4962b",
+  "name": "VSTSSitecoreShipPublishTask",
+  "friendlyName": "Sitecore Ship Publish Task",
+  "description": "Helps you publish .update files to a Sitecore instance from Powershell assuming you are using the Sitecore.Ship module",
+  "author": "stevevandenbush",
+  "helpMarkDown": "https://www.geekhive.com/buzz/post/2017/05/sitecore-ship-utils-vsts/",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [
+        "DotNetFramework"
+    ],
+  "version": {
+    "Major": "10",
+    "Minor": "1",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "VSTSSitecoreShipPublishTask",
+  "groups": [
+        {
+            "name":"advanced",
+            "displayName":"Advanced",
+            "isExpanded":false
+        }
+    ],
+  "inputs": [
+    {
+      "name": "SiteUrl",
+      "type": "string",
+      "label": "Site Url (include http/https)",
+      "defaultValue":"",
+      "required":true,
+      "helpMarkDown": "Url for the site you are installing the .update package on (ex: _http://mysite.dev_)"
+    },
+    {
+        "name": "PublishTargets",
+        "type": "string",
+        "label": "Publish Targets",
+        "defaultValue":"web",
+        "required":false,
+        "helpMarkDown": "The db targets for the publish, comma delimited (ex: _preview, web_)",
+    },
+	{
+        "name": "PublishLanguages",
+        "type": "string",
+        "label": "Publish Languages",
+        "defaultValue":"en",
+        "required":false,
+        "helpMarkDown": "The language targets for the publish, comma delimited (ex: _en_)",
+    },
+    {
+        "name": "PublishMode",
+        "type": "pickList",
+        "label": "Publish Mode",
+        "defaultValue":"smart",
+        "required":false,
+        "helpMarkDown": "The publish mode (ex: smart, full, incremental or listofitems)",
+		"options": {
+                "smart": "smart",
+                "full": "full",
+                "incremental": "incremental",
+				"listofitems": "listofitems"
+            }
+    },
+	{
+		"name": "ListOfIDsInputPath",
+		"type": "filePath",
+		"label": "List of Item IDs Input file",
+		"defaultValue":"",
+		"required":true,
+		"helpMarkDown": "Path of the flat file (with just IDs) to use with the _listofitems_ publish type",
+        "visibleRule": "PublishMode == listofitems"
+    },
+    {
+        "name": "ConnectionTimeOutInSeconds",
+        "type": "string",
+        "label": "Connection Timeout",
+        "defaultValue":"300",
+        "required":false,
+        "helpMarkDown": "Connection Timeout in seconds (ex: 300)",
+        "groupName":"advanced"
+    },
+	{
+      "name": "Username",
+      "type": "string",
+      "label": "Username",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Insert Username here",
+      "groupName":"advanced"
+    },
+	{
+      "name": "Password",
+      "type": "string",
+      "label": "Password",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Insert Password here, also suggested that in order to keep password hidden, use _$(secretVariable)_ instead of plain text",
+      "groupName":"advanced"
+    }
+  ],
+  "execution": {
+    "powershell": {
+      "target": "$(currentDirectory)\\publish-sitecorepackage.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
