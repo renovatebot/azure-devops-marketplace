@@ -1,0 +1,96 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/expertasolutions/GoDaddyDns"
+    },
+    "badges": [
+        {
+            "href": "https://dev.azure.com/experta/Community/_build?definitionId=237",
+            "uri": "https://dev.azure.com/experta/Community/_apis/build/status/expertasolutions.GoDaddyDNS?branchName=master",
+            "description": "Master build"
+        },
+        {
+            "href": "https://dev.azure.com/experta/Community/_release?_a=releases&definitionId=1",
+            "uri": "https://vsrm.dev.azure.com/experta/_apis/public/Release/badge/97814487-b723-4a7d-a446-f599ab91ea2f/1/3",
+            "description": "Public marketplace"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "aRecordManager"
+            }
+        },
+        {
+            "id": "cnameRecord-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "cnameRecordManager"
+            }
+        },
+        {
+            "id": "godaddy-service-endpoint",
+            "description": "GoDaddy Service Endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "godaddy-serviceendpoint",
+                "displayName": "GoDaddy API endpoint",
+                "url": {
+                    "displayName": "API Url"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "GoDaddy Token Based Authentication",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "{{endpoint.apitoken}}:{{endpoint:apisecret}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "GoDaddy API Key",
+                                "description": "API Token for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "apisecret",
+                                "name": "GoDaddy API Secret",
+                                "description": "API Secret for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 100
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
