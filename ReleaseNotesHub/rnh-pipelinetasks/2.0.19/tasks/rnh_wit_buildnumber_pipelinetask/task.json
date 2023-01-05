@@ -1,0 +1,107 @@
+﻿{
+    "id":  "8caea22b-4686-45c2-9e18-7253b313f844",
+    "name":  "rnh_wit_buildnumber_pipelinetask",
+    "friendlyName":  "Update BuildNumber Field",
+    "description":  "Update WorkItem field with latest associated build number.",
+    "helpUrl":  "https://www.releasenoteshub.com",
+    "helpMarkDown":  "Version: 2.0.19. [More Information](https://support.releasenoteshub.com/article/show/105042-how-do-i-pull-from-azure-devops)",
+    "category":  "Deploy",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "ReleaseNotesHub",
+    "version":  {
+                    "Major":  2,
+                    "Minor":  0,
+                    "Patch":  19
+                },
+    "demands":  [
+
+                ],
+    "minimumAgentVersion":  "2.115.0",
+    "groups":  [
+                   {
+                       "name":  "versiongroup",
+                       "displayName":  "Release Version",
+                       "isExpanded":  false
+                   }
+               ],
+    "instanceNameFormat":  "Update BuildNumber Field",
+    "inputs":  [
+                   {
+                       "name":  "workItemType",
+                       "type":  "pickList",
+                       "label":  "WorkItem Type",
+                       "required":  false,
+                       "helpMarkDown":  "Select a WorkItem Type containing BuildNumber Field.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "workItemStatus",
+                       "type":  "pickList",
+                       "label":  "WorkItem State",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Select a WorkItem State.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "overrideField",
+                       "type":  "boolean",
+                       "label":  "Override Field Value",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Always override target field with curret build number."
+                   },
+                   {
+                       "name":  "fieldName",
+                       "type":  "string",
+                       "label":  "Field Name",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Target Field Name for BuildNumber e.g. \u0027Custom.BuildNumber\u0027"
+                   },
+                   {
+                       "name":  "versionNumberVariable",
+                       "type":  "string",
+                       "label":  "Version Number",
+                       "defaultValue":  "$(Build.BuildNumber)",
+                       "required":  false,
+                       "helpMarkDown":  "Version number to be used. This can be extracted from the build name .e.g. \u0027Build 2021.1.20-rc\u0027."
+                   },
+                   {
+                       "name":  "versionNumberExpression",
+                       "type":  "string",
+                       "label":  "Regex Filter to extract build number",
+                       "defaultValue":  "\\d+\\.\\d+\\.\\d+\\.\\d+",
+                       "required":  false,
+                       "helpMarkDown":  "Regular expression filter to get build number from the build name .e.g. \u0027\\d+\\.\\d+\\.\\d+\u0027."
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "workItemType",
+                                   "endpointId":  "tfs:teamfoundation",
+                                   "endpointURL":  "{{endpoint.url}}/{{system.teamProject}}/_apis/wit/workitemtypes",
+                                   "resultSelector":  "jsonpath:$.value[*]",
+                                   "resultTemplate":  "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+                               },
+                               {
+                                   "target":  "workItemStatus",
+                                   "endpointId":  "tfs:teamfoundation",
+                                   "endpointURL":  "{{endpoint.url}}/{{system.teamProject}}/_apis/wit/workitemtypes/$(workItemType)/states",
+                                   "resultSelector":  "jsonpath:$.value[*]",
+                                   "resultTemplate":  "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+                               }
+                           ],
+    "execution":  {
+                      "Node":  {
+                                   "target":  "index.js"
+                               }
+                  }
+}

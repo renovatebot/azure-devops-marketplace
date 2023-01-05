@@ -1,0 +1,79 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ReleaseNotesHub/Azure-Devops-Extension"
+    },
+    "contributions": [
+        {
+            "id": "rnhub-service-endpoint",
+            "description": "Service endpoint type for ReleaseNoteHub connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ReleaseNotesHub",
+                "displayName": "ReleaseNotesHub",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://api.releasenoteshub.com",
+                    "isVisible": "false",
+                    "helpText": "The ReleaseNotesHub server Url .e.g. 'https://api.releasenoteshub.com'"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "ApiKey {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection to endpoint. Note the prefix 'ApiKey' is required .e.g. 'ApiKey API-b050354e-f581-4d03-a49e-e2165ddb777f'.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://marketplace.visualstudio.com/items?itemName=ReleaseNotesHub.rnh-pipelinetasks\" target=\"_blank\"><b>Learn More</b></a>"
+            },
+            "icons": {
+                "default": "images/icon.png",
+                "large": "images/icon.png"
+            }
+        },
+        {
+            "id": "rnh_trigger_pull_pipelinetask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "pullPipeLineTask"
+            }
+        },
+        {
+            "id": "rnh_trigger_publish_pipelinetask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "publishPipeLineTask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

@@ -1,0 +1,265 @@
+﻿{
+    "id":  "1111e6c5-dfa9-4b18-a8f3-e1fe1207682e",
+    "name":  "rnh_trigger_pull_pipelinetask",
+    "friendlyName":  "Trigger ReleaseNotesHub Pull",
+    "description":  "Trigger ReleaseNotesHub pull for release notes.",
+    "helpUrl":  "https://www.releasenoteshub.com",
+    "helpMarkDown":  "Version: 2.0.19. [More Information](https://support.releasenoteshub.com/article/show/105042-how-do-i-pull-from-azure-devops)",
+    "category":  "Deploy",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "author":  "ReleaseNotesHub",
+    "version":  {
+                    "Major":  2,
+                    "Minor":  0,
+                    "Patch":  19
+                },
+    "demands":  [
+
+                ],
+    "minimumAgentVersion":  "2.115.0",
+    "groups":  [
+                   {
+                       "name":  "associatedReleasesGroup",
+                       "displayName":  "Associated Releases",
+                       "isExpanded":  false
+                   }
+               ],
+    "instanceNameFormat":  "Trigger ReleaseNotesHub Pull",
+    "inputs":  [
+                   {
+                       "name":  "ReleaseNotesHubService",
+                       "type":  "connectedService:ReleaseNotesHub",
+                       "label":  "ReleaseNotesHub service/server end point",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Select the ReleaseNotesHub end point to use. If needed, click on \u0027manage\u0027, and add a new service endpoint of type \u0027ReleaseNotesHub\u0027"
+                   },
+                   {
+                       "name":  "space",
+                       "type":  "pickList",
+                       "label":  "Space",
+                       "required":  true,
+                       "helpMarkDown":  "Select Space containing the ReleaseNotesHub Project. Spaces where you have at least Contributor access are displayed.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "project",
+                       "type":  "pickList",
+                       "label":  "Project",
+                       "required":  true,
+                       "helpMarkDown":  "Select Project.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "publish",
+                       "type":  "boolean",
+                       "label":  "Publish Release",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Publish Release."
+                   },
+                   {
+                       "name":  "releaseOptions",
+                       "type":  "radio",
+                       "label":  "Release",
+                       "required":  true,
+                       "defaultValue":  "WithVersion",
+                       "helpMarkDown":  "Select Release.",
+                       "options":  {
+                                       "LatestRelease":  "Pull Release Notes for latest Release in ReleaseNotesHub.",
+                                       "WithVersionVariable":  "Pull Release notes for BuildNumber.",
+                                       "WithVersion":  "Pull Release notes for Version."
+                                   }
+                   },
+                   {
+                       "name":  "withVersionVariable_versionNumber",
+                       "type":  "string",
+                       "label":  "Version Number",
+                       "defaultValue":  "$(Build.BuildNumber)",
+                       "required":  false,
+                       "helpMarkDown":  "Version number to be used. This can be extracted from the build name .e.g. Build 2021.1.20-rc.",
+                       "visibleRule":  "releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersionVariable_versionNumberExpression",
+                       "type":  "string",
+                       "label":  "Regex Filter to extract build number",
+                       "defaultValue":  "\\d+\\.\\d+\\.\\d+\\.\\d+",
+                       "required":  false,
+                       "helpMarkDown":  "Regular expression filter to get build number from the build name .e.g. \\d+\\.\\d+\\.\\d+.",
+                       "visibleRule":  "releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersion_majorVersion",
+                       "type":  "string",
+                       "label":  "Major Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Major Version for Release.",
+                       "visibleRule":  "releaseOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_minorVersion",
+                       "type":  "string",
+                       "label":  "Minor Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Minor Version for Release.",
+                       "visibleRule":  "releaseOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_buildVersion",
+                       "type":  "string",
+                       "label":  "Build",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Build for Release.",
+                       "visibleRule":  "releaseOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_revisionVersion",
+                       "type":  "string",
+                       "label":  "Revision",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Revision for Release.",
+                       "visibleRule":  "releaseOptions=WithVersion"
+                   },
+                   {
+                       "name":  "preReleaseLabel",
+                       "type":  "string",
+                       "label":  "Semantic Label",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Sematic pre-release Label.",
+                       "visibleRule":  "releaseOptions=WithVersion || releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersionVariable_labelExpression",
+                       "type":  "string",
+                       "label":  "Regex Filter to extract Semantic Label",
+                       "defaultValue":  "((-)(.*))",
+                       "required":  false,
+                       "helpMarkDown":  "Regular expression filter to get label from the build name .e.g. ((-)(.*))",
+                       "visibleRule":  "releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "ignoreIfExists",
+                       "type":  "boolean",
+                       "label":  "Ignore if Release exists",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "If release already exists then ignore pull request.",
+                       "visibleRule":  "releaseOptions=WithVersion  || releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "createOnNotFound",
+                       "type":  "boolean",
+                       "label":  "Create Release if not found",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Create Release with version if not found.",
+                       "visibleRule":  "releaseOptions=WithVersion  || releaseOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "releaseName",
+                       "type":  "string",
+                       "label":  "Release Name",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Release Name.",
+                       "visibleRule":  "createOnNotFound=true"
+                   },
+                   {
+                       "name":  "releaseDescription",
+                       "type":  "string",
+                       "label":  "Release Description",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Release Description.",
+                       "visibleRule":  "createOnNotFound=true"
+                   },
+                   {
+                       "name":  "releaseAssociationOptions",
+                       "type":  "radio",
+                       "label":  "Associated Releases",
+                       "required":  false,
+                       "groupName":  "associatedReleasesGroup",
+                       "defaultValue":  "SelectRelease",
+                       "options":  {
+                                       "SelectRelease":  "Select a Release.",
+                                       "ListReleases":  "List one or more Releases."
+                                   }
+                   },
+                   {
+                       "name":  "associatedReleases",
+                       "type":  "multiLine",
+                       "label":  "Associated Releases",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "associatedReleasesGroup",
+                       "helpMarkDown":  "Associated Releases as JSON .e.g. [{\u0027AssociatedProjectId\u0027:\u00274b0c96c8-25e0-46cc-8cd9-ccf97968f5c6\u0027,\u0027AssociatedReleaseVersion\u0027:\u00271.2.5.2\u0027}]",
+                       "visibleRule":  "releaseAssociationOptions=ListReleases"
+                   },
+                   {
+                       "name":  "associatedProject",
+                       "type":  "pickList",
+                       "label":  "Associated Project",
+                       "required":  false,
+                       "groupName":  "associatedReleasesGroup",
+                       "helpMarkDown":  "Select associated Project.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      },
+                       "visibleRule":  "releaseAssociationOptions=SelectRelease"
+                   },
+                   {
+                       "name":  "associatedReleaseVersion",
+                       "type":  "string",
+                       "label":  "Associated Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "groupName":  "associatedReleasesGroup",
+                       "helpMarkDown":  "Associated Release Version.",
+                       "visibleRule":  "releaseAssociationOptions=SelectRelease"
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "space",
+                                   "endpointId":  "$(ReleaseNotesHubService)",
+                                   "dataSourceName":  "SpacesAll",
+                                   "resultTemplate":  "{\"Value\":\"{{{id}}}\",\"DisplayValue\":\"{{{name}}}\"}"
+                               },
+                               {
+                                   "target":  "project",
+                                   "endpointId":  "$(ReleaseNotesHubService)",
+                                   "dataSourceName":  "ProjectsForSpace",
+                                   "resultTemplate":  "{\"Value\":\"{{{id}}}\",\"DisplayValue\":\"{{{name}}}\"}",
+                                   "parameters":  {
+                                                      "SpaceId":  "$(space)"
+                                                  }
+                               },
+                               {
+                                   "target":  "associatedProject",
+                                   "endpointId":  "$(ReleaseNotesHubService)",
+                                   "dataSourceName":  "AssociatedProjects",
+                                   "resultTemplate":  "{\"Value\":\"{{{associatedSpaceProjectId}}}\",\"DisplayValue\":\"{{{associatedProjectName}}}\"}",
+                                   "parameters":  {
+                                                      "ProjectId":  "$(project)"
+                                                  }
+                               }
+                           ],
+    "execution":  {
+                      "Node":  {
+                                   "target":  "index.js"
+                               }
+                  }
+}

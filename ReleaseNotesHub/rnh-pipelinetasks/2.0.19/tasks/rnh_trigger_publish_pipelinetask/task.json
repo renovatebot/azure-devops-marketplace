@@ -1,0 +1,161 @@
+﻿{
+    "id":  "6B70386A-F361-429F-AA56-2A87BB4E75E4",
+    "name":  "rnh_trigger_publish_pipelinetask",
+    "friendlyName":  "Trigger ReleaseNotesHub Publish Release",
+    "description":  "Trigger ReleaseNotesHub to publish release notes.",
+    "helpUrl":  "https://www.releasenoteshub.com",
+    "helpMarkDown":  "Version: 2.0.19. [More Information](https://support.releasenoteshub.com/article/show/105042-how-do-i-pull-from-azure-devops)",
+    "category":  "Deploy",
+    "author":  "ReleaseNotesHub",
+    "visibility":  [
+                       "Build",
+                       "Release"
+                   ],
+    "version":  {
+                    "Major":  2,
+                    "Minor":  0,
+                    "Patch":  19
+                },
+    "instanceNameFormat":  "Trigger ReleaseNotesHub Publish",
+    "inputs":  [
+                   {
+                       "name":  "ReleaseNotesHubService",
+                       "type":  "connectedService:ReleaseNotesHub",
+                       "label":  "ReleaseNotesHub service/server end point",
+                       "defaultValue":  "",
+                       "required":  true,
+                       "helpMarkDown":  "Select the ReleaseNotesHub end point to use. If needed, click on \u0027manage\u0027, and add a new service endpoint of type \u0027ReleaseNotesHub\u0027"
+                   },
+                   {
+                       "name":  "space",
+                       "type":  "pickList",
+                       "label":  "Space",
+                       "required":  true,
+                       "helpMarkDown":  "Select Space containing the ReleaseNotesHub Project. Spaces where you have at least Contributor access are displayed.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "project",
+                       "type":  "pickList",
+                       "label":  "Project",
+                       "required":  true,
+                       "helpMarkDown":  "Select the Project.",
+                       "properties":  {
+                                          "EditableOptions":  "True"
+                                      }
+                   },
+                   {
+                       "name":  "publishOptions",
+                       "type":  "radio",
+                       "label":  "Publish Options",
+                       "required":  true,
+                       "defaultValue":  "WithVersion",
+                       "helpMarkDown":  "Select Release.",
+                       "options":  {
+                                       "WithVersionVariable":  "Publish Release notes for BuildNumber and latest Revision.",
+                                       "WithVersion":  "Publish Release notes for Version and latest Revision."
+                                   }
+                   },
+                   {
+                       "name":  "withVersionVariable_versionNumber",
+                       "type":  "string",
+                       "label":  "Version Number",
+                       "defaultValue":  "$(Build.BuildNumber)",
+                       "required":  false,
+                       "helpMarkDown":  "Version number to be used. This can be extracted from the build name .e.g. \u0027Build 2021.1.20-rc\u0027.",
+                       "visibleRule":  "publishOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersionVariable_versionNumberExpression",
+                       "type":  "string",
+                       "label":  "Regex Filter to extract build number",
+                       "defaultValue":  "\\d+\\.\\d+\\.\\d+\\.\\d+",
+                       "required":  false,
+                       "helpMarkDown":  "Regular expression filter to get build number from the build name .e.g. \u0027\\d+\\.\\d+\\.\\d+\u0027.",
+                       "visibleRule":  "publishOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersion_majorVersion",
+                       "type":  "string",
+                       "label":  "Major Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Major Version for Release.",
+                       "visibleRule":  "publishOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_minorVersion",
+                       "type":  "string",
+                       "label":  "Minor Version",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Minor Version for Release.",
+                       "visibleRule":  "publishOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_buildVersion",
+                       "type":  "string",
+                       "label":  "Build",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Build for Release.",
+                       "visibleRule":  "publishOptions=WithVersion"
+                   },
+                   {
+                       "name":  "withVersion_revisionVersion",
+                       "type":  "string",
+                       "label":  "Revision",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Revision for Release.",
+                       "visibleRule":  "publishOptions=WithVersion"
+                   },
+                   {
+                       "name":  "preReleaseLabel",
+                       "type":  "string",
+                       "label":  "Semantic Label",
+                       "defaultValue":  "",
+                       "required":  false,
+                       "helpMarkDown":  "Sematic pre-release Label.",
+                       "visibleRule":  "publishOptions=WithVersion || publishOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "withVersionVariable_labelExpression",
+                       "type":  "string",
+                       "label":  "Regex Filter to extract Semantic Label",
+                       "defaultValue":  "((-)(.*))",
+                       "required":  false,
+                       "helpMarkDown":  "Regular expression filter to get label from the build name .e.g. \u0027((-)(.*))",
+                       "visibleRule":  "publishOptions=WithVersionVariable"
+                   },
+                   {
+                       "name":  "ignoreOnReleaseNotFound",
+                       "type":  "boolean",
+                       "label":  "Ignore error if Release not found",
+                       "defaultValue":  "false",
+                       "required":  false,
+                       "helpMarkDown":  "Do not fail Build if Release not found."
+                   }
+               ],
+    "dataSourceBindings":  [
+                               {
+                                   "target":  "space",
+                                   "endpointId":  "$(ReleaseNotesHubService)",
+                                   "dataSourceName":  "SpacesAll",
+                                   "resultTemplate":  "{\"Value\":\"{{{id}}}\",\"DisplayValue\":\"{{{name}}}\"}"
+                               },
+                               {
+                                   "target":  "project",
+                                   "endpointId":  "$(ReleaseNotesHubService)",
+                                   "dataSourceName":  "ProjectsForSpace",
+                                   "resultTemplate":  "{\"Value\":\"{{{id}}}\",\"DisplayValue\":\"{{{name}}}\"}"
+                               }
+                           ],
+    "execution":  {
+                      "Node":  {
+                                   "target":  "index.js"
+                               }
+                  }
+}

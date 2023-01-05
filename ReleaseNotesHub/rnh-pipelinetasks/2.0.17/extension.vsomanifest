@@ -1,0 +1,102 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ReleaseNotesHub/Azure-Devops-Extension"
+    },
+    "contributions": [
+        {
+            "id": "rnhub-service-endpoint",
+            "description": "Service endpoint type for ReleaseNoteHub connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ReleaseNotesHub",
+                "displayName": "ReleaseNotesHub",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://api.releasenoteshub.com",
+                    "isVisible": "true",
+                    "helpText": "The ReleaseNotesHub server Url .e.g. 'https://api.releasenoteshub.com'"
+                },
+                "dataSources": [
+                    {
+                        "name": "SpacesAll",
+                        "endpointUrl": "{{endpoint.url}}api/spaces/getbyspaceclaim/100?comparison=1&page=1",
+                        "resultSelector": "jsonpath:$.results[*]"
+                    },
+                    {
+                        "name": "ProjectsForSpace",
+                        "endpointUrl": "{{endpoint.url}}api/projects/getbyspace/$(space)?page=1",
+                        "resultSelector": "jsonpath:$.results[*]"
+                    },
+                    {
+                        "name": "AssociatedProjects",
+                        "endpointUrl": "{{endpoint.url}}api/projectassociations/getbyproject/$(project)?page=1",
+                        "resultSelector": "jsonpath:$.results[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "API key for connection to ReleaseNotesHub .e.g. 'API-b050354e-f581-4d03-a49e-e2165ddb777f'.",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 42
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "ApiKey {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "The ReleaseNotesHub URL must be accessible from any agents that are running builds or releases. See [here](https://marketplace.visualstudio.com/items?itemName=ReleaseNotesHub.rnh-pipelinetasks) for details on how to generate an API key."
+            }
+        },
+        {
+            "id": "rnh_trigger_pull_pipelinetask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/rnh_trigger_pull_pipelinetask"
+            }
+        },
+        {
+            "id": "rnh_trigger_publish_pipelinetask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/rnh_trigger_publish_pipelinetask"
+            }
+        },
+        {
+            "id": "rnh_wit_buildnumber_pipelinetask",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/rnh_wit_buildnumber_pipelinetask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
