@@ -1,0 +1,72 @@
+{
+    "id": "bb64728d-cfca-4576-a066-bde89930aaaa",
+    "name": "RegExCheck",
+    "friendlyName": "Regular Expression Check",
+    "description": "A VSTS build task for checking file contents against a regular expression.",
+    "helpMarkDown": "",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "author": "James Taylor",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 20
+    },
+    "instanceNameFormat": "RegExChecker",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "checkString",
+            "type": "string",
+            "label": "Regular Expression",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "A regular expression to check files against."
+        },
+        {
+            "name": "rootDirectory",
+            "type": "filePath",
+            "label": "Root Directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "Enter the directory to start the check in, the check is recursive."
+        },
+        {
+            "name": "fileName",
+            "type": "string",
+            "label": "File Path RegEx",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Regular expression to filter files on their full path, only matching items will be searched. If left blank all files in the search directory are included."
+        },
+        {
+            "name": "expectedMatches",
+            "type": "int",
+            "label": "Number of expected matches",
+            "defaultValue": "0",
+            "required": true,
+            "helpMarkDown": "If the number of matches does not equal this value the task will fail."
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "powershell.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
