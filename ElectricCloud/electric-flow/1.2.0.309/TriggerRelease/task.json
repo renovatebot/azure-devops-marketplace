@@ -1,0 +1,110 @@
+{
+   "instanceNameFormat" : "Trigger Release $(releaseName) from project $(projectName)",
+   "friendlyName" : "ElectricFlow - Trigger Release",
+   "dataSourceBindings" : [
+      {
+         "target" : "projectName",
+         "dataSourceName" : "ElectricFlowProjects",
+         "endpointId" : "$(electricFlowService)",
+         "resultTemplate" : "{\"Value\": \"{{#unless this.pluginKey}}{{{this.projectName}}}{{else}}Default{{/unless}}\", \"DisplayValue\": \"{{#unless this.pluginKey}}{{{this.projectName}}}{{else}}Default{{/unless}}\"}"
+      },
+      {
+         "parameters" : {
+            "projectName" : "$(projectName)"
+         },
+         "target" : "releaseName",
+         "dataSourceName" : "ElectricFlowReleases",
+         "endpointId" : "$(electricFlowService)"
+      },
+      {
+         "parameters" : {
+            "releaseName" : "$(releaseName)",
+            "projectName" : "$(projectName)"
+         },
+         "target" : "startingStageName",
+         "dataSourceName" : "ElectricFlowReleaseStages",
+         "endpointId" : "$(electricFlowService)"
+      }
+   ],
+   "version" : {
+      "Minor" : "2",
+      "Major" : "1",
+      "Patch" : "0"
+   },
+   "execution" : {
+      "Node" : {
+         "target" : "index.js"
+      }
+   },
+   "name" : "TriggerRelease",
+   "author" : "Electric Cloud",
+   "inputs" : [
+      {
+         "helpMarkDown" : "Select the ElectricFlow endpoint to use.",
+         "required" : true,
+         "name" : "electricFlowService",
+         "type" : "connectedService:electricFlow",
+         "label" : "ElectricFlow Service Endpoint",
+         "defaultValue" : ""
+      },
+      {
+         "helpMarkDown" : "Specify the ElectricFlow project name.",
+         "required" : true,
+         "name" : "projectName",
+         "type" : "pickList",
+         "label" : "Project Name",
+         "defaultValue" : "",
+         "properties" : {
+            "EditableOptions" : true
+         }
+      },
+      {
+         "helpMarkDown" : "Specify the ElectricFlow release name.",
+         "required" : true,
+         "name" : "releaseName",
+         "type" : "pickList",
+         "label" : "Release Name",
+         "defaultValue" : "",
+         "properties" : {
+            "EditableOptions" : true
+         }
+      },
+      {
+         "helpMarkDown" : "Specify the starting stage name",
+         "required" : false,
+         "name" : "startingStageName",
+         "type" : "pickList",
+         "label" : "Starting stage name",
+         "defaultValue" : "",
+         "properties" : {
+            "EditableOptions" : true
+         }
+      },
+      {
+         "helpMarkDown" : "One or more stages to run in a pipeline associated with the release, comma-separated.",
+         "name" : "stagesToRun",
+         "type" : "string",
+         "label" : "Stages to run",
+         "defaultValue" : ""
+      },
+      {
+         "helpMarkDown" : "If checked, parameters will be passed to the pipeline",
+         "required" : false,
+         "name" : "requiresAdditionalParameters",
+         "type" : "boolean",
+         "label" : "Requires pipeline parameters"
+      },
+      {
+         "helpMarkDown" : "Parameters for the pipeline call, in key=value pairs or in JSON format. E.g. myParam = value",
+         "required" : false,
+         "name" : "additionalParameters",
+         "visibleRule" : "requiresAdditionalParameters=true",
+         "type" : "multiLine",
+         "label" : "Pipeline parameters"
+      }
+   ],
+   "description" : "Start a release in ElectricFlow.",
+   "helpMarkDown" : "",
+   "category" : "build",
+   "id" : "41e66e30-f95f-11e8-a9f6-d16792ff02ec"
+}

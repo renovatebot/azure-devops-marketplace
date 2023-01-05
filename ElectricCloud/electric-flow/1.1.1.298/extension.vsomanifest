@@ -1,0 +1,164 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "ef-endpoint-type",
+            "description": "Service Endpoint type for ElectricFlow connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "electricFlow",
+                "displayName": "ElectricFlow Server",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the URL for the ElectricFlow Server. For e.g., https://electric-flow-server."
+                },
+                "dataSources": [
+                    {
+                        "name": "ElectricFlowProjects",
+                        "resultSelector": "jsonpath:$.project[*]",
+                        "endpointUrl": "{{{endpoint.url}}}/rest/{{{endpoint.restVersion}}}/projects"
+                    },
+                    {
+                        "name": "ElectricFlowPipelines",
+                        "endpointUrl": "{{{endpoint.url}}}/rest/{{{endpoint.restVersion}}}/projects/{{projectName}}/pipelines",
+                        "resultSelector": "jsonpath:$.pipeline[*].pipelineName"
+                    },
+                    {
+                        "name": "ElectricFlowReleases",
+                        "endpointUrl": "{{{endpoint.url}}}/rest/{{{endpoint.restVersion}}}/projects/{{projectName}}/releases",
+                        "resultSelector": "jsonpath:$.release[*].releaseName"
+                    },
+                    {
+                        "name": "ElectricFlowRepositories",
+                        "endpointUrl": "{{{endpoint.url}}}/rest/{{{endpoint.restVersion}}}/repositories",
+                        "resultSelector": "jsonpath:$.repository[?(@.repositoryDisabled=='0')].repositoryName"
+                    },
+                    {
+                        "name": "ElectricFlowReleaseStages",
+                        "endpointUrl": "{{{endpoint.url}}}/rest/{{{endpoint.restVersion}}}/projects/{{projectName}}/releases",
+                        "resultSelector": "jsonpath:$.release[?(@.releaseName=='{{{releaseName}}}')].stages.stage[*].name"
+                    }
+                ],
+                "inputDescriptors": [
+                    {
+                        "id": "restVersion",
+                        "name": "REST API Version",
+                        "description": "Specify the version for the ElectricFlow REST API. For e.g., v1.",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "defaultValue": "v1.0",
+                            "inputId": "restVersionValues",
+                            "possibleValues": [
+                                {
+                                    "value": "v1.0",
+                                    "displayValue": "v1.0"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Override Electric Flow SSL Validation Check",
+                        "description": "By default SSL Validation Check will be performed. Choose this setting to override the check. If you do not want to override this check, perform the SSL certificate setup required in Jenkins and Electric Flow as per the Electric Flow Server documentation.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "User Name",
+                                "description": "Specify the user name for the ElectricFlow.",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "User Password",
+                                "description": "Specify the user password for the ElectricFlow.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Connection settings, used later in build tasks to connect to your hosted ElectricFlow instance."
+            }
+        },
+        {
+            "id": "run-pipeline",
+            "description": "ElectricFlow - Run Pipeline",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "RunPipeline"
+            }
+        },
+        {
+            "id": "publish-artifact",
+            "description": "ElectricFlow - Publish Artifact",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "PublishArtifact"
+            }
+        },
+        {
+            "id": "call-rest",
+            "description": "ElectricFlow - REST Call",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "RESTCall"
+            }
+        },
+        {
+            "id": "TriggerRelease",
+            "description": "ElectricFlow - Trigger Release",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "TriggerRelease"
+            }
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/electric-cloud/tfs-extension"
+    },
+    "contributionTypes": []
+}
