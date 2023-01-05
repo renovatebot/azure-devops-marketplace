@@ -1,0 +1,76 @@
+{
+    "id": "ee6e6c67-ef2c-43d9-9df9-b033c4833342",
+    "name": "TagBuildForPaths",
+    "friendlyName": "Tag Build For Paths",
+    "description": "This tasks allows you to add a tag to a build when a certain path has changes.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Elvis Chen",
+    "version": {
+        "Major": 1,
+        "Minor": 1,
+        "Patch": 9
+    },
+    "instanceNameFormat": "Tag Build For Paths",
+    "groups": [
+        {
+          "name": "advanced",
+          "displayName": "Advanced",
+          "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "Tag",
+            "type": "string",
+            "label": "Tag",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The tag to apply if changes are found within provided path."
+        },
+        {
+            "name": "PathFilters",
+            "type": "multiLine",
+            "label": "Path filters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A list of paths(saparate by [,]), if matched, will apply tag to build."
+        },
+        {
+            "name": "WorkingDirectory",
+            "type": "filePath",
+            "label": "Working directory",
+            "defaultValue": "$(Build.SourcesDirectory)",
+            "required": true,
+            "helpMarkDown": "The directory in which the script should operate"
+        },
+        {
+            "name": "UseVerbose",
+            "type": "boolean",
+            "label": "Verbose",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Toggle verbose mode",
+            "groupName": "advanced"
+        },
+        {
+            "name": "CreateTagVariable",
+            "type": "boolean",
+            "label": "Create variable",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "When enabled, creates a variable with the same name as the tag. If the tag is applied, the variable will have value true. Otherwise it will remain false.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+          "target": "$(currentDirectory)\\TagBuild_new.ps1",
+          "argumentFormat": "",
+          "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
