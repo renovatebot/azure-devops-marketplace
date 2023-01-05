@@ -1,0 +1,132 @@
+{
+    "id": "FA6BEEDE-4FE1-11E9-8D71-071835DA2614",
+    "name": "TeamscaleReportUploader",
+    "friendlyName": "Teamscale Report Uploader",
+    "description": "Upload coverage, findings, and other reports to Teamscale.",
+    "helpUrl": "https://teamscale.com",
+    "helpMarkDown": "[Teamscale](https://teamscale.com)",
+    "category": "Utility",
+    "author": "CQSE GmbH",
+    "version": {
+        "Major": 1,
+        "Minor": 3,
+        "Patch": 3
+    },
+    "runsOn": [
+        "Agent",
+        "DeploymentGroup"
+    ],
+    "demands": [],
+    "groups": [],
+    "inputs": [
+        {
+            "name": "files",
+            "type": "filePath",
+            "label": "Files",
+            "defaultValue": "$(Agent.TempDirectory)/**/*.coverage",
+            "required": true,
+            "helpMarkDown": "File(s) to be uploaded. Wildcards can be used. For example, `**/*.coverage` for all .coverage files in all subfolders."
+        },
+        {
+            "name": "format",
+            "type": "string",
+            "label": "Report Format ID",
+            "defaultValue": "VS_COVERAGE",
+            "required": true,
+            "helpMarkDown": "The type of report this build step will upload to Teamscale. Check the [Teamscale userguide](https://cqse.eu/userguide) for a complete list of supported formats and their IDs."
+        },
+        {
+            "name": "url",
+            "type": "string",
+            "label": "Teamscale URL",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The URL under which Teamscale is accessible."
+        },
+        {
+            "name": "username",
+            "type": "string",
+            "label": "Username",
+            "defaultValue": "build",
+            "required": true,
+            "helpMarkDown": "The name of the Teamscale user used to perform the upload."
+        },
+        {
+            "name": "accessKey",
+            "type": "string",
+            "label": "IDE Access Key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The IDE access key of the Teamscale user used to perform the upload. You can generate one for the user in Teamscale under Admin > Users. Alternatively, you can specify the (secret) variable `teamscale.accessKey` in the pipeline settings or the environment variable `TEAMSCALE_ACCESS_KEY`."
+        },
+        {
+            "name": "project",
+            "type": "string",
+            "label": "Teamscale Project",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The ID or alias of the Teamscale project to which the reports should be uploaded. You can find these in the Projects perspective of Teamscale."
+        },
+        {
+            "name": "partition",
+            "type": "string",
+            "label": "Partition",
+            "defaultValue": "Unit Test Coverage",
+            "required": true,
+            "helpMarkDown": "An identifier under which the uploaded coverage/findings/... will be grouped. Data uploaded into a partition will replace all previous data uploaded to that partition. If you'd e.g. like to upload multiple coverage reports for multiple test stages that all should be merged in Teamscale to calculate the line coverage metric, use different partitions for each upload."
+        },
+        {
+            "name": "insecure",
+            "type": "boolean",
+            "label": "Skip certificate validation",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Causes SSL certificates to be accepted without validation."
+        },
+        {
+            "name": "trustedKeystore",
+            "type": "string",
+            "label": "Path to custom trusted keystore",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Per default, this plugin uses an embedded Java keystore to validate certificates. If you want to use a custom Java keystore, e.g. for self-signed certificates, you can specify the path to it here. You can find instructions how to create such a keystore [here](https://docs.teamscale.com/howto/connecting-via-https/#using-self-signed-certificates)."
+        },
+        {
+            "name": "keystorePassword",
+            "type": "string",
+            "label": "Password of the custom trusted keystore",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The password for the specified custom Java keystore. Alternatively, you can specify the (secret) variable `teamscale.keystorePassword` in the pipeline settings."
+        },
+        {
+            "name": "stacktrace",
+            "type": "boolean",
+            "label": "Print stack trace",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "Enables printing stack traces in all cases where errors occur. Used for debugging."
+        },
+        {
+            "name": "codeCoverageExePath",
+            "type": "string",
+            "label": "Path to CodeCoverage.exe",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "If you'd like to upload Visual Studio .coverage files to Teamscale, you must provide the path to CodeCoverage.exe. This file is used to convert the binary .coverage files to .xml files suitable for uploading to Teamscale. This plugin ships with a version of CodeCoverage.exe. If you prefer to use a different version, you'll have to configure the correct path to it here."
+        }
+    ],
+    "instanceNameFormat": "Upload $(files) to Teamscale $(url)",
+    "execution": {
+        "Node": {
+            "target": "index.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+        "NoMatchingFilesFound": "No matching files were found with search pattern: %s",
+        "UploadingFiles": "Uploading file(s): %s",
+        "NotAllFilesUploaded": "Not all files were uploaded; Uploaded: %d; Total: %d",
+        "IncompleteEndpoint": "The service connection does not contain all required fields."
+    }
+}
