@@ -1,0 +1,83 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "524b71d5-8651-48d9-985a-73e369228b65",
+    "name": "TransformarArchivos",
+    "friendlyName": "Transformar archivos",
+    "description": "Sustituye en archivos XML de configuración, los nodos que correspondan con los valores de las variables del pipeline.",
+    "helpMarkDown": "<u>Transformar archivos:</u> actualiza los nodos **appSettings**, **applicationSettings**, **connectionStrings** y **endpoint**, con los valores en las variables del pipeline.<br>Actualmente solo soporta archivos con extensiones XML, CONFIG, RDS y RDL.<br><br>[Más sobre esta tarea](https://github.com/JavierCordero1989/TransformarVariables)",
+    "category": "Utility",
+    "author": "José Javier Cordero León",
+    "version": {
+        "Major": 0,
+        "Minor": 6,
+        "Patch": 0
+    },
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "minimumAgentVersion": "2.170.1",
+    "instanceNameFormat": "Transformar archivo - $(filePath)",
+    "groups": [
+        {
+            "name": "otherTagsAndNodes",
+            "displayName": "Otros nodos y etiquetas",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "filePath",
+            "type": "filePath",
+            "label": "Archivo a transformar",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Archivo a transformar. Debe ser del tipo **.config**."
+        },
+        {
+            "name": "fileType",
+            "type": "radio",
+            "label": "Tipo de archivo",
+            "required": false,
+            "defaultValue": "type_xml",
+            "helpMarkDown": "Tipo del archivo: XML, RDS o RDL.",
+            "options": {
+                "type_xml": "XML",
+                "type_rds": "RDS",
+                "type_rdl": "RDL"
+            }
+        },
+        {
+            "name": "otherNodes",
+            "type": "multiLine",
+            "label": "Otros nodos",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Agregue otros nodos a transformar, separados por una línea.",
+            "properties": {
+                "resizable": "true",
+                "maxLength": "5000"
+            },
+            "groupName": "otherTagsAndNodes"
+        }
+        ,
+        {
+            "name": "otherTags",
+            "type": "multiLine",
+            "label": "Otras etiquetas",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Agregue otras etiquetas a transformar, separados por una línea.",
+            "properties": {
+                "resizable": "true",
+                "maxLength": "5000"
+            },
+            "groupName": "otherTagsAndNodes"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "script.ps1"
+        }
+    }
+}
