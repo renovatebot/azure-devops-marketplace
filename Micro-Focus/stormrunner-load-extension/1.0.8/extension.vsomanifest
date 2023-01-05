@@ -1,0 +1,150 @@
+{
+    "manifestVersion": 1,
+    "screenshots ": [
+        {
+            "path": "resources/screenshot1.png"
+        },
+        {
+            "path": "resources/screenshot2.png"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "srl_service_endpoint",
+            "description": "Service Endpoint type for LoadRunner Cloud connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "stormrunner",
+                "displayName": "LoadRunner Cloud server",
+                "url": {
+                    "displayName": "Invisible-Server-URL",
+                    "value": "https://loadrunner-cloud.saas.microfocus.com",
+                    "isVisible": "false"
+                },
+                "dataSources": [],
+                "inputDescriptors": [
+                    {
+                        "id": "server",
+                        "name": "Server URL",
+                        "description": "URL for LoadRunner Cloud. For example: https://loadrunner-cloud.saas.microfocus.com.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "values": {
+                            "inputId": "registryInput",
+                            "defaultValue": "https://loadrunner-cloud.saas.microfocus.com"
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 512
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Your user name or client id to log in to LoadRunner Cloud. For example: loadrunner.cloud@microfocus.com.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 128
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Your password or secret key to log in to LoadRunner Cloud.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 128
+                                }
+                            },
+                            {
+                                "id": "proxy",
+                                "name": "Proxy URL",
+                                "description": "Add your proxy in format http(s)://<host>:<port> or leave empty if not using a proxy.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 512
+                                }
+                            },
+                            {
+                                "id": "proxyUsername",
+                                "name": "Proxy Username",
+                                "description": "If your proxy requires credentials, enter the user name.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 128
+                                }
+                            },
+                            {
+                                "id": "proxyPassword",
+                                "name": "Proxy Password",
+                                "description": "If your proxy requires credentials,, enter the password.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 128
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://msdn.microsoft.com/Library/vs/alm/Release/author-release-definition/understanding-tasks#serviceconnections\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "srl-test-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        },
+        {
+            "id": "srl-build-result-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view and depends on Cmdline task",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "LoadRunner Cloud",
+                "uri": "buildReport.html",
+                "supportsTasks": [
+                    "79c5fa09-79a7-4303-9ca9-4277a4c020b0",
+                    "2cab76dd-303c-4853-b5dc-510fb9aa2cd3"
+                ],
+                "height": 1024
+            }
+        }
+    ],
+    "scopes": [
+        "vso.test",
+        "vso.build_execute",
+        "vso.serviceendpoint"
+    ],
+    "contributionTypes": []
+}
