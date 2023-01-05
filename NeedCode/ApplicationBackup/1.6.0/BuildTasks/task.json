@@ -1,0 +1,101 @@
+{
+    "id": "1ae9cc7b-29a4-4614-82df-00dc3ea74cd0",
+    "name": "ApplicationBackup",
+    "friendlyName": "Application Backup Manager",
+    "description": "Backup files, folder before update. Version: 1.6.0",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "visibility": [
+        "Release"
+    ],
+    "author": "NeedCode",
+    "version": {
+        "Major": 1,
+        "Minor": 6,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Backup Application $(SourcePath)",
+    "groups": [
+        {
+            "name": "archive",
+            "displayName": "Archive",
+            "isExpanded": true
+       }
+    ],
+    "inputs": [
+        {
+            "name": "MachineName",
+            "label": "Application Server",
+            "type": "string",
+            "required": true,
+            "helpMarkDown": "Name or IP of the server where the files are located."
+        },
+        {
+            "name": "SourcePath",
+            "label": "Source Folder",
+            "type": "string",
+            "required": true,
+            "helpMarkDown": "The source folder or UNC path that the copy pattern(s) will be run from."
+        },
+        {
+            "name": "AdminLogin",
+            "label": "Admin Login",
+            "required": true,
+            "helpMarkDown": "Administrator login for machines."        
+        },
+        {
+            "name": "AdminPassword",
+            "label": "Admin Password",
+            "required": true,
+            "helpMarkDown": "Password for administrator login for machines. It can accept variable defined in Release definitions as '$(passwordVariable)'. You may mark variable type as 'secret' to secure it."        
+        },
+        {
+            "name": "DestinationMachineName",
+            "label": "Backup Server",
+            "type": "string",
+            "helpMarkDown": "Name or IP of the server to which the backup should be copied. If empty that the 'Target Folder' is UNC path or it is on the 'Application Server'."
+        },
+        {
+            "name": "DestinationPath",
+            "label": "Target Folder",
+            "type": "string",
+            "required": true,
+            "helpMarkDown": "Target folder or UNC path files will copy to. You can use [variables](https://go.microsoft.com/fwlink/?LinkID=550988). Example: $(Build.BuildNumber)"
+        },
+        {
+            "name": "CreateArchive",
+            "type": "boolean",
+            "label": "Compress Files",
+            "defaultValue": false,
+            "groupName": "archive",
+            "helpMarkDown": "If this option is selected, then a zip file will be created in the destination folder."
+        },
+        {
+            "name": "IncludeRootFolder",
+            "type": "boolean",
+            "label": "Include root folder to archive",
+            "defaultValue": false,
+            "groupName": "archive",
+            "helpMarkDown": "If this option is selected, then include folder to the archive file",
+            "visibleRule": "CreateArchive=true"
+        },
+        {
+            "name": "ArchiveFileName",
+            "label": "Archive file to create",
+            "type": "string",
+            "defaultValue": "Backup_$(Build.BuildNumber).zip",
+            "groupName": "archive",
+            "helpMarkDown": "Specify the name of the archive file to create. You can use [variables](https://go.microsoft.com/fwlink/?LinkID=550988). For example, to create Backup_$(Build.BuildNumber).zip.",
+            "visibleRule": "CreateArchive=true"
+        }
+    ],
+    "execution": {
+        "PowerShell3": {
+            "target": "BackupTask.ps1",
+            "platforms": [
+                "windows"
+            ],
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
