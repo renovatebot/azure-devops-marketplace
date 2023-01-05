@@ -1,0 +1,93 @@
+{
+  "id": "2eadfaf9-a99a-4a51-9815-6935b5aa39fe",
+  "name": "sigbench",
+  "friendlyName": "Signature Benchmark",
+  "description": "Test your binary files against signature scans.",
+  "author": "Konstantin 'cpz' L.",
+  "helpMarkDown": "https://github.com/cpz/sigbench",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "76"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Signature Benchmark",
+  "groups": [{
+      "name": "SigbenchConfig",
+      "displayName": "Signature Benchmark Configuration",
+      "isExpanded": true
+    },
+    {
+      "name": "SigbenchData",
+      "displayName": "Signature Benchmark Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [{
+      "name": "sigSize",
+      "type": "string",
+      "label": "Signature Sizes",
+      "defaultValue": "32",
+      "required": true,
+      "groupName": "SigbenchConfig",
+      "helpMarkDown": "Signature Sizes (default: 32 or 34, because this length used by Battleye)"
+    },
+    {
+      "name": "file1",
+      "type": "filePath",
+      "label": "File 1 to Compare",
+      "defaultValue": "**/*.dll",
+      "required": true,
+      "groupName": "SigbenchConfig",
+      "helpMarkDown": "Type path to file 1 to compare"
+    },
+    {
+      "name": "file2",
+      "type": "filePath",
+      "label": "File 2 to Compare",
+      "defaultValue": "**/*.dll",
+      "required": true,
+      "groupName": "SigbenchConfig",
+      "helpMarkDown": "Type path to file 2 to compare"
+    },
+    {
+      "name": "customVar",
+      "type": "boolean",
+      "label": "Create Variables",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "SigbenchData",
+      "helpMarkDown": "Creates variable $(Sigbench.DiffPercent) and $(Sigbench.InterPercent) which provides information about difference and intersection percentage. Example: 99.68362902369064 (difference) or 0.21652039927647887 (intersection)."
+    },
+    {
+      "name": "printMatched",
+      "type": "boolean",
+      "label": "Print Matched Signatures",
+      "defaultValue": "false",
+      "required": false,
+      "groupName": "SigbenchData",
+      "helpMarkDown": "Prints signatures that matched both binaries."
+    },
+    {
+      "name": "percentPrecise",
+      "type": "string",
+      "label": "Percent Precise",
+      "defaultValue": "4",
+      "required": false,
+      "groupName": "SigbenchData",
+      "helpMarkDown": "Changes Percent Precise (default: 4). Example: 99.68"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "task.js",
+      "argumentFormat": ""
+    }
+  }
+}
