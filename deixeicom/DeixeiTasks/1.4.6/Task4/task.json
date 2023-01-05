@@ -1,0 +1,103 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "0e42bce8-8a54-440e-8e2e-d0aba67deec9",
+  "name": "getconfig",
+  "friendlyName": "deixei :: Get Configuration",
+  "description": "deixei.com :: Get configuration document from Cosmos and adds it to your CI/CD",
+  "helpMarkDown": "[More Information](http://www.deixei.com/tasks.html#getconfig)",
+  "category": "Utility",
+  "author": "Marcio Parente da Silva",
+  "version": {
+    "Major": 1,
+    "Minor": 4,
+    "Patch": 6
+  },
+  "instanceNameFormat": "Get Configuration $(configurationkey)",
+  "groups": [
+    {
+      "name": "setup",
+      "displayName": "Setup",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    },
+    {
+      "name": "outputs",
+      "displayName": "Outputs",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "cosmosdbservice",
+      "type": "connectedService:CosmosDB",
+      "label": "Cosmos DB service connection name",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select your Azure Cosmos DB",
+      "groupName": "setup"
+    },
+    {
+      "name": "configurationkey",
+      "type": "string",
+      "label": "Configuration Key",
+      "defaultValue": "$(System.StageName)",
+      "required": true,
+      "helpMarkDown": "String that identifies the cofiguration to load.ex.: $(System.StageName) or $(System.PhaseName); $(System.TeamProject)",
+      "groupName": "setup"
+    },
+    {
+      "name": "teamproject",
+      "type": "string",
+      "label": "Team Project",
+      "defaultValue": "$(System.TeamProject)",
+      "required": true,
+      "helpMarkDown": "String that identifies the partition key of the cofiguration to load.ex.: $(System.TeamProject)",
+      "groupName": "setup"
+    },
+    {
+      "name": "databaseDefinition",
+      "type": "string",
+      "label": "Database Definition",
+      "defaultValue": "MasterRecords",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "collectionDefinition",
+      "type": "string",
+      "label": "Collection Definition",
+      "defaultValue": "Configuration",
+      "required": true,
+      "helpMarkDown": "",
+      "groupName": "advanced"
+    },
+    {
+      "name": "outputVariableName",
+      "type": "string",
+      "label": "Output Variable Name",
+      "defaultValue": "$(configurationkey)",
+      "required": true,
+      "helpMarkDown": "It will return a variable named COSMOSDB_$(outputVariableName) to be used in the same stage",
+      "groupName": "outputs"
+    },
+    {
+      "name": "outputFilename",
+      "type": "filePath",
+      "label": "Output Filename",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "(Optional) Enter the file name for the results. If no value is entered, the root will be used. It can be used in next stages.",
+      "groupName": "outputs"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}

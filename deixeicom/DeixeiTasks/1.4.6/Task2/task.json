@@ -1,0 +1,62 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "431b78be-dd97-4eb3-a2d9-1c2d0b6bab7a",
+  "name": "summary",
+  "friendlyName": "deixei :: Summary",
+  "description": "deixei.com :: Adds a markdown summary to your CI/CD",
+  "helpMarkDown": "[More Information](http://www.deixei.com/tasks.html#summary)",
+  "category": "Utility",
+  "author": "Marcio Parente da Silva",
+  "version": {
+    "Major": 1,
+    "Minor": 4,
+    "Patch": 6
+  },
+  "instanceNameFormat": "Summary $(title)",
+  "groups": [
+    {
+      "name": "details",
+      "displayName": "Summary details",
+      "isExpanded": true
+    },
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "title",
+      "type": "string",
+      "label": "Summary Title",
+      "defaultValue": "Notes for build $(Build.DefinitionName)",
+      "required": true,
+      "helpMarkDown": "Enter a summary title. Example: Notes for build $(Build.DefinitionName) or Notes for Release $(Release.DefinitionName)",
+      "groupName": "details"
+    },
+    {
+      "name": "description",
+      "type": "multiLine",
+      "label": "Description",
+      "defaultValue": "**Build Number**  : $(Build.BuildNumber)",
+      "required": true,
+      "helpMarkDown": "Enter a overall description. Example: **Build Number**  : $(Build.BuildNumber) or **Release Id**  : $(Release.DefinitionId)",
+      "groupName": "details"
+    },
+    {
+      "name": "workingDir",
+      "type": "filePath",
+      "label": "Working directory",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "(Optional) Enter the working directory in which to create the markdown summary. If no value is entered, the root will be used.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
