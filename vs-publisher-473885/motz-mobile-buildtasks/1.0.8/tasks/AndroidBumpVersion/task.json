@@ -1,0 +1,89 @@
+{
+    "id": "99796404-38d2-487b-887e-5b581b5c47eb",
+    "name": "android-manifest-version",
+    "friendlyName": "Android Manifest Version Numbers",
+    "description": "Bump the version of your android manifest file at build time.",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "James Montemagno",
+    "visibility": [
+        "Build",
+        "Release"
+      ],
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Bump Android Versions in $(sourcePath)",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "sourcePath",
+            "type": "filePath",
+            "label": "Android Manifest File Path",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Full path to android manifest file."
+        },
+        {
+            "name": "versionCodeOption",
+            "type": "pickList",
+            "label": "Version Code Format",
+            "required": true,
+            "defaultValue": "buildid",
+            "options":
+            {
+                "buildid": "User Defined/Build Id",
+                "timestamp": "Unix timestamp in seconds"
+            },
+            "helpMarkDown": "Select the type of version code format that you would like to use. Selecting timestamp ignores the version code."
+        },
+        {
+            "name": "versionCode",
+            "type": "string",
+            "label": "Version Code (must be integer)",
+            "defaultValue": "$(Build.BuildId)",
+            "required": true,
+            "visibleRule": "versionCodeOption == buildid",
+            "helpMarkDown": "Number to set the version code to, must be an integer  (see Android documentation)."
+        },
+        {
+            "name": "versionCodeOffset",
+            "type": "string",
+            "label": "Version Code Offset",
+            "defaultValue": "0",
+            "required": false,
+            "visibleRule": "versionCodeOption == buildid",
+            "helpMarkDown": "A number to offset the version code below by, must be an integer."
+        },
+        {
+            "name": "versionName",
+            "type": "string",
+            "label": "Version Name",
+            "defaultValue": "1.0.$(Build.BuildId)",
+            "required": false,
+            "helpMarkDown": "The version number shown to users (leave blank to use existing versionName in AndroidManifest.xml)."
+        },
+        {
+            "name": "printFile",
+            "type": "boolean",
+            "label": "Print File",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "If you would like to print the file contents before and after changing variables."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "built/task.js",
+            "workingDirectory": "$(currentDirectory)"
+        }
+    }
+}
