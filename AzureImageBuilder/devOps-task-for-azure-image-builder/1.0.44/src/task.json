@@ -1,0 +1,361 @@
+{
+    "id": "a4685136-7cb5-430c-9df5-032660332fe9",
+    "name": "AzureImageBuilderTask",
+    "friendlyName": "Azure VM Image Builder Test(Preview)",
+    "description": "Build images using Azure Image Builder resource provider.",
+    "helpMarkDown": "For documentation, and end to end example, please visit: http://aka.ms/azvmimagebuilderdevops",
+    "category": "Deploy",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Microsoft Corporation",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 44
+    },
+    "instanceNameFormat": "Azure VM Image Builder Task",
+    "groups": [
+        {
+            "name": "ImageBuilderInput",
+            "displayName": "Where you want to run this template",
+            "isExpanded": true
+        },
+        {
+            "name": "Identity",
+            "displayName": "Managed Identity (Required)",
+            "isExpanded": true
+        },
+        {
+            "name": "VnetConfig",
+            "displayName": "VNet Configuration (Optional)",
+            "isExpanded": true
+        },
+        {
+            "name": "Source",
+            "displayName": "Source",
+            "isExpanded": true
+        },
+        {
+            "name": "Customize",
+            "displayName": "Customize",
+            "isExpanded": true
+        },
+        {
+            "name": "Distribute",
+            "displayName": "Distribute",
+            "isExpanded": true
+        },
+        {
+            "name": "OptionalSettings",
+            "displayName": "Optional Settings",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "managedIdentity",
+            "type": "string",
+            "label": "Identity Resource Id",
+            "required": true,
+            "helpMarkDown": "Create an identity, and add the resourceID, review https://aka.ms/azvmimagebuilder#permissions for more information.\n\nExample: /subscriptions/<subscriptionid>/resourcegroups/<resource-group-name>/providers/Microsoft.ManagedIdentity/userAssignedIdentities/<idenitity-name>",
+            "groupName": "Identity"
+        },
+        {
+            "name": "vnetSubnetId",
+            "type": "string",
+            "label": "Subnet Id",
+            "required": false,
+            "helpMarkDown": "Resource id of a pre-existing subnet. Optional configuration of the virtual network to use to deploy the build virtual machine in. Omit if no specific virtual network needs to be used. Review https://docs.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-networking for more information.",
+            "groupName": "VnetConfig"
+        },
+        {
+            "name": "imageSource",
+            "type": "pickList",
+            "label": "Image type",
+            "required": false,
+            "helpMarkDown": "Select image source for Azure Image Builder.\nSupported source: Managed Image, Shared Image Gallery and Marketplace",
+            "options": {
+                "managedimage": "Managed Image",
+                "sig": "Shared Image Gallery",
+                "marketplace": "Marketplace"
+            },
+            "defaultValue": "managedimage",
+            "groupName": "Source"
+        },
+        {
+            "name": "customImageResourceId",
+            "type": "string",
+            "label": "Image resource id for Managed Image",
+            "required": false,
+            "helpMarkDown": "ResourceId string for Managed Image. Managed image and template locations must be same.\n\nExample, /subscriptions/subscription_id/resourceGroups/rg_name/providers/Microsoft.Compute/images/image_name",
+            "visibleRule": "imageSource = managedimage",
+            "groupName": "Source"
+        },
+        {
+            "name": "ImageVersionId",
+            "type": "string",
+            "label": "Image version id",
+            "required": false,
+            "helpMarkDown": "Image verison id for Shared Image Gallery source image. Shared image location and template location must be same.\n\nExample, /subscriptions/subscription_id/resourceGroups/rg_name/providers/Microsoft.Compute/galleries/gallery_name/images/image_definition_name/versions/version_name",
+            "visibleRule": "imageSource = sig",
+            "groupName": "Source"
+        },
+        {
+            "name": "baseImage",
+            "type": "pickList",
+            "label": "Base image",
+            "required": false,
+            "helpMarkDown": "You can choose from a curated gallery of OS images. Latest version will be used for these platform images",
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "options": {
+                "MicrosoftWindowsServer:WindowsServer:2016-Datacenter": "Windows 2016-Datacenter",
+                "MicrosoftWindowsServer:WindowsServer:2019-Datacenter": "Windows 2019-Datacenter",
+                "MicrosoftWindowsDesktop:Windows-10:rs5-enterprise": "Windows RS5-Enterprise",
+                "MicrosoftWindowsDesktop:Windows-10:rs5-evd": "Windows RS5-Evd",
+                "MicrosoftWindowsDesktop:Windows-10:rs5-pro": "Windows RS5-Pro",
+                "MicrosoftWindowsDesktop:Windows-10:19h1-pro": "Windows 19h1-Pro",
+                "MicrosoftWindowsDesktop:Windows-10:19h1-evd": "Windows 19h1-Evd",
+                "Canonical:UbuntuServer:18.04-LTS": "Ubuntu 18.04-LTS",
+                "Canonical:UbuntuServer:16.04-LTS": "Ubuntu 16.04-LTS",
+                "RedHat:RHEL:7.6": "RHEL 7.6",
+                "OpenLogic:CentOS:7.6": "CentOS 7.6",
+                "credativ:Debian:9": "Debian 9",
+                "SUSE:SLES:15": "SLES 15 SP1"
+            },
+            "defaultValue": "Canonical:UbuntuServer:18.04-LTS",
+            "visibleRule": "imageSource = marketplace",
+            "groupName": "Source"
+        },
+        {
+            "name": "baseImagePubOfferSku",
+            "type": "string",
+            "label": "If base image is not in the list (Optional)",
+            "required": false,
+            "helpMarkDown": "If platform image is not in list, you can enter it, in this format: 'Publisher:Offer:Sku', e.g. 'OpenLogic:CentOS:7.5'",
+            "defaultValue": "Publisher:Offer:Sku",
+            "visibleRule": "imageSource = marketplace",
+            "groupName": "Source"
+        },
+        {
+            "name": "baseImageVersion",
+            "type": "string",
+            "label": "Base Image Version (optional)",
+            "required": false,
+            "helpMarkDown": "PIR image version. This is optional. Default value: latest.",
+            "defaultValue": "latest",
+            "visibleRule": "imageSource = marketplace",
+            "groupName": "Source"
+        },
+        {
+            "name": "platformImagePurchasePlan",
+            "type": "string",
+            "label": "Platform Image Purchase Plan (optional)",
+            "required": false,
+            "helpMarkDown": "Optional purchase plan configuration for platform image. You can enter in this format: 'PlanName:PlanProduct:PlanPublisher'",
+            "defaultValue": "PlanName:PlanProduct:PlanPublisher",
+            "visibleRule": "imageSource = marketplace",
+            "groupName": "Source"
+        },
+        {
+            "name": "provisioner",
+            "type": "picklist",
+            "label": "Provisioner",
+            "required": false,
+            "helpMarkDown": "Select provisioner. Shell is for Linux and Powershell is for windows",
+            "options": {
+                "shell": "Shell",
+                "powershell": "PowerShell"
+            },
+            "defaultValue": "shell",
+            "groupName": "Customize"
+        },
+        {
+            "name": "windowsUpdateProvisioner",
+            "type": "boolean",
+            "label": "Run Windows Update as last customization",
+            "defaultValue": "false",
+            "required": false,
+            "visibleRule": "provisioner = PowerShell",
+            "groupName": "Customize",
+            "helpMarkDown": "If this is selected, Windows update will install important and recommended updates, see documentation for further details"
+        },
+        {
+            "name": "runElevated",
+            "type": "boolean",
+            "label": "Run Elevated",
+            "defaultValue": "false",
+            "required": false,
+            "visibleRule": "provisioner = PowerShell",
+            "groupName": "Customize",
+            "helpMarkDown": "Optional. If this is selected, the powerShell script will be run with elevated privileges."
+        },
+        {
+            "name": "runAsSystem",
+            "type": "boolean",
+            "label": "Run As Local System User",
+            "defaultValue": "false",
+            "required": false,
+            "visibleRule": "runElevated = true",
+            "groupName": "Customize",
+            "helpMarkDown": "Optional. If this is selected, commands will run with elevated privileges using the Local System user. It can only be true when the 'Run Elevated' field above is set to true."
+        },
+        {
+            "name": "packagePath",
+            "type": "filePath",
+            "label": "Build path",
+            "required": false,
+            "helpMarkDown": "Select build artifact path using file selection widget. This path is where build artifacts reside and must be a directory for this task. It is relative to $(System.DefaultWorkingDirectory)",
+            "groupName": "Customize"
+        },
+        {
+            "name": "inlineScript",
+            "type": "multiLine",
+            "label": "Inline customization script",
+            "required": false,
+            "defaultValue": "# add commands to move build files from temporary to persistent location for linux\n# this can be an array of commands",
+            "groupName": "Customize",
+            "helpMarkDown": "Inline script to move build files from temporary to persistent location and to add other customizations to the image.\n\nArtifact directory on: \n Linux is /tmp/build_path_name - you need copy it to persistent location\n Windows is c:\\buildartifacts",
+            "properties": {
+                "editorExtension": "ms.vss-services-azure.azure-servicebus-message-grid"
+            }
+        },
+        {
+            "name": "storageAccountName",
+            "type": "pickList",
+            "label": "Storage account",
+            "required": false,
+            "helpMarkDown": "Image builder will upload and download your build artifatcs from here and will set the appropriate permission. Storage account must exist",
+            "groupName": "Customize"
+        },
+        {
+            "name": "distributeType",
+            "type": "pickList",
+            "label": "Distribute type",
+            "required": false,
+            "helpMarkDown": "Select distribute for Image Builder.\nSupported distributes: Managed Image, Shared Image Gallery(gallery must exist before using it here) and VHD",
+            "options": {
+                "managedimage": "ManagedImage",
+                "sig": "Shared Image Gallery",
+                "vhd": "VHD"
+            },
+            "defaultValue": "managedimage",
+            "groupName": "Distribute"
+        },
+        {
+            "name": "imageIdForDistribute",
+            "type": "string",
+            "label": "Image id for managed image",
+            "required": false,
+            "helpMarkDown": "Image URI to store Managed Image, in this format: /subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/images/<imageName>",
+            "visibleRule": " distributeType = managedimage",
+            "groupName": "Distribute"
+        },
+        {
+            "name": "galleryImageId",
+            "type": "string",
+            "label": "Image id for Shared Gallery Image",
+            "required": false,
+            "helpMarkDown": "Image Uri to store Managed Image.",
+            "visibleRule": "distributeType = sig",
+            "groupName": "Distribute"
+        },
+        {
+            "name": "managedImageLocation",
+            "type": "string",
+            "label": "Location for managed image",
+            "required": false,
+            "helpMarkDown": "Location for managed image.\n\nExample: westus",
+            "visibleRule": "distributeType = managedimage",
+            "groupName": "Distribute"
+        },
+        {
+            "name": "replicationRegions",
+            "type": "string",
+            "label": "Regions separated by comma",
+            "required": false,
+            "helpMarkDown": "Regions for Shared Gallery Images. It can be any Shared Image Gallery supported regions. Regions needs to be separated by comma.\n\nExample: westus, westus2, eastus",
+            "visibleRule": "distributeType = sig",
+            "groupName": "Distribute"
+        },
+        {
+            "name": "ibSubscription",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "required": true,
+            "helpMarkDown": "Select Azure Resource Manager subscription where image template will saved and run. This subscription should be enabled for image builder  before running this task",
+            "groupName": "ImageBuilderInput"
+        },
+        {
+            "name": "ibAzureResourceGroup",
+            "type": "pickList",
+            "label": "Resource group",
+            "helpMarkDown": "Azure Resource group to store Image Builder template.",
+            "required": true,
+            "groupName": "ImageBuilderInput"
+        },
+        {
+            "name": "ibLocation",
+            "type": "pickList",
+            "label": "Location",
+            "required": true,
+            "options": {
+                "westus": "westus",
+                "westus2": "westus2",
+                "westus3": "westus3",
+                "westcentralus": "westcentralus",
+                "eastus": "eastus",
+                "eastus2": "eastus2",
+                "southcentralus": "southcentralus",
+                "northeurope": "northeurope",
+                "westeurope": "westeurope",
+                "ukwest": "ukwest",
+                "uksouth": "uksouth",
+                "southeastasia": "southeastasia",
+                "australiaeast": "australiaeast",
+                "australiasoutheast": "australiasoutheast"
+            },
+            "defaultValue": "westus",
+            "helpMarkDown": "This location is used to create resources needed to create image",
+            "groupName": "ImageBuilderInput"
+        },
+        {
+            "name": "vmSize",
+            "type": "string",
+            "label": "VM Size",
+            "required": false,
+            "helpMarkDown": "Optional. Size of the build VM that runs in your subscription, default is Standard_D1_V2. Use this option, if you want more compute, for faster builds, or to build custom images for hardware dependent VM sizes, such as GPU VMs",
+            "defaultValue": "Standard_D1_v2",
+            "groupName": "OptionalSettings"
+        },
+        {
+            "name": "buildTimeoutInMinutes",
+            "type": "string",
+            "label": "Build Timeout in Minutes",
+            "required": false,
+            "helpMarkDown": "Maximum duration to wait while building the image template. Omit or specify 0 to use the default (240 minutes/4 hours)",
+            "defaultValue": "0",
+            "groupName": "OptionalSettings"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "storageAccountName",
+            "endpointId": "$(ibSubscription)",
+            "dataSourceName": "AzureStorageAccountRM"
+        },
+        {
+            "target": "ibAzureResourceGroup",
+            "endpointId": "$(ibSubscription)",
+            "dataSourceName": "AzureResourceGroups"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "./index.js"
+        }
+    }
+}
