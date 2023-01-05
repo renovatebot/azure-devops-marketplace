@@ -1,0 +1,108 @@
+{
+    "id": "94137ea2-81f0-411a-9527-b1400d722332",
+  "name": "NDependTask",
+  "friendlyName": "NDepend Task",
+  "description": "NDepend Task",
+  "author": "NDEPEND",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "1",
+    "Minor": "413",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.47.0",
+  "instanceNameFormat": "NDependTask $(message)",
+  "inputs": [
+    
+    {
+      "name": "viewname",
+      "type": "string",
+      "label": "Perspective Name",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "The Ndepend extension support the multi perspective feature, where you can have many perspectives of the same project."
+    },
+    {
+      "name": "ndproj",
+      "type": "filePath",
+      "label": "NDepend Project",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Specify the NDepend project that contains your rules. The ndproj file is published as an artifact against the source directory. If it's not specified the default ones will be used."
+    },
+  
+     {
+"name": "excluded",
+"type": "string",
+"label": "Exclude assemblies that match the regex patterns",
+"defaultValue": ".*test.*",
+"required": false,
+"helpMarkDown": "This option is useful to exclude some dlls from the analysis, like the unit test ones.The regex patterns are separated by ;"
+},
+    {
+"name": "Assemblies",
+"type": "boolean",
+"label": "Analyse only Assemblies referenced from the .ndproj",
+"defaultValue": "false",
+"required": false,
+"helpMarkDown": "This option is useful to focus only on a subset of all assemblies built by the build DevOps build agent."
+},
+
+{
+"name": "BuildGates",
+"type": "boolean",
+"label": "Stop the Build when at least one Quality Gate fails.",
+"defaultValue": "false",
+"required": false,
+"helpMarkDown": "This option is useful to stop the Build when at least one Quality Gate fails."
+  
+},
+{
+"name": "PullRequest2",
+"type": "boolean",
+"label": "Annotate the code with the issues after a Pull Request build.",
+"defaultValue": "false",
+"required": false,
+"helpMarkDown": "This option is useful to annotate the code with the issues after a Pull Request build."
+},
+{
+  "name": "BinariesOutput",
+  "type": "filePath",
+  "label": "Additional binaries output directory",
+  "defaultValue": "",
+  "required": false,
+  "helpMarkDown": "Specify an additional directory that contains your assemblies to analyze."
+},
+{
+  "name": "iscoverage",
+  "type": "boolean",
+  "label": "Get the coverage files from a specified directory.",
+  "defaultValue": "false",
+  "required": false,
+  "helpMarkDown": "This option is useful to specify the directory that contains your coverage files in case you use coverage tools other than the Microsoft ones."
+  },
+{
+  "name": "coverage",
+  "type": "filePath",
+  "label": "Coverage Directory",
+  "defaultValue": "",
+  "required": false,
+  "helpMarkDown": "Specify the directory that contains your coverage files."
+}
+
+      ],
+  "execution": {
+   
+    "PowerShell3": {
+      "target": "$(currentDirectory)\\ndepend.ps1",
+      "argumentFormat": "",
+      "workingDirectory": "$(currentDirectory)"
+    }
+  }
+}
