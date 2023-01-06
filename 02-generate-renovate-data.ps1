@@ -102,7 +102,7 @@ $renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-ma
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
-& git add renovate-data.json
+& git add azure-pipelines-marketplace-tasks.json
 & git diff HEAD --exit-code | Out-Null
 if ($LASTEXITCODE -ne 0)
 {    
