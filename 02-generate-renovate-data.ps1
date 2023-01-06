@@ -87,9 +87,10 @@ foreach ($extension in $extensions) {
 
                 $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
 
-                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                $taskId = $($taskManifest.id) -replace "[^a-zA-Z0-9-]", ""
+                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$taskId" -version $versionString
                 add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
-                add-version -name "$($taskManifest.id)" -version $versionString
+                add-version -name "$taskId" -version $versionString
                 add-version -name "$($taskManifest.name)" -version $versionString
             }
         } 
