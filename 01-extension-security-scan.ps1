@@ -45,8 +45,8 @@ function commit-changes
     (& git diff HEAD --exit-code) | Out-null
     if ($LASTEXITCODE -ne 0)
     {
-        #& git commit -m $message
-        #& git push
+        & git commit -m $message
+        & git push
     }
 
     write-host "::endgroup::"
