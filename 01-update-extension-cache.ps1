@@ -1,9 +1,12 @@
 # create a function in powershell that takes 2 parameters called page and pagesize
+$skipCache = $env:USE_CACHE -ne "true"
+$skipCommit = $env:SKIP_COMMIT -eq "true"
 function Get-Extensions
 {
     [cmdletbinding()]
     Param (
         [int]$Page,
+
         [int]$PageSize
     )
 
@@ -35,6 +38,11 @@ function commit-changes
     Param (
         [string]$message
     )
+
+    if ($skipCommit)
+    {
+        return
+    }
 
     write-host "::group::Git commit: $message"
 
@@ -82,6 +90,12 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
         $page += 1
     }
     while ($totalFetched -lt $max)
+
+    foreach ($extension in $extensions)
+    {
+        $extension.versions = $null
+        $extension.statistics = $null
+    }
 
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
     commit-changes -message "Update extensions cache"
