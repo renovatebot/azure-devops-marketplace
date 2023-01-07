@@ -1,0 +1,55 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "59bd542b-5b77-4b1f-a524-fb0a4291690d",
+  "name": "scs-scan",
+  "friendlyName": "Security Code Scan Task",
+  "description": "Static code analyzer for .NET",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Mike Huang",
+  "version": {
+    "Major": 0,
+    "Minor": 3,
+    "Patch": 2
+  },
+  "instanceNameFormat": "Security Code Scan: $(projectPath)",
+  "inputs": [
+    {
+      "name": "projectPath",
+      "type": "string",
+      "label": "Path of .sln/.csproj file",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "The project or solution file to scan."
+    },
+    {
+        "name": "exportPath",
+        "type": "string",
+        "label": "Output report file",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "The output report file. The file will in SARIF format. (It equals `--export or -x` option)"
+    },
+    {
+        "name": "convertPath",
+        "type":"boolean",
+        "label": "Convert path related to repo",
+        "defaultValue": false,
+        "required": false,
+        "helpMarkDown": "If you assign `export`, the file will contains file path but related to $(Build.SourcesDirectory). If you want to convert it relatived to source repository, set this option to true."
+    },
+    {
+        "name": "otherOptions",
+        "type":"string",
+        "label": "Other options of security-scan command",
+        "defaultValue": "",
+        "required": false,
+        "helpMarkDown": "Other options of security-scan command(e.g. --fail-any-warn)."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js"
+    }
+  }
+}
