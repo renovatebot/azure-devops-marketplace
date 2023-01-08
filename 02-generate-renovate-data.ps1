@@ -18,7 +18,7 @@ function add-version
     $renovateData."$name" = $currentversions | Sort-Object -Unique
 }
 
-$renovateData = [ordered]@{}
+$renovateData = @{}
 add-version -name "automatedanalysis-marketplace" -version "0.198.0"
 add-version -name "automatedanalysis-marketplace" -version "0.171.0"
 
@@ -98,7 +98,12 @@ foreach ($extension in $extensions) {
     write-host "::endgroup::"
 }
 
-$renovateData | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
+$renovateDataSorted = [ordered]@{}
+$renovateData.Keys | Sort-Object | %{ 
+    $renovateDataSorted."$_" = [string[]]$renovateData."$_"
+  }
+
+$renovateDataSorted | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
