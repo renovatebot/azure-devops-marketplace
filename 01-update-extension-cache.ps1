@@ -60,7 +60,7 @@ function commit-changes
 
 Write-host "::group::Installing tfx"
 
-if (-not (get-command -all "tfx"))
+if (-not (get-command -all "tfx" -ErrorAction SilentlyContinue))
 {
     & npm install tfx-cli@^0 -g --no-fund
 }
