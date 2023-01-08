@@ -71,7 +71,6 @@ $marketplace = "https://marketplace.visualstudio.com"
 Write-host "::endgroup::"
 
 Write-host "::group::Fetching Extension Metadata"
-$skipCache = $env:USE_CACHE -ne "true"
 $pageSize= 100;
 $page = 1
 $totalFetched = 0
@@ -99,6 +98,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
         $extension.statistics = $null
     }
 
+    $extensions = $extensions | Sort-Object -Property extensionId
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
     commit-changes -message "Update extensions cache"
 }
