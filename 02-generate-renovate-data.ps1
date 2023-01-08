@@ -1,3 +1,5 @@
+$skipCommit = $env:SKIP_COMMIT -eq "true"
+
 $extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json 
 
 function add-version
