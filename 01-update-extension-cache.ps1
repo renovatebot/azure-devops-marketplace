@@ -161,4 +161,7 @@ foreach ($extension in $extensions)
     write-host "::endgroup::"
 }
 
-& git push
+if (-not $skipCommit)
+{
+    & git push
+}

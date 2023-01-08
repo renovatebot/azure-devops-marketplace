@@ -105,12 +105,15 @@ $renovateData.Keys | Sort-Object | %{
 
 $renovateDataSorted | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
 
-& git config --local user.email "jesse.houwing@gmail.com"
-& git config --local user.name "Jesse Houwing"
-& git add azure-pipelines-marketplace-tasks.json
-& git diff HEAD --exit-code | Out-Null
-if ($LASTEXITCODE -ne 0)
-{    
-    & git commit -m "Regenerating renovate-data.json"
-    & git push
+if (-not $skipCommit)
+{
+    & git config --local user.email "jesse.houwing@gmail.com"
+    & git config --local user.name "Jesse Houwing"
+    & git add azure-pipelines-marketplace-tasks.json
+    & git diff HEAD --exit-code | Out-Null
+    if ($LASTEXITCODE -ne 0)
+    {    
+        & git commit -m "Regenerating renovate-data.json"
+        & git push
+    }
 }
