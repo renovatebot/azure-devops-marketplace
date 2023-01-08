@@ -115,7 +115,7 @@ if (-not $skipCommit)
     & git diff HEAD --exit-code | Out-Null
     if ($LASTEXITCODE -ne 0)
     {    
-        & git commit -m "Regenerating renovate-data.json"
+        & git commit -m "azure-pipelines-marketplace-tasks.json"
         & git push
     }
 }
