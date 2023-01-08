@@ -1,12 +1,14 @@
-# create a function in powershell that takes 2 parameters called page and pagesize
 $skipCache = $env:USE_CACHE -ne "true"
 $skipCommit = $env:SKIP_COMMIT -eq "true"
+
+& git config --local user.email "jesse.houwing@gmail.com"
+& git config --local user.name "Jesse Houwing"
+
 function Get-Extensions
 {
     [cmdletbinding()]
     Param (
         [int]$Page,
-
         [int]$PageSize
     )
 
@@ -39,29 +41,29 @@ function commit-changes
         [string]$message
     )
 
-    if ($skipCommit)
-    {
-        return
-    }
-
     write-host "::group::Git commit: $message"
 
-    & git config --local user.email "jesse.houwing@gmail.com"
-    & git config --local user.name "Jesse Houwing"
-    
     & git add . | Out-Null
     (& git diff HEAD --exit-code) | Out-null
     if ($LASTEXITCODE -ne 0)
     {
+        if ($skipCommit)
+        {
+            return
+        }
+
         & git commit -m $message
-        & git push
     }
 
     write-host "::endgroup::"
 }
 
 Write-host "::group::Installing tfx"
-& npm install tfx-cli@^0 -g --no-fund
+
+if (-not (get-command -all "tfx"))
+{
+    & npm install tfx-cli@^0 -g --no-fund
+}
 $token = $env:AZURE_DEVOPS_PAT
 $marketplace = "https://marketplace.visualstudio.com"
 & tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
@@ -158,3 +160,5 @@ foreach ($extension in $extensions)
     }
     write-host "::endgroup::"
 }
+
+& git push
