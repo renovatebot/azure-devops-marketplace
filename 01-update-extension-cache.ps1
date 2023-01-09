@@ -92,12 +92,17 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
     }
     while ($totalFetched -lt $max)
 
+    # Remove properties that we don't need to prevent unwanted cache commits
     foreach ($extension in $extensions)
     {
-        $extension.versions = $null
-        $extension.statistics = $null
+        $extension.versions = @()
+        $extension.statistics = @()
+        $extension.installationTargets = @()
+        $extension.categories = @()
+        $extension.tags = @()
     }
 
+    # Sort the extensions to prevent unwanted cache commits
     $extensions = $extensions | Sort-Object -Property extensionId
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
     commit-changes -message "Update extensions cache"
