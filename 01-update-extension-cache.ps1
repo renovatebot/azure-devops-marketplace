@@ -152,6 +152,13 @@ foreach ($extension in $extensions)
                 $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
+
+                # For extensions that contain no tasks, make sure we commit the folder for caching
+                if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf))
+                {
+                    mkdir $extractedPath -Force | out-null
+                    Set-Content -path "$extractedPath/.completed" -value "true" -Force
+                }
                 $shouldCommit = $true
             }finally{
                 Remove-Item $savepath
