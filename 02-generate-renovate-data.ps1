@@ -21,6 +21,7 @@ function add-version
 }
 
 $renovateData = @{}
+# Add the data needed for the unit tests.
 add-version -name "automatedanalysis-marketplace" -version "0.198.0"
 add-version -name "automatedanalysis-marketplace" -version "0.171.0"
 
@@ -100,6 +101,7 @@ foreach ($extension in $extensions) {
     write-host "::endgroup::"
 }
 
+# Sort the data to prevent unnecessary commits
 $renovateDataSorted = [ordered]@{}
 $renovateData.Keys | Sort-Object | %{ 
     $renovateDataSorted."$_" = [string[]]$renovateData."$_"
