@@ -10,14 +10,9 @@ function add-version
     )
     $name = $name.ToLowerInvariant()
     
-    if (-not $renovateData."$name")
-    {
-        $renovateData."$name" = [string[]]@()
-    }
-    
     [string[]]$currentversions = $renovateData."$name"
     $currentversions += $version
-    $renovateData."$name" = $currentversions | Sort-Object -Unique
+    $renovateData."$name" = $currentversions
 }
 
 $renovateData = @{}
@@ -37,6 +32,7 @@ foreach ($extension in $extensions) {
     foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 })
     {
         $extensionVersion = $version.version
+        write-host "Processing version $extensionVersion"
 
         $extensionManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
@@ -47,7 +43,7 @@ foreach ($extension in $extensions) {
         {
             $localpath = ".cache/$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
             
-            $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json
+            $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json -Recurse
 
             foreach ($taskManifestFile in $taskManifestFiles)
             {
@@ -104,7 +100,7 @@ foreach ($extension in $extensions) {
 # Sort the data to prevent unnecessary commits
 $renovateDataSorted = [ordered]@{}
 $renovateData.Keys | Sort-Object | %{ 
-    $renovateDataSorted."$_" = [string[]]$renovateData."$_"
+    $renovateDataSorted."$_" = [string[]]($renovateData."$_" | Sort-Object -Unique -Property @{ Exp = { [System.Version]$_ } })
   }
 
 ConvertTo-Json $renovateDataSorted | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
