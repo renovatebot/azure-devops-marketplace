@@ -105,7 +105,7 @@ $renovateData.Keys | Sort-Object | %{
     $renovateDataSorted."$_" = [string[]]$renovateData."$_"
   }
 
-$renovateDataSorted | ConvertTo-Json -Depth 10 | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
+ConvertTo-Json $renovateDataSorted | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
 
 if (-not $skipCommit)
 {
