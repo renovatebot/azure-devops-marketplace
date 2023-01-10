@@ -1,0 +1,109 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "ctp-endpoint-type",
+            "description": "Service Endpoint type for Parasoft Continuous Testing Platform (CTP)",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "parasoftctp",
+                "displayName": "Parasoft CTP",
+                "dataSources": [
+                    {
+                        "name": "systemData",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/systems",
+                        "resultSelector": "jsonpath:$.systems[*]"
+                    },
+                    {
+                        "name": "environmentData",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/environments",
+                        "resultSelector": "jsonpath:$.environments[?(@.systemId == {{systemId}})]"
+                    },
+                    {
+                        "name": "VirtualizeServers",
+                        "endpointUrl": "{{endpoint.url}}/em/api/v2/servers",
+                        "resultSelector": "jsonpath:$.servers.[*].name"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Parasoft CTP username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Parasoft CTP password",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "This service endpoint will be available to Parasoft deploy and destroy tasks in the build and release pipeline."
+            }
+        },
+        {
+            "id": "deploy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DeployTask"
+            }
+        },
+        {
+            "id": "destroy-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DestroyTask"
+            }
+        },
+        {
+            "id": "disconnect-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "DisconnectTask"
+            }
+        },
+        {
+            "id": "execute-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "ExecuteTask"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

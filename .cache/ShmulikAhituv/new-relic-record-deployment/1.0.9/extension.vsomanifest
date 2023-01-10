@@ -1,0 +1,73 @@
+{
+    "manifestVersion": 1,
+    "content": {
+        "details": {
+            "path": "overview.md"
+        }
+    },
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service Endpoint type for new relic API",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "NewRelic",
+                "displayName": "New Relic connection",
+                "url": {
+                    "displayName": "New relic Server Url (v2)",
+                    "helpText": "Url for the new relic API server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "New Relic Applications",
+                        "endpointUrl": "applications.json",
+                        "resultSelector": "jsonpath:$.applications[*].name"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "X-Api-Key",
+                                "description": "API Token for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "X-Api-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "task-RecordDeployment",
+            "description": "Task that Records a new relic deployment event",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "RecordDeployment"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

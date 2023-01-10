@@ -1,0 +1,127 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.notification_publish"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Microsoft/vsts-wsjf-extension"
+    },
+    "demands": [
+        "api-version/3.0"
+    ],
+    "contributions": [
+        {
+            "id": "data-storage-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Adds an 'Data Storage' hub group",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Data Storage",
+                "order": 50
+            }
+        },
+        {
+            "id": "settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Adds an 'Extension Data Sample' hub to the Data Storage hub group which shows how to use the extension data settings apis.",
+            "targets": [
+                ".data-storage-hub-group"
+            ],
+            "properties": {
+                "name": "Settings",
+                "order": 1,
+                "uri": "settings.html"
+            }
+        },
+        {
+            "id": "notes-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Adds an 'Notes' hub to the Home hub group which shows how to use the extension data document apis.",
+            "targets": [
+                ".data-storage-hub-group"
+            ],
+            "properties": {
+                "name": "Notes",
+                "order": 2,
+                "uri": "notes.html"
+            }
+        },
+        {
+            "id": "note-event",
+            "type": "ms.vss-notifications.event-type",
+            "targets": [
+                "ms.vss-extmgmt-web.extensions-event-publisher",
+                "ms.vss-extmgmt-web.extensions-event-category"
+            ],
+            "properties": {
+                "name": "Note event",
+                "description": "Event that represents when a note is added, updated, or deleted.",
+                "customSubscriptionsAllowed": true,
+                "hasInitiator": true,
+                "icon": "bowtie-packages",
+                "supportedScopes": [
+                    "project",
+                    "collection"
+                ],
+                "roles": [
+                    {
+                        "id": "initiator",
+                        "name": "Initiator"
+                    },
+                    {
+                        "id": "team",
+                        "name": "Team"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "note-event-email-template",
+            "type": "ms.vss-notifications.email-template",
+            "targets": [
+                ".note-event"
+            ],
+            "includes": [
+                "ms.vss-notifications.standard-email-template"
+            ],
+            "properties": {
+                "sourceTemplate": "ms.vss-notifications.standard-email-template",
+                "inputs": {
+                    "email-subject": "[{{ event.team.name }}] Note {{{ event.action }}} by {{ event.user.name }}",
+                    "summary": "{{ event.user.name }} {{ event.action }} note {{ event.note.title }}",
+                    "hero": {
+                        "title": "Note {{{ event.action }}} in {{ event.team.name }}",
+                        "message": "{{ event.note.title }}",
+                        "action": {
+                            "title": "Open notes",
+                            "url": "{{{ event.links.web }}}"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": "note-event-subscription",
+            "type": "ms.vss-notifications.subscription",
+            "targets": [
+                "ms.vss-notifications.default-subscription-collection"
+            ],
+            "properties": {
+                "description": "A note was added or deleted by a team member",
+                "filter": {
+                    "type": "Actor",
+                    "eventType": "ms-samples.samples-data-storage.note-event",
+                    "inclusions": [
+                        "initiator",
+                        "team"
+                    ],
+                    "criteria": {}
+                }
+            }
+        }
+    ],
+    "contributionTypes": []
+}

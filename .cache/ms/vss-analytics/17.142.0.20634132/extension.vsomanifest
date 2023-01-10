@@ -1,0 +1,488 @@
+{
+    "manifestVersion": 1,
+    "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+    "demands": [
+        "api-version/5.0"
+    ],
+    "eventCallbacks": {
+        "versionCheck": {
+            "uri": "{{DeploymentUrl \"0000003C-0000-8888-8000-000000000000\"}}_apis/public/extensions/vdisc"
+        },
+        "preInstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postInstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postUninstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postEnable": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        }
+    },
+    "contributions": [
+        {
+            "id": "analytics-basic-demand",
+            "type": "ms.vss-analytics.analytics-demand",
+            "description": "Demand for basic analytics services (this demand is a placeholder, installing the extension provides this naturally)"
+        },
+        {
+            "id": "analytics-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Analytics hub group on project-level pages",
+            "targets": [
+                "ms.vss-web.builtin-hub-groups",
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Analytics views",
+                "order": 150,
+                "iconName": "AnalyticsView"
+            },
+            "visibleTo": [
+                "ms.vss-analytics"
+            ],
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                },
+                {
+                    "name": "Stakeholder",
+                    "inverse": true
+                },
+                {
+                    "id": "ms.vss-tfs-web.horizontal-navigation-mode",
+                    "relationships": [
+                        "ms.vss-analytics.analytics-hub"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "analytics-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-analytics.analytics-hub-group",
+                "ms.vss-web.home-hub-group"
+            ],
+            "properties": {
+                "name": "Analytics views",
+                "order": 30,
+                "areaAware": true,
+                "defaultRoute": "ms.vss-analytics.analytics-hub-route",
+                "iconName": "AnalyticsView",
+                "content": {
+                    "require": [
+                        "Views/Scripts/AnalyticsHub"
+                    ],
+                    "initialize": "analytics-hub"
+                }
+            },
+            "includes": [
+                "analytics-service-context-data-provider",
+                "analytics-views-permissions-data-provider",
+                "analytics-editable-views-data-provider",
+                "analytics-feature-availability-data-provider",
+                "ms.vss-tfs-web.perf-section-diag-action-monitor"
+            ],
+            "restrictedTo": [
+                "ms.vss-work.agile"
+            ],
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                },
+                {
+                    "name": "ExtensionActive",
+                    "properties": {
+                        "extensionId": "ms.vss-analytics"
+                    }
+                },
+                {
+                    "name": "Stakeholder",
+                    "inverse": true
+                },
+                {
+                    "id": "ms.vss-tfs-web.vertical-navigation-mode",
+                    "relationships": [
+                        "ms.vss-web.home-hub-group"
+                    ]
+                },
+                {
+                    "id": "ms.vss-tfs-web.horizontal-navigation-mode",
+                    "relationships": [
+                        "ms.vss-analytics.analytics-hub-group"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "analytics-hub-route",
+            "type": "ms.vss-web.route",
+            "targets": [
+                "ms.vss-analytics.analytics-hub"
+            ],
+            "properties": {
+                "hostType": "ProjectCollection",
+                "commandName": "AnalyticsViews.index",
+                "routeTemplates": [
+                    "{project}/_analytics",
+                    "{project}/_analytics/{name}",
+                    "{project}/_analytics/{name}/{viewId}"
+                ],
+                "defaults": {
+                    "controller": "Apps",
+                    "action": "ContributedHub"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-service-context-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "ServiceContext data for the Analytics service.",
+            "targets": [
+                ".analytics-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.ServiceContext",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "dataType": "ServiceContext",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-views-permissions-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable analytics views permissions.",
+            "targets": [
+                ".analytics-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsViewsPermissions",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-editable-views-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable Views properties.",
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsEditableViews",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-feature-availability-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable Views feature flag states",
+            "targets": [
+                ".analytics-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsFeatureAvailability",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-views-favorite",
+            "type": "ms.vss-favorites.favorite-provider",
+            "targets": [
+                "ms.vss-favorites.favorite-provider-collection"
+            ],
+            "properties": {
+                "artifactType": "Microsoft.TeamFoundation.Analytics.AnalyticsView",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "pluralName": "Analytics views",
+                "order": 30,
+                "iconName": "AnalyticsView",
+                "artifactDeletedMessage": "This analytics view has been deleted"
+            },
+            "constraints": [
+                {
+                    "group": 1,
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                },
+                {
+                    "group": 2,
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.RestApi.Editable"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-shared-view-menu",
+            "type": "ms.vss-web.menu",
+            "description": "Menu for a Shared analytics view.",
+            "targets": [
+                "ms.vss-analytics.analytics-hub"
+            ]
+        },
+        {
+            "id": "analytics-shared-view-security-menu",
+            "type": "ms.vss-web.action-provider",
+            "description": "Menu item for pushing the admin dialog for a view",
+            "targets": [
+                "ms.vss-analytics.analytics-shared-view-menu"
+            ],
+            "properties": {
+                "content": {
+                    "require": [
+                        "Dashboards/Scripts/Analytics/SharedViewSecurityMenu"
+                    ]
+                }
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-common",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.core-content",
+                "ms.vss-web.platform-content",
+                "ms.vss-reporting.reporting-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-common/Resources.js",
+                        "hashCode": "gVi4Uc5CdtB0C5vkZzVYrgCg6R3CKZZDl2+G1nwGL4Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 1130
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/Analytics.js",
+                        "hashCode": "y4fWbOoRzXckj2VmYfIkT84af2dA6Bzk28gyseTo9mM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 1347
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/ODataClientUtilities.js",
+                        "hashCode": "bbmAiH+MBRrwi11Loj++Z5u9DYBfYgMkN+WFHPOfoFo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 2216
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/AnalyticsExceptionUtilities.js",
+                        "hashCode": "8+zrBOQaFsEh8V08vF15TjOlFafBIVnIX1qh+RWf4/w=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 3752
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/GuidGenerator.js",
+                        "hashCode": "t+/rOOivvvgibLTYHwcEOC7wLtuSD566U7+Zty0Ar/Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 1692
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchRequestUtilities.js",
+                        "hashCode": "qhvXyNW+GfBHty3/gGt+WzDSaWuhITcCOtit7agPuOk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 912
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchResponseUtilities.js",
+                        "hashCode": "z5Ui1aaxaj2vCUO2YnU2krOlj8Xc4Kza2hMmQf/+DZw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 7232
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/AnalyticsODataClient.js",
+                        "hashCode": "Ic0dRBW9LtciNPxglicl70R9waWyQz3VDFmzVY/2A8s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 13013
+                    },
+                    {
+                        "asset": "analytics-common/AnalyticsCacheableQueryBase.js",
+                        "hashCode": "Gt/lQrBIrBbx85+xy7BKBJ3rxPuETz3wqAELbe4nqGw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 3153
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/PublicProjectsQueryHelper.js",
+                        "hashCode": "TuHk8W4H5gGezlIV+P4iPOAKRX9MZdrnawUDmqUyj14=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 1428
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.js",
+                        "hashCode": "POkYvqxmAJxJyw3XDKTlA5/K88+TW5ZoFjryuY1BVmc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 37890
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.min.js",
+                        "hashCode": "6R/5KT0izbA0GwyBqCWm/uLiM7U0hlYgtDwFVYhMY5g=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 11363
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Common"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-views-common",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.core-content",
+                "ms.vss-web.platform-content"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.js",
+                        "hashCode": "2f5gcofXKN0LA7VKh/Rm1+KB32s/O3aJez5X3Xcl49Y=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 338
+                    },
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.min.js",
+                        "hashCode": "mSE2doZ1MvY6t7yy6c3BMhRV0ZL9hPoSiOfpSQ++MGE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 139
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "analyticsviews/common"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-queries/ProjectsQuery.js",
+                        "hashCode": "bFuWeWfmL0wpUmq7Nw5qvjz4vhJ2s1/wbq6r7iVaYQo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript",
+                        "lengthInBytes": 1505
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.js",
+                        "hashCode": "XohoTAubQaZufOuWPZHhCaAYKCIAzI6eH9iSiN3y30o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 2048
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.min.js",
+                        "hashCode": "u7U9kTNLEljmvS2aiQdWgAqnjNb2cFAch2hnwcENLzE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 788
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Queries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        }
+    ],
+    "contributionTypes": [
+        {
+            "id": "analytics-demand",
+            "name": "Demand for Analytics",
+            "description": "Demand type for analytics services"
+        }
+    ],
+    "scopes": []
+}

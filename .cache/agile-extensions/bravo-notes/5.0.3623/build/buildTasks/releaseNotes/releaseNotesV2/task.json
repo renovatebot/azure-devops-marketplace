@@ -1,0 +1,425 @@
+{
+    "id": "665e300e-f163-48a6-aa33-589213df991c",
+    "name": "releaseNotes",
+    "friendlyName": "Bravo Notes - Compile release notes",
+    "description": "Bravo Notes - Compile release notes. Generate release notes as Markdown, HTML or PDF documents.",
+    "helpUrl": "https://help.agileextensions.com/article/17-build-task",
+    "helpMarkDown": "[Learn more about this task](https://help.agileextensions.com/article/17-build-task)",
+    "author": "Agile Extensions",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "version": {
+        "Major": 2,
+        "Minor": 200,
+        "Patch": 0
+    },
+    "minimumAgentVersion": "2.144.0",
+    "instanceNameFormat": "Release Notes",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "notes",
+            "type": "pickList",
+            "label": "Bravo Notes template",
+            "defaultValue": "",
+            "required": true,
+            "properties": {
+                "EditableOptions": "True"
+            },
+            "helpMarkDown": "Choose a template previously created via the Bravo Notes UI."
+        },
+        {
+            "name": "workItemSource",
+            "type": "pickList",
+            "label": "Work item source",
+            "defaultValue": "Associated",
+            "required": true,
+            "options": {
+                "Associated": "Associated Work items",
+                "AssociatedSinceCommit": "Associated Work items since specified starting commit",
+                "Query": "Query",
+                "JsonFile": "JSON file"
+            },
+            "helpMarkDown": "Specify what work items should be pulled into the template. Associated Work items = Work items associated with the current build or the current release. The latter only pulls in Work items associated since the last successful deployment of the current environment. When using JSON file as source the expected format is a array of objects with an \"id\" property e.g. [{\"id\": 345}, {\"id\": 654}]"
+        },
+        {
+            "name": "releaseDefinitionToCompareAgainstBuild",
+            "type": "pickList",
+            "label": "Release definition to compare",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "workItemSource = AssociatedComparedAgainstRelease ",
+            "helpMarkDown": "Release definition to compare against"
+        },
+        {
+            "name": "releaseDefinitionEnvironmentToCompareAgainstBuild",
+            "type": "pickList",
+            "label": "Release definition environment to compare",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "workItemSource = AssociatedComparedAgainstRelease ",
+            "helpMarkDown": "Release definition environment to compare against"
+        },
+        {
+            "name": "fromCommit",
+            "type": "string",
+            "label": "Starting commit",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "workItemSource = AssociatedSinceCommit",
+            "helpMarkDown": "When looking for work items Bravo Notes will consider past commits after the specified starting commit."
+        },
+        {
+            "name": "workItemTypeResolving",
+            "type": "pickList",
+            "label": "Work items to resolve",
+            "defaultValue": "Associated",
+            "required": true,
+            "options": {
+                "Associated": "All directly associated Work items",
+                "ParentWorkItems": "Selected types (directly associated or parents)"
+            },
+            "helpMarkDown": "Chose to load work items directly associated to the build / release or to load parent work items of the specified type.",
+            "visibleRule": "workItemSource = Associated || workItemSource = AssociatedSinceCommit || workItemSource = JsonFile"
+        },
+        {
+            "name": "workItemTypesToLoad",
+            "type": "multiLine",
+            "label": "Work Item types",
+            "required": true,
+            "helpMarkDown": "Specify one work item type name per line",
+            "visibleRule": "workItemTypeResolving = ParentWorkItems"
+        },
+        {
+            "name": "queryId",
+            "type": "querycontrol",
+            "label": "Query",
+            "defaultValue": "",
+            "required": "true",
+            "helpMarkDown": "Select a saved Work Item query to execute.",
+            "visibleRule": "workItemSource = Query"
+        },
+        {
+            "name": "inputFilePath",
+            "type": "filePath",
+            "label": "Input file path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "workItemSource = JsonFile",
+            "helpMarkDown": "Path to read from item data from"
+        },
+        {
+            "name": "outputFormat",
+            "type": "pickList",
+            "label": "Output format",
+            "defaultValue": "md",
+            "required": true,
+            "options": {
+                "md": "Markdown",
+                "html": "HTML",
+                "pdf": "PDF"
+            },
+            "helpMarkDown": "Format of the rendered document"
+        },
+        {
+            "name": "handleImages",
+            "type": "pickList",
+            "label": "Handle images",
+            "defaultValue": "none",
+            "required": true,
+            "options": {
+                "none": "Keep as is",
+                "local": "Download to images folder",
+                "public": "Publish and host on bravonotes.com"
+            },
+            "helpMarkDown": "If images are included in the generated document, this option controls how to handle them. Image URLs will be adjusted accordingly.",
+            "visibleRule": "outputFormat = html || outputFormat = md"
+        },
+        {
+            "name": "outputTarget",
+            "type": "pickList",
+            "label": "Output target",
+            "defaultValue": "file",
+            "required": true,
+            "options": {
+                "file": "File",
+                "wiki": "Wiki",
+                "repository": "Repository",
+                "confluence": "Confluence (Preview)"
+            },
+            "helpMarkDown": "Target to store the rendered document"
+        },
+        {
+            "name": "outputFilePath",
+            "type": "filePath",
+            "label": "Output file path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = File",
+            "helpMarkDown": "Path to write rendered notes to e.g. releasenotes.pdf"
+        },
+        {
+            "name": "targetRepository",
+            "type": "pickList",
+            "label": "Target repository",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = repository",
+            "helpMarkDown": "Git repository to store the generated file",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "targetRepositoryBranch",
+            "type": "pickList",
+            "label": "Target branch",
+            "defaultValue": "master",
+            "required": true,
+            "visibleRule": "outputTarget = repository",
+            "helpMarkDown": "Branch in to commit the generated file to",
+            "properties": {
+                "EditableOptions": "True"
+            }
+        },
+        {
+            "name": "targetRepositoryPath",
+            "type": "string",
+            "label": "File path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = repository",
+            "helpMarkDown": "Path in selected repository to save generated file to"
+        },
+        {
+            "name": "targetRepositoryCommitMessage",
+            "type": "string",
+            "label": "Commit message",
+            "defaultValue": "Adds release notes generated in pipeline",
+            "required": true,
+            "visibleRule": "outputTarget = repository",
+            "helpMarkDown": "Commit message to use for adding the generated file to the selected repository"
+        },
+        {
+            "name": "targetRepositoryCommitAuthorEmail",
+            "type": "string",
+            "label": "Commit author email",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "outputTarget = repository",
+            "helpMarkDown": "Auhtor email to use for the commit"
+        },
+        {
+            "name": "targetWiki",
+            "type": "pickList",
+            "label": "Target Wiki",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = Wiki",
+            "helpMarkDown": "Wiki to store the generated markdown file"
+        },
+        {
+            "name": "targetWikiPath",
+            "type": "string",
+            "label": "Wiki page path",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = Wiki",
+            "helpMarkDown": "Path to Wiki page to write rendered notes to"
+        },
+        {
+            "name": "targetWikiBranch",
+            "type": "string",
+            "label": "Wiki branch (only needed for Code Wikis)",
+            "defaultValue": "",
+            "visibleRule": "outputTarget = Wiki",
+            "helpMarkDown": "Branch of the repository backing the selected wiki to push to"
+        },
+        {
+            "name": "confluenceOrgName",
+            "type": "string",
+            "label": "Confluence org name",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "confluenceUserName",
+            "type": "string",
+            "label": "Confluence user name",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "confluenceApiToken",
+            "type": "string",
+            "label": "Confluence api token",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": "You can generate an API token [here](https://id.atlassian.com/manage-profile/security/api-tokens)"
+        },
+        {
+            "name": "confluenceSpaceKey",
+            "type": "string",
+            "label": "Confluence space key",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "confluencePageTitle",
+            "type": "string",
+            "label": "Confluence page title",
+            "defaultValue": "",
+            "required": true,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "confluenceParentPageId",
+            "type": "string",
+            "label": "Confluence target parent page id",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "outputTarget = confluence",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "addAttachment",
+            "type": "boolean",
+            "label": "Add attachment to pipeline result",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Uses the markdown representation of the template rendering and publishes it to Azure Pipelines so it can be permanently seen in the pipeline summary page."
+        },
+        {
+            "name": "attachmentTitle",
+            "type": "string",
+            "label": "Attachment title",
+            "defaultValue": "Release Notes",
+            "required": true,
+            "visibleRule": "addAttachment = true",
+            "helpMarkDown": ""
+        },
+        {
+            "name": "proxy",
+            "type": "pickList",
+            "label": "HTTPS Proxy",
+            "options": {
+                "off": "Off - don't connect via proxy",
+                "auto": "Auto - use agent and environment proxy settings"
+            },
+            "defaultValue": "off",
+            "helpMarkDown": "When set to `Auto` - proxy settings from your build agent (`.proxy` file) and environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` will be respected.\n\n`Auto` will become the default in future versions. ",
+            "groupName": "advanced"
+        },
+        {
+            "name": "stopLabel",
+            "type": "string",
+            "label": "Stop label key",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "When looking up the work item hierarchy from associated work items, when a work item with the specified stop label is found parents of that item will not be imported.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "publishToTeams",
+            "type": "boolean",
+            "label": "Post message to Microsoft Teams (Preview)",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Subscribe via 'subscribe {organization}' in any channel to receive messages when new release notes are generated. Contact support@agileextensions.com to learn more.",
+            "groupName": "advanced"
+        },
+        {
+            "name": "publishToTeamsTitle",
+            "type": "string",
+            "label": "Title - used when posting message to Microsoft Teams (Preview)",
+            "required": false,
+            "helpMarkDown": "Markdown is supported",
+            "groupName": "advanced"
+        },
+        {
+            "name": "publishToTeamsDescription",
+            "type": "string",
+            "label": "Description - used when posting message to Microsoft Teams (Preview)",
+            "required": false,
+            "helpMarkDown": "Markdown is supported",
+            "groupName": "advanced"
+        }
+    ],
+    "dataSourceBindings": [
+        {
+            "target": "notes",
+            "endpointId": "tfs:ems",
+            "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/agile-extensions/bravo-notes/Data/Scopes/Default/Current/Collections/rn-index/Documents",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{title}}}\" }"
+        },
+        {
+            "target": "releaseDefinitionToCompareAgainstBuild",
+            "endpointId": "tfs:rm",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/release/definitions",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "releaseDefinitionEnvironmentToCompareAgainstBuild",
+            "endpointId": "tfs:rm",
+            "parameters": {
+                "selectedDefinition": "$(releaseDefinitionToCompareAgainstBuild)"
+            },
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/release/definitions/{{selectedDefinition}}",
+            "resultSelector": "jsonpath:$.environments[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "releaseToCompareAgainstBuild",
+            "endpointId": "tfs:rm",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/release/definitions",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "targetWiki",
+            "endpointId": "tfs:teamfoundation",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/wiki/wikis?api-version=4.1-preview",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "targetRepository",
+            "endpointId": "tfs:teamfoundation",
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/git/repositories",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        },
+        {
+            "target": "targetRepositoryBranch",
+            "endpointId": "tfs:teamfoundation",
+            "parameters": {
+                "targetRepository": "$(targetRepository)"
+            },
+            "endpointUrl": "{{endpoint.url}}/{{system.teamProject}}/_apis/git/repositories/{{targetRepository}}/stats/branches",
+            "resultSelector": "jsonpath:$.value[*]",
+            "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "run.js",
+            "argumentFormat": ""
+        }
+    }
+}

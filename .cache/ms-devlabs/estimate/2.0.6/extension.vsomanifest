@@ -1,0 +1,148 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.project",
+        "vso.work",
+        "vso.work_write"
+    ],
+    "demands": [
+        "api-version/5.0"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cschleiden/azure-boards-estimate"
+    },
+    "contributions": [
+        {
+            "id": "estimate-2",
+            "type": "ms.vss-web.feature",
+            "description": "Use the Estimate 2 preview",
+            "targets": [
+                "ms.vss-web.managed-features",
+                "ms.vss-web.managed-features-onprem"
+            ],
+            "properties": {
+                "name": "Estimate 2",
+                "userConfigurable": false,
+                "hostConfigurable": true
+            }
+        },
+        {
+            "id": "estimate-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate",
+                "order": 100,
+                "uri": "build/index.html",
+                "icon": {
+                    "light": "marketplace/icon-light.png",
+                    "dark": "marketplace/icon-dark.png"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "estimate-context-menu-action",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-work-web.backlog-item-menu"
+            ],
+            "properties": {
+                "text": "Estimate work item(s)",
+                "title": "Start estimation session",
+                "group": "actions",
+                "uri": "build/index.html?context",
+                "registeredObjectId": "estimate-context-menu"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "estimate-ad-banner",
+            "type": "ms.vss-web.global-message-banner",
+            "targets": [
+                ".Estimate.Main"
+            ],
+            "properties": {
+                "iconName": "Info",
+                "dismissable": true,
+                "position": "top",
+                "message": "You can now enable the Estimate 2 preview",
+                "links": {
+                    "learn": {
+                        "uri": "https://github.com/cschleiden/azure-boards-estimate/wiki/Enable-the-Estimate-2-preview"
+                    }
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    },
+                    "inverse": true
+                }
+            ]
+        },
+        {
+            "id": "Estimate.Main",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Estimate",
+                "order": 99,
+                "uri": "legacy/hub.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    },
+                    "inverse": true
+                }
+            ]
+        },
+        {
+            "id": "Estimate.WorkItems",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-work-web.backlog-item-menu"
+            ],
+            "properties": {
+                "text": "Estimate work item(s)",
+                "title": "Start estimation session",
+                "group": "actions",
+                "uri": "legacy/index.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms-devlabs.estimate.estimate-2"
+                    },
+                    "inverse": true
+                }
+            ]
+        }
+    ],
+    "contributionTypes": []
+}

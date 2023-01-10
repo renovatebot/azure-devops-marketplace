@@ -1,0 +1,98 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "09c107b3-9cd8-5fb6-8079-49cbf51dfd95",
+    "name": "RESTCall",
+    "friendlyName": "REST Call",
+    "instanceNameFormat": "REST Call",
+    "description": "Make a REST Call",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "runsOn": ["Agent", "DeploymentGroup"],
+    "demands": ["docker","npm"],
+    "author": "Jesus Alvarado",
+    "minimumAgentVersion": "2.105.0",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 8
+    },
+    "groups": [
+        {
+            "name": "restConfigGroup",
+            "displayName": "REST Configuration",
+            "isExpanded": true
+        },
+        {
+            "name": "outputGroup",
+            "displayName": "Output",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "restHost",
+            "type": "string",
+            "label": "Host",
+            "defaultValue": "http://localhost",
+            "required": true,
+            "helpMarkDown": "Host",
+            "groupName": "restConfigGroup"
+        },
+        {
+            "name": "restPort",
+            "type": "string",
+            "label": "Port",
+            "defaultValue": "80",
+            "required": true,
+            "helpMarkDown": "The service port",
+            "groupName": "restConfigGroup"
+        },
+        {
+            "name": "restContext",
+            "type": "string",
+            "label": "Service context",
+            "defaultValue": "/",
+            "required": true,
+            "helpMarkDown": "The service context",
+            "groupName": "restConfigGroup"
+        },
+        {
+            "name": "restMethod",
+            "type": "pickList",
+            "label": "REST Method",
+            "defaultValue": "get",
+            "required": true,
+            "helpMarkDown": "REST Method",
+            "groupName": "restConfigGroup",
+            "options": {
+                "GET":"GET",
+                "POST":"POST"
+            }
+        },{
+            "name": "restBody",
+            "type":"multiLine",
+            "label":"REST call body",
+            "defaultValue": "{}",
+            "required": false,
+            "helpMarkDown": "REST call body",
+            "groupName": "restConfigGroup",
+            "visibleRule": "restMethod = POST || restMethod = PUT || restMethod = PATCH",
+            "options": {
+                "resizable":"true",
+                "rows":"15",
+                "maxLength":"5000"
+            }
+        }
+        
+    ],
+    "execution": {
+        "Node": {
+            "target": "../rest-call.js",
+            "argumentFormat": ""
+        },
+        "Node10": {
+            "target": "../rest-call.js",
+            "argumentFormat": ""
+        }
+    }
+}

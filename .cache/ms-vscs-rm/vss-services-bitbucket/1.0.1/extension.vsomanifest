@@ -1,0 +1,201 @@
+{
+    "manifestVersion": 1,
+    "_description": {
+        "comment": "The below format to define artifact extensions is currently in preview and may change in future."
+    },
+    "demands": [
+        "contribution/ms.vss-releaseartifact.artifact-types"
+    ],
+    "content": {
+        "details": {
+            "path": "readme.md"
+        }
+    },
+    "contributions": [
+        {
+            "id": "bitbucket-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/DownloadArtifactsBitbucket"
+            }
+        },
+        {
+            "id": "bitbucket-endpoint-type",
+            "description": "Service Endpoint type for all Bitbucket connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "bitbucket",
+                "displayName": "Bitbucket",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://api.bitbucket.org/",
+                    "helpText": ""
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}/2.0/repositories?role=member",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "Repositories",
+                        "endpointUrl": "{{{endpoint.url}}}/2.0/repositories?role=member",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "Branches",
+                        "endpointUrl": "{{{endpoint.url}}}/2.0/repositories/{{{definition}}}/refs/branches",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "Commits",
+                        "endpointUrl": "{{{endpoint.url}}}/2.0/repositories/{{{definition}}}/commits/{{{branch}}}",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "LatestCommit",
+                        "endpointUrl": "{{{endpoint.url}}}/2.0/repositories/{{{definition}}}/commits/{{{branch}}}",
+                        "resultSelector": "jsonpath:$.values[0]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://msdn.microsoft.com/Library/vs/alm/Release/author-release-definition/understanding-tasks#serviceconnections\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "bitbucket-release-artifact-type",
+            "description": "Bitbucket Artifact",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "Bitbucket",
+                "displayName": "Bitbucket",
+                "endpointTypeId": "bitbucket:UsernamePassword",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{branch}}",
+                "downloadTaskId": "A4CD16BE-6028-4077-8015-34F008F55477",
+                "artifactType": "SourceControl",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Service Endpoint",
+                        "description": "Service Endpoint Id",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Source (repository)",
+                        "description": "Repository to pull",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "branch",
+                        "name": "Branch",
+                        "description": "Branch to checkout",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "Repositories",
+                        "resultTemplate": "{ Value : \"{{{full_name}}}\", DisplayValue : \"{{{full_name}}}\" }"
+                    },
+                    {
+                        "target": "branch",
+                        "dataSourceName": "Branches",
+                        "resultTemplate": "{ Value : \"{{{name}}}\", DisplayValue : \"{{{name}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "Commits",
+                        "resultTemplate": "{ Value : \"{{hash}}\", DisplayValue : \"{{{hash}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "LatestCommit",
+                        "resultTemplate": "{ Value : \"{{hash}}\", DisplayValue : \"{{{hash}}}\" }"
+                    },
+                    {
+                        "target": "artifacts",
+                        "endpointUrl": "{{{endpoint.url}}}/1.0/repositories/{{{definition}}}/src/{{{version}}}//",
+                        "resultTemplate": "[ {{#directories}} { \"value\" : \"{{{this}}}\",  \"displayValue\" : \"{{{this}}}\",  \"data\" : { \"artifactType\": \"folder\"  } }{{#unless @last}},{{/unless}} {{/directories}} {{#files}} , { \"value\" : \"{{this.path}}\",  \"displayValue\" : \"{{{this.path}}}\", \"data\" : { \"itemType\": \"file\" } } {{/files}} ]"
+                    },
+                    {
+                        "target": "artifactItems",
+                        "endpointUrl": "{{{endpoint.url}}}/1.0/repositories/{{{definition}}}/src/{{{version}}}/{{{itemPath}}}/",
+                        "resultTemplate": "[ {{#directories}} { \"value\" : \"{{{../itemPath}}}/{{{this}}}\",  \"displayValue\" : \"{{{../itemPath}}}/{{{this}}}\",  \"data\" : { \"itemType\": \"folder\" } }{{#unless @last}},{{/unless}} {{/directories}} {{#files}} , { \"value\" : \"{{this.path}}\",  \"displayValue\" : \"{{{this.path}}}\", \"data\" : { \"itemType\": \"file\" } } {{/files}} ]"
+                    }
+                ],
+                "browsableArtifactTypeMapping": {
+                    "folder": "artifactItems"
+                }
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

@@ -1,0 +1,101 @@
+{
+  "id": "f95a55b0-7e71-11e6-8271-c5a5ea48448d",
+  "name": "new-relic-record-deployment-task",
+  "friendlyName": "New Relic Record deployment event",
+  "description": "New Relic Record deployment event to a given app name",
+  "author": "ShmulikAhituv",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "9",
+    "Patch": "7"
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "New Relic Record deployment event $(message)",
+      "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+
+  "inputs": [
+    {
+      "name": "NewRelicService",
+      "type": "connectedService:NewRelic",
+      "label": "NewRelic service/server end point",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Select the end point to use. If needed, click on 'manage', and add a new Service Endpoint of type 'New Relic Connection'"
+    },
+    {
+      "name": "application",
+      "type": "pickList",
+      "label": "New Relic Application",
+      "required": true,
+      "helpMarkDown": "Select the name of the new relic app.",
+      "properties": {
+        "EditableOptions": "True"
+      }
+    },
+	
+	{ 
+            "name": "revision", 
+            "type": "string",
+            "label": "Revision", 
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Default value is BUILD_SOURCEVERSION",
+            "groupName": "advanced"
+        },
+		
+		
+		{ 
+            "name": "changelog", 
+            "type": "string",
+            "label": "Changelog", 
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Default value is Release summary URL",
+            "groupName": "advanced"
+        },
+		{ 
+            "name": "description", 
+            "type": "string",
+            "label": "Description", 
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Default value is RELEASE_RELEASEDESCRIPTION",
+            "groupName": "advanced"
+        },
+		
+		{ 
+            "name": "user", 
+            "type": "string",
+            "label": "User", 
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Default value is RELEASE_REQUESTEDFOR",
+            "groupName": "advanced"
+        }
+  ],
+  "dataSourceBindings": [
+    {
+      "target": "application",
+      "endpointId": "$(NewRelicService)",
+      "dataSourceName": "New Relic Applications"
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "NewRelicDeploymentEvent.ps1"
+    }
+  }
+}

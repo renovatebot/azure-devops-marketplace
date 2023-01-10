@@ -1,0 +1,121 @@
+{
+    "id": "c38aaef4-ad8b-411c-9fce-c63ca6847da6",
+    "name": "PublishParasoftTestResults",
+    "friendlyName": "Publish Parasoft Test Results",
+    "description": "Publish Parasoft test results to VSTS",
+    "helpMarkDown": "[More Information](https://www1.parasoft.com/doc/link?product=findingsVSTS010)",
+    "category": "Test",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "author": "Parasoft Corporation",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 0
+    },
+    "demands": [
+        "java"
+    ],
+    "minimumAgentVersion": "2.0.0",
+    "groups": [
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "testRunner",
+            "type": "pickList",
+            "label": "Test result format",
+            "defaultValue": "SOAtest9x",
+            "required": true,
+            "helpMarkDown": "Format of Parasoft report files generated after test execution.",
+            "options": {
+                "SOAtest9x": "Parasoft SOAtest 9.x",
+                "XTest10x": "Parasoft Analyzers 10.x"
+            }
+        },
+        {
+            "name": "testResultsFiles",
+            "type": "multiLine",
+            "label": "Test results files",
+            "defaultValue": "**/rep*.xml",
+            "required": true,
+            "helpMarkDown": "Test results files path. Supports multiple lines of minimatch patterns. [More Information](https://aka.ms/minimatchexamples)",
+            "properties": {
+                "rows": "3",
+                "resizable": "true"
+            }
+        },
+        {
+            "name": "searchFolder",
+            "type": "string",
+            "label": "Search folder",
+            "defaultValue": "$(System.DefaultWorkingDirectory)",
+            "required": false,
+            "helpMarkDown": "Folder to search for the test result files. Defaults to $(System.DefaultWorkingDirectory)."
+        },
+        {
+            "name": "mergeTestResults",
+            "type": "boolean",
+            "label": "Merge test results",
+            "defaultValue": "false",
+            "required": false,
+            "helpMarkDown": "To merge results from all test results files to one test run in VSTS/TFS, check this option. To create a test run for each test results file, uncheck this option."
+        },
+        {
+            "name": "testRunTitle",
+            "type": "string",
+            "label": "Test run title",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a name for the Test Run."
+        },
+        {
+            "name": "platform",
+            "type": "string",
+            "label": "Platform",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Platform for which the tests were run."
+        },
+        {
+            "name": "configuration",
+            "type": "string",
+            "label": "Configuration",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Configuration for which the tests were run."
+        },
+        {
+            "name": "publishRunAttachments",
+            "type": "boolean",
+            "label": "Upload test results files",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Opt in/out of publishing test run level attachments. If selected, test result files will be uploaded and attached to test run",
+            "groupName": "advanced"
+        },
+        {
+            "name": "failOnTestFailures",
+            "type": "boolean",
+            "label": "Fail when reports contain test failures",
+            "defaultValue": "true",
+            "required": false,
+            "groupName": "advanced",
+            "helpMarkDown": "Fail the build when any Parasoft reports contain test failures."
+        }
+    ],
+    "instanceNameFormat": "Publish Parasoft Test Results $(testResultsFiles)",
+    "execution": {
+        "Node": {
+            "target": "publishtestresults.js"
+        }
+    }
+}

@@ -12,10 +12,8 @@ function Get-Extensions
         [int]$PageSize
     )
 
-    $session = New-Object Microsoft.PowerShell.Commands.WebRequestSession
     $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
         -Method "POST" `
-        -WebSession $session `
         -Headers @{
         "authority"="marketplace.visualstudio.com"
         "method"="POST"
@@ -29,7 +27,7 @@ function Get-Extensions
         "x-vss-reauthenticationaction"="Suppress"
         } `
         -ContentType "application/json" `
-        -Body "{`"assetTypes`":[`"Microsoft.VisualStudio.Services.Icons.Default`",`"Microsoft.VisualStudio.Services.Icons.Branding`",`"Microsoft.VisualStudio.Services.Icons.Small`"],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"},{`"filterType`":5,`"value`":`"Azure Pipelines`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}"
+        -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}"
 
     return ($result.Content | ConvertFrom-Json).results[0];
 }
@@ -83,10 +81,15 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
 {
     do
     {
+        $ProgressPreference = "silentlycontinue"
         $result = Get-Extensions -PageSize $pageSize -Page $page
         $totalFetched += $result.extensions.Count
-        
         $max = $result.resultMetaData[0].metadataItems[0].count
+
+        $ProgressPreference = "continue"
+        write-progress -activity "Fetching extension metadata" -status "Fetched $totalFetched of $max" -percentComplete (($totalFetched / $max) * 100)
+        
+
         $extensions += $result.extensions
         $page += 1
     }
@@ -112,10 +115,17 @@ else {
 }
 Write-host "::endgroup::"
 
+$extensionsProcessed = 0
 foreach ($extension in $extensions)
 {
+    $ProgressPreference = "continue"
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
+
+    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $max | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $max) * 100)
+    $ProgressPreference = "silentlycontinue"
+    $extensionsProcessed += 1
+        
     $shouldCommit = $false
 
     Write-host "::group::$publisherId/$extensionId"
@@ -135,12 +145,16 @@ foreach ($extension in $extensions)
     if ($fetchExtensionData)
     {
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
+        $extensionData.versions | %{ $_.files = $_.files | ?{ $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
         $shouldCommit = $true
     }
     
-    foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 } )
-    {
+    $extensionData.versions | ?{ $_.flags -eq 1 } | foreach-object -parallel {
+        $version = $_
+        $publisherId = $using:publisherId
+        $extensionId = $using:extensionId
+        
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
         $vsixUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
@@ -148,12 +162,11 @@ foreach ($extension in $extensions)
 
         if (
             -not (Test-Path -Path $extractedPath -PathType Container) -or
-            -not (test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)
+            (-not $vsixManifestUrl -and -not (test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf))
             )
         {
-            write-host "$($version.version)"
+            write-host "Downloading VSIX: $($version.version)"
             try{
-                $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
 
@@ -163,7 +176,6 @@ foreach ($extension in $extensions)
                     mkdir $extractedPath -Force | out-null
                     Set-Content -path "$extractedPath/.completed" -value "true" -Force
                 }
-                $shouldCommit = $true
             }finally{
                 Remove-Item $savepath
             }
@@ -171,18 +183,17 @@ foreach ($extension in $extensions)
 
         if ($vsixManifestUrl -and (-not(test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)))
         {
+            write-host "Downloading VSIX Manifest: $($version.version)"
+            mkdir $extractedPath -Force | out-null
             Invoke-WebRequest -Uri $vsixManifestUrl -OutFile "$extractedPath/extension.vsixmanifest"
-            $shouldCommit = $true
+            Set-Content -path "$extractedPath/.completed" -value "true" -Force
         }
     }
 
-    if ($shouldCommit)
-    {
-        commit-changes -message "Update $publisherId/$extensionId"
-    }
     write-host "::endgroup::"
 }
 
+commit-changes -message "Update $publisherId/$extensionId"
 if (-not $skipCommit)
 {
     & git push
