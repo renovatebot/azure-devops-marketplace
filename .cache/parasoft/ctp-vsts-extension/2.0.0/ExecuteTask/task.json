@@ -1,0 +1,124 @@
+{
+  "id": "6c3bd7cf-f1f1-434a-ab59-0790ff1c3f29",
+  "name": "ExecuteTask",
+  "friendlyName": "Parasoft Execute Job",
+  "description": "Execute a job in Parasoft Continuout Testing Platform",
+  "author": "Parasoft Corporation",
+  "helpMarkDown": "Run a test execution job from CTP and optionally publish results to DTP.",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "2",
+    "Minor": "0",
+    "Patch": "0"
+  },
+  "minimumAgentVersion": "1.103.0",
+  "instanceNameFormat": "Execute Job: $(Job)",
+  "inputs": [
+    {
+      "name": "ParasoftEMEndpoint",
+      "type": "connectedService:parasoftctp",
+      "label": "Parasoft CTP Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Parasoft Continuous Testing Platform remote service endpoint"
+    },
+    {
+      "name": "Job",
+      "type": "pickList",
+      "label": "Job",
+      "helpMarkDown": "Name of the job",
+      "required": true
+    },
+    {
+      "name": "AbortOnTimeout",
+      "type": "boolean",
+      "label": "Abort job after timeout",
+      "defaultValue": "",
+      "helpMarkDown": "Job will be aborted when execution time exceeds the specified timeout",
+      "required": false
+    },
+    {
+      "name": "TimeoutInMinutes",
+      "type": "string",
+      "label": "Timeout minutes",
+      "defaultValue": "",
+      "helpMarkDown": "Allowed execution time mesaured in minutes before the job is aborted",
+      "required" : true,
+      "visibleRule": "AbortOnTimeout == true"
+    },
+    {
+      "name": "PublishDTPReport",
+      "type": "boolean",
+      "label": "Publish test execution results to DTP",
+      "defaultValue": "",
+      "helpMarkDown": "Publish test execution results to DTP",
+      "required": false
+    },
+    {
+      "name": "ParasoftDTPEndpoint",
+      "type": "connectedService:parasoftdtp",
+      "label": "Parasoft DTP Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Parasoft Development Testing Platform remote service endpoint",
+      "visibleRule": "PublishDTPReport == true"
+    },
+    {
+      "name": "DTPProject",
+      "type": "pickList",
+      "label": "Project",
+      "helpMarkDown": "DTP Project associated with the job execution ",
+      "required" : true,
+      "visibleRule": "PublishDTPReport == true"
+    },
+    {
+      "name": "ReportBuildId",
+      "type": "string",
+      "label": "Build ID",
+      "defaultValue": "$(Build.BuildId)",
+      "helpMarkDown": "Build identifier to be displayed in DTP",
+      "required" : true,
+      "visibleRule": "PublishDTPReport == true"
+    },
+    {
+      "name": "ReportSessionTag",
+      "type": "string",
+      "label": "Session Tag",
+      "defaultValue": "",
+      "helpMarkDown": "Session tag",
+      "required" : true,
+      "visibleRule": "PublishDTPReport == true"
+    },
+    {
+      "name": "AppendEnvironmentSet",
+      "type": "boolean",
+      "label": "Append variable set environment to session tag if configured",
+      "defaultValue": "",
+      "required": false,
+      "visibleRule": "PublishDTPReport == true"
+    }
+  ],
+  "dataSourceBindings" : [
+    {
+		  "target": "Job",
+		  "endpointId": "$(ParasoftEMEndpoint)",
+		  "dataSourceName": "jobData"
+    },
+    {
+      "target": "DTPProject",
+		  "endpointId": "$(ParasoftDTPEndpoint)",
+		  "dataSourceName": "DTPProjectData"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "execute.js",
+      "argumentFormat": ""
+    }
+  }
+}

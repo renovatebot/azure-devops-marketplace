@@ -1,0 +1,72 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "icescrum-build-notify",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "notifyIceScrumTask"
+            }
+        },
+        {
+            "id": "icescrum-servicehook-commit",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "icescrum-servicehook-commit",
+                "name": "iceScrum",
+                "description": "Control over your agile taskboard directly from commits & link them on your tasks & stories",
+                "informationUrl": "https://www.icescrum.com/documentation/git-svn/#vsts",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "name": "URL",
+                        "description": "iceScrum rest API endpoint for VSTS commits. Replace your server URL and project key in this sample: 'https://cloud.icescrum.com/ws/project/PEETIC/commit/vsts'",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "accessToken",
+                        "name": "Access token",
+                        "description": "Your iceScrum access token. <a href='https://www.icescrum.com/documentation/rest-api/#authentication'> Learn how to get one</a>.",
+                        "inputMode": "textBox",
+                        "isConfidential": true,
+                        "useInDefaultDescription": false,
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true,
+                            "minLength": 32,
+                            "maxLength": 32
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "notify-icescrum",
+                        "name": "Notify iceScrum",
+                        "description": "Posts commit info to iceScrum",
+                        "supportedEventTypes": [
+                            "git.push"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}?icescrum-token={{{accessToken}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

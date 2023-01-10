@@ -1,0 +1,87 @@
+{
+  "id": "5b42da30-2135-11e6-8ef3-518445c1557a",
+  "name": "DeployTask",
+  "friendlyName": "Parasoft Service Virtualization Deploy",
+  "description": "Deploy a Parasoft Service Virtualization environment",
+  "author": "Parasoft Corporation",
+  "helpMarkDown": "Replace with markdown to show in help",
+  "category": "Deploy",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "0",
+    "Minor": "5",
+    "Patch": "1"
+  },
+  "minimumAgentVersion": "1.83.0",
+  "instanceNameFormat": "Deploy $(Environment) to $(Instance)",
+  "inputs": [
+    {
+      "name": "ParasoftEMEndpoint",
+      "type": "connectedService:parasoftctp",
+      "label": "Parasoft CTP Endpoint",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Parasoft Environment Manager remote service endpoint"
+    },
+    {
+      "name": "System",
+      "type": "string",
+      "label": "System",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Name of the system"
+    },
+    {
+      "name": "Environment",
+      "type": "string",
+      "label": "Environment",
+      "defaultValue": "",
+      "helpMarkDown": "Name of the environment",
+      "required": true
+    },
+    {
+      "name": "Instance",
+      "type": "string",
+      "label": "Instance",
+      "defaultValue": "",
+      "helpMarkDown": "Name of the environment instance to provision",
+      "required": true
+    },
+    {
+        "name": "CopyToVirtualize",
+        "type": "boolean",
+        "label": "Copy environment assets",
+        "defaultValue": "",
+        "helpMarkDown": "Virtual assets in the environment will be replicated on another server",
+        "required": false
+    },
+    {
+        "name": "VirtServerName",
+        "type": "string",
+        "label": "Virtualize sever name",
+        "defaultValue": "",
+        "helpMarkDown": "The environment assets will be copied to a Virtualize server matching this name",
+        "required": false,
+        "visibleRule": "CopyToVirtualize = true"
+    },
+    {
+        "name": "NewEnvironmentName",
+        "type": "string",
+        "label": "New environment name",
+        "defaultValue": "",
+        "helpMarkDown": "The name for the replicated environment can be used to later destroy the environment",
+        "required": false,
+        "visibleRule": "CopyToVirtualize = true"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "deploy.js",
+      "argumentFormat": ""
+    }
+  }
+}

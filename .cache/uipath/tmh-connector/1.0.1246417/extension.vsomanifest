@@ -1,0 +1,304 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/UiPath/Test-Management-Hub-Azure-DevOps"
+    },
+    "scopes": [
+        "vso.loadtest_write",
+        "vso.notification_write",
+        "vso.serviceendpoint_manage",
+        "vso.settings_write",
+        "vso.dashboards_manage",
+        "vso.test_write",
+        "vso.wiki_write",
+        "vso.work_full",
+        "vso.notification_diagnostics",
+        "vso.extension.data_write",
+        "vso.analytics"
+    ],
+    "contributions": [
+        {
+            "id": "configuration-page",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "includes": [
+                "ms.vss-tfs-web.tfs-page-data-service",
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service",
+                "ms.vss-features.host-dialog-service"
+            ],
+            "properties": {
+                "name": "UiPath Test Manager",
+                "uri": "dist/ConfigPage/ConfigPage.html",
+                "icon": "asset://static/uipath-icon.png",
+                "supportsMobile": true
+            }
+        },
+        {
+            "id": "push-to-manager-action",
+            "type": "ms.vss-web.action",
+            "description": "Push to Test Manager",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Push to Test Manager",
+                "title": "Push to Test Manager",
+                "icon": "static/uipath-icon.png",
+                "groupId": "actions",
+                "uri": "dist/PushToTestManager/PushToTestManager.html",
+                "registeredObjectId": "push-to-test-manager"
+            }
+        },
+        {
+            "id": "test-case-automation-tab",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "UiPath Test Case Automation page",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "UiPath Automation",
+                "uri": "dist/TestCaseAutomation/TestCaseAutomation.html"
+            }
+        },
+        {
+            "id": "uipath-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "uipath",
+                "name": "UiPath",
+                "description": "UiPath consumer service",
+                "informationUrl": "https://aka.ms/vsoextensions",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "name": "URL",
+                        "description": "The URL to which an HTTP POST will be sent.",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "textBox",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "uri",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "Do not require a trusted SSL certificate for this endpoint. Note: this option should only be used during development and testing.",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "checkBox",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null
+                    },
+                    {
+                        "id": "basicAuthUsername",
+                        "name": "Basic authentication username",
+                        "description": "Enter a username for standard HTTP authentication.  Basic HTTP authentication sends credentials in plain text (unencrypted) which means you should use a URL beginning with \"https\" to enable encryption of these credentials via secure transport layer (SSL).",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "textBox",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string",
+                            "pattern": "^[\\S]+$",
+                            "minLength": 1,
+                            "maxLength": 256
+                        }
+                    },
+                    {
+                        "id": "basicAuthPassword",
+                        "name": "Basic authentication password",
+                        "description": "Enter a password for standard HTTP authentication.  Basic HTTP authentication sends credentials in plain text (unencrypted) which means you should use a URL beginning with \"https\" to enable encryption of these credentials via secure transport layer (SSL).",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "passwordBox",
+                        "isConfidential": true,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string",
+                            "pattern": "^[\\S]+$",
+                            "minLength": 1,
+                            "maxLength": 256
+                        },
+                        "dependencyInputIds": [
+                            "url"
+                        ]
+                    },
+                    {
+                        "id": "httpHeaders",
+                        "name": "HTTP headers",
+                        "description": "HTTP header keys and values separated by a colon(e.g. \"Key1:value1\") with each key-value-pair appearing on its own line of text.  Note: These values are viewable by anyone who has access to this service hook subscription.",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "textArea",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string",
+                            "pattern": "^([^:\\s]+:.*[\\n]*)*$"
+                        }
+                    },
+                    {
+                        "id": "resourceDetailsToSend",
+                        "name": "Resource details to send",
+                        "description": "Control the resource fields to send",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "resourceDetailsToSend",
+                            "defaultValue": "",
+                            "possibleValues": [
+                                {
+                                    "value": "",
+                                    "displayValue": "All"
+                                },
+                                {
+                                    "value": "minimal",
+                                    "displayValue": "Minimal"
+                                },
+                                {
+                                    "value": "none",
+                                    "displayValue": "None"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        }
+                    },
+                    {
+                        "id": "messagesToSend",
+                        "name": "Messages to send",
+                        "description": "Control the messages to send",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "messagesToSend",
+                            "defaultValue": "",
+                            "possibleValues": [
+                                {
+                                    "value": "",
+                                    "displayValue": "All"
+                                },
+                                {
+                                    "value": "text",
+                                    "displayValue": "Text"
+                                },
+                                {
+                                    "value": "html",
+                                    "displayValue": "HTML"
+                                },
+                                {
+                                    "value": "markdown",
+                                    "displayValue": "Markdown"
+                                },
+                                {
+                                    "value": "none",
+                                    "displayValue": "None"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        }
+                    },
+                    {
+                        "id": "detailedMessagesToSend",
+                        "name": "Detailed messages to send",
+                        "description": "Control the detailed messages to send",
+                        "type": null,
+                        "properties": null,
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "useInDefaultDescription": false,
+                        "groupName": null,
+                        "valueHint": null,
+                        "validation": {
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "detailedMessagesToSend",
+                            "defaultValue": "",
+                            "possibleValues": [
+                                {
+                                    "value": "",
+                                    "displayValue": "All"
+                                },
+                                {
+                                    "value": "text",
+                                    "displayValue": "Text"
+                                },
+                                {
+                                    "value": "html",
+                                    "displayValue": "HTML"
+                                },
+                                {
+                                    "value": "markdown",
+                                    "displayValue": "Markdown"
+                                },
+                                {
+                                    "value": "none",
+                                    "displayValue": "None"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "uiPathRequest",
+                        "name": "Post via HTTP",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "workitem.created",
+                            "workitem.updated",
+                            "workitem.deleted"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}

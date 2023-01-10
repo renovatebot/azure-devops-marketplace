@@ -1,0 +1,94 @@
+{
+    "scopes": [],
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "azuqua",
+                "name": "Azuqua",
+                "description": "Azuqua provides a platform that allows to visually create business processes spanning multiples cloud services.",
+                "imageUrl": "",
+                "informationUrl": "http://go.microsoft.com/fwlink/?LinkID=521778",
+                "externalConfiguration": {
+                    "createSubscriptionUrl": "http://azuqua.com"
+                },
+                "inputDescriptors": [],
+                "actions": [
+                    {
+                        "id": "postEventToFlo",
+                        "name": "Post event to flõ",
+                        "description": "Posts an event to a Azuqua flõ",
+                        "supportedEventTypes": [
+                            "*"
+                        ],
+                        "supportedResourceVersions": {
+                            "build.complete": [
+                                "1.0"
+                            ],
+                            "git.push": [
+                                "1.0"
+                            ],
+                            "git.pullrequest.created": [
+                                "1.0-preview.1"
+                            ],
+                            "git.pullrequest.updated": [
+                                "1.0-preview.1"
+                            ],
+                            "tfvc.checkin": [
+                                "1.0"
+                            ],
+                            "workitem.created": [
+                                "1.0"
+                            ],
+                            "workitem.updated": [
+                                "1.0"
+                            ],
+                            "workitem.commented": [
+                                "1.0"
+                            ],
+                            "message.posted": [
+                                "1.0"
+                            ]
+                        },
+                        "inputDescriptors": [
+                            {
+                                "id": "webhookId",
+                                "name": "Webhook identifier",
+                                "description": "The Webhook identifier that triggers the Azuqua flõ",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "clientToken",
+                                "name": "Client token",
+                                "description": "Token that identifies the client",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ],
+                        "publishEvent": {
+                            "url": "https://api.azuqua.com/webhooks/{{webhookId}}?clientToken={{clientToken}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "manifestVersion": 1,
+    "baseUri": "{{ServiceUrl \"00000003-0000-8888-8000-000000000000\" \"Application\"}}"
+}

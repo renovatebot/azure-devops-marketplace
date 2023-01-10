@@ -1,0 +1,217 @@
+{
+    "contributions": [
+        {
+            "id": "releaseNotes",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "build/buildTasks/releaseNotes"
+            }
+        },
+        {
+            "id": "extension-data-endpoint-type",
+            "description": "Service endpoint for all ServiceNow connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "extension-data-endpoint",
+                "displayName": "Extension Data",
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "User email",
+                                "description": "User account to authenticate",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Personal Access Token",
+                                "description": "Personal access token is applicable only for endpoint targeting VSTS account or TFS 2016. Click <a href=\"https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate\" target=\"_blank\">here</a>. for information on how to create Personal Access Token.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "Bravo Notes",
+                        "endpointUrl": "{{endpoint.url}}/_apis/ExtensionManagement/InstalledExtensions/agile-extensions/bravo-notes-staging/Data/Scopes/Default/Current/Collections/rn-index/Documents",
+                        "resultSelector": "jsonpath:$.value[*]"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "extmgmt-service-endpoint",
+            "description": "Extension data endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ExtensionData",
+                "displayName": "Extension data endpoint",
+                "account": {
+                    "displayName": "VSTS account name",
+                    "helpText": "Name of VSTS account to query"
+                },
+                "dataSources": [
+                    {
+                        "name": "Bravo Notes",
+                        "endpointUrl": "https://{{endpoint.account}}.extmgmt.visualstudio.com/_apis/ExtensionManagement/InstalledExtensions/agile-extensions/bravo-notes-staging/Data/Scopes/Default/Current/Collections/rn-index/Documents",
+                        "resultSelector": "jsonpath:$.value[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 \"token\" \":\" endpoint.pat }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "pat",
+                                "name": "Personal Access Token",
+                                "description": "Personal access token is applicable only for endpoint targeting VSTS account or TFS 2016. Click <a href=\"https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate\" target=\"_blank\">here</a>. for information on how to create Personal Access Token.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "export-workitem-dialog",
+            "type": "ms.vss-web.control",
+            "description": "Export work item",
+            "targets": [],
+            "properties": {
+                "uri": "build/export-workitem-dialog/index.html"
+            }
+        },
+        {
+            "id": "edit",
+            "type": "ms.vss-web.hub",
+            "description": "Your sprint at a glance",
+            "targets": [
+                "ms.vss-build-web.build-release-hub-group",
+                "ms.vss-build-web.build-hub-group"
+            ],
+            "properties": {
+                "title": "Release Notes",
+                "name": "Release Notes",
+                "uri": "build/edit/index.html",
+                "iconAsset": "agile-extensions.bravo-notes/assets/hub-icon.png",
+                "_sharedData": {
+                    "assets": [
+                        "agile-extensions.bravo-notes/assets/hub-icon.png"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "export-as-pdf",
+            "type": "ms.vss-web.action",
+            "description": "Export work item as PDF",
+            "targets": [
+                "ms.vss-work-web.work-item-toolbar-menu",
+                "ms.vss-work-web.query-result-work-item-menu",
+                "ms.vss-work-web.work-item-query-results-toolbar-menu",
+                "ms.vss-work-web.backlog-item-menu"
+            ],
+            "properties": {
+                "text": "Export as PDF",
+                "title": "Export as PDF",
+                "toolbarText": "Export as PDF",
+                "icon": "css://bowtie-icon bowtie-print",
+                "group": "actions",
+                "uri": "build/export-as-pdf/index.html",
+                "registeredObjectId": "export-as-pdf-button"
+            }
+        },
+        {
+            "id": "my-action-collection",
+            "type": ".available-action-collection",
+            "targets": [
+                ".quick-edit"
+            ]
+        },
+        {
+            "id": "my-action",
+            "type": ".action",
+            "targets": [
+                ".my-action-collection"
+            ]
+        }
+    ],
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.work_write",
+        "vso.build",
+        "vso.release",
+        "vso.code_write",
+        "vso.wiki_write"
+    ],
+    "contributionTypes": [
+        {
+            "id": "available-action-collection",
+            "name": "Available Action Collection",
+            "description": "A collection of actions."
+        },
+        {
+            "id": "action",
+            "name": "Action",
+            "description": "An action that can be taken.",
+            "properties": {}
+        }
+    ],
+    "licensing": {
+        "overrides": [
+            {
+                "id": "my-action-collection",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "edit",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "export-as-pdf",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "export-workitem-dialog",
+                "behavior": "AlwaysInclude"
+            }
+        ]
+    }
+}

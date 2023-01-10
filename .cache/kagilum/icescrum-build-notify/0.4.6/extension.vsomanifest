@@ -1,0 +1,75 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "icescrum-build-notify",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "notifyIceScrumTask"
+            }
+        },
+        {
+            "id": "icescrum-servicehook-commit",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "icescrum-servicehook-commit",
+                "name": "IceScrum",
+                "description": "Control over your agile taskboard directly from commits & link them on your tasks & stories.",
+                "informationUrl": "https://www.icescrum.com/documentation/git-svn/#vsts",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "name": "iceScrum API URL (For iceScrum cloud, just replace MYPROJECT by your project key in the default value)",
+                        "description": "iceScrum REST API endpoint for VSTS commits. Replace your server URL and project key in the sample value. It requires to have the Visual Studio Team Services Commits App enabled for your iceScrum project.",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true
+                        },
+                        "values": {
+                            "defaultValue": "https://cloud.icescrum.com/ws/project/MYPROJECT/commit/vsts"
+                        }
+                    },
+                    {
+                        "id": "accessToken",
+                        "name": "Access token (Need one? <a href='https://www.icescrum.com/documentation/rest-api/#authentication'>Get it now</a>)",
+                        "description": "Your iceScrum access token. Click the link in the action description above to learn how to obtain this token.",
+                        "inputMode": "textBox",
+                        "isConfidential": true,
+                        "useInDefaultDescription": false,
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true,
+                            "minLength": 32,
+                            "maxLength": 32
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "notify-icescrum",
+                        "name": "Notify iceScrum",
+                        "description": "Notify iceScrum at every commit / chanset.",
+                        "supportedEventTypes": [
+                            "git.push"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}?icescrum-token={{{accessToken}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

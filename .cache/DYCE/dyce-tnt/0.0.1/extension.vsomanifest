@@ -1,0 +1,116 @@
+{
+    "manifestVersion": 1,
+    "baseUri": "https://azuredevops.dyce.cloud",
+    "scopes": [
+        "vso.work_write"
+    ],
+    "contributions": [
+        {
+            "id": "Boards.TnTWorkItemDetailsBox",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "DYCE T&T details-box for work item group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "DYCE Fast Tracking",
+                "uri": "/details",
+                "height": 140
+            }
+        },
+        {
+            "id": "Boards.TnTWorkItemPage",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "DYCE T&T page per work item",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "DYCE Time Tracking",
+                "uri": "/tnt"
+            }
+        },
+        {
+            "id": "Boards.TnTServices",
+            "type": "ms.vss-work-web.work-item-notifications",
+            "description": "Work item services for DYCE T&T",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "uri": "/service"
+            }
+        },
+        {
+            "id": "ServiceHooks.DyceHooks",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "dyceHooks",
+                "name": "DYCE-WorkItem-WebHook",
+                "description": "WorkItem-State-change triggers web-hook",
+                "informationUrl": "https://www.singhammer.com",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "properties": {
+                            "event": {
+                                "eventType": "workitem.updated"
+                            },
+                            "isFilteredEvent": true,
+                            "publisherInputFilters": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "inputId": "changedFields",
+                                            "inputValue": "System.State",
+                                            "operator": 0
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "name": "Create WebHook for DYCE integration",
+                        "description": "Posts a standard event payload with old-state and new-state value.",
+                        "inputMode": "none",
+                        "values": {
+                            "defaultValue": "https://webhook.site/204f3ae2-bf49-43a1-9c91-92f073cbee62"
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Perform action on state changes from WorkItems",
+                        "description": "Click 'Finish' to add this web-hook to your list.",
+                        "supportedEventTypes": [
+                            "workitem.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ProjectSettings.TnTAdministrationHub",
+            "type": "ms.vss-web.hub",
+            "description": "Add's a configuration page for the T&T integration.",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "DYCE Administration",
+                "order": 99,
+                "uri": "/administration"
+            }
+        }
+    ],
+    "contributionTypes": []
+}

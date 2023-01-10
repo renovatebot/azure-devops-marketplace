@@ -1,0 +1,136 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.dashboards",
+        "vso.extension",
+        "vso.extension.data",
+        "vso.extension.data_write",
+        "vso.identity",
+        "vso.profile"
+    ],
+    "contributions": [
+        {
+            "id": "PD.Setup",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "PagerDuty Configuration",
+                "order": 100,
+                "uri": "static/html/setup.html"
+            }
+        },
+        {
+            "id": "PD.WidgetIncidents",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                ".PD.WidgetIncidents.Configuration"
+            ],
+            "properties": {
+                "name": "PagerDuty Incidents",
+                "description": "PagerDuty Incidents Widget",
+                "uri": "static/html/widget_incident.html",
+                "catalogIconUrl": "static/images/catalog_icon.png",
+                "previewImageUrl": "static/images/catalog_icon.png",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 3
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "PD.WidgetIncidents.Configuration",
+            "type": "ms.vss-dashboards-web.widget-configuration",
+            "targets": [
+                "ms.vss-dashboards-web.widget-configuration"
+            ],
+            "properties": {
+                "name": "PagerDuty Incidents Widget Configuration",
+                "description": "Configures PagerDuty Incidents Widget",
+                "uri": "static/html/widget_incident_setup.html"
+            }
+        },
+        {
+            "id": "PD.WidgetOncall",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog"
+            ],
+            "properties": {
+                "name": "PagerDuty OnCall",
+                "description": "PagerDuty OnCall Widget",
+                "uri": "static/html/widget_oncall.html",
+                "catalogIconUrl": "static/images/catalog_icon.png",
+                "previewImageUrl": "static/images/catalog_icon.png",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 2,
+                        "columnSpan": 2
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "PD.Incident",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "PagerDuty Incident",
+                "uri": "static/html/incident.html",
+                "height": 300
+            }
+        },
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "PagerDuty",
+                "description": "PagerDuty service",
+                "informationUrl": "https://pagerduty.com",
+                "inputDescriptors": [
+                    {
+                        "id": "apikey",
+                        "isRequired": true,
+                        "name": "API key",
+                        "description": "PagerDuty API Key",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Perform action",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "workitem.created",
+                            "workitem.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "https://app.pagerduty.com/vsts/incidents/update?api_key={{{apikey}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}

@@ -1,0 +1,72 @@
+{
+    "manifestVersion": 1,
+    "eventCallbacks": {
+        "versionCheck": {
+            "uri": "{{DeploymentUrl \"00025394-6065-48CA-87D9-7F5672854EF7\"}}_apis/public/extensions/vdisc"
+        }
+    },
+    "content": {
+        "details": {
+            "path": "content/Plans.md"
+        }
+    },
+    "contributions": [
+        {
+            "id": "vss-plans-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Adds the Plans hub to the Work hub group.",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Plans*",
+                "order": 30,
+                "icon": "bowtie-icon bowtie-timeline-delivery",
+                "defaultRoute": "ms.vss-plans.vss-plans-route",
+                "content": {
+                    "require": [
+                        "ScaledAgile/Scripts/Extension/PlansHub",
+                        "Presentation/Scripts/TFS/TFS.UI.Controls.Common"
+                    ],
+                    "initialize": "plans.plansHub"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "WebAccess.ScaledAgile.Plans"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "vss-plans-route",
+            "type": "ms.vss-web.route",
+            "targets": [
+                ".vss-plans-hub"
+            ],
+            "properties": {
+                "hostType": "ProjectCollection",
+                "routeTemplates": [
+                    "{project}/{team}/_plans/{*parameters}",
+                    "{project}/_plans/{*parameters}"
+                ],
+                "defaults": {
+                    "controller": "Apps",
+                    "action": "ContributedHub"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "WebAccess.ScaledAgile.Plans"
+                    }
+                }
+            ]
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AArnott/vso-agent-tasks/9b41d803a/tasks.schema.json",
+  "id": "DDCE7AD1-2361-4D5F-7597-081C7EE4F734",
+  "name": "TesteinRun",
+  "friendlyName": "Run Testein tests",
+  "description": "Runs your Testein test/suite/project",
+  "author": "Testein",
+  "helpMarkDown": "Allows you to trigger your Testein test/suite/project and watch logs in VSTS",
+  "category": "Test",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": 0,
+    "Minor": 2,
+    "Patch": 2
+  },
+  "minimumAgentVersion": "1.95.0",
+  "instanceNameFormat": "Run Testein test/suite/project",
+  "inputs": [
+    {
+      "name": "email",
+      "type": "string",
+      "label": "Email",
+      "required": true,
+      "helpMarkDown": "Your email"
+    },
+    {
+      "name": "userToken",
+      "type": "string",
+      "label": "User Token",
+      "required": true,
+      "helpMarkDown": "Your user token. Could be found under your user settings in Testein"
+    },
+    {
+      "name": "type",
+      "type": "pickList",
+      "label": "Target type",
+      "required": true,
+      "helpMarkDown": "Type of the target to run",
+      "options": {
+        "test": "Test",
+        "suite": "Test Suite",
+        "project": "Project"
+      },
+      "defaultValue": "test"
+    },
+    {
+      "name": "id",
+      "type": "string",
+      "label": "Target Id",
+      "required": true,
+      "helpMarkDown": "Id of test/suite/project to run. Could be found on test/suite/project details page"
+    },
+    {
+      "name": "downloadDetails",
+      "type": "boolean",
+      "label": "Download Details",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If true, Testein task logs will be downloaded to 'Testein-Task-{taskId}.zip'.",
+      "visibleRule": "type = test"
+    },
+    {
+      "name": "downloadReport",
+      "type": "boolean",
+      "label": "Download Report",
+      "defaultValue": "false",
+      "required": false,
+      "helpMarkDown": "If true, Testein report will be downloaded to 'Testein-Report-{runId}.html'."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "index.js",
+      "argumentFormat": ""
+    }
+  }
+}

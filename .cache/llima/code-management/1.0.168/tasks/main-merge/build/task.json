@@ -1,0 +1,76 @@
+{
+    "id": "9fc0551b-2945-4dbe-8bd0-60be90606e2d",
+    "name": "code-management-mainer",
+    "friendlyName": "Code Management Main Merge",
+    "description": "Code Management Extension for Azure DevOps",
+    "author": "Luiz Lima",
+    "helpUrl": "https://github.com/llima/code-management-extension",
+    "helpMarkDown": "[Learn more about this task](https://github.com/llima/code-management-extension/blob/develop/README.md)",
+    "category": "Utility",
+    "visibility": ["Build", "Release"],
+    "demands": [],
+    "version": {
+      "Major": "1",
+      "Minor": "0",
+      "Patch": "8"
+    },
+    "minimumAgentVersion": "1.0.8",
+    "instanceNameFormat": "Code Management Main Merge",
+    "inputs": [        
+          {
+            "name": "repositoryUrl",
+            "type": "string",
+            "label": "Repository Url",
+            "helpMarkDown": "Enter the name of the repository url.",
+            "defaultValue": "",
+            "required": true
+          },      
+          {
+            "name": "mainBranch",
+            "type": "string",
+            "label": "Main Branch",
+            "helpMarkDown": "Enter the name of the main branch.",
+            "defaultValue": "main",
+            "required": true
+          },
+          {
+            "name": "sourceBranch",
+            "type": "string",
+            "label": "Source Branch",
+            "helpMarkDown": "Enter the name of the source branch to merge.",
+            "defaultValue": "$(Build.SourceBranch)",
+            "required": true
+          },
+          {
+            "name": "tagBranch",
+            "type": "boolean",
+            "label": "Add Tag",
+            "helpMarkDown": "Add Tag with version on branch main.",
+            "required": false,
+            "defaultValue": false            
+          },
+          {
+            "name": "tag",
+            "type": "string",
+            "label": "Tag",
+            "helpMarkDown": "Enter the tag branch.",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "tagBranch == true"
+          },
+          {
+            "name": "tagMessage",
+            "type": "string",
+            "label": "Tag Message",
+            "helpMarkDown": "Enter the message of the tag branch.",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "tagBranch == true"
+          }
+    ],
+    "execution": {
+      "Node10": {
+          "target": "main-merge.js"
+      }
+    }
+  }
