@@ -144,14 +144,18 @@ foreach ($extension in $extensions)
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
         $vsixUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
+        $vsixManifestUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select -ExpandProperty source
 
-        if (-not (Test-Path -Path $extractedPath -PathType Container))
+        if (
+            -not (Test-Path -Path $extractedPath -PathType Container) -or
+            -not (test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)
+            )
         {
             write-host "$($version.version)"
             try{
                 $ProgressPreference = "SilentlyContinue"
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
-                (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
+                (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
 
                 # For extensions that contain no tasks, make sure we commit the folder for caching
                 if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf))
@@ -163,6 +167,12 @@ foreach ($extension in $extensions)
             }finally{
                 Remove-Item $savepath
             }
+        }
+
+        if ($vsixManifestUrl -and (-not(test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)))
+        {
+            Invoke-WebRequest -Uri $vsixManifestUrl -OutFile "$extractedPath/extension.vsixmanifest"
+            $shouldCommit = $true
         }
     }
 
