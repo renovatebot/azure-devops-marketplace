@@ -20,16 +20,24 @@ $renovateData = @{}
 add-version -name "automatedanalysis-marketplace" -version "0.198.0"
 add-version -name "automatedanalysis-marketplace" -version "0.171.0"
 
+$extensionsProcessed = 0
+
 foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
+    
+    write-progress -activity "Processing Extension" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $extensions.count) * 100)
+    $extensionsProcessed += 1
+    
+
     Write-host "::group::$publisherId/$extensionId"
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
     $extensionData = gc -raw $extensionDataFile | ConvertFrom-Json -AsHashtable
 
-    foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 })
+    $versions = $extensionData.versions | ?{ $_.flags -eq 1 }
+    foreach ($version in $versions)
     {
         $extensionVersion = $version.version
         write-host "Processing version $extensionVersion"
@@ -93,9 +101,9 @@ foreach ($extension in $extensions) {
             }
         } 
     }  
-    
     write-host "::endgroup::"
 }
+write-progress -activity "Processing Extension" -Completed
 
 # Sort the data to prevent unnecessary commits
 $renovateDataSorted = [ordered]@{}
