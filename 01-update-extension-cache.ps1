@@ -193,7 +193,7 @@ foreach ($extension in $extensions)
     write-host "::endgroup::"
 }
 
-commit-changes -message "Update $publisherId/$extensionId"
+commit-changes -message "Update .cache"
 if (-not $skipCommit)
 {
     & git push
