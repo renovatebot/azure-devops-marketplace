@@ -1,113 +1,14 @@
 {
-    "id": "ED72C92B-B2CB-44D7-B0FA-77691C57A3F1",
-    "name": "ADOScheduledWorkItemQuery",
-    "friendlyName": "Scheduled Work Item Query",
-    "description": "Sends an E-Mail on a Schedule for Work Item Queries",
-    "helpUrl": "https://github.com/Quadrotech/ADOScheduledWorkItemQuery",
-    "helpMarkDown": "[More Information](https://github.com/Quadrotech/ADOScheduledWorkItemQuery)",
-    "category": "Utility",
-    "author": "Quadrotech Solutions AG",
-    "releaseNotes": "Initial Version<br/>",
-    "preview": true,
-    "version": {
-        "Major": 0,
-        "Minor": 25,
-        "Patch": 0
-    },
-    "visibility": [
-        "Build"
-    ],
-    "instanceNameFormat": "Send Query Result as E-Mail",
-    "inputs": [
-        {
-            "name": "sendMethod",
-            "type": "radio",
-            "label": "Send Email with",
-            "required": true,
-            "defaultValue": "SendGrid",
-            "helpMarkDown": "Send E-Mail with SendGrid API or through SMTP Server",
-            "options": {
-                "SendGrid": "SendGrid API",
-                "SMTP": "SMTP Server"
-            }
-        },
-        {
-            "name": "connectedServiceNameSendGrid",
-            "type": "connectedService:sendgrid",
-            "label": "SendGrid Connection",
-            "required": true,
-            "helpMarkDown" : "Service connection to SendGrid",
-            "visibleRule": "sendMethod=SendGrid"
-        },
-        {
-            "name": "connectedServiceNameSMTP",
-            "type": "connectedService:smtp",
-            "label": "SMTP Connection",
-            "required": true,
-            "helpMarkDown" : "Service connection to SMTP",
-            "visibleRule": "sendMethod=SMTP"
-        },
-        {
-            "name": "project",
-            "type": "picklist",
-            "label": "Project",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Choose a Project",
-            "properties": {
-                "EditableOptions": false
-            }
-        },
-        {
-            "name": "query",
-            "type": "pickList",
-            "label": "Choose a Query",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Choose a Query",
-            "properties": {
-                "EditableOptions": false
-            }
-        },
-        {
-            "name": "subject",
-            "type": "textbox",
-            "label": "Subject",
-            "defaultValue": "Your query results",
-            "required": true,
-            "helpMarkDown": "The subject of the E-Mail being sent."
-        },
-        {
-            "name": "emailAddresses",
-            "type": "multiLine",
-            "label": "E-Mail Addresses",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "A list of e-mail addresses to send to, deliminited by comma, space or newline"
-        }
-    ],
-    "dataSourceBindings": [
-        {
-            "target": "project",
-            "endpointId": "tfs:teamfoundation",
-            "endpointUrl": "{{endpoint.url}}/_apis/projects?api-version=5.0",
-            "resultSelector": "jsonpath:$.value[*]",
-            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-        },
-        {
-            "target": "query",
-            "endpointId": "tfs:teamfoundation",
-            "parameters": {
-                "project": "$(project)"
-            },
-            "endpointUrl": "{{endpoint.url}}/{{{project}}}/_apis/wit/queries?$depth=2&api-version=5.0",
-            "resultSelector": "jsonpath:$..[?(@.isPublic == true)]",
-            "resultTemplate": "{ \"Value\" : \"{{{id}}}\", \"DisplayValue\" : \"{{{path}}}\" }"
-        }
-    ],
-    "execution": {
-        "Node": {
-            "target": "index.js"
-        }
-    }
+  "id": "ED72C92B-B2CB-44D7-B0FA-77691C57A3F1",
+  "name": "ADOScheduledWorkItemQuery",
+  "version": {
+    "Major": 0,
+    "Minor": 25,
+    "Patch": 0
+  },
+  "friendlyName": "Scheduled Work Item Query",
+  "description": "Sends an E-Mail on a Schedule for Work Item Queries",
+  "preview": true,
+  "deprecated": false,
+  "author": "Quadrotech Solutions AG"
 }

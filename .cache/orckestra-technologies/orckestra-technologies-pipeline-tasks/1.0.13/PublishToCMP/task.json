@@ -1,114 +1,14 @@
-﻿{
-    "id":  "84110c9d-d8df-43a1-8d53-672b6bf34663",
-    "name":  "PublishToCMP",
-    "friendlyName":  "Publish to Orckestra\u0027s Cloud Management Platform",
-    "description":  "Publish deployment packages to Orckestra\u0027s Cloud Management Platform",
-    "author":  "Orckestra Technologies Inc.",
-    "helpMarkDown":  "Contact your Orckestra Technologies support specialist for help with this task",
-    "category":  "Utility",
-    "visibility":  [
-                       "Build",
-                       "Release"
-                   ],
-    "demands":  [
-
-                ],
-    "version":  {
-                    "Major":  "1",
-                    "Minor":  "0",
-                    "Patch":  "46"
-                },
-    "minimumAgentVersion":  "1.95.0",
-    "instanceNameFormat":  "Publish deployment packages to Orckestra\u0027s Cloud Management Platform",
-    "groups":  [
-                   {
-                       "name":  "cmpDetails",
-                       "displayName":  "Cloud Management Platform",
-                       "isExpanded":  false
-                   }
-               ],
-    "inputs":  [
-                   {
-                       "name":  "cmpUrl",
-                       "type":  "string",
-                       "groupName":  "cmpDetails",
-                       "required":  true,
-                       "label":  "CMP url",
-                       "defaultValue":  "$(CMP.Url)",
-                       "helpMarkDown":  "The url to CMP"
-                   },
-                   {
-                       "name":  "cmpUsername",
-                       "type":  "string",
-                       "groupName":  "cmpDetails",
-                       "required":  true,
-                       "label":  "CMP username",
-                       "defaultValue":  "$(CMP.UserName)",
-                       "helpMarkDown":  "The username used to access CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
-                   },
-                   {
-                       "name":  "cmpPassword",
-                       "type":  "string",
-                       "groupName":  "cmpDetails",
-                       "required":  true,
-                       "label":  "CMP password",
-                       "defaultValue":  "$(CMP.Password)",
-                       "helpMarkDown":  "The password used to access CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
-                   },
-                   {
-                       "name":  "cmpClientCode",
-                       "type":  "string",
-                       "required":  true,
-                       "label":  "Client Code",
-                       "defaultValue":  "$(CMP.ClientCode)",
-                       "helpMarkDown":  "The code of the client in CMP. This value usually comes from a variable group and the default value refers to a variable inside this group."
-                   },
-                   {
-                       "name":  "cmpPackageFolder",
-                       "type":  "filePath",
-                       "required":  true,
-                       "label":  "Packages Folder",
-                       "helpMarkDown":  "Folder which contains the packages to deploy"
-                   },
-                   {
-                       "name":  "cmpStability",
-                       "type":  "string",
-                       "required":  true,
-                       "label":  "Package stability (Release, PreRelease, Develop)",
-                       "defaultValue":  "$(Stability)",
-                       "helpMarkDown":  "CMP Stability (Release, PreRelease, Develop)"
-                   },
-                   {
-                       "name":  "cmpPackagesList",
-                       "type":  "multiLine",
-                       "required":  true,
-                       "label":  "Packages filter to deploy",
-                       "helpMarkDown":  "Each line of the packages list is a different package to upload. A line contains 2 information: an optional version target and the package filter. The version target uses the following formats:\n\n* [3-3.5] matches version 3 to version 3.5 (inclusive)\n* [\u003c3.5] matches a version smaller than 3.5\n* [\u003c=3.5] matches a version smaller or equal to 3.5\n* [\u003e3] matches a version greater than 3\n* [\u003e=3] matches a version greater or equal than 3\n\nThe line below is using \u0027File Pattern\u0027 to select every packages starting with OrckestraCommerce:\n\n`OrckestraCommerce.*.nupkg`\n\nThe line below is using \u0027Regular expression\u0027 to select packages starting with OrckestraCommerce.RecurringOrder followed by a number:\n\n`OrckestraCommerce\\.RecurringOrders\\.\\d.*\\.nupkg`\n\nComplex example using \u0027Regular expression\u0027:\n\n`OrckestraCommerce\\.Core\\..*\\.nupkg`\n`OrckestraCommerce\\.Marketing\\..*\\.nupkg`\n`[\u003e=3.19]OrckestraCommerce\\.RecurringOrders\\.\\d.*\\.nupkg`\n`[\u003e=3.22]OrckestraCommerce\\.CleanUpDatabase\\..*\\.nupkg`\n`[\u003c4]OrckestraCommerce\\.OCN\\..*\\.nupkg`\n"
-                   },
-                   {
-                       "name":  "cmpPackagesListFilterType",
-                       "type":  "pickList",
-                       "required":  true,
-                       "label":  "Packages list filter type",
-                       "defaultValue":  "FilePattern",
-                       "options":  {
-                                       "FilePattern":  "File Pattern (wildcard ? or *)",
-                                       "RegEx":  "Regular expression"
-                                   },
-                       "helpMarkDown":  "The format used for each line of the package list. \u0027File Patterns\u0027 wildcards are enough for typical projects while \u0027Regular expression\u0027 can be used for advanced needs where multiple packages are generated with similar names but not all of them must be published."
-                   },
-                   {
-                       "name":  "currentBuildNumber",
-                       "type":  "string",
-                       "required":  true,
-                       "defaultValue":  "$(Build.BuildNumber)",
-                       "label":  "Version number used as baseline for package version detection",
-                       "helpMarkDown":  "The version number is used in the comparison of the pattern used in the optional version target of a package. It must be in a format `\\d+\\.\\d+.*`\n\nYou can use the value `$(Build.BuildNumber)` when this task is in a release pipeline and `$(GitVersion.NuGetVersion)` when the task is in a build pipeline. You can hardcode a version (e.g.: 0.0) if you cannot use a build variable."
-                   }
-               ],
-    "execution":  {
-                      "PowerShell3":  {
-                                          "target":  "run.ps1"
-                                      }
-                  }
+{
+  "id": "84110c9d-d8df-43a1-8d53-672b6bf34663",
+  "name": "PublishToCMP",
+  "version": {
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "46"
+  },
+  "friendlyName": "Publish to Orckestra's Cloud Management Platform",
+  "description": "Publish deployment packages to Orckestra's Cloud Management Platform",
+  "preview": false,
+  "deprecated": false,
+  "author": "Orckestra Technologies Inc."
 }

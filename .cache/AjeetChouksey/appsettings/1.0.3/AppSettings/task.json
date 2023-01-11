@@ -1,107 +1,14 @@
 {
-    "id": "66fee64a-1e90-4952-960a-b1e09305f5cc",
-    "name": "Update  Web, Function, API Application settings",
-    "friendlyName": "Update App Settings",
-    "description": "Update  Web, Function, API Application settings",
-
-    "helpMarkDown": "",
-    "category": "Build, Release",
-    "author": "Ajeet Chouksey",
-    "version": {
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 1
-    },
-    "minimumAgentVersion": "2.131.0",
-    "instanceNameFormat": "AppSettings",
-    "demands": ["azureps"],
-   
-     "inputs": [{
-            "name": "ConnectedServiceName",
-            "type": "connectedService:AzureRM",
-            "label": "AzureRM Subscription",
-            "defaultValue": "",
-            "required": true,
-            "helpMarkDown": "Select the AzureRM Subscription that contains the AzureRM App Service"
-        },
-        {
-            "name": "resourceGroup",
-            "type": "pickList",
-            "label": "Resource Group",
-            "defaultValue": "",
-            "required": true,
-            "properties": {
-                "EditableOptions": "True"
-            },
-            "helpMarkDown": "Select AzureRM Resource Group that contains the AzureRM App Service"
-        },
-        {
-            "name": "functionAppName",
-            "type": "pickList",
-            "label": "Azure App Name",
-            "defaultValue": "",
-            "required": true,
-            "properties": {
-                "EditableOptions": "True"
-            },
-            "helpMarkDown": "Select the AzureRM App Name."
-        },       
-        {
-            "name": "slotName",
-            "type": "pickList",
-            "label": "Slot",
-            "defaultValue": "",
-            "required": false,
-            "properties": {
-                "EditableOptions": "True"
-            },
-            "helpMarkDown": "Select the slot to configure, or leave empty to use the default, production slot."
-        },
-        {
-            "name": "appSettings",
-            "type": "string",
-            "label": "App Settings",
-            "defaultValue": "a:b|c:d",
-            "required": true,
-            "helpMarkDown": "Add every App Setting on a seperated by '|'. Key and value are seperated by = and the values enclosed by a singleqoute",
-            "properties": {
-               
-            }
-        }
-    ],
-    "dataSourceBindings": [  
-          {
-        "target": "resourceGroup",
-        "endpointId": "$(ConnectedServiceName)",
-        "dataSourceName": "AzureRMWebAppResourceGroup"            
-    },
-    {
-        "target": "functionAppName",
-        "endpointId": "$(ConnectedServiceName)",
-        "dataSourceName": "AzureRMWebAppNames",
-        "parameters": {
-            "ResourceGroupName": "$(resourceGroup)"
-        }
-    },  
-        {
-            "target": "slotName",
-            "endpointId": "$(ConnectedServiceName)",
-            "dataSourceName": "AzureRMWebAppSlotsId",
-            "parameters": {
-                "ResourceGroupName": "$(resourceGroup)",
-                "WebAppName": "$(functionAppName)"
-            },
-            "resultTemplate": "{\"Value\":\"{{{ #extractResource slots}}}\",\"DisplayValue\":\"{{{ #extractResource slots}}}\"}"
-        }
-    ],
-    "execution": {
-        "PowerShell3": {
-            "target": "AppSettings.ps1",
-            "argumentFormat": "",
-            "workingDirectory": "",
-            "platforms": [
-                "windows"
-            ]
-        }
-    }
+  "id": "66fee64a-1e90-4952-960a-b1e09305f5cc",
+  "name": "Update  Web, Function, API Application settings",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 1
+  },
+  "friendlyName": "Update App Settings",
+  "description": "Update  Web, Function, API Application settings",
+  "preview": false,
+  "deprecated": false,
+  "author": "Ajeet Chouksey"
 }

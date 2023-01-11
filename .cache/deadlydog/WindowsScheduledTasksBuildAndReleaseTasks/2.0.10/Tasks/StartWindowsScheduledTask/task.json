@@ -1,137 +1,14 @@
 {
   "id": "E4EAF950-D629-1293-9D13-1612629D70F5",
   "name": "StartWindowsScheduledTask",
-  "friendlyName": "Windows Scheduled Task - Start",
-	"description": "Starts a Windows Scheduled Task",
-	"helpMarkDown": "[More Information](https://github.com/deadlydog/AzureDevOps.WindowsScheduledTasks)",
-  "category": "Utility",
-  "visibility": [
-    "Build",
-    "Release"
-  ],
-  "author": "Daniel Schroeder",
   "version": {
     "Major": 2,
     "Minor": 0,
     "Patch": 10
   },
-  "instanceNameFormat": "Start Windows Scheduled Task \u0027$(ScheduledTaskFullName)\u0027",
-  "groups": [
-    {
-      "name": "ScheduledTaskSettings",
-      "displayName": "Scheduled Task Settings",
-      "isExpanded": true
-    },
-    {
-      "name": "ServerSettings",
-      "displayName": "Server Settings",
-      "isExpanded": true
-    }
-  ],
-  "inputs": [
-    {
-      "name": "ScheduledTaskFullName",
-      "type": "string",
-      "label": "Scheduled Task Name",
-      "required": true,
-      "defaultValue": "",
-      "helpMarkDown": "The full path of the Scheduled Task to start on the server(s).\u003cbr /\u003eIf the Scheduled Task is installed in a directory, the directory (or directories) must also be included in the path.\u003cbr /\u003ee.g. `MyTasks\\TaskToStart`\u003cbr /\u003e\u003cbr /\u003eWildcards are supported as well.\u003cbr /\u003eFor example, the following would all match on the `MyTasks\\TaskToStart` task:\u003cbr /\u003e`*\\TaskToStart`\u003cbr /\u003e`MyTasks\\TaskTo*`\u003cbr /\u003e`*\\*Start`\u003cbr /\u003e`MyTasks\\Task*Start`\u003cbr /\u003e\u003cbr /\u003eNOTE: Be very careful when using wildcards, since if multiple Scheduled Tasks are found to match they pattern, they will all be started.",
-      "groupName": "ScheduledTaskSettings"
-    },
-    {
-      "name": "ComputerNames",
-      "type": "string",
-      "label": "Computer Names",
-      "required": false,
-      "defaultValue": "",
-      "helpMarkDown": "A comma-separated list of computers to connect to and start the Scheduled Task on.\u003cbr /\u003e\u003cbr /\u003eLeave blank to have it run on the agent\u0027s local computer.",
-      "groupName": "ServerSettings"
-    },
-    {
-      "name": "Username",
-      "type": "string",
-      "label": "Username",
-      "required": false,
-      "defaultValue": "",
-      "helpMarkDown": "The username to use when connecting to the computers and enabling the Scheduled Task.\u003cbr /\u003e\u003cbr /\u003eLeave blank to use the identity that the agent is running as.",
-      "groupName": "ServerSettings"
-    },
-    {
-      "name": "Password",
-      "type": "string",
-      "label": "Password",
-      "required": false,
-      "defaultValue": "",
-      "helpMarkDown": "The password to use when connecting to the computers and enabling the Scheduled Task.\u003cbr /\u003e\u003cbr /\u003eAs a best practice, a secret variable should be passed in here so that other users cannot see the password in plain text.\u003cbr /\u003e\u003cbr /\u003eLeave blank to use the identity that the agent is running as.",
-      "groupName": "ServerSettings"
-    },
-    {
-    	"name": "AuthenticationOptions",
-    	"type": "radio",
-    	"label": "Authentication",
-    	"required": true,
-    	"defaultValue": "Default",
-    	"helpMarkDown": "The authentication mechanism to use to connect to remote servers.\u003cbr /\u003e\u003cbr /\u003eCredSSP lets an application delegate the credentials from the client to the target server for remote authentication. In order to use this setting, you may need to first run the PowerShell command \u0027Enable-WSManCredSSP -Role Server -Force\u0027 on the remote servers to enable them to accept requests that use CredSSP. If this is not enabled on the remote server the task may get \u0027Access is denied\u0027 or \u0027Authentication mechanism\u0027 errors when connecting to the remote server.\u003cbr /\u003e\u003cbr /\u003eSome authentication options require you to leave the \u0027Username\u0027 and \u0027Password\u0027 fields empty. For more information on CredSSP and the other supported authentication mechanisms, see the docs [here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/invoke-command?view=powershell-3.0) and [here](https://docs.microsoft.com/en-us/windows/desktop/winrm/authentication-for-remote-connections).",
-    	"options": {
-    		"Default": "Default",
-    		"Basic": "Basic",
-    		"CredSSP": "CredSSP",
-    		"Digest": "Digest",
-    		"Kerberos": "Kerberos",
-    		"Negotiate": "Negotiate",
-    		"NegotiateWithImplicitCredential": "NegotiateWithImplicitCredential"
-    	},
-    	"groupName": "ServerSettings"
-    },
-		{
-			"name": "ProtocolOptions",
-			"type": "radio",
-			"label": "Protocol",
-			"required": true,
-			"defaultValue": "HTTP",
-			"helpMarkDown": "Select the network protocol to use for the WinRM connection with the machine(s). The default is HTTP.",
-			"options": {
-				"HTTP": "HTTP",
-				"HTTPS": "HTTPS"
-			},
-			"groupName": "ServerSettings"
-		},
-		{
-			"name": "ProtocolSkipCaCheckString",
-			"type": "boolean",
-			"label": "Skip CA Check",
-			"visibleRule": "ProtocolOptions = HTTPS",
-			"required": false,
-			"defaultValue": "false",
-			"helpMarkDown": "Select this so the client does not validate that the server certificate is signed by a trusted certification authority (CA).\u003cbr /\u003e\u003cbr /\u003eUse this option only when the remote computer is trusted by using another mechanism, such as when the remote computer is part of a network that is physically secure and isolated or when the remote computer is listed as a trusted host in a WinRM configuration.\u003cbr /\u003e\u003cbr /\u003e[More information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssessionoption?view=powershell-3.0)",
-			"groupName": "ServerSettings"
-		},
-		{
-			"name": "ProtocolSkipCnCheckString",
-			"type": "boolean",
-			"label": "Skip CN Check",
-			"visibleRule": "ProtocolOptions = HTTPS",
-			"required": false,
-			"defaultValue": "false",
-			"helpMarkDown": "Select this so the certificate common name (CN) of the server does not have to match the host name of the server.\u003cbr /\u003e\u003cbr /\u003eUse this option only for trusted computers.\u003cbr /\u003e\u003cbr /\u003e[More information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssessionoption?view=powershell-3.0)",
-			"groupName": "ServerSettings"
-		},
-		{
-			"name": "ProtocolSkipRevocationCheckString",
-			"type": "boolean",
-			"label": "Skip Revocation Check",
-			"visibleRule": "ProtocolOptions = HTTPS",
-			"required": false,
-			"defaultValue": "false",
-			"helpMarkDown": "Select this to not validate the revocation status of the server certificate.\u003cbr /\u003e\u003cbr /\u003e[More information](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssessionoption?view=powershell-3.0)",
-			"groupName": "ServerSettings"
-		}
-  ],
-  "execution": {
-    "PowerShell": {
-      "target": "$(currentDirectory)/Code/Start-WindowsScheduledTask-TaskEntryPoint.ps1",
-      "argumentFormat": "",
-      "workingDirectory": "$(currentDirectory)"
-    }
-	}
+  "friendlyName": "Windows Scheduled Task - Start",
+  "description": "Starts a Windows Scheduled Task",
+  "preview": false,
+  "deprecated": false,
+  "author": "Daniel Schroeder"
 }

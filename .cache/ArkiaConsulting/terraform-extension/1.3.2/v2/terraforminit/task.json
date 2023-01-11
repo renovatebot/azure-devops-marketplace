@@ -1,125 +1,14 @@
 {
-  "$schema": "https://aka.ms/vsts-tasks.schema.json",
   "id": "a0456120-0c4c-11e9-9d7a-196b04f1dd0c",
   "name": "terraforminit",
-  "friendlyName": "Terraform Init",
-  "description": "Launch terraform init",
-  "author": "arkiaconsulting",
-  "category": "Utility",
-  "demands": [],
   "version": {
     "Major": 0,
     "Minor": 2,
     "Patch": 4
   },
-  "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "Init Terraform",
+  "friendlyName": "Terraform Init",
+  "description": "Launch terraform init",
   "preview": true,
-  "inputs": [
-    {
-      "name": "cwd",
-      "type": "filePath",
-      "label": "Working Directory",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Current working directory when terraforminit is run."
-    },
-    {
-      "name": "initbackend",
-      "type": "boolean",
-      "label": "Init Storage Backend",
-      "defaultValue": false,
-      "required": true,
-      "helpMarkDown": "Wether or not to init terraform remote backend. If ticked, you have to switch on the option in the AzureRM Provider pane."
-    },
-    {
-      "name": "useazurerm",
-      "type": "boolean",
-      "label": "Use AzureRM Provider",
-      "defaultValue": false,
-      "required": true,
-      "helpMarkDown": "Wether or not to configure the AzureRM provider. If an Azure backend connection is required, it should be set on each task.",
-      "visibleRule": "initbackend=true"
-    },
-    {
-      "name": "connectedServiceNameARM",
-      "aliases": [
-        "azureSubscription"
-      ],
-      "type": "connectedService:AzureRM",
-      "label": "Azure Subscription",
-      "required": true,
-      "helpMarkDown": "Select an Azure resource manager subscription",
-      "visibleRule": "initbackend=true && useazurerm=true"
-    },
-    {
-      "name": "backendrg",
-      "type": "pickList",
-      "label": "Resource Group",
-      "required": true,
-      "helpMarkDown": "The name of the resource group hosting the storage account.",
-      "visibleRule": "initbackend=true",
-      "properties": {
-        "editableOptions": "True"
-      }
-    },
-    {
-      "name": "backendstorage",
-      "type": "pickList",
-      "label": "Storage Account Name",
-      "required": true,
-      "helpMarkDown": "The name of the storage account hosting the state.",
-      "visibleRule": "initbackend=true",
-      "properties": {
-        "editableOptions": "True"
-      }
-    },
-    {
-      "name": "backendcontainer",
-      "type": "string",
-      "label": "Storage Container Name",
-      "required": true,
-      "helpMarkDown": "The name container hosting the state.",
-      "visibleRule": "initbackend=true"
-    },
-    {
-      "name": "backendKey",
-      "type": "string",
-      "label": "Key",
-      "defaultValue": "my.terraform.tfstate",
-      "required": true,
-      "helpMarkDown": "The name of the remote file containing the state.",
-      "visibleRule": "initbackend=true"
-    },
-    {
-      "name": "tfrootpath",
-      "type": "string",
-      "label": "Terraform Files Path",
-      "required": false,
-      "helpMarkDown": "Optional path to terraform files"
-    }
-  ],
-  "execution": {
-    "Node": {
-      "target": "dist/terraforminit/index.js",
-      "argumentFormat": ""
-    }
-  },
-  "dataSourceBindings": [
-    {
-      "target": "backendrg",
-      "endpointId": "$(connectedServiceNameARM)",
-      "dataSourceName": "AzureResourceGroups"
-    },
-    {
-      "target": "backendstorage",
-      "endpointId": "$(connectedServiceNameARM)",
-      "dataSourceName": "AzureRMResourcesInRGBasedOnType",
-      "parameters": {
-        "ResourceGroupName": "$(backendrg)",
-        "ResourceType": "Microsoft.Storage/storageAccounts"
-      },
-      "resultTemplate": "{ \"Value\" : \"{{{name}}}\", \"DisplayValue\" : \"{{{name}}}\" }"
-    }
-  ]
+  "deprecated": false,
+  "author": "arkiaconsulting"
 }

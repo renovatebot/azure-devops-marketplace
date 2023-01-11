@@ -1,105 +1,14 @@
 {
-    "id": "eabf475c-6daf-4aca-9baa-aec01ce7aa51",
-    "name": "DeployDatabaseTask",
-    "friendlyName": "Deploy database DACPAC using a DAC Publish Profile",
-    "description": "Deploys a SQL Server Database DACPAC to a server using a DAC Publish Profile",
-    "helpMarkDown": "[More Information](https://github.com/DrJohnT/AzureDevOpsExtensionsForSqlServer/wiki/Publish-DacPac)",
-	"category": "Utility",
-    "visibility": [
-        "Build",
-        "Release"
-    ],
-    "author": "Dr. John Tunnicliffe",
-	"demands": [
-        "SqlPackage"
-    ],
-    "version": {
-        "Major": "1",
-        "Minor": "2",
-        "Patch": "4"
-     },
-    "minimumAgentVersion": "1.95.0",
-    "inputs": [
-		{
-            "name": "DacPacPath",
-            "type": "filePath",
-            "label": "DACPAC Path",
-            "required": true,
-            "helpMarkDown": "Relative path from repo root of the DacPac to publish.  Wildcards can be used. Note that the repo root is held in the variable $(System.DefaultWorkingDirectory)"
-        },
-		{
-            "name": "DacPublishProfile",
-            "type": "filePath",
-            "label": "DAC Publish Profile Path",
-            "required": true,
-            "helpMarkDown": "Relative path to the DAC Publish Profile. Wildcards can be used.  Note that the repo root is held in the variable $(System.DefaultWorkingDirectory)"
-        },
-		{
-            "name": "TargetServerName",
-            "type": "string",
-            "label": "Target Server Name or IP address",
-            "required": true,
-            "helpMarkDown": "Target Server Name or IP address.  Include the database instance name and port if necessary (e.g. myserver\\myinstance,myport)"
-        },
-		{
-            "name": "TargetDatabaseName",
-            "type": "string",
-            "label": "Target Database Name",
-            "required": false,
-            "helpMarkDown": "The name of the database as it should be deployed on the target server. Can be different from the DacPac name."
-        },
-        {
-            "name": "SqlCmdVariableType",
-            "type": "pickList",
-            "label": "Overwrite SQLCMD Variables Options",
-            "required": true,
-            "helpMarkDown": "Choose if you wish to overwrite SQLCMD Variables within the DAC Publish Profile and, if so, in which format.\nWe recommend JSON format as this is easy to validate.",
-            "defaultValue": "none",
-            "options": {
-                "none": "No SQLCMD Variables need overwriting",
-                "json": "JSON format (Recommended)",
-                "text": "Muiti-line text input as name/value pairs"
-            }
-        },
-        {
-            "name": "SqlCmdVariablesInJson",
-            "type": "multiLine",
-            "label": "SqlCmd Variables and Values (JSON format)",
-            "defaultValue": "{\n\"var1\": \"jsonvalue1\",\n\"var2\": \"jsonvalue2\"}",
-            "required": false,
-            "visibleRule": "SqlCmdVariableType=json",
-            "helpMarkDown": "A list of SqlCmd variables and their values in JSON format. \nThese will be used to dynamically update the DAC Publish Profile"
-        },
-        {
-            "name": "SqlCmdVariablesInText",
-            "type": "multiLine",
-            "label": "SqlCmd Variables and Values (name/value pair format)",
-            "defaultValue": "var1=varvalue1\nvar2=varvalue2",
-            "required": false,
-            "visibleRule": "SqlCmdVariableType=text",
-            "helpMarkDown": "A list of SqlCmd variables and their values in the format var=varvalue. \nThese will be used to dynamically update the DAC Publish Profile"
-        },
-		{
-            "name": "PreferredVersion",
-            "type": "pickList",
-            "label": "SqlPackage.exe Version",
-            "required": false,
-            "helpMarkDown": "Defines the preferred version of SqlPackage.exe you wish to use.  Use 'latest' for the latest version. If the preferred version cannot be found, the latest version will be used instead.",
-            "defaultValue": "latest",
-            "options": {
-                "latest": "Latest",
-                "150": "SQL Server 2019",
-                "140": "SQL Server 2017",
-                "130": "SQL Server 2016",
-                "120": "SQL Server 2014",
-                "110": "SQL Server 2012"
-            }
-        }
-    ],
-    "instanceNameFormat": "Deploy database DACPAC using a DAC Publish Profile",
-    "execution": {
-        "PowerShell3": {
-            "target": "PublishDacPacTask.ps1"
-        }
-    }
+  "id": "eabf475c-6daf-4aca-9baa-aec01ce7aa51",
+  "name": "DeployDatabaseTask",
+  "version": {
+    "Major": "1",
+    "Minor": "2",
+    "Patch": "4"
+  },
+  "friendlyName": "Deploy database DACPAC using a DAC Publish Profile",
+  "description": "Deploys a SQL Server Database DACPAC to a server using a DAC Publish Profile",
+  "preview": false,
+  "deprecated": false,
+  "author": "Dr. John Tunnicliffe"
 }

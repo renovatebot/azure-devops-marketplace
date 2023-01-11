@@ -1,1 +1,14 @@
-{"id":"8fa28bb0-58e5-4a23-b37c-d709b72fad3f","name":"ARecordManager","friendlyName":"A record DNS Manager","description":"Task to create/update an 'A' Dns Record","helpMarkDown":"","category":"Utility","preview":false,"author":"Solutions Experta Inc.","version":{"Major":"5","Minor":"19342","Patch":"15"},"instanceNameFormat":"Manage A Dns record","groups":[{"name":"subazadadmin","displayName":"Subscription Azure AD Admin","isExpanded":true},{"name":"dnszonedetail","displayName":"Azure Dns zone details","isExpanded":true}],"inputs":[{"name":"azureSubscriptionEndpoint","type":"connectedService:AzureRM","label":"Azure subscription","helpMarkDown":"Select the Azure Resource Manager subscription, which contains Azure Container Registry.Note: To configure new service connection, select the Azure subscription from the list and click 'Authorize'. If your subscription is not listed or if you want to use an existing Service Principal, you can setup an Azure service connection using 'Add' or 'Manage' button.","defaultValue":"","required":true},{"name":"actionType","label":"Action type","type":"pickList","defaultValue":"createUpdate","options":{"createUpdate":"Create / Update","remove":"Remove"},"required":false,"groupName":"dnszonedetail"},{"name":"resourceGroupName","label":"DNS Zone resource group name","type":"pickList","defaultValue":"","required":true,"helpMarkDown":"","groupName":"dnszonedetail"},{"name":"domainName","label":"DNS Zone","type":"pickList","defaultValue":"","required":true,"helpMarkDown":"","groupName":"dnszonedetail"},{"name":"aName","type":"string","label":"A record","defaultValue":"","required":true,"helpMarkDown":"","groupName":"dnszonedetail"},{"name":"ipAddress","type":"string","label":"Ip Address","defaultValue":"","required":true,"helpMarkDown":"","groupName":"dnszonedetail","visibleRule":"actionType = createUpdate"},{"name":"ttl","type":"string","label":"TTL (seconds)","required":true,"groupName":"dnszonedetail","defaultValue":"3600","visibleRule":"actionType = createUpdate"}],"dataSourceBindings":[{"target":"resourceGroupName","endpointId":"$(azureSubscriptionEndpoint)","endpointUrl":"{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/providers/Microsoft.Network/dnsZones?api-version=2018-03-01-preview","resultSelector":"jsonpath:$.value[*]","resultTemplate":"{{{ #extractResource id resourcegroups}}}"},{"target":"domainName","endpointId":"$(azureSubscriptionEndpoint)","endpointUrl":"{{{endpoint.url}}}/subscriptions/{{{endpoint.subscriptionId}}}/resourceGroups/$(resourceGroupName)/providers/Microsoft.Network/dnsZones?api-version=2018-03-01-preview","resultSelector":"jsonpath:$.value[*]","resultTemplate":"{{{name}}}"}],"outputVariables":[],"execution":{"Node":{"target":"manageazurednszone.js","argumentFormat":""}}}
+{
+  "id": "8fa28bb0-58e5-4a23-b37c-d709b72fad3f",
+  "name": "ARecordManager",
+  "version": {
+    "Major": "5",
+    "Minor": "19342",
+    "Patch": "15"
+  },
+  "friendlyName": "A record DNS Manager",
+  "description": "Task to create/update an 'A' Dns Record",
+  "preview": false,
+  "deprecated": false,
+  "author": "Solutions Experta Inc."
+}

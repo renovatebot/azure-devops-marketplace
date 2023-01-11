@@ -1,134 +1,14 @@
 {
-    "tasks": [
-        {
-            "environment": {},
-            "displayName": "Azure PowerShell script: InlineScript",
-            "alwaysRun": false,
-            "continueOnError": false,
-            "condition": "succeeded()",
-            "enabled": true,
-            "timeoutInMinutes": 0,
-            "inputs": {
-                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
-                "ConnectedServiceName": "",
-                "ConnectedServiceNameARM": "34523c22-5fe0-47e4-8284-5e72ed938051",
-                "ScriptType": "InlineScript",
-                "ScriptPath": "",
-                "Inline": "$ResourceGroupName = \"$(ResourceGroupName)\"\n$ResourceWebsiteName = \"$(AppServiceName)\"\n$CustomDomains = (\"$(CustomDomains)\").Split(\",\")\n$CertificatePassword = \"$(CertificatePassword)\"\n$CertificateFilePath = \"$(Agent.TempDirectory)/$(CertificateFileName)\"\n\n$WebAppResource = Get-AzureRmResource -Name $ResourceWebsiteName -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites -ApiVersion 2014-11-01\n\n$certificateObject = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2\n$certificateObject.Import($CertificateFilePath, $CertificatePassword, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::DefaultKeySet)\n$CertificateThumbprint  =$certificateObject.Thumbprint\n\n$UploadedCertificateResource = Get-AzureRmResource -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/certificates -ApiVersion 2018-09-01 | Where-Object { $_.Properties.Thumbprint -eq $CertificateThumbprint } \nif ($UploadedCertificateResource -eq $null)\n{   \n    Write-Host (\"Certificate does not exist. Uploading with thumbprint {0} ...\" -f $CertificateThumbprint)\n\n    $pfxContents = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($CertificateFilePath))\n\n    $CertificateProperties = @{\"pfxBlob\" = $pfxContents; \"password\" = $CertificatePassword}\n    $UploadedCertificateResource = New-AzureRmResource -Name $CertificateThumbprint -Location $WebAppResource.Location -PropertyObject $CertificateProperties -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/certificates -ApiVersion 2015-08-01 -Force\n}\n\nforeach ($CustomDomain in $CustomDomains) \n{\n    $HostnameBinding = $WebAppResource.Properties.HostNames | Where-Object { $_ -eq $CustomDomain }\n    if ($HostnameBinding -eq $null) \n    {\n        $HostnameBindingProperties = @{\n    \t    SiteName = $ResourceWebsiteName;\n            HostNameType = \"Verified\";\n        }\n        \n        Write-Host (\"Hostname binding for {0} does not exist. Creating ...\" -f $CustomDomain)\n         \n        New-AzureRmResource -ResourceName \"$ResourceWebsiteName/$CustomDomain\" -Location $WebAppResource.Location -PropertyObject $HostnameBindingProperties -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites/hostNameBindings -ApiVersion 2015-08-01 -Force | Out-Null\n        \n        $WebAppResource = Get-AzureRmResource -Name $ResourceWebsiteName -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites -ApiVersion 2014-11-01\n    }\n    \n    $WebProperties = $WebAppResource.Properties\n    [System.Collections.ArrayList]$HostnameSslStates = $WebProperties.HostNameSslStates\n    \n    $SslState = $WebProperties.HostNameSslStates | Where-Object { $_.name -eq $CustomDomain }\n    if ($SslState -eq $null -or $SslState.Thumbprint -eq $null) \n    {\n        $SslState = @{\n            name = $CustomDomain\n            SslState = 1\n            thumbprint = $CertificateThumbprint\n            toUpdate = $true\n        }\n\n        $HostnameSslStates.Add($SslState)\n        $WebProperties.HostNameSslStates = $HostnameSslStates\n        try\n        {\n            Write-Host (\"Hostname SSL binding for {0} does not exist. Creating binding with thumbprint {1} ...\" -f $CustomDomain, $CertificateThumbprint)\n            \n            Set-AzureRmResource -Name $ResourceWebsiteName -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites -PropertyObject $WebProperties -ApiVersion 2014-11-01 -Force | Out-Null\n        }\n        catch \n        {\n            Write-Host (\"Cannot set hostname SSL binding for {0}.\" -f $CustomDomain)\n            throw\n        }\n    }\n    else \n    {\n        if ($SslState.Thumbprint -notmatch $CertificateThumbprint) \n        {\n            Write-Host (\"Hostname SSL binding for {0} does exist, but the thumbprint does not match. Override old SSL binding with thumbprint {1} -> {2} ...\" -f $CustomDomain, $SslState.Thumbprint, $CertificateThumbprint)\n            \n            $SslState.SslState = 1\n            $SslState.thumbprint = $CertificateThumbprint\n            $SslState.toUpdate = $true\n    \n            $WebProperties.HostNameSslStates[$HostnameSslStates.IndexOf($SslState)] = $SslState\n        \n            Set-AzureRmResource -Name $ResourceWebsiteName -ResourceGroupName $ResourceGroupName -ResourceType Microsoft.Web/sites -PropertyObject $WebProperties -ApiVersion 2014-11-01 -Force | Out-Null\n        }\n    }\n}\n",
-                "ScriptArguments": "",
-                "errorActionPreference": "stop",
-                "FailOnStandardError": "false",
-                "TargetAzurePs": "LatestVersion",
-                "CustomTargetAzurePs": ""
-            },
-            "task": {
-                "id": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
-                "versionSpec": "3.*",
-                "definitionType": "task"
-            }
-        }
-    ],
-    "runsOn": [
-        "Agent",
-        "DeploymentGroup"
-    ],
-    "revision": 6,
-    "createdBy": {
-        "displayName": "Thomas Bleijendaal",
-        "id": "6dfd1ac2-dbeb-69b0-a0ff-d3bb8cfbb206",
-        "uniqueName": "t.bleijendaal@wearetriple.com"
-    },
-    "createdOn": "2018-10-18T13:14:21.013Z",
-    "modifiedBy": {
-        "displayName": "Thomas Bleijendaal",
-        "id": "6dfd1ac2-dbeb-69b0-a0ff-d3bb8cfbb206",
-        "uniqueName": "t.bleijendaal@wearetriple.com"
-    },
-    "modifiedOn": "2018-10-18T13:52:22.587Z",
-    "comment": "",
-    "id": "56966f48-0694-4ca6-b667-eb4e4167ef3d",
-    "name": "Install SSL and Custom Domain",
-    "version": {
-        "major": 1,
-        "minor": 0,
-        "patch": 0,
-        "isTest": false
-    },
-    "iconUrl": "/assets/logo.png",
-    "friendlyName": "Install SSL and Custom Domain",
-    "description": "",
-    "category": "Deploy",
-    "definitionType": "metaTask",
-    "author": "Triple",
-    "demands": [],
-    "groups": [],
-    "inputs": [
-        {
-            "aliases": [],
-            "options": {},
-            "properties": {},
-            "name": "AppServiceName",
-            "label": "AppServiceName",
-            "defaultValue": "",
-            "required": true,
-            "type": "string",
-            "helpMarkDown": "Name of the app service to which the SSL + Custom Domains must be applied",
-            "groupName": ""
-        },
-        {
-            "aliases": [],
-            "options": {},
-            "properties": {},
-            "name": "CertificateFileName",
-            "label": "CertificateFileName",
-            "defaultValue": "",
-            "required": true,
-            "type": "string",
-            "helpMarkDown": "Certificate file name (use Download Secure File to load it to the agent)",
-            "groupName": ""
-        },
-        {
-            "aliases": [],
-            "options": {},
-            "properties": {},
-            "name": "CertificatePassword",
-            "label": "CertificatePassword",
-            "defaultValue": "",
-            "required": true,
-            "type": "string",
-            "helpMarkDown": "Password for the pfx",
-            "groupName": ""
-        },
-        {
-            "aliases": [],
-            "options": {},
-            "properties": {},
-            "name": "CustomDomains",
-            "label": "CustomDomains",
-            "defaultValue": "",
-            "required": true,
-            "type": "string",
-            "helpMarkDown": "CSV of custom domains to be added to the app service",
-            "groupName": ""
-        },
-        {
-            "aliases": [],
-            "options": {},
-            "properties": {},
-            "name": "ResourceGroupName",
-            "label": "ResourceGroupName",
-            "defaultValue": "",
-            "required": true,
-            "type": "string",
-            "helpMarkDown": "Name of the resource group the app service is in",
-            "groupName": ""
-        }
-    ],
-    "satisfies": [],
-    "sourceDefinitions": [],
-    "dataSourceBindings": [],
-    "instanceNameFormat": "Task group: Install SSL and Custom Domain $(AppServiceName)",
-    "preJobExecution": {},
-    "execution": {},
-    "postJobExecution": {}
+  "id": "56966f48-0694-4ca6-b667-eb4e4167ef3d",
+  "name": "Install SSL and Custom Domain",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "friendlyName": "Install SSL and Custom Domain",
+  "description": "",
+  "preview": false,
+  "deprecated": false,
+  "author": "Triple"
 }

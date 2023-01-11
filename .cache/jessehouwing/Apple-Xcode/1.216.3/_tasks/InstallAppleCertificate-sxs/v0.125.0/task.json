@@ -1,123 +1,14 @@
 {
-  "inputs": [
-    {
-      "name": "certSecureFile",
-      "required": true,
-      "defaultValue": "",
-      "type": "secureFile",
-      "helpMarkDown": "Select the certificate (.p12) that was uploaded to `Secure Files` to install on the macOS agent.",
-      "label": "Certificate (P12)"
-    },
-    {
-      "required": false,
-      "helpMarkDown": "Password to the Apple certificate (.p12). Use a new build variable with its lock enabled on the `Variables` tab to encrypt this value.",
-      "label": "Certificate (P12) Password",
-      "name": "certPwd",
-      "type": "string"
-    },
-    {
-      "defaultValue": "temp",
-      "name": "keychain",
-      "options": {
-        "temp": "Temporary Keychain",
-        "custom": "Custom Keychain",
-        "default": "Default Keychain"
-      },
-      "required": true,
-      "groupName": "advanced",
-      "type": "pickList",
-      "label": "Keychain",
-      "helpMarkDown": "Select the keychain in which to install the Apple certificate. A temporary keychain will always be deleted after the build or release is complete."
-    },
-    {
-      "name": "keychainPassword",
-      "required": false,
-      "type": "string",
-      "helpMarkDown": "Password to unlock the keychain. Use a new build variable with its lock enabled on the `Variables` tab to encrypt this value. A password is generated for the temporary keychain if not specified.",
-      "groupName": "advanced",
-      "label": "Keychain Password"
-    },
-    {
-      "name": "customKeychainPath",
-      "required": true,
-      "visibleRule": "keychain = custom",
-      "type": "string",
-      "helpMarkDown": "Full path to a custom keychain file. The keychain will be created if it does not exist.",
-      "groupName": "advanced",
-      "label": "Custom Keychain Path"
-    },
-    {
-      "name": "deleteCert",
-      "required": false,
-      "visibleRule": "keychain = custom || keychain = default",
-      "type": "boolean",
-      "helpMarkDown": "Select to delete the certificate from the keychain after the build or release is complete.",
-      "groupName": "advanced",
-      "label": "Delete Certificate from Keychain"
-    },
-    {
-      "name": "deleteCustomKeychain",
-      "required": false,
-      "visibleRule": "keychain = custom",
-      "type": "boolean",
-      "helpMarkDown": "Select to delete the custom keychain from the agent after the build or release is complete.",
-      "groupName": "advanced",
-      "label": "Delete Custom Keychain"
-    },
-    {
-      "name": "signingIdentity",
-      "required": false,
-      "type": "string",
-      "helpMarkDown": "The Common Name of the subject in the signing certificate.  Will attempt to parse the Common Name if this is left empty.",
-      "groupName": "advanced",
-      "label": "Certificate Signing Identity"
-    }
-  ],
-  "visibility": [
-    "Build",
-    "Release"
-  ],
-  "friendlyName": "Install Apple Certificate (Side-by-side)",
   "id": "a0a0f697-cc4b-5bd3-bc8d-22ad9c77baab",
-  "demands": [
-    "xcode"
-  ],
-  "groups": [
-    {
-      "isExpanded": true,
-      "displayName": "Advanced",
-      "name": "advanced"
-    }
-  ],
-  "runsOn": [
-    "Agent",
-    "DeploymentGroup"
-  ],
-  "postjobexecution": {
-    "Node": {
-      "target": "postinstallcert.js",
-      "argumentFormat": ""
-    }
-  },
-  "author": "Microsoft Corporation",
-  "prejobexecution": {
-    "Node": {
-      "target": "preinstallcert.js",
-      "argumentFormat": ""
-    }
-  },
-  "helpMarkDown": "",
+  "name": "InstallAppleCertificate-sxs",
   "version": {
     "Major": 0,
-    "Patch": 0,
-    "Minor": 125
+    "Minor": 125,
+    "Patch": 0
   },
-  "minimumAgentVersion": "2.116.0",
-  "name": "InstallAppleCertificate-sxs",
+  "friendlyName": "Install Apple Certificate (Side-by-side)",
   "description": "Install an Apple certificate required to build on a macOS agent",
-  "category": "Utility",
-  "instanceNameFormat": "Install an Apple certificate",
-  "messages": {
-    "INVALID_P12": "Unable to find the certificate SHA1 hash and common name (CN). Verify that the certificate is a valid P12."
-  }
+  "preview": false,
+  "deprecated": false,
+  "author": "Microsoft Corporation"
 }
