@@ -32,6 +32,36 @@ function Get-Extensions
     return ($result.Content | ConvertFrom-Json).results[0];
 }
 
+function normalize-taskmanifests
+{
+    [CmdletBinding()]
+    param (
+        $path
+    )
+
+    (Get-ChildItem -Path $path -Recurse -Filter "task.json" -File) | %{
+        write-host $taskJsonFile.FullName
+        $taskJsonFile = $_
+        $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
+        $result = [ordered]@{
+            id = $taskJson.id
+            name = $taskJson.name
+            version = [ordered]@{
+                Major = ($taskJson.version.Major ?? $taskJson.version.major ?? 0)
+                Minor = ($taskJson.version.Minor ?? $taskJson.version.minor ?? 0)
+                Patch = ($taskJson.version.Patch ?? $taskJson.version.patch ?? 0)
+            }
+            friendlyName = $taskJson.friendlyName
+            description = $taskJson.description
+            preview = $taskJson.preview ?? $false
+            deprecated = $taskJson.deprecated ?? $false
+            author = $taskJson.author
+        }
+        
+        ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
+    }
+}
+
 function commit-changes
 {
     [cmdletbinding()]
@@ -169,6 +199,8 @@ foreach ($extension in $extensions)
             try{
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
+
+                normalize-taskmanifests -path $extractedPath
 
                 # For extensions that contain no tasks, make sure we commit the folder for caching
                 if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf))
