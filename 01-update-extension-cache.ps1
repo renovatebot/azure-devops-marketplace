@@ -175,7 +175,7 @@ foreach ($extension in $extensions)
     if ($fetchExtensionData)
     {
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
-        $extensionData.versions | %{ $_.files = $_.files | ?{ $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
+        ($extensionData.versions ?? @()) | %{ $_.files = $_.files | ?{ $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
         $shouldCommit = $true
     }
@@ -188,7 +188,7 @@ foreach ($extension in $extensions)
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
         $vsixUrl = ($version.files ?? @()) | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
-        $vsixManifestUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select -ExpandProperty source
+        $vsixManifestUrl = ($version.files ?? @()) | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select -ExpandProperty source
 
         if (
             -not (Test-Path -Path $extractedPath -PathType Container) -or
