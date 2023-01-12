@@ -5,31 +5,56 @@ $extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json
 function add-version
 {
     param (
-        $name,
-        $version
+        $names,
+        $version,
+        $isdeprecated = $false,
+        $isstable = $true,
+        $homepage
     )
+    foreach ($name in $names)
+    {
     $name = $name.ToLowerInvariant()
 
-    [string[]]$currentversions = $renovateData."$name"
-    $currentversions += $version
+        $v = [ordered]@{
+            version = $version
+        }
+
+        if ($isdeprecated)
+        {
+            $v.isDeprecated = $true
+        }
+
+        if (-not $isStable)
+        {
+            $v.isStable = $false
+        }
+
+        if ($repository)
+        {
+            $v.sourceUrl = $repository
+        }
+
+        if ($homepage)
+        {
+            $v.homepage = $homepage
+        }
+
+        [array]$currentversions = $renovateData."$name"
+        $currentversions += $v
     $renovateData."$name" = $currentversions
+    }
 }
 
 $renovateData = @{}
 # Add the data needed for the unit tests.
-add-version -name "automatedanalysis-marketplace" -version "0.198.0"
-add-version -name "automatedanalysis-marketplace" -version "0.171.0"
-
-$extensionsProcessed = 0
+add-version -names @("automatedanalysis-marketplace") -version "0.198.0" -isstable $true
+add-version -names @("automatedanalysis-marketplace") -version "0.171.0" -isstable $true
 
 foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
-
     write-progress -activity "Processing Extension" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $extensions.count) * 100)
     $extensionsProcessed += 1
-
-
     write-output "::group::$publisherId/$extensionId"
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
@@ -44,7 +69,9 @@ foreach ($extension in $extensions) {
 
         $extensionManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
-        $extensionManifest = get-content -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
+        $extensionVsixManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsixmanifest"
+        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
+        $extensionVsixManifest = [xml](gc -raw $extensionVsixManifestFile)
 
         $taskContributions = $extensionManifest.contributions | where-object { $_.type -eq "ms.vss-distributed-task.task" }
         foreach ($taskContribution in $taskContributions)
@@ -56,62 +83,38 @@ foreach ($extension in $extensions) {
             foreach ($taskManifestFile in $taskManifestFiles)
             {
                 $taskManifestString = get-content -raw $taskManifestFile.FullName
-                $taskManifest = $taskManifestString | ConvertFrom-Json -AsHashtable
+                $taskManifest = $taskManifestString | ConvertFrom-Json
 
-                try {
-                    $majorVersion = $taskManifest.version.Major
-                }
-                catch{
-                    try {
-                        $majorVersion = $taskManifest.version.major
-                    }
-                    catch {
-                        $majorVersion = 0
-                    }
-                }
-                try {
-                    $minorVersion = $taskManifest.version.Minor
-                }
-                catch{
-                    try {
-                        $minorVersion = $taskManifest.version.minor
-                    }
-                    catch {
-                        $minorVersion = 0
-                    }
-                }
-                try {
-                    $patchVersion = $taskManifest.version.Patch
-                }
-                catch{
-                    try {
-                        $patchVersion = $taskManifest.version.patch
-                    }
-                    catch {
-                        $patchVersion = 0
-                    }
-                }
+                $majorVersion = $taskManifest.version.Major
+                $minorVersion = $taskManifest.version.Minor
+                $patchVersion = $taskManifest.version.Patch
 
-                $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
+                $versionString = ([System.Version]"$majorVersion.$minorVersion.$patchVersion").ToString()
 
-                add-version -name "$($taskManifest.name)" -version $versionString
-                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
-                add-version -name "$($taskManifest.id)" -version $versionString
-                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                $isDeprecated = ($taskManifest.deprecated) -or ($taskManifest.description -like "*deprecated*")
+                $isStable = -not ($taskManifest.preview -or ($extensionVsixManifest.PackageManifest.Metadata.GalleryFlags -like "*preview*"))
+                $repository = $extensionManifest.repository.uri
+                $homepage = "https://marketplace.visualstudio.com/items?itemName=$publisherId.$extensionid"
+
+                $names = @(
+                    "$($taskManifest.name)", 
+                    "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)",
+                    "$($taskManifest.id)",
+                    "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)"
+                )
+
+                add-version -names $names -version $versionString -isDeprecated $isDeprecated -isStable $isStable -repository $repository -homepage $homepage
             }
         }
     }
     write-output "::endgroup::"
 }
-write-progress -activity "Processing Extension" -Completed
 
 # Sort the data to prevent unnecessary commits
 $renovateDataSorted = [ordered]@{}
-$renovateData.Keys | Sort-Object | foreach-object {
-    $renovateDataSorted."$_" = [string[]]($renovateData."$_" | Sort-Object -Unique -Property @{ Exp = { [System.Version]$_ } })
-  }
-
-ConvertTo-Json $renovateDataSorted | Set-Content -Path "azure-pipelines-marketplace-tasks.json"
+$renovateData.Keys | Sort-Object | ForEach-Object { 
+    $renovateDataSorted."$_" = ($renovateData."$_" | Sort-Object -Unique -Property @{ Exp = { [System.Version]($_.version) } })
+}
 
 if (-not $skipCommit)
 {
