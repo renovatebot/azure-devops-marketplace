@@ -191,7 +191,7 @@ foreach ($extension in $extensions) {
             $ProgressPreference = "continue"
             $progress = @{
                 Id               = 3
-                Activity         = 'Processing Contributions'
+                Activity         = 'Processing Contributions '
                 Status           = "$contributionsProcessed - $totalContributions | $($taskContribution.properties.name)"
                 PercentComplete  = ($contributionsProcessed / $totalContributions) * 100
                 CurrentOperation = 'Contributions'
