@@ -187,7 +187,7 @@ foreach ($extension in $extensions)
         
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
-        $vsixUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
+        $vsixUrl = ($version.files ?? @()) | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
         $vsixManifestUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select -ExpandProperty source
 
         if (
