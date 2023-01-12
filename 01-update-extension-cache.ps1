@@ -42,7 +42,6 @@ function normalize-taskmanifests
     )
 
     (Get-ChildItem -Path $path -Recurse -Filter "task.json" -File) | %{
-        write-host $taskJsonFile.FullName
         $taskJsonFile = $_
         $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
         $result = [ordered]@{
@@ -59,6 +58,8 @@ function normalize-taskmanifests
             deprecated = $taskJson.deprecated ?? $false
             author = $taskJson.author
         }
+
+        write-host "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
         
         ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
     }
@@ -166,7 +167,7 @@ foreach ($extension in $extensions)
     if (Test-Path -Path $extensionDataFile -PathType Leaf)
     {
         $extensionData = gc -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
-        if ($extensionData.lastUpdated -gt $extension.lastUpdated)
+        if ($extensionData.lastUpdated -ge $extension.lastUpdated)
         {
             $fetchExtensionData = $false
         }
