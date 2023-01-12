@@ -1,8 +1,10 @@
-$skipCache = $env:USE_CACHE -ne "true"
+$skipCache = $env:USE_CACHE -eq "false"
 $skipCommit = $env:SKIP_COMMIT -eq "true"
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
+
+$ErrorActionPreference = "Stop"
 
 function Get-Extensions
 {
@@ -107,7 +109,7 @@ $extensions = @()
 $cacheFile = ".cache/extensions.json"
 mkdir -path ".cache" -Force | out-null
 
-if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or $skipCache)
+if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -and (-not $skipCache))
 {
     do
     {
@@ -152,12 +154,10 @@ foreach ($extension in $extensions)
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
 
-    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $max | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $max) * 100)
+    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensions.count)) * 100)
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
         
-    $shouldCommit = $false
-
     Write-host "::group::$publisherId/$extensionId"
     mkdir -path ".cache/$publisherId/$extensionId/" -Force | out-null
 
@@ -166,7 +166,7 @@ foreach ($extension in $extensions)
     if (Test-Path -Path $extensionDataFile -PathType Leaf)
     {
         $extensionData = gc -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
-        if ($extensionData.lastUpdated -le $extension.lastUpdated)
+        if ($extensionData.lastUpdated -gt $extension.lastUpdated)
         {
             $fetchExtensionData = $false
         }
@@ -177,13 +177,11 @@ foreach ($extension in $extensions)
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
         ($extensionData.versions ?? @()) | %{ $_.files = $_.files | ?{ $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
-        $shouldCommit = $true
     }
     
-    $extensionData.versions | ?{ $_.flags -eq 1 } | foreach-object -parallel {
-        $version = $_
-        $publisherId = $using:publisherId
-        $extensionId = $using:extensionId
+    foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 }) {
+        $publisherId = $publisherId
+        $extensionId = $extensionId
         
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
