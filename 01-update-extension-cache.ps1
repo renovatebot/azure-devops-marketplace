@@ -98,6 +98,11 @@ if (-not (get-command -all "tfx" -ErrorAction SilentlyContinue))
 $token = $env:AZURE_DEVOPS_PAT
 $marketplace = "https://marketplace.visualstudio.com"
 & tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
+if ($LASTEXITCODE -ne 0)
+{
+    Write-Error "Failed to login to marketplace"
+    exit 1
+}
 
 Write-host "::endgroup::"
 
@@ -110,7 +115,7 @@ $extensions = @()
 $cacheFile = ".cache/extensions.json"
 mkdir -path ".cache" -Force | out-null
 
-if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -and (-not $skipCache))
+if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
 {
     do
     {
@@ -121,7 +126,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -and (-not $skipCache))
 
         $ProgressPreference = "continue"
         write-progress -activity "Fetching extension metadata" -status "Fetched $totalFetched of $max" -percentComplete (($totalFetched / $max) * 100)
-        
+        write-host "Fetching extension metadata | Fetched $totalFetched of $max"
 
         $extensions += $result.extensions
         $page += 1
@@ -144,6 +149,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -and (-not $skipCache))
     commit-changes -message "Update extensions cache"
 }
 else {
+    write-host "Using cached extension list"
     $extensions = Get-Content -raw -Path $cacheFile | ConvertFrom-Json
 }
 Write-host "::endgroup::"
@@ -156,6 +162,7 @@ foreach ($extension in $extensions)
     $extensionId = $extension.extensionName
 
     write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensions.count)) * 100)
+    write-host "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
         
