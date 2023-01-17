@@ -6,7 +6,7 @@ $skipCommit = $env:SKIP_COMMIT -eq "true"
 
 $ErrorActionPreference = "Stop"
 
-function Get-Extensions
+function Import-Extensions
 {
     [cmdletbinding()]
     Param (
@@ -120,7 +120,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
     do
     {
         $ProgressPreference = "silentlycontinue"
-        $result = Get-Extensions -PageSize $pageSize -Page $page
+        $result = Import-Extensions -PageSize $pageSize -Page $page
         $totalFetched += $result.extensions.Count
         $max = $result.resultMetaData[0].metadataItems[0].count
 
@@ -190,7 +190,7 @@ foreach ($extension in $extensions)
     foreach ($version in $extensionData.versions | where-object { $_.flags -eq 1 }) {
         $publisherId = $publisherId
         $extensionId = $extensionId
-        
+
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
         $vsixUrl = ($version.files ?? @()) | where-object { $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select-object -ExpandProperty source
