@@ -60,7 +60,7 @@ function format-taskmanifests
         }
 
         write-output "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
-        
+
         ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
     }
 }
@@ -165,7 +165,7 @@ foreach ($extension in $extensions)
     write-output "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
-        
+
     write-output "::group::$publisherId/$extensionId"
     mkdir -path ".cache/$publisherId/$extensionId/" -Force | out-null
 
@@ -186,7 +186,7 @@ foreach ($extension in $extensions)
         ($extensionData.versions ?? @()) | foreach-object { $_.files = $_.files | where-object { $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
     }
-    
+
     foreach ($version in $extensionData.versions | where-object { $_.flags -eq 1 }) {
         $publisherId = $publisherId
         $extensionId = $extensionId

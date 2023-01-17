@@ -1,6 +1,6 @@
 $skipCommit = $env:SKIP_COMMIT -eq "true"
 
-$extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json 
+$extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json
 
 function add-version
 {
@@ -9,7 +9,7 @@ function add-version
         $version
     )
     $name = $name.ToLowerInvariant()
-    
+
     [string[]]$currentversions = $renovateData."$name"
     $currentversions += $version
     $renovateData."$name" = $currentversions
@@ -25,10 +25,10 @@ $extensionsProcessed = 0
 foreach ($extension in $extensions) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
-    
+
     write-progress -activity "Processing Extension" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $extensions.count) * 100)
     $extensionsProcessed += 1
-    
+
 
     write-output "::group::$publisherId/$extensionId"
 
@@ -50,7 +50,7 @@ foreach ($extension in $extensions) {
         foreach ($taskContribution in $taskContributions)
         {
             $localpath = ".cache/$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
-            
+
             $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json -Recurse
 
             foreach ($taskManifestFile in $taskManifestFiles)
@@ -99,8 +99,8 @@ foreach ($extension in $extensions) {
                 add-version -name "$($taskManifest.id)" -version $versionString
                 add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
             }
-        } 
-    }  
+        }
+    }
     write-output "::endgroup::"
 }
 write-progress -activity "Processing Extension" -Completed
@@ -120,7 +120,7 @@ if (-not $skipCommit)
     & git add azure-pipelines-marketplace-tasks.json
     & git diff HEAD --exit-code | Out-Null
     if ($LASTEXITCODE -ne 0)
-    {    
+    {
         & git commit -m "azure-pipelines-marketplace-tasks.json"
         & git push
     }
