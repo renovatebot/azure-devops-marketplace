@@ -34,14 +34,14 @@ function Get-Extensions
     return ($result.Content | ConvertFrom-Json).results[0];
 }
 
-function normalize-taskmanifests
+function format-taskmanifests
 {
     [CmdletBinding()]
     param (
         $path
     )
 
-    (Get-ChildItem -Path $path -Recurse -Filter "task.json" -File) | %{
+    (Get-ChildItem -Path $path -Recurse -Filter "task.json" -File) | foreach-object {
         $taskJsonFile = $_
         $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
         $result = [ordered]@{
@@ -59,20 +59,20 @@ function normalize-taskmanifests
             author = $taskJson.author
         }
 
-        write-host "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
+        write-output "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
         
         ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
     }
 }
 
-function commit-changes
+function write-commit
 {
     [cmdletbinding()]
     Param (
         [string]$message
     )
 
-    write-host "::group::Git commit: $message"
+    write-output "::group::Git commit: $message"
 
     & git add . | Out-Null
     (& git diff HEAD --exit-code) | Out-null
@@ -86,10 +86,10 @@ function commit-changes
         & git commit -m $message
     }
 
-    write-host "::endgroup::"
+    write-output "::endgroup::"
 }
 
-Write-host "::group::Installing tfx"
+write-output "::group::Installing tfx"
 
 if (-not (get-command -all "tfx" -ErrorAction SilentlyContinue))
 {
@@ -104,9 +104,9 @@ if ($LASTEXITCODE -ne 0)
     exit 1
 }
 
-Write-host "::endgroup::"
+write-output "::endgroup::"
 
-Write-host "::group::Fetching Extension Metadata"
+write-output "::group::Fetching Extension Metadata"
 $pageSize= 100;
 $page = 1
 $totalFetched = 0
@@ -126,7 +126,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
 
         $ProgressPreference = "continue"
         write-progress -activity "Fetching extension metadata" -status "Fetched $totalFetched of $max" -percentComplete (($totalFetched / $max) * 100)
-        write-host "Fetching extension metadata | Fetched $totalFetched of $max"
+        write-output "Fetching extension metadata | Fetched $totalFetched of $max"
 
         $extensions += $result.extensions
         $page += 1
@@ -146,13 +146,13 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
     # Sort the extensions to prevent unwanted cache commits
     $extensions = $extensions | Sort-Object -Property extensionId
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
-    commit-changes -message "Update extensions cache"
+    write-commit -message "Update extensions cache"
 }
 else {
-    write-host "Using cached extension list"
+    write-output "Using cached extension list"
     $extensions = Get-Content -raw -Path $cacheFile | ConvertFrom-Json
 }
-Write-host "::endgroup::"
+write-output "::endgroup::"
 
 $extensionsProcessed = 0
 foreach ($extension in $extensions)
@@ -162,18 +162,18 @@ foreach ($extension in $extensions)
     $extensionId = $extension.extensionName
 
     write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensions.count)) * 100)
-    write-host "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
+    write-output "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
         
-    Write-host "::group::$publisherId/$extensionId"
+    write-output "::group::$publisherId/$extensionId"
     mkdir -path ".cache/$publisherId/$extensionId/" -Force | out-null
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     $fetchExtensionData = $true
     if (Test-Path -Path $extensionDataFile -PathType Leaf)
     {
-        $extensionData = gc -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
+        $extensionData = get-content -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
         if ($extensionData.lastUpdated -ge $extension.lastUpdated)
         {
             $fetchExtensionData = $false
@@ -183,30 +183,30 @@ foreach ($extension in $extensions)
     if ($fetchExtensionData)
     {
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
-        ($extensionData.versions ?? @()) | %{ $_.files = $_.files | ?{ $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
+        ($extensionData.versions ?? @()) | foreach-object { $_.files = $_.files | where-object { $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
     }
     
-    foreach ($version in $extensionData.versions | ?{ $_.flags -eq 1 }) {
+    foreach ($version in $extensionData.versions | where-object { $_.flags -eq 1 }) {
         $publisherId = $publisherId
         $extensionId = $extensionId
         
         $savePath = ".cache/$publisherId/$extensionId/$($version.version).vsix"
         $extractedPath = ".cache/$publisherId/$extensionId/$($version.version)/"
-        $vsixUrl = ($version.files ?? @()) | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
-        $vsixManifestUrl = ($version.files ?? @()) | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select -ExpandProperty source
+        $vsixUrl = ($version.files ?? @()) | where-object { $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select-object -ExpandProperty source
+        $vsixManifestUrl = ($version.files ?? @()) | where-object { $_.assetType -eq "Microsoft.VisualStudio.Services.VsixManifest" } | select-object -ExpandProperty source
 
         if (
             -not (Test-Path -Path $extractedPath -PathType Container) -or
             (-not $vsixManifestUrl -and -not (test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf))
             )
         {
-            write-host "Downloading VSIX: $($version.version)"
+            write-output "Downloading VSIX: $($version.version)"
             try{
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
 
-                normalize-taskmanifests -path $extractedPath
+                format-taskmanifests -path $extractedPath
 
                 # For extensions that contain no tasks, make sure we commit the folder for caching
                 if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf))
@@ -221,17 +221,17 @@ foreach ($extension in $extensions)
 
         if ($vsixManifestUrl -and (-not(test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)))
         {
-            write-host "Downloading VSIX Manifest: $($version.version)"
+            write-output "Downloading VSIX Manifest: $($version.version)"
             mkdir $extractedPath -Force | out-null
             Invoke-WebRequest -Uri $vsixManifestUrl -OutFile "$extractedPath/extension.vsixmanifest"
             Set-Content -path "$extractedPath/.completed" -value "true" -Force
         }
     }
 
-    write-host "::endgroup::"
+    write-output "::endgroup::"
 }
 
-commit-changes -message "Update .cache"
+write-commit -message "Update .cache"
 if (-not $skipCommit)
 {
     & git push

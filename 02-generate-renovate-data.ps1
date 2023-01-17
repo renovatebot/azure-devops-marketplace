@@ -30,23 +30,23 @@ foreach ($extension in $extensions) {
     $extensionsProcessed += 1
     
 
-    Write-host "::group::$publisherId/$extensionId"
+    write-output "::group::$publisherId/$extensionId"
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
-    $extensionData = gc -raw $extensionDataFile | ConvertFrom-Json -AsHashtable
+    $extensionData = get-content -raw $extensionDataFile | ConvertFrom-Json -AsHashtable
 
-    $versions = $extensionData.versions | ?{ $_.flags -eq 1 }
+    $versions = $extensionData.versions | where-object { $_.flags -eq 1 }
     foreach ($version in $versions)
     {
         $extensionVersion = $version.version
-        write-host "Processing version $extensionVersion"
+        write-output "Processing version $extensionVersion"
 
         $extensionManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
-        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
+        $extensionManifest = get-content -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
 
-        $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
+        $taskContributions = $extensionManifest.contributions | where-object { $_.type -eq "ms.vss-distributed-task.task" }
         foreach ($taskContribution in $taskContributions)
         {
             $localpath = ".cache/$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
@@ -55,7 +55,7 @@ foreach ($extension in $extensions) {
 
             foreach ($taskManifestFile in $taskManifestFiles)
             {
-                $taskManifestString = gc -raw $taskManifestFile.FullName
+                $taskManifestString = get-content -raw $taskManifestFile.FullName
                 $taskManifest = $taskManifestString | ConvertFrom-Json -AsHashtable
 
                 try {
@@ -101,13 +101,13 @@ foreach ($extension in $extensions) {
             }
         } 
     }  
-    write-host "::endgroup::"
+    write-output "::endgroup::"
 }
 write-progress -activity "Processing Extension" -Completed
 
 # Sort the data to prevent unnecessary commits
 $renovateDataSorted = [ordered]@{}
-$renovateData.Keys | Sort-Object | %{ 
+$renovateData.Keys | Sort-Object | foreach-object {
     $renovateDataSorted."$_" = [string[]]($renovateData."$_" | Sort-Object -Unique -Property @{ Exp = { [System.Version]$_ } })
   }
 
