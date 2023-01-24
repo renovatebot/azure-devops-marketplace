@@ -244,8 +244,6 @@ $renovateData.Keys | Sort-Object | foreach-object {
     $renovateDataSorted."$_".releases = $renovateDataSorted."$_".releases | Sort-Object -Unique -Property @{ Exp = { [System.Version]($_.version) } }
 }
 
-#ConvertTo-Json $renovateDataSorted -Depth 5 | Set-Content -Path "azure-pipelines-marketplace-tasks.json" 
-
 mkdir -Force "./_data" | Out-Null
 
 foreach ($identifier in $renovateDataSorted.Keys)
@@ -259,6 +257,7 @@ if (-not $skipCommit)
     & git config --local user.email "jesse.houwing@gmail.com"
     & git config --local user.name "Jesse Houwing"
     & git add azure-pipelines-marketplace-tasks.json
+    & git add _data
     & git diff HEAD --exit-code | Out-Null
     if ($LASTEXITCODE -ne 0)
     {
