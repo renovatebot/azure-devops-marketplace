@@ -1,7 +1,6 @@
 $ErrorActionPreference = "Stop"
 
 $skipCommit = $env:SKIP_COMMIT -eq "true"
-$count = 0
 $extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json
 
 function add-version
@@ -57,7 +56,7 @@ function add-version
             elseif ($releaseResult.sourceUrl -ne $repository)
             {
                 $override = $true
-                foreach ($knownVersion in $releaseResult.releases | %{ [version]$_.version } )
+                foreach ($knownVersion in $releaseResult.releases | ForEach-Object{ [version]$_.version } )
                 {
                     if ($version -lt $knownVersion)
                     {
@@ -95,7 +94,7 @@ function add-version
             elseif ($releaseResult.homepage -ne $homepage)
             {
                 $override = $true
-                foreach ($knownVersion in $releaseResult.releases | %{ [version]$_.version } )
+                foreach ($knownVersion in $releaseResult.releases | ForEach-Object{ [version]$_.version } )
                 {
                     if ($version -lt $knownVersion)
                     {
@@ -144,14 +143,14 @@ foreach ($extension in $extensions) {
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
-    $extensionData = gc -raw $extensionDataFile | ConvertFrom-Json
+    $extensionData = Get-Content -raw $extensionDataFile | ConvertFrom-Json
 
     $homepage = "https://marketplace.visualstudio.com/items?itemName=$publisherId.$extensionid"
     $extensionIsDeprecated = ($extension.displayName -like "*deprecated*") `
         -or ($extension.shortDescription -like "*deprecated*")
 
     $versionsProcessed = 1
-    $versions = $extensionData.versions | ?{ $_.flags -eq 1 }
+    $versions = $extensionData.versions | Where-Object{ $_.flags -eq 1 }
     $totalVersions = $versions.Count
     foreach ($version in $versions)
     {
@@ -172,12 +171,12 @@ foreach ($extension in $extensions) {
         $extensionManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsomanifest"
         if (-not (Test-Path -Path $extensionManifestFile -PathType Leaf)) { continue }
         $extensionVsixManifestFile = ".cache/$publisherId/$extensionId/$extensionVersion/extension.vsixmanifest"
-        $extensionManifest = gc -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
+        $extensionManifest = get-content -raw $extensionManifestFile | ConvertFrom-Json -AsHashtable
 
-        $taskContributions = $extensionManifest.contributions | ?{ $_.type -eq "ms.vss-distributed-task.task" }
+        $taskContributions = $extensionManifest.contributions | Where-Object{ $_.type -eq "ms.vss-distributed-task.task" }
         if ($taskContributions.Count -gt 0) {
-            $extensionVsixManifest = [xml](gc -raw $extensionVsixManifestFile)
-            $downloadUrl = $version.files | ?{ $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select -ExpandProperty source
+            $extensionVsixManifest = [xml](get-content -raw $extensionVsixManifestFile)
+            $downloadUrl = $version.files | where-object { $_.assetType -eq "Microsoft.VisualStudio.Services.VSIXPackage" } | select-object -ExpandProperty source
             $repository = $extensionManifest.repository.uri
             $extensionIsPreview = ($extensionVsixManifest.PackageManifest.Metadata.GalleryFlags -like "*preview*")
             $releaseTimeStamp = $version.lastUpdated
@@ -245,7 +244,15 @@ $renovateData.Keys | Sort-Object | foreach-object {
     $renovateDataSorted."$_".releases = $renovateDataSorted."$_".releases | Sort-Object -Unique -Property @{ Exp = { [System.Version]($_.version) } }
 }
 
-ConvertTo-Json $renovateDataSorted -Depth 5 | Set-Content -Path "azure-pipelines-marketplace-tasks.json" 
+#ConvertTo-Json $renovateDataSorted -Depth 5 | Set-Content -Path "azure-pipelines-marketplace-tasks.json" 
+
+mkdir -Force "./_data" | Out-Null
+
+foreach ($identifier in $renovateDataSorted.Keys)
+{
+    $filename = $identifier.ToLowerInvariant() -replace "[^a-z0-9_.-]", "_"
+    set-content -path "_data/$filename.json" -Value (ConvertTo-Json -Depth 5 ($renovateDataSorted."$identifier")) 
+}
 
 if (-not $skipCommit)
 {

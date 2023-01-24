@@ -136,11 +136,11 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
     # Remove properties that we don't need to prevent unwanted cache commits
     foreach ($extension in $extensions)
     {
-        $extension.versions = @()
-        $extension.statistics = @()
-        $extension.installationTargets = @()
-        $extension.categories = @()
-        $extension.tags = @()
+        if ($extension.versions) { $extension.versions = @() }
+        if ($extension.statistics) { $extension.statistics = @() }
+        if ($extension.installationTargets) { $extension.installationTargets= @() }
+        if ($extension.categories) { $extension.categories = @() }
+        if ($extension.tags) { $extension.tags = @() }
     }
 
     # Sort the extensions to prevent unwanted cache commits
