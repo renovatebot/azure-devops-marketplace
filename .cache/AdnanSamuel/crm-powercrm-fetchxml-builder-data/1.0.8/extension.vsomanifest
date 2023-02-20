@@ -1,0 +1,89 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/SamuelAdnan/DevopsCrmMigrateData/blob/main/README.md"
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint-view-fetchxml",
+            "description": "Service endpoint PowerCrmTools view and upsert data",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "crmserviceconnviewupsertdata",
+                "displayName": "Power Crm connection build Fetchxml",
+                "url": {
+                    "displayName": "Crm Url",
+                    "helpText": "Url for crm envirnoment e.g: https://crmname.crm4.dynamics.com"
+                },
+                "dataSources": [
+                    {
+                        "name": "CrmWebHooks",
+                        "endpointUrl": "{{endpoint.url}}api/data/v9.0/serviceendpoints?$filter=contract%20eq%208&$select=url",
+                        "resultSelector": "jsonpath:$.value[*].url"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Apitoken",
+                                "description": "leave blank, will be populated afterwards",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": ""
+            }
+        },
+        {
+            "id": "power-crm-tools-fetchxml-builder-view-data",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.task"
+            ],
+            "properties": {
+                "name": "Tasks/CrmDataMigration"
+            }
+        },
+        {
+            "id": "power-crm-tools-fetchxml-upsert-data",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.task"
+            ],
+            "properties": {
+                "name": "Tasks/MigrateData"
+            }
+        },
+        {
+            "id": "power-crm-tools-webapi-installer-upsert--view-data",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.task"
+            ],
+            "properties": {
+                "name": "Tasks/PowerCrmToolsWebAPI"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
