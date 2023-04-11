@@ -1,0 +1,59 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "pam360-service-connection-endpoint",
+            "description": "Service endpoint type for PAM360 connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "pam360",
+                "displayName": "PAM360 server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the PAM360 server to connect to."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "AUTHTOKEN",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "pam360-get-secrets",
+            "description": "Get secrets from PAM360.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildtask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
