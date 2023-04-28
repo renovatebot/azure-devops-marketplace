@@ -1,0 +1,67 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/DataDog/ci-visibility-azure-pipelines"
+    },
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "datadog-ci-visibility",
+                "name": "Datadog CI Visibility",
+                "description": "Datadog CI Visibility",
+                "informationUrl": "https://www.datadoghq.com/product/ci-cd-monitoring/",
+                "inputDescriptors": [
+                    {
+                        "id": "datadog_site",
+                        "isRequired": true,
+                        "name": "Datadog Site",
+                        "description": "Datadog Site to send data to",
+                        "valueHint": "datadoghq.com",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "api_key",
+                        "isRequired": true,
+                        "name": "Datadog API Key",
+                        "description": "Datadog API Key",
+                        "inputMode": "passwordBox",
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true,
+                            "minLength": 32
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Send data to Datadog",
+                        "description": "Send data to Datadog CI Visibility",
+                        "supportedEventTypes": [
+                            "ms.vss-pipelines.run-state-changed-event",
+                            "ms.vss-pipelines.stage-state-changed-event",
+                            "ms.vss-pipelines.job-state-changed-event"
+                        ],
+                        "publishEvent": {
+                            "url": "https://webhook-intake.{{datadog_site}}/api/v2/webhook",
+                            "headers": [
+                                "DD-API-KEY:{{api_key}}"
+                            ],
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
