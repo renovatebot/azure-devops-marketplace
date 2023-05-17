@@ -1,6 +1,6 @@
 $skipCommit = $env:SKIP_COMMIT -eq "true"
 
-$org = "jessehouwing-brazil"
+$org = $env:AZURE_DEVOPS_ORG
 $pat = $env:AZURE_DEVOPS_PAT
 
 $url = "https://dev.azure.com/$org"
