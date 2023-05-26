@@ -25,7 +25,7 @@ if (Test-Path -Path "azure-pipelines-builtin-tasks-base.json")
 {
     $renovateData = get-content -raw "azure-pipelines-builtin-tasks-base.json" | ConvertFrom-Json -AsHashtable
 }
-else 
+else
 {
     $renovateData = @{}
 }
