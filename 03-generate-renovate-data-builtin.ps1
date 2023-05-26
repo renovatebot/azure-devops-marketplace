@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 $skipCommit = $env:SKIP_COMMIT -eq "true"
 
 $org = $env:AZURE_DEVOPS_ORG
@@ -19,13 +21,19 @@ function add-version
     $renovateData."$name" = $currentversions
 }
 
-$renovateData = @{}
+if (Test-Path -Path "azure-pipelines-builtin-tasks-base.json")
+{
+    $renovateData = get-content -raw "azure-pipelines-builtin-tasks-base.json" | ConvertFrom-Json -AsHashtable
+}
+else 
+{
+    $renovateData = @{}
+}
 # Add the data needed for the unit tests.
 add-version -name "automatedanalysis" -version "0.198.0"
 add-version -name "automatedanalysis" -version "0.171.0"
 
 $tasksResponse = Invoke-RestMethod -Uri "$url/_apis/distributedtask/tasks?allversions=true" -Method Get -ContentType "application/json" -Headers $header | ConvertFrom-Json -AsHashtable
-
 $tasks = $tasksResponse.value
 
 foreach ($task in $tasks)
