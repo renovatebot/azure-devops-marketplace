@@ -1,0 +1,69 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "CloudMakerEnterpriseServerAzureDeployment",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "AzureDeployment"
+            }
+        },
+        {
+            "id": "cloudmakerenterpriseserver-public-api-endpoint",
+            "description": "",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cloudmakerenterpriseserver",
+                "displayName": "Cloud Maker Enterprise Server",
+                "dataSources": [
+                    {
+                        "name": "Organisations",
+                        "endpointUrl": "{{endpoint.url}}/organisations",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Pipelines",
+                        "endpointUrl": "{{endpoint.url}}/organisations/{{OrganisationId}}/pipelines",
+                        "resultSelector": "jsonpath:$.items[*]",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Stages",
+                        "endpointUrl": "{{endpoint.url}}/pipelines/{{PipelineId}}",
+                        "resultSelector": "jsonpath:$.stages[*]",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
