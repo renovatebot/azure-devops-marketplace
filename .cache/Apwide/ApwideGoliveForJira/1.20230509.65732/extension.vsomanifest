@@ -1,0 +1,124 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Apwide Golive connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "golive",
+                "displayName": "Apwide Golive for Jira",
+                "url": {
+                    "displayName": "Golive Endpoint",
+                    "required": true,
+                    "value": "https://golive.apwide.net/api/",
+                    "helpText": "Use 'https://golive.apwide.net/api/' to connect with Golive Cloud or 'https://{your-jira-base-url}/rest/apwide/tem/1.1/' when Golive is installed on Jira Server / Data Center"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}applications",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "applications",
+                        "endpointUrl": "{{endpoint.url}}applications",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "environments",
+                        "endpointUrl": "{{endpoint.url}}environments/search/paginated?_expand=false&_limit=0",
+                        "resultSelector": "jsonpath:$.environments[*]"
+                    },
+                    {
+                        "name": "categories",
+                        "endpointUrl": "{{endpoint.url}}categories",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "statuses",
+                        "endpointUrl": "{{endpoint.url}}statuses",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Golive Cloud API Token",
+                                "description": "Golive Cloud API Token. More information here: https://www.apwide.com/golive/cloud/environments/help/rest-api",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Jira User (Golive for Jira Server / Data Center)",
+                                "description": "Only when Golive is installed on Jira Server / Data Center",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Jira Password (Golive for Jira Server / Data Center)",
+                                "description": "Only when Golive is installed on Jira Server / Data Center",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "ApwideGoliveTrackEnvironment",
+            "description": "Task to push deployment information to Apwide Golive",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "custom-task"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

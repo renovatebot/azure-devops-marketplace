@@ -1,0 +1,65 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Apwide Golive connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "golive",
+                "displayName": "Apwide Golive for Jira Cloud",
+                "url": "https://golive.apwide.net/api/",
+                "dataSources": [
+                    {
+                        "name": "applications",
+                        "endpointUrl": "{{endpoint.url}}applications",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "environments",
+                        "endpointUrl": "{{endpoint.url}}environments/search/paginated?_expand=false&_limit=0",
+                        "resultSelector": "jsonpath:$.environments[*]"
+                    },
+                    {
+                        "name": "categories",
+                        "endpointUrl": "{{endpoint.url}}categories",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "statuses",
+                        "endpointUrl": "{{endpoint.url}}statuses",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "ApwideGoliveTrackEnvironment",
+            "description": "Task to push deployment information to Apwide Golive",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "custom-task"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
