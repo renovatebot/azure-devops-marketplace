@@ -1,0 +1,129 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.work_write",
+        "vso.graph",
+        "vso.features",
+        "vso.features_write",
+        "vso.memberentitlementmanagement",
+        "vso.identity"
+    ],
+    "contributions": [
+        {
+            "id": "feature-session-less-disable-per-project",
+            "type": "ms.vss-web.feature",
+            "description": "Control Planning Poker session-less view visability",
+            "properties": {
+                "name": "Enable Session-Less view",
+                "defaultState": true,
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ]
+            }
+        },
+        {
+            "id": "feature-boards-menu-disable-per-project",
+            "type": "ms.vss-web.feature",
+            "description": "Control Planning Poker visability in boards menu",
+            "properties": {
+                "name": "Enable Planning Poker in Boards menu",
+                "defaultState": true,
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ]
+            }
+        },
+        {
+            "id": "pp-dashboard",
+            "type": "ms.vss-web.hub",
+            "description": "Open Planning Poker Azure Dashboard",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Planning Poker",
+                "icon": {
+                    "light": "dist/assets/img/pp-logo.png",
+                    "dark": "dist/assets/img/pp-logo.png"
+                },
+                "uri": "integration/hub/hub.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SpartezSoftware.planning-poker-azure.feature-boards-menu-disable-per-project"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "pp-work-item-form-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "Planning Poker Session-Less",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Planning Poker",
+                "uri": "integration/sessionless/sessionless.html",
+                "height": 300,
+                "order": 1
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SpartezSoftware.planning-poker-azure.feature-session-less-disable-per-project"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "pp-workitem-context",
+            "type": "ms.vss-web.action",
+            "description": "Estimate Selected Item",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Estimate in Planning Poker",
+                "title": "Estimate in Planning Poker",
+                "toolbarText": "Estimate in Planning Poker",
+                "icon": "assets/img/pp-logo-icon.png",
+                "uri": "integration/context/context.html",
+                "registeredObjectId": "pp-workitem-context"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SpartezSoftware.planning-poker-azure.feature-boards-menu-disable-per-project"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "pp-project-settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Planning Poker project settings",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Planning Poker",
+                "uri": "integration/projectSettings/projectSettings.html"
+            }
+        }
+    ],
+    "baseUri": "https://planning-poker-azure-prod.firebaseapp.com",
+    "contributionTypes": []
+}
