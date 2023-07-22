@@ -1,0 +1,93 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work",
+        "vso.project"
+    ],
+    "contributions": [
+        {
+            "id": "timetracking-workitem",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Time tracking",
+                "uri": "workitem.html",
+                "height": 600
+            }
+        },
+        {
+            "id": "timetracking-project",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "title": "Time tracking",
+                "name": "Time tracking",
+                "uri": "project.html",
+                "iconName": "Stopwatch"
+            }
+        },
+        {
+            "id": "timetracking-settings",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Time-Tracking Genius",
+                "order": 30,
+                "uri": "settings.html",
+                "iconName": "Stopwatch"
+            }
+        },
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "Time-Tracking Genius",
+                "description": "Collects activity for time log suggestions",
+                "informationUrl": "https://agileparts.nl",
+                "inputDescriptors": [],
+                "actions": [
+                    {
+                        "id": "add-suggestion",
+                        "name": "Add suggestion",
+                        "description": "Create a time log suggestion for this activity.",
+                        "supportedEventTypes": [
+                            "tfvc.checkin",
+                            "git.push",
+                            "workitem.created",
+                            "workitem.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "https://timetracking.flowlet.app/api/webhook/activity",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "licensing": {
+        "overrides": [
+            {
+                "id": "timetracking-workitem",
+                "behavior": " AlwaysInclude"
+            },
+            {
+                "id": "timetracking-project",
+                "behavior": " AlwaysInclude"
+            }
+        ]
+    },
+    "contributionTypes": []
+}
