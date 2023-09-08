@@ -1,0 +1,126 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.code",
+        "vso.test"
+    ],
+    "contributions": [
+        {
+            "id": "10a16732-301b-40db-9f05-97fd7a4567ac",
+            "description": "Service endpoint type for CodeThreat Connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "codethreat",
+                "displayName": "CodeThreat",
+                "icon": "logo.png",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://cloud.codethreat.com",
+                    "isVisible": true
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "AzureBaseUrl",
+                                "name": "Azure Base URL",
+                                "description": "Azure Base URL(default : https://dev.azure.com ) ",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username for connecting to the endpoint",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for connecting to the endpoint",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "token",
+                                "name": "Codethreat Token",
+                                "description": "Token for connecting to the endpoint",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string",
+                                    "maxLength": 500
+                                }
+                            },
+                            {
+                                "id": "azuretoken",
+                                "name": "Azure Token",
+                                "description": "Token for connecting to the repos",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 500
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "14798623-9ece-49a6-a6bb-9bc87839b9a5",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/startscan"
+            }
+        },
+        {
+            "id": "simple",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Adds a 'CT SAST' tab to the query results",
+            "targets": [
+                "ms.vss-build-web.build-results-view",
+                "ms.vss-build-web.build-results-tab"
+            ],
+            "properties": {
+                "uri": "ct-hub.html",
+                "title": "CodeThreat SAST",
+                "name": "CodeThreatSAST"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
