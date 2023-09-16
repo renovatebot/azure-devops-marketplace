@@ -1,0 +1,110 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "connect-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Sample hub group",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "ACCELQ Connect",
+                "icon": {
+                    "dark": "img/accelq.png",
+                    "light": "img/accelq.png"
+                }
+            }
+        },
+        {
+            "id": "connect-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".connect-hub-group"
+            ],
+            "properties": {
+                "uri": "dist/connect/connect.html"
+            }
+        },
+        {
+            "id": "my-hub-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "Sample hub group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "height": "400",
+                "name": "ACCELQ Traceability",
+                "uri": "dist/hub/hub.html"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for ACCELQ connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "accelq",
+                "displayName": "ACCELQ Connect",
+                "url": {
+                    "displayName": "ACCELQ URL"
+                },
+                "dataSources": [
+                    {
+                        "name": "AccelQ Projects",
+                        "endpointUrl": "{{endpoint.url}}api/projects/index",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "userid",
+                                "name": "User Id",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "tc",
+                                "name": "Tenant Code",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apikey",
+                                "name": "API Key",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
