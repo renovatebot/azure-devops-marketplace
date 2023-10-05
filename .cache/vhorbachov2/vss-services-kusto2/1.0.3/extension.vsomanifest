@@ -1,0 +1,447 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "kusto-endpoint-type",
+            "description": "Endpoint for Kusto service.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "kusto",
+                "displayName": "Kusto",
+                "url": {
+                    "displayName": "Kusto cluster connection full URL",
+                    "isVisible": "true",
+                    "helpText": "Full URL to connect to Kusto cluster, example: https://vso.kusto.windows.net or https://vsodev.kusto.windows.net"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "environment",
+                        "name": "Environment",
+                        "description": "Microsoft Azure Environment for the subscription",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "environmentValues",
+                            "defaultValue": "AzureCloud",
+                            "possibleValues": [
+                                {
+                                    "value": "AzureCloud",
+                                    "displayValue": "Azure Cloud"
+                                },
+                                {
+                                    "value": "AzureChinaCloud",
+                                    "displayValue": "Azure China Cloud"
+                                },
+                                {
+                                    "value": "AzureUSGovernment",
+                                    "displayValue": "Azure US Government"
+                                },
+                                {
+                                    "value": "AzureGermanCloud",
+                                    "displayValue": "Azure German Cloud"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "subscriptionId",
+                        "name": "Subscription Id",
+                        "description": "Subscription Id from the <a href=\"https://go.microsoft.com/fwlink/?LinkID=312990\" class=\"links-connections bolt-link\" target=\"_blank\">publish settings file</a>",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "guid",
+                            "maxLength": 38
+                        }
+                    },
+                    {
+                        "id": "subscriptionName",
+                        "name": "Subscription Name",
+                        "description": "Subscription Name from the <a href=\"https://go.microsoft.com/fwlink/?LinkID=312990\" class=\"links-connections bolt-link\" target=\"_blank\">publish settings file</a>",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-service-principal",
+                        "inputDescriptors": [
+                            {
+                                "id": "tenantid",
+                                "name": "Tenant Id",
+                                "description": "Tenant Id to connect to Kusto cluster, example microsoft.com or 72f988bf-86f1-41af-91ab-2d7cd011db47.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "serviceprincipalid",
+                                "name": "Application Id",
+                                "description": "ApplicationId generated from Azure for your Kusto cluster.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "guid"
+                                }
+                            },
+                            {
+                                "id": "authenticationType",
+                                "name": "Credential",
+                                "description": "Choose credential type.",
+                                "inputMode": "radioButtons",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "authenticationType",
+                                    "defaultValue": "spnKey",
+                                    "possibleValues": [
+                                        {
+                                            "value": "spnKey",
+                                            "displayValue": "Service principal key"
+                                        },
+                                        {
+                                            "value": "spnCertificate",
+                                            "displayValue": "Certificate"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "serviceprincipalkey",
+                                "name": "Application Key",
+                                "description": "ApplicationKey generated from Azure for your Kusto cluster.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "properties": {
+                                    "visibleRule": "authenticationType == spnKey"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dependencyData": [
+                    {
+                        "input": "environment",
+                        "map": [
+                            {
+                                "key": "AzureCloud",
+                                "value": [
+                                    {
+                                        "key": "environmentUrl",
+                                        "value": "https://management.azure.com/"
+                                    },
+                                    {
+                                        "key": "galleryUrl",
+                                        "value": "https://gallery.azure.com/"
+                                    },
+                                    {
+                                        "key": "serviceManagementUrl",
+                                        "value": "https://management.core.windows.net/"
+                                    },
+                                    {
+                                        "key": "resourceManagerUrl",
+                                        "value": "https://management.azure.com/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryAuthority",
+                                        "value": "https://login.microsoftonline.com/"
+                                    },
+                                    {
+                                        "key": "environmentAuthorityUrl",
+                                        "value": "https://login.windows.net/"
+                                    },
+                                    {
+                                        "key": "graphUrl",
+                                        "value": "https://graph.windows.net/"
+                                    },
+                                    {
+                                        "key": "microsoftGraphUrl",
+                                        "value": "https://graph.microsoft.com/"
+                                    },
+                                    {
+                                        "key": "managementPortalUrl",
+                                        "value": "https://manage.windowsazure.com/"
+                                    },
+                                    {
+                                        "key": "armManagementPortalUrl",
+                                        "value": "https://portal.azure.com/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryServiceEndpointResourceId",
+                                        "value": "https://management.core.windows.net/"
+                                    },
+                                    {
+                                        "key": "sqlDatabaseDnsSuffix",
+                                        "value": ".database.windows.net"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultDnsSuffix",
+                                        "value": "vault.azure.net"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultServiceEndpointResourceId",
+                                        "value": "https://vault.azure.net"
+                                    },
+                                    {
+                                        "key": "StorageEndpointSuffix",
+                                        "value": "core.windows.net"
+                                    },
+                                    {
+                                        "key": "EnableAdfsAuthentication",
+                                        "value": "false"
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "AzureChinaCloud",
+                                "value": [
+                                    {
+                                        "key": "environmentUrl",
+                                        "value": "https://management.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "galleryUrl",
+                                        "value": "https://gallery.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "serviceManagementUrl",
+                                        "value": "https://management.core.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "resourceManagerUrl",
+                                        "value": "https://management.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryAuthority",
+                                        "value": "https://login.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "environmentAuthorityUrl",
+                                        "value": "https://login.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "graphUrl",
+                                        "value": "https://graph.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "microsoftGraphUrl",
+                                        "value": "https://microsoftgraph.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "managementPortalUrl",
+                                        "value": "https://manage.windowsazure.cn/"
+                                    },
+                                    {
+                                        "key": "armManagementPortalUrl",
+                                        "value": "https://portal.azure.cn/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryServiceEndpointResourceId",
+                                        "value": "https://management.core.chinacloudapi.cn/"
+                                    },
+                                    {
+                                        "key": "sqlDatabaseDnsSuffix",
+                                        "value": ".database.chinacloudapi.cn"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultDnsSuffix",
+                                        "value": "vault.azure.cn"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultServiceEndpointResourceId",
+                                        "value": "https://vault.azure.cn"
+                                    },
+                                    {
+                                        "key": "StorageEndpointSuffix",
+                                        "value": "core.chinacloudapi.cn"
+                                    },
+                                    {
+                                        "key": "EnableAdfsAuthentication",
+                                        "value": "false"
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "AzureUSGovernment",
+                                "value": [
+                                    {
+                                        "key": "environmentUrl",
+                                        "value": "https://management.usgovcloudapi.net/"
+                                    },
+                                    {
+                                        "key": "galleryUrl",
+                                        "value": "https://gallery.usgovcloudapi.net/"
+                                    },
+                                    {
+                                        "key": "serviceManagementUrl",
+                                        "value": "https://management.core.usgovcloudapi.net/"
+                                    },
+                                    {
+                                        "key": "resourceManagerUrl",
+                                        "value": "https://management.usgovcloudapi.net/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryAuthority",
+                                        "value": "https://login.microsoftonline.us/"
+                                    },
+                                    {
+                                        "key": "environmentAuthorityUrl",
+                                        "value": "https://login.microsoftonline.us/"
+                                    },
+                                    {
+                                        "key": "graphUrl",
+                                        "value": "https://graph.windows.net/"
+                                    },
+                                    {
+                                        "key": "microsoftGraphUrl",
+                                        "value": "https://graph.microsoft.us/"
+                                    },
+                                    {
+                                        "key": "managementPortalUrl",
+                                        "value": "https://manage.windowsazure.us/"
+                                    },
+                                    {
+                                        "key": "armManagementPortalUrl",
+                                        "value": "https://portal.azure.us"
+                                    },
+                                    {
+                                        "key": "activeDirectoryServiceEndpointResourceId",
+                                        "value": "https://management.core.usgovcloudapi.net/"
+                                    },
+                                    {
+                                        "key": "sqlDatabaseDnsSuffix",
+                                        "value": ".database.usgovcloudapi.net"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultDnsSuffix",
+                                        "value": "vault.usgovcloudapi.net"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultServiceEndpointResourceId",
+                                        "value": "https://vault.usgovcloudapi.net"
+                                    },
+                                    {
+                                        "key": "StorageEndpointSuffix",
+                                        "value": "core.usgovcloudapi.net"
+                                    },
+                                    {
+                                        "key": "EnableAdfsAuthentication",
+                                        "value": "false"
+                                    }
+                                ]
+                            },
+                            {
+                                "key": "AzureGermanCloud",
+                                "value": [
+                                    {
+                                        "key": "environmentUrl",
+                                        "value": "https://management.microsoftazure.de/"
+                                    },
+                                    {
+                                        "key": "galleryUrl",
+                                        "value": "https://gallery.cloudapi.de/"
+                                    },
+                                    {
+                                        "key": "serviceManagementUrl",
+                                        "value": "https://management.core.cloudapi.de"
+                                    },
+                                    {
+                                        "key": "resourceManagerUrl",
+                                        "value": "https://management.microsoftazure.de/"
+                                    },
+                                    {
+                                        "key": "activeDirectoryAuthority",
+                                        "value": "https://login.microsoftonline.de/"
+                                    },
+                                    {
+                                        "key": "environmentAuthorityUrl",
+                                        "value": "https://login.microsoftonline.de/"
+                                    },
+                                    {
+                                        "key": "graphUrl",
+                                        "value": "https://graph.cloudapi.de/"
+                                    },
+                                    {
+                                        "key": "microsoftGraphUrl",
+                                        "value": "https://graph.microsoft.de/"
+                                    },
+                                    {
+                                        "key": "managementPortalUrl",
+                                        "value": "http://portal.microsoftazure.de/"
+                                    },
+                                    {
+                                        "key": "armManagementPortalUrl",
+                                        "value": "https://portal.azure.us"
+                                    },
+                                    {
+                                        "key": "activeDirectoryServiceEndpointResourceId",
+                                        "value": "https://management.core.cloudapi.de/"
+                                    },
+                                    {
+                                        "key": "sqlDatabaseDnsSuffix",
+                                        "value": ".database.cloudapi.de"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultDnsSuffix",
+                                        "value": "vault.microsoftazure.de"
+                                    },
+                                    {
+                                        "key": "AzureKeyVaultServiceEndpointResourceId",
+                                        "value": "https://vault.microsoftazure.de"
+                                    },
+                                    {
+                                        "key": "StorageEndpointSuffix",
+                                        "value": "core.cloudapi.de"
+                                    },
+                                    {
+                                        "key": "EnableAdfsAuthentication",
+                                        "value": "false"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href='https://kusto.azurewebsites.net/docs/api/connection-strings/kusto.html#application-authentication-properties' rel='noopener noreferrer' target='_blank'>Learn more about Kusto endpoint</a>",
+                "icon": "icons/kusto_icon.png"
+            }
+        },
+        {
+            "id": "kusto-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Task"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
