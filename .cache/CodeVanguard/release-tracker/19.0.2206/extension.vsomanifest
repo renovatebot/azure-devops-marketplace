@@ -1,0 +1,347 @@
+{
+    "manifestVersion": 1,
+    "licensing": {
+        "overrides": [
+            {
+                "id": "overview.hub",
+                "behavior": "AlwaysInclude"
+            }
+        ]
+    },
+    "scopes": [
+        "vso.work_write",
+        "vso.project",
+        "vso.analytics",
+        "vso.settings",
+        "vso.work"
+    ],
+    "contributions": [
+        {
+            "id": "release-tracker-enabled",
+            "type": "ms.vss-web.feature",
+            "description": "Enables Release Tracker on this project.",
+            "targets": [
+                "ms.vss-web.managed-features"
+            ],
+            "properties": {
+                "name": "Release Tracker",
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ],
+                "links": {
+                    "learn": {
+                        "uri": "https://releasetracker.app/"
+                    }
+                }
+            }
+        },
+        {
+            "id": "add-existing-test-plan-dialog",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "name": "Add Existing Test Plan Dialog",
+                "uri": "dist/AddExistingTestPlanDialog/AddExistingTestPlanDialog.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "add-to-release-dialog",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "name": "Add To Release Dialog",
+                "uri": "dist/AddToReleaseDialog/AddToReleaseDialog.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "set-release-project-version-dialog",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "name": "Set Release's Project & Version Dialog",
+                "uri": "dist/SetReleaseProjectVersion/SetReleaseProjectVersion.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "release-tracker.hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Adds the 'Release Tracker' hub group at the project/team-level",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Release Tracker",
+                "icon": "asset://dist/static/icon_parachute.png",
+                "order": 100
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "overview.hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".release-tracker.hub-group"
+            ],
+            "includes": [
+                "ms.vss-tfs-web.tfs-page-data-service",
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service",
+                "ms.vss-features.host-dialog-service"
+            ],
+            "properties": {
+                "name": "Overview",
+                "uri": "dist/ReleaseTracker/ReleaseTracker.html",
+                "icon": "asset://dist/static/Summary/clipboard16.png",
+                "supportsMobile": false
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "report-builder.hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".release-tracker.hub-group"
+            ],
+            "includes": [
+                "ms.vss-tfs-web.tfs-page-data-service",
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service",
+                "ms.vss-features.host-dialog-service"
+            ],
+            "properties": {
+                "name": "Report Builder",
+                "uri": "dist/ReportBuilder/ReportBuilder.html",
+                "icon": "asset://dist/static/Page/page-16x16.png",
+                "supportsMobile": false
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Customize release tracker",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "includes": [
+                "ms.vss-tfs-web.tfs-page-data-service",
+                "ms.vss-features.extension-data-service"
+            ],
+            "properties": {
+                "name": "Release Tracker",
+                "uri": "dist/Settings/Settings.html",
+                "icon": "asset://dist/static/icon_parachute.png"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "CodeVanguard.release-tracker.add-to-recent-release-command",
+            "type": "ms.vss-web.action",
+            "description": "Opens a release in the Release Tracker.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "uri": "dist/AddToRecentReleaseMenuItem/AddToRecentReleaseMenuItem.html",
+                "registeredObjectId": "CodeVanguard.release-tracker.add-to-recent-release-command"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "CodeVanguard.release-tracker.add-to-release-command",
+            "type": "ms.vss-web.action",
+            "description": "Opens a release in the Release Tracker.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "uri": "dist/AddToReleaseMenuItem/AddToReleaseMenuItem.html",
+                "registeredObjectId": "CodeVanguard.release-tracker.add-to-release-command"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "CodeVanguard.release-tracker.open-in-release-tracker-command",
+            "type": "ms.vss-web.action",
+            "description": "Opens a release in the Release Tracker.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "uri": "dist/OpenInReleaseTrackerMenuItem/OpenInReleaseTrackerMenuItem.html",
+                "registeredObjectId": "CodeVanguard.release-tracker.open-in-release-tracker-command"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "CodeVanguard.release-tracker.open-in-report-builder-command",
+            "type": "ms.vss-web.action",
+            "description": "Opens a release in the Release Tracker.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "uri": "dist/OpenInReportBuilderMenuItem/OpenInReportBuilderMenuItem.html",
+                "registeredObjectId": "CodeVanguard.release-tracker.open-in-report-builder-command"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "CodeVanguard.release-tracker.remove-from-release-command",
+            "type": "ms.vss-web.action",
+            "description": "Opens a release in the Release Tracker.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "uri": "dist/RemoveFromReleaseMenuItem/RemoveFromReleaseMenuItem.html",
+                "registeredObjectId": "CodeVanguard.release-tracker.remove-from-release-command"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "generateReleaseNotes",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/GenerateReleaseNotes"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "generateReleaseReport",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/GenerateReleaseReport"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "version-tracker-work-item-form-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "Tracks version numbers for releases.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Release Tracker",
+                "uri": "dist/VersionTracker/VersionTracker.html",
+                "height": 100
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "CodeVanguard.release-tracker.release-tracker-enabled"
+                    }
+                }
+            ]
+        }
+    ],
+    "contributionTypes": []
+}
