@@ -1,0 +1,105 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "kusto-endpoint-type",
+            "description": "Endpoint for Kusto service.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "kusto",
+                "displayName": "Kusto",
+                "url": {
+                    "displayName": "Kusto cluster connection full URL",
+                    "isVisible": "true",
+                    "helpText": "Full URL to connect to Kusto cluster, example: https://vso.kusto.windows.net or https://vsodev.kusto.windows.net"
+                },
+                "inputDescriptors": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-service-principal",
+                        "inputDescriptors": [
+                            {
+                                "id": "tenantid",
+                                "name": "Tenant Id",
+                                "description": "Tenant Id to connect to Kusto cluster, example microsoft.com or 72f988bf-86f1-41af-91ab-2d7cd011db47.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "serviceprincipalid",
+                                "name": "Application Id",
+                                "description": "ApplicationId generated from Azure for your Kusto cluster.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "guid"
+                                }
+                            },
+                            {
+                                "id": "authenticationType",
+                                "name": "Credential",
+                                "description": "Choose credential type.",
+                                "inputMode": "radioButtons",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "authenticationType",
+                                    "defaultValue": "spnKey",
+                                    "possibleValues": [
+                                        {
+                                            "value": "spnKey",
+                                            "displayValue": "Service principal key"
+                                        },
+                                        {
+                                            "value": "spnCertificate",
+                                            "displayValue": "Certificate"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "serviceprincipalkey",
+                                "name": "Application Key",
+                                "description": "ApplicationKey generated from Azure for your Kusto cluster.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "properties": {
+                                    "visibleRule": "authenticationType == spnKey"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href='https://kusto.azurewebsites.net/docs/api/connection-strings/kusto.html#application-authentication-properties' rel='noopener noreferrer' target='_blank'>Learn more about Kusto endpoint</a>",
+                "icon": "icons/kusto_icon.png"
+            }
+        },
+        {
+            "id": "kusto-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Task"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
