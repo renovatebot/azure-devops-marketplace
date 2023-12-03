@@ -1,0 +1,67 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "FortifyQualityGate",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "description": "Verify Fortify Quality Gate",
+            "properties": {
+                "name": "FortifyQualityGate"
+            }
+        },
+        {
+            "id": "fortify-citoken-service-endpoint",
+            "description": "Service endpoint type for Verifying Fortify Quality Gate",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "FortifyCIToken",
+                "displayName": "Fortify Quality Gate",
+                "url": {
+                    "displayName": "Fortify URL",
+                    "helpText": "fortify Url, e.g. https://servername/ssc"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/projects",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "FortifyToken {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CIToken",
+                                "description": "use the encrypted token from the CIToken that you already generated for the fortify account.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "CIToken"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
