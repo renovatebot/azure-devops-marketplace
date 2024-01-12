@@ -1,0 +1,136 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work_full",
+        "vso.project",
+        "vso.settings",
+        "vso.code_manage",
+        "vso.profile",
+        "vso.build_execute"
+    ],
+    "demands": [
+        "api-version/5.1"
+    ],
+    "contributions": [
+        {
+            "id": "enable-my-extension",
+            "type": "ms.vss-web.feature",
+            "description": "Enable Release Notes for DevOps",
+            "targets": [
+                "ms.vss-web.managed-features"
+            ],
+            "properties": {
+                "name": "Release Notes for DevOps",
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ],
+                "defaultState": true
+            }
+        },
+        {
+            "id": "releasenotes-for-devops-hub",
+            "type": "ms.vss-web.hub-group",
+            "description": "Release Notes Hub",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Release Notes Hub",
+                "icon": {
+                    "dark": "assets/logo/Changelog_icon.png",
+                    "light": "assets/logo/Changelog_icon.png"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SimovaGmbH.cfd-by-simova.enable-my-extension"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "default-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                ".releasenotes-for-devops-hub"
+            ],
+            "properties": {
+                "uri": "dist/pages/hub/index.html"
+            }
+        },
+        {
+            "id": "release-note-page",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "Release Note Page",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Release Note",
+                "uri": "dist/pages/releasenote/index.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SimovaGmbH.cfd-by-simova.enable-my-extension"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "cfd-subscription-center",
+            "type": "ms.vss-web.hub",
+            "description": "Description",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Release Notes Subscription",
+                "order": 1,
+                "uri": "dist/pages/stripe/index.html"
+            }
+        },
+        {
+            "id": "release-note-listener",
+            "type": "ms.vss-work-web.work-item-notifications",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "uri": "dist/pages/workitem/listener.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SimovaGmbH.cfd-by-simova.enable-my-extension"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "changelogs-for-devops-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/Pipeline_extension"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "SimovaGmbH.cfd-by-simova.enable-my-extension"
+                    }
+                }
+            ]
+        }
+    ],
+    "contributionTypes": []
+}
