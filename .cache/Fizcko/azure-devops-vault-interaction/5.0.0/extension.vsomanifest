@@ -1,0 +1,114 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Fizcko/Azure_DevOps_Vault_Interaction"
+    },
+    "contributions": [
+        {
+            "id": "azure.devops.vault-interaction.kv.read",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/kv_read"
+            }
+        },
+        {
+            "id": "azure.devops.vault-interaction.create.file",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tool_create_file"
+            }
+        },
+        {
+            "id": "80369ded-37c8-4ffb-a38c-1df62356736a",
+            "description": "Service Connection for Vault Interaction",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "VaultInteractionEndpoint",
+                "displayName": "Vault Interaction",
+                "url": {
+                    "displayName": "Vault URL",
+                    "value": "https://127.0.0.1:8002",
+                    "helpText": "Enter the location of your Vault Server (e.q https://127.0.0.1:8002)."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "authType",
+                                "name": "Authentication Method",
+                                "description": "Specifies the authentication method.",
+                                "inputMode": "combo",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "authTypeValues",
+                                    "defaultValue": "userpass",
+                                    "possibleValues": [
+                                        {
+                                            "value": "approle",
+                                            "displayValue": "AppRole"
+                                        },
+                                        {
+                                            "value": "clientToken",
+                                            "displayValue": "Client Token"
+                                        },
+                                        {
+                                            "value": "LDAP",
+                                            "displayValue": "LDAP"
+                                        },
+                                        {
+                                            "value": "radius",
+                                            "displayValue": "Radius"
+                                        },
+                                        {
+                                            "value": "userpass",
+                                            "displayValue": "Username & Password"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "username",
+                                "name": "Username/Role ID",
+                                "description": "Enter username (LDAP, Radius, Username & Password auth) or Role ID (AppRole auth). For Client Token authentication enter a random value.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password/Token/SecretID",
+                                "description": "Enter password (LDAP, Radius, Username & Password auth), Client Token (Client Token auth) or Secret ID (AppRole auth)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
