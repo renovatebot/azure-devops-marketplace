@@ -1,0 +1,93 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "CentrifyPAMCheckout",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "description": "Centrify PAM CheckOut Accounts",
+            "properties": {
+                "name": "CentrifyPAMCheckout"
+            }
+        },
+        {
+            "id": "CentrifyPAMCIToken-service-endpoint",
+            "description": "Service endpoint type for connectring to Centrify PAM",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "CentrifyPAMCIToken",
+                "displayName": "Centrify PAM",
+                "url": {
+                    "displayName": "Centrify PAM URL",
+                    "helpText": "Centrify PAM Url, e.g. https://pam.mydomain"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "API Key and Application ID ",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ endpoint.apitoken }}"
+                            },
+                            {
+                                "name": "X-CENTRIFY-NATIVE-CLIENT",
+                                "value": "true"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CIToken",
+                                "description": "use the encrypted token that you already generated for the Centrify account with api call permission.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "application",
+                                "name": "Application",
+                                "description": "The application name.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "scope",
+                                "name": "Scope",
+                                "description": "The application scope.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "CIToken"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
