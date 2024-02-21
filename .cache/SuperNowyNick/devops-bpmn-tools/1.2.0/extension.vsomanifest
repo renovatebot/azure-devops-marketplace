@@ -1,0 +1,151 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "bpmn-preview",
+            "type": "ms.vss-code-web.content-renderer",
+            "description": "Shows a custom BPMN file renderer",
+            "targets": [
+                "ms.vss-code-web.content-renderer-collection"
+            ],
+            "properties": {
+                "text": "BPMN diagram renderer",
+                "fileExtensions": [
+                    "bpmn"
+                ],
+                "title": "ms.vss-code-web.content-renderer-collection",
+                "uri": "dist/BpmnPreview/BpmnPreview.html",
+                "registeredObjectId": "bpmn-preview"
+            }
+        },
+        {
+            "id": "bpmn-language",
+            "type": "ms.vss-features.code-editor-language",
+            "description": "Add BPMN syntax highlighting",
+            "targets": [
+                "ms.vss-features.editor"
+            ],
+            "properties": {
+                "extensions": [
+                    ".bpmn"
+                ],
+                "mimetypes": [
+                    "application/bpmn+xml"
+                ],
+                "language": {
+                    "displayName": "BPMN",
+                    "defaultToken": "",
+                    "tokenPostfix": ".bpmn",
+                    "ignoreCase": true,
+                    "tokenizer": {
+                        "root": [
+                            [
+                                "<\\?xml",
+                                "metatag",
+                                "@xmlInfo"
+                            ],
+                            [
+                                "<!--",
+                                "comment",
+                                "@comment"
+                            ],
+                            [
+                                "(<)(\\w+)",
+                                [
+                                    "delimiter",
+                                    {
+                                        "token": "tag",
+                                        "next": "@bpmn"
+                                    }
+                                ]
+                            ],
+                            [
+                                "(<\\/)(\\w+)(:)(\\w+)",
+                                [
+                                    "delimiter",
+                                    "tag",
+                                    "delimiter",
+                                    "type"
+                                ]
+                            ],
+                            [
+                                "</",
+                                "delimiter"
+                            ],
+                            [
+                                "\\/>",
+                                "delimiter"
+                            ],
+                            [
+                                "[^<]+"
+                            ]
+                        ],
+                        "xmlInfo": [
+                            [
+                                ">",
+                                "metatag",
+                                "@pop"
+                            ],
+                            [
+                                "[^>]+",
+                                "metatag.content"
+                            ]
+                        ],
+                        "comment": [
+                            [
+                                "-->",
+                                "comment",
+                                "@pop"
+                            ],
+                            [
+                                "[^-]+",
+                                "comment.content"
+                            ],
+                            [
+                                ".",
+                                "comment.content"
+                            ]
+                        ],
+                        "bpmn": [
+                            [
+                                "(:)(\\w+)",
+                                [
+                                    "delimiter",
+                                    "type"
+                                ]
+                            ],
+                            [
+                                "\"([^\"]*)\"",
+                                "attribute.value"
+                            ],
+                            [
+                                "'([^\"]*)'",
+                                "attribute.value"
+                            ],
+                            [
+                                "([\\w\\-]+)(=)",
+                                [
+                                    "attribute.name",
+                                    "delimiter"
+                                ]
+                            ],
+                            [
+                                "\\/?>",
+                                "delimiter",
+                                "@pop"
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "scopes": [
+        "vso.code",
+        "vso.build"
+    ],
+    "demands": [
+        "api-version/5.1"
+    ],
+    "contributionTypes": []
+}
