@@ -1,0 +1,73 @@
+{
+    "manifestVersion": 1,
+    "serviceInstanceType": "00000010-0000-8888-8000-000000000000",
+    "eventCallbacks": {
+        "preInstall": {
+            "uri": "{{ContentRootUrl \"00000010-0000-8888-8000-000000000000\"}}_apis/public/search/ExtensionEvents/preInstall?api-version=2.0-preview"
+        },
+        "versionCheck": {
+            "uri": "{{DeploymentUrl \"00000010-0000-8888-8000-000000000000\"}}_apis/public/extensions/vdisc"
+        }
+    },
+    "restrictedTo": [
+        "Anonymous",
+        "Public",
+        "Member",
+        "+ms.vss-code.version-control"
+    ],
+    "contributions": [
+        {
+            "id": "code-entity-type",
+            "type": "ms.vss-search-platform.entity-type",
+            "description": "Search capability across code entities.",
+            "targets": [
+                "ms.vss-search-platform.entity-type-collection"
+            ],
+            "properties": {
+                "displayName": "Code",
+                "order": 0,
+                "urlParam": [
+                    "code"
+                ]
+            },
+            "constraints": [
+                {
+                    "group": 1,
+                    "name": "IsSearchConfigured"
+                },
+                {
+                    "group": 1,
+                    "name": "Stakeholder",
+                    "inverse": true
+                },
+                {
+                    "group": 2,
+                    "name": "IsSearchConfigured"
+                },
+                {
+                    "group": 2,
+                    "name": "ProjectVisibility",
+                    "properties": {
+                        "visibility": "Public"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "code-search-page-viewmodel-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data for search page.",
+            "restrictedTo": [
+                "-ms.vss-code.version-control"
+            ],
+            "properties": {
+                "name": "Search.Code.ViewModel",
+                "serviceInstanceType": "00000010-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
