@@ -1,0 +1,66 @@
+{
+    "manifestVersion": 1,
+    "scopes": [],
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "Reward Rally - PR",
+                "description": "Contribute to projects through pull requests, enhance the work, and earn well-deserved rewards!",
+                "informationUrl": "https://aka.ms/vsoextensions",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": true,
+                        "name": "URL",
+                        "description": "URL to post event payload to",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "clientId",
+                        "isRequired": true,
+                        "name": "Client ID",
+                        "description": "Client ID",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "appId",
+                        "isRequired": true,
+                        "name": "Application ID",
+                        "description": "Application ID",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "gameActionId",
+                        "isRequired": true,
+                        "name": "Game Action ID",
+                        "description": "Game Action ID",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "httpRequest",
+                        "name": "Post via http request",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}?gameactionid={{{gameActionId}}}&clientid={{{clientId}}}&appid={{{appId}}}",
+                            "messagesToSend": "all",
+                            "resourceDetailsToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
