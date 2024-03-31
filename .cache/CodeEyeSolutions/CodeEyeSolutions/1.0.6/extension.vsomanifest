@@ -1,0 +1,62 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code"
+    ],
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "CodeEye Solutions Webhook Consumer",
+                "description": "This webhook send to the api the pull request data in a pull request created or update to perfomance a scan acording on your services active en you IRIS account.",
+                "informationUrl": "https://iris.codeeyesolutions.com",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": false,
+                        "name": "URL",
+                        "description": "URL to post event payload to",
+                        "inputMode": "none"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Perform action",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "https://fcf6-143-110-212-228.ngrok-free.app/azure/pullRequest",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "IRIS",
+            "type": "ms.vss-web.tab",
+            "description": "PullRequest Details",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "IRIS Code Scanner",
+                "title": "IRIS Code Scanner",
+                "action": "IRIS Code Scanner",
+                "uri": "index.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
