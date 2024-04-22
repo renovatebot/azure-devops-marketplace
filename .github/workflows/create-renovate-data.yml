@@ -1,26 +1,31 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Create Renovate Data
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   workflow_dispatch:
   schedule:
     - cron: "5 4 * * *"
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+permissions: none
+
 jobs:
-  # This workflow contains a single job called "build"
+   
   update:
-    # The type of runner that the job will run on
+    permissions:
+      contents: write
+
     runs-on: windows-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
+
+      - name: Use node 20
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
           
       - name: Download recent extensions
         run: |
@@ -39,5 +44,5 @@ jobs:
           .\03-generate-renovate-data-builtin.ps1
         env:
           AZURE_DEVOPS_PAT: ${{ secrets.AZURE_DEVOPS_PAT }}
-          AZURE_DEVOPS_ORG: ${{ secrets.AZURE_DEVOPS_ORG }}
+          AZURE_DEVOPS_ORG: ${{ vars.AZURE_DEVOPS_ORG }}
         shell: pwsh
