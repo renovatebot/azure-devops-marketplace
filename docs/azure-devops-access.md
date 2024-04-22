@@ -10,7 +10,7 @@ In order to generate the Azure DevOps cache files, this repo needs access to 2 t
    - `marketplace: read` - to download the published vsix files from the marketplace.
    - `agent pool: read` - to download the tasks from the Azure DevOps Organization.
 
-  The token must be generated for the Azure DevOps organization which's agent pool will be queried.
+  The token must be generated for the Azure DevOps organization which agent pool will be queried.
 
   This information is stored in GitHub using Action secrets and variables:
 
