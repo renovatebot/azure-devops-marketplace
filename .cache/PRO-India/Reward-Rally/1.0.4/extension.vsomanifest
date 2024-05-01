@@ -1,0 +1,98 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "reward-rally-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "reward-rally",
+                "name": "Reward Rally",
+                "description": "Boost your SaaS best practices with our integrated Reward Rally feature, designed to enhance user motivation and engagement effortlessly. Elevate productivity by incentivize users through seamless integration, making the code and product quality a rewarding experience for all.",
+                "informationUrl": "https://aka.ms/vsoextensions",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": true,
+                        "name": "URL",
+                        "description": "URL to post event payload to",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "apikey",
+                        "isRequired": true,
+                        "name": "Api Key",
+                        "description": "Authentication key for the URL",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "clientId",
+                        "isRequired": true,
+                        "name": "Client ID",
+                        "description": "Client ID",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "appId",
+                        "isRequired": true,
+                        "name": "Application ID",
+                        "description": "Application ID",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "gameactionrange",
+                        "isRequired": true,
+                        "name": "Game Action ID With Range",
+                        "description": "Format should be [{min:0, max: 35, id: '123'}]",
+                        "inputMode": "textarea"
+                    },
+                    {
+                        "id": "branches",
+                        "isRequired": false,
+                        "name": "Target branches",
+                        "description": "Mention the target branches by splitting them with a comma",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "httpRequest",
+                        "name": "Post via http request",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}?gameactionrange={{{gameactionrange}}}&clientid={{{clientId}}}&appid={{{appId}}}&branch={{{branches}}}",
+                            "headers": [
+                                "api-key: {{apikey}}"
+                            ],
+                            "messagesToSend": "all",
+                            "resourceDetailsToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "pull-request-analytics",
+            "type": "ms.vss-web.tab",
+            "description": "Pull Request Analytics Details.",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "PR Analytics",
+                "title": "PR Analytics",
+                "uri": "dist/PR/PR.html",
+                "action": "PR Analytics"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
