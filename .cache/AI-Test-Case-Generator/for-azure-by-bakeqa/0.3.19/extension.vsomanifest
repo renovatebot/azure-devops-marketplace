@@ -1,0 +1,183 @@
+{
+    "manifestVersion": 1,
+    "author": {
+        "name": "Bake Technologies Pty Ltd"
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Azure connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "for-azure-by-bakeqa",
+                "displayName": "BakeQA connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the server to connect to.",
+                    "value": "https://api.bakeqa.com",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "Orchestrator",
+                        "endpointUrl": "{{endpoint.url}}/orchestrators/request-orchestrator?content={{content}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "StatusCheck",
+                        "endpointUrl": "{{endpoint.url}}/orchestrator/runtime/webhooks/durabletask/instances/{{id}}?taskHub=bakeqa&connection=Storage&code={{code}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/azure-devops-verify",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "BakeQA-Auth-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://aitestcasegenerator.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "trial-endpoint",
+            "description": "Service endpoint type for Azure trials",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "for-azure-by-bakeqa-trial",
+                "displayName": "BakeQA Start Trial",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the server to connect to.",
+                    "value": "https://api.bakeqa.com/",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "GetKey",
+                        "endpointUrl": "{{endpoint.url}}/trial/findOrCreateTrial",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "azure-access-token",
+                                "value": "{{endpoint.accessToken}}"
+                            },
+                            {
+                                "name": "azure-devops-host",
+                                "value": "{{endpoint.host}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "accessToken",
+                                "name": "accessToken",
+                                "description": "Access Token"
+                            },
+                            {
+                                "id": "host",
+                                "name": "host",
+                                "description": "Organisation Name"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://aitestcasegenerator.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "bulk-menu-item",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Generate Test Cases",
+                "title": "Generate Test Cases with AI Test Case Generator",
+                "groupId": "actions",
+                "uri": "dist/BulkContextMenu/BulkContextMenu.html",
+                "iconName": "EditNote",
+                "registeredObjectId": "bulk-menu"
+            }
+        },
+        {
+            "id": "bulk-panel-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/BulkPanel/BulkPanel.html"
+            }
+        },
+        {
+            "id": "select-endpoint-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/ServiceEndpoint/ServiceEndpoint.html"
+            }
+        },
+        {
+            "id": "settings-panel-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/SettingsPanel/SettingsPanel.html"
+            }
+        },
+        {
+            "id": "bakeqa-work-item-form-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "AI Test Case Generator group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "AI Test Case Generator",
+                "uri": "dist/WorkItemFormGroup/index.html",
+                "height": 300
+            }
+        }
+    ],
+    "licensing": {
+        "overrides": [
+            {
+                "id": "service-endpoint",
+                "behavior": " AlwaysInclude"
+            },
+            {
+                "id": "select-endpoint-content",
+                "behavior": " AlwaysInclude"
+            },
+            {
+                "id": "bakeqa-work-item-form-group",
+                "behavior": " AlwaysInclude"
+            }
+        ]
+    },
+    "scopes": [
+        "vso.work_full",
+        "vso.serviceendpoint_manage",
+        "vso.project",
+        "vso.test_write",
+        "vso.memberentitlementmanagement",
+        "vso.identity",
+        "vso.security_manage"
+    ],
+    "contributionTypes": []
+}
