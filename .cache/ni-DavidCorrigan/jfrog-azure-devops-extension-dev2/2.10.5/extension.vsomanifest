@@ -1,0 +1,806 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.build_execute"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/jfrog/jfrog-azure-devops-extension"
+    },
+    "contributions": [
+        {
+            "id": "jfrog-platform-service",
+            "description": "Service Endpoint type for JFrog Platform connections. Currently only used by the 'JFrog CLI V2' task.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "jfrogPlatformService",
+                "displayName": "JFrog Platform V2",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the root URL of your JFrog platform. For example, https://my.jfrog.io/"
+                },
+                "icon": "images/jfrog-logo-200.png",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/artifactory/api/plugins",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "BuildNames",
+                        "endpointUrl": "{{endpoint.url}}/artifactory/api/build?project={{projectKey}}",
+                        "resultSelector": "jsonpath:$.builds[*]"
+                    },
+                    {
+                        "name": "BuildNumbers",
+                        "endpointUrl": "{{endpoint.url}}/artifactory/api/build/{{definition}}?project={{projectKey}}",
+                        "resultSelector": "jsonpath:$.buildsNumbers[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "JFrog Platform username with permissions.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or API key of an JFrog user with permissions.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Access Token",
+                                "description": "Access Token with permissions. Click <a href=\"https://jfrog.com/help/r/jfrog-platform-administration-documentation/access-tokens\" target=\"_blank\">here</a> for information on how to generate Access Tokens.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "jfrog-artifactory-service",
+            "description": "Service Endpoint type for Artifactory connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "jfrogArtifactoryService",
+                "displayName": "JFrog Artifactory V2",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the root URL of your Artifactory installation. For example, https://repo.jfrog.org/artifactory"
+                },
+                "icon": "images/artifactory.png",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/plugins",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    },
+                    {
+                        "name": "BuildNames",
+                        "endpointUrl": "{{endpoint.url}}/api/build?project={{projectKey}}",
+                        "resultSelector": "jsonpath:$.builds[*]"
+                    },
+                    {
+                        "name": "BuildNumbers",
+                        "endpointUrl": "{{endpoint.url}}/api/build/{{definition}}?project={{projectKey}}",
+                        "resultSelector": "jsonpath:$.buildsNumbers[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "JFrog username with Artifactory deploy permissions.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or API key of the JFrog user",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Access Token",
+                                "description": "Access Token with Artifactory deploy permissions. Click <a href=\"https://jfrog.com/help/r/jfrog-platform-administration-documentation/access-tokens\" target=\"_blank\">here</a> for information on how to generate Access Tokens.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "Azure DevOps OIDC (Services only)",
+                        "inputDescriptors": [
+                            {
+                                "id": "authServer",
+                                "name": "Auth Server",
+                                "description": "The access token will be obtained from this server but operations will use the server URL from above. May be required if using edge nodes.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "providerName",
+                                "name": "Provider Name",
+                                "description": "The Provider Name configured in JFrog Platform.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "jfrog-distribution-service",
+            "description": "Service Endpoint type for Distribution connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "jfrogDistributionService",
+                "displayName": "JFrog Distribution V2",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the root URL of your Distribution installation. For example, https://repo.jfrog.org/distribution"
+                },
+                "icon": "images/distribution.png",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/system/ping",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "JFrog username with Distribution permissions.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or API key of the JFrog user.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Access Token",
+                                "description": "Access Token with Distribution permissions. Click <a href=\"https://jfrog.com/help/r/jfrog-platform-administration-documentation/access-tokens\" target=\"_blank\">here</a> for information on how to generate Access Tokens.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "jfrog-xray-service",
+            "description": "Service Endpoint type for Xray connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "jfrogXrayService",
+                "displayName": "JFrog Xray V2",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the root URL of your Xray installation. For example, https://repo.jfrog.org/xray"
+                },
+                "icon": "images/xray.png",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/system/user_ping",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "JFrog username with Xray permissions.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password or API key of the JFrog user.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Access Token",
+                                "description": "Access Token with Xray permissions. Click <a href=\"https://jfrog.com/help/r/jfrog-platform-administration-documentation/access-tokens\" target=\"_blank\">here</a> for information on how to generate Access Tokens.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "jfrog-artifactory-release-artifact-type",
+            "description": "Artifactory",
+            "type": "ms.vss-releaseartifact.release-artifact-type",
+            "targets": [
+                "ms.vss-releaseartifact.artifact-types"
+            ],
+            "properties": {
+                "name": "JFrogArtifactory",
+                "displayName": "Artifactory V2",
+                "endpointTypeId": "jfrogArtifactoryService",
+                "uniqueSourceIdentifier": "{{connection}}:{{definition}}:{{buildNumber}}",
+                "downloadTaskId": "c288dcae-5ae4-4a37-a59d-11bb07d393a9",
+                "artifactType": "Package",
+                "inputDescriptors": [
+                    {
+                        "id": "connection",
+                        "name": "Artifactory service",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": true,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "projectKey",
+                        "name": "Project Key",
+                        "hasDynamicValueInformation": true,
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        },
+                        "description": "JFrog Project key."
+                    },
+                    {
+                        "id": "definition",
+                        "name": "Build Name",
+                        "hasDynamicValueInformation": true,
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "dependencyInputIds": [
+                            "connection",
+                            "projectKey"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "id": "noFlat",
+                        "name": "Keep artifact path structure",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "description": "Select if you wish to have the Artifactory repository path structure created locally for your downloaded files",
+                        "validation": {
+                            "isRequired": false
+                        },
+                        "values": {
+                            "defaultValue": false
+                        }
+                    },
+                    {
+                        "id": "threads",
+                        "name": "# of threads",
+                        "inputMode": "Combo",
+                        "description": "The number of parallel threads that should be used.",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "number"
+                        },
+                        "values": {
+                            "isLimitedToPossibleValues": true,
+                            "defaultValue": "3",
+                            "possibleValues": [
+                                {
+                                    "value": "1",
+                                    "displayValue": "1"
+                                },
+                                {
+                                    "value": "2",
+                                    "displayValue": "2"
+                                },
+                                {
+                                    "value": "3",
+                                    "displayValue": "3"
+                                },
+                                {
+                                    "value": "4",
+                                    "displayValue": "4"
+                                },
+                                {
+                                    "value": "5",
+                                    "displayValue": "5"
+                                },
+                                {
+                                    "value": "6",
+                                    "displayValue": "6"
+                                },
+                                {
+                                    "value": "7",
+                                    "displayValue": "7"
+                                },
+                                {
+                                    "value": "8",
+                                    "displayValue": "8"
+                                },
+                                {
+                                    "value": "9",
+                                    "displayValue": "9"
+                                },
+                                {
+                                    "value": "10",
+                                    "displayValue": "10"
+                                },
+                                {
+                                    "value": "11",
+                                    "displayValue": "11"
+                                },
+                                {
+                                    "value": "12",
+                                    "displayValue": "12"
+                                },
+                                {
+                                    "value": "13",
+                                    "displayValue": "13"
+                                },
+                                {
+                                    "value": "14",
+                                    "displayValue": "14"
+                                },
+                                {
+                                    "value": "15",
+                                    "displayValue": "15"
+                                },
+                                {
+                                    "value": "16",
+                                    "displayValue": "16"
+                                },
+                                {
+                                    "value": "17",
+                                    "displayValue": "17"
+                                },
+                                {
+                                    "value": "18",
+                                    "displayValue": "18"
+                                },
+                                {
+                                    "value": "19",
+                                    "displayValue": "19"
+                                },
+                                {
+                                    "value": "20",
+                                    "displayValue": "20"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "defaultVersionType",
+                        "name": "Default Version",
+                        "description": "The default version will be deployed when new releases are created. The version can be changed for manually created releases at the time of release creation",
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "hasDynamicValueInformation": false,
+                        "values": {
+                            "inputId": "defaultVersionTypeValues",
+                            "defaultValue": "selectDuringReleaseCreationType",
+                            "possibleValues": [
+                                {
+                                    "value": "selectDuringReleaseCreationType",
+                                    "displayValue": "Specify at the time of release creation"
+                                },
+                                {
+                                    "value": "specificVersionType",
+                                    "displayValue": "Specify a specific build number"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "defaultVersionSpecific",
+                        "name": "Build Number",
+                        "hasDynamicValueInformation": true,
+                        "inputMode": "Combo",
+                        "isConfidential": false,
+                        "groupName": "[{ \"Key\": \"defaultVersionType\", \"Value\": \"specificVersionType\"}]",
+                        "properties": {
+                            "visibleRule": "defaultVersionType == specificVersionType"
+                        },
+                        "dependencyInputIds": [
+                            "connection",
+                            "definition",
+                            "defaultVersionType",
+                            "projectKey"
+                        ],
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "dataSourceBindings": [
+                    {
+                        "target": "definition",
+                        "dataSourceName": "BuildNames",
+                        "resultTemplate": "{ \"Value\" : \"{{{ #regex /?(.*$) uri}}}\", \"DisplayValue\" : \"{{{ #regex /?(.*$) uri}}}\" }"
+                    },
+                    {
+                        "target": "versions",
+                        "dataSourceName": "BuildNumbers",
+                        "resultTemplate": "{ \"Value\" : \"{{{ #regex /?(.*$) uri}}}\", \"DisplayValue\" : \"{{{ #regex /?(.*$) uri}}}\" }"
+                    },
+                    {
+                        "target": "latestversion",
+                        "dataSourceName": "BuildNumbers",
+                        "resultTemplate": "{ Value : \"{{{ #regex /?(.*$) uri}}}\", DisplayValue : \"{{{ #regex /?(.*$) uri}}}\" }"
+                    },
+                    {
+                        "target": "defaultVersionSpecific",
+                        "dataSourceName": "BuildNumbers",
+                        "resultTemplate": "{ \"Value\" : \"{{{ #regex /?(.*$) uri}}}\", \"DisplayValue\" : \"{{{ #regex /?(.*$) uri}}}\" }"
+                    },
+                    {
+                        "target": "artifactDetails",
+                        "resultTemplate": "{ \"Name\": \"{{version}}\", \"downloadUrl\" : \"{{endpoint.url}}\" }"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "artifactory-build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab in build result to enforce Artifactory integration",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Artifactory",
+                "uri": "artifactory-build-info.html"
+            }
+        },
+        {
+            "id": "jfrog-promote-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogBuildPromotion"
+            }
+        },
+        {
+            "id": "jfrog-maven",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogMaven"
+            }
+        },
+        {
+            "id": "jfrog-gradle",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogGradle"
+            }
+        },
+        {
+            "id": "jfrog-npm",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogNpm"
+            }
+        },
+        {
+            "id": "jfrog-nuget",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogNuget"
+            }
+        },
+        {
+            "id": "jfrog-dotnet",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogDotnet"
+            }
+        },
+        {
+            "id": "jfrog-publish-build-info",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogPublishBuildInfo"
+            }
+        },
+        {
+            "id": "jfrog-conan-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogConan"
+            }
+        },
+        {
+            "id": "jfrog-build-scan-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogBuildScan"
+            }
+        },
+        {
+            "id": "jfrog-audit-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogAudit"
+            }
+        },
+        {
+            "id": "jfrog-docker-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogDocker"
+            }
+        },
+        {
+            "id": "jfrog-discard-builds-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogDiscardBuilds"
+            }
+        },
+        {
+            "id": "jfrog-tools-installer-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogToolsInstaller"
+            }
+        },
+        {
+            "id": "jfrog-go",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogGo"
+            }
+        },
+        {
+            "id": "jfrog-pip",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogPip"
+            }
+        },
+        {
+            "id": "jfrog-distribution",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogDistribution"
+            }
+        },
+        {
+            "id": "jfrog-collect-issues",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogCollectIssues"
+            }
+        },
+        {
+            "id": "jfrog-cli-v2",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogCliV2"
+            }
+        },
+        {
+            "id": "jfrog-generic-artifacts",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/JFrogGenericArtifacts"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
