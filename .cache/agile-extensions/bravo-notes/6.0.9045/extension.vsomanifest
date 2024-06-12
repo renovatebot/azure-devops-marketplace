@@ -1,0 +1,365 @@
+{
+    "contributions": [
+        {
+            "id": "releaseNotes",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "build/buildTasks/releaseNotes"
+            }
+        },
+        {
+            "id": "export-workitem-dialog",
+            "type": "ms.vss-web.external-content",
+            "description": "Export work item",
+            "targets": [],
+            "properties": {
+                "uri": "build/export-workitem-dialog/index.html"
+            }
+        },
+        {
+            "id": "trial-event",
+            "type": "ms.vss-notifications.event-type",
+            "targets": [
+                "ms.vss-extmgmt-web.extensions-event-publisher",
+                "ms.vss-extmgmt-web.extensions-event-category"
+            ],
+            "properties": {
+                "name": "Bravo Notes trial event",
+                "description": "Notifications about the Bravo Notes trial",
+                "customSubscriptionsAllowed": true,
+                "hasInitiator": true,
+                "icon": "bowtie-packages",
+                "supportedScopes": [
+                    "project",
+                    "collection"
+                ],
+                "roles": [
+                    {
+                        "id": "initiator",
+                        "name": "Initiator"
+                    },
+                    {
+                        "id": "team",
+                        "name": "Team"
+                    },
+                    {
+                        "id": "project",
+                        "name": "Project"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "user-license-event",
+            "type": "ms.vss-notifications.event-type",
+            "targets": [
+                "ms.vss-extmgmt-web.extensions-event-publisher",
+                "ms.vss-extmgmt-web.extensions-event-category"
+            ],
+            "properties": {
+                "name": "Bravo Notes user license event",
+                "description": "Notifications for when Bravo Notes licenses are added or removed",
+                "customSubscriptionsAllowed": true,
+                "hasInitiator": true,
+                "icon": "bowtie-packages",
+                "supportedScopes": [
+                    "project",
+                    "collection"
+                ],
+                "roles": [
+                    {
+                        "id": "initiator",
+                        "name": "Initiator"
+                    },
+                    {
+                        "id": "licensee",
+                        "name": "Licensee"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "default-email-template",
+            "type": "ms.vss-notifications.email-template",
+            "targets": [
+                ".trial-event",
+                ".user-license-event"
+            ],
+            "includes": [
+                "ms.vss-notifications.standard-email-template"
+            ],
+            "properties": {
+                "sourceTemplate": "ms.vss-notifications.standard-email-template",
+                "inputs": {
+                    "email-subject": "{{ event.subject }}",
+                    "summary": "{{ event.summary }}",
+                    "hero": {
+                        "title": "{{ event.subject }}",
+                        "message": "{{ event.message }}",
+                        "action": {
+                            "title": "{{{ event.ctaText }}}",
+                            "url": "{{{ event.links.web }}}"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": "trial-event-subscription",
+            "type": "ms.vss-notifications.subscription",
+            "targets": [
+                "ms.vss-notifications.default-subscription-collection"
+            ],
+            "properties": {
+                "description": "Something happened related to the Bravo Notes trial",
+                "filter": {
+                    "type": "Actor",
+                    "eventType": "agile-extensions.bravo-notes.trial-event",
+                    "inclusions": [
+                        "team",
+                        "project"
+                    ],
+                    "exclusions": [
+                        "initiator"
+                    ],
+                    "criteria": {}
+                }
+            }
+        },
+        {
+            "id": "user-license-event-subscription",
+            "type": "ms.vss-notifications.subscription",
+            "targets": [
+                "ms.vss-notifications.default-subscription-collection"
+            ],
+            "properties": {
+                "description": "Notifications for when Bravo Notes licenses are added or removed",
+                "filter": {
+                    "type": "Actor",
+                    "eventType": "agile-extensions.bravo-notes.user-license-event",
+                    "inclusions": [
+                        "licensee"
+                    ],
+                    "exclusions": [
+                        "initiator"
+                    ],
+                    "criteria": {}
+                }
+            }
+        },
+        {
+            "id": "hub-group",
+            "type": "ms.vss-web.hub-group",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Bravo Notes",
+                "order": 100,
+                "icon": {
+                    "light": "assets/icons/hub-group-icon.png",
+                    "dark": "assets/icons/hub-group-icon.png"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "agile-extensions.bravo-notes.bravo-notes-feature"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "edit",
+            "type": "ms.vss-web.hub",
+            "description": "Bravo Notes - Create release notes from work items",
+            "targets": [
+                ".hub-group"
+            ],
+            "properties": {
+                "title": "Templates",
+                "name": "Templates",
+                "order": 2,
+                "uri": "build/edit/index.html",
+                "icon": {
+                    "light": "assets/icons/hub-icon.png",
+                    "dark": "assets/icons/hub-icon-dark.png"
+                }
+            }
+        },
+        {
+            "id": "bravo-notes-feature",
+            "type": "ms.vss-web.feature",
+            "description": "Enable Bravo Notes",
+            "targets": [
+                "ms.vss-web.managed-features"
+            ],
+            "properties": {
+                "name": "Bravo Notes",
+                "userConfigurable": true,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project",
+                    null
+                ],
+                "defaultState": true
+            }
+        },
+        {
+            "id": "bravo-notes-folder-navigation-feature",
+            "type": "ms.vss-web.feature",
+            "description": "Organize your Bravo Notes templates with folders",
+            "targets": [
+                "ms.vss-web.managed-features"
+            ],
+            "properties": {
+                "name": "Bravo Notes folder navigation",
+                "userConfigurable": true,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project",
+                    null
+                ],
+                "defaultState": false
+            }
+        },
+        {
+            "id": "org-settings",
+            "type": "ms.vss-web.hub",
+            "description": "Bravo Notes organization level settings",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Bravo Notes",
+                "order": 100,
+                "uri": "build/org-settings/index.html"
+            }
+        },
+        {
+            "id": "pages-breadcrumb-service",
+            "type": "ms.vss-web.breadcrumb-provider",
+            "targets": [
+                ".pages",
+                ".edit"
+            ],
+            "properties": {
+                "serviceName": "pages-breadcrumb-service",
+                "breadcrumbId": "ms.vss-tfs-web.vertical-header-breadcrumb",
+                "uri": "build/pages-breadcrumbs/index.html"
+            }
+        },
+        {
+            "id": "bravo-notes-pages-feature",
+            "type": "ms.vss-web.feature",
+            "description": "Enable Bravo Notes Pages",
+            "targets": [],
+            "properties": {
+                "name": "Bravo Notes Pages",
+                "userConfigurable": true,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project",
+                    null
+                ],
+                "defaultState": false
+            }
+        },
+        {
+            "id": "query-report",
+            "type": "ms.vss-web.tab",
+            "description": "Adds a tab to the Queries hub",
+            "targets": [
+                "ms.vss-work-web.query-tabs"
+            ],
+            "properties": {
+                "title": "Reports",
+                "name": "Reports",
+                "uri": "build/query-report/index.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "agile-extensions.bravo-notes.bravo-notes-feature"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "export-as-pdf",
+            "type": "ms.vss-web.action",
+            "description": "Export work item as PDF, HTML or Markdown",
+            "targets": [
+                "ms.vss-work-web.work-item-toolbar-menu",
+                "ms.vss-work-web.query-result-work-item-menu",
+                "ms.vss-work-web.work-item-query-results-toolbar-menu",
+                "ms.vss-work-web.backlog-item-menu",
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Export...",
+                "title": "Export...",
+                "toolbarText": "Export...",
+                "icon": "css://bowtie-icon bowtie-arrow-open",
+                "group": "contributed",
+                "uri": "build/export-as-pdf/index.html",
+                "registeredObjectId": "export-as-pdf-button"
+            }
+        }
+    ],
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.analytics",
+        "vso.build",
+        "vso.code_write",
+        "vso.features_write",
+        "vso.graph",
+        "vso.identitypicker",
+        "vso.notification_publish",
+        "vso.release",
+        "vso.test",
+        "vso.wiki_write",
+        "vso.work_write"
+    ],
+    "licensing": {
+        "overrides": [
+            {
+                "id": "bravo-notes-feature",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "hub-group",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "edit",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "org-settings",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "query-report",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "export-as-pdf",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "export-workitem-dialog",
+                "behavior": "AlwaysInclude"
+            }
+        ]
+    },
+    "contributionTypes": []
+}
