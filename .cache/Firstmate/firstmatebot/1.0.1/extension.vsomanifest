@@ -1,0 +1,67 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for firstmate connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Firstmate",
+                "displayName": "Firstmate server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the Firstmate server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "Firstmate Projects",
+                        "endpointUrl": "https://api.eu.firstmate.cloud/api/v1/git/callback",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://firstmate.cloud\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "webhook",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "webhook",
+                "name": "FirstMate Webhook",
+                "description": "FirstMate webhook to answer PRs",
+                "informationUrl": "https://firstmate.cloud",
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Perform action",
+                        "description": "Posts a standard event payload",
+                        "supportedEventTypes": [
+                            "git.push",
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "https://api.eu.firstmate.cloud/api/v1/git/provider/azuredev/webhook",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
