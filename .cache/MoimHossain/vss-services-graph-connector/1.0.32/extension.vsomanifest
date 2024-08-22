@@ -1,0 +1,89 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "mh.graph-demo-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/GraphDemoTask"
+            }
+        },
+        {
+            "id": "mh.graph-connector",
+            "description": "Microsoft Graph",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "MicrosoftGraph",
+                "displayName": "Entra Authentication",
+                "url": "https://graph.microsoft.com",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "https://graph.microsoft.com/v1.0/me",
+                        "resultSelector": "jsonpath:$.displayName"
+                    },
+                    {
+                        "name": "AccessToken",
+                        "endpointUrl": "{{{configuration.Url}}}/oauth2/v2.0/token",
+                        "requestVerb": "Post",
+                        "requestContent": "grant_type=authorization_code&code={{{#uriDataEncode 1 AuthorizationCode}}}{{{/uridataencode}}}&client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}&redirect_uri={{{#uriDataEncode 1 RedirectUrl}}}{{{/uridataencode}}}&scope=https://graph.microsoft.com/User.Read offline_access",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RefreshToken",
+                        "endpointUrl": "{{{configuration.Url}}}/oauth2/v2.0/token",
+                        "requestVerb": "Post",
+                        "requestContent": "grant_type=refresh_token&refresh_token={{{#uriDataEncode 1 RefreshToken}}}{{{/uridataencode}}}&client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}&scope=https://graph.microsoft.com/User.Read offline_access",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "displayName": "OAuth2",
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-oauth2",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{{endpoint.AccessToken}}}"
+                            }
+                        ],
+                        "authorizationUrl": "{{{configuration.Url}}}/oauth2/v2.0/authorize?client_id={{{configuration.ClientId}}}&response_type=code&redirect_uri={{{RedirectUrl}}}&scope=https://graph.microsoft.com/User.Read openid offline_access",
+                        "dataSourceBindings": [
+                            {
+                                "target": "AccessToken",
+                                "dataSourceName": "AccessToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}"
+                            },
+                            {
+                                "target": "RefreshToken",
+                                "dataSourceName": "RefreshToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://moimhossain.com/2024/08/21/post-message-to-ms-teams-from-azure-pipeline-using-graph-api/\" target=\"_blank\"><b>Learn More about here</b></a>"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
