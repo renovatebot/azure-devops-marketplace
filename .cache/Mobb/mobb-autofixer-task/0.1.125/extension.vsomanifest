@@ -1,0 +1,79 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code",
+        "vso.build"
+    ],
+    "contributions": [
+        {
+            "id": "mobb-autofixer",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "MobbAutofixer"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service Endpoint type for all Mobb connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "MobbServiceEndpoint",
+                "displayName": "Mobb Autofixer Endpoint",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://app.mobb.ai",
+                    "isVisible": "true",
+                    "helpText": "Specify an Mobb URL for the Connection"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<span style=\"color: #222\"><font size=\"3\"><span style=\"color: #222\"><font size=\"3\">If you don't already have Checkmarx installed, click </font></span><a href=\"https://info.checkmarx.com/cx-microsoft-vs-team-services\" target=\"_blank\"><span style=\"color: #0072c6\"><font size=\"3\">here</font></span></a>   to register for a Checkmarx cloud account</span>"
+            }
+        },
+        {
+            "id": "mobb-report",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to Mobb results report",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Mobb Autofixer",
+                "uri": "MobbAutofixer/0.1.0/dist/mobb.html",
+                "supportsTasks": [
+                    "d49b6d4a-9db5-465d-9770-e62b734e4a45"
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
