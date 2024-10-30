@@ -1,0 +1,86 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/binxio/azure-devops-extensions/tree/master/google/google-cloud-auth"
+    },
+    "contributions": [
+        {
+            "id": "gcp-wif-auth",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/gcp-wif-auth"
+            }
+        },
+        {
+            "id": "gcp-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "Credentials for connecting to Google Cloud Platform",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "gcpWifEndpoint",
+                "displayName": "Google Cloud (WIF)",
+                "description": "Authenticate to Google Cloud from Azure Pipelines via Workload Identity Federation.",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Not used",
+                    "value": "https://www.googleapis.com/",
+                    "isVisible": "false"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "groupName": "Workload Identity Federation",
+                                "id": "workloadIdentityProvider",
+                                "name": "Workload Identity Pool Provider",
+                                "description": "Id of the workload identity pool provider e.g. projects/1234/locations/global/workloadIdentityPools/third-party/providers/devops",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "pattern": "^projects/.*/locations/.*/workloadIdentityPools/.*/providers/.*$",
+                                    "patternMismatchErrorMessage": "Input does not match pattern 'projects/*/locations/*/workloadIdentityPools/*/providers/*'"
+                                }
+                            },
+                            {
+                                "groupName": "Workload Identity Federation",
+                                "id": "serviceAccount",
+                                "name": "Service account",
+                                "description": "Email of the service account to impersonate e.g. deployer@my-project.iam.gserviceaccount.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "groupName": "Advanced",
+                                "id": "universe",
+                                "name": "Google Cloud Universe",
+                                "description": "Universe to use for constructing API endpoints. Defaults to googleapis.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "valueHint": "googleapis.com",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
