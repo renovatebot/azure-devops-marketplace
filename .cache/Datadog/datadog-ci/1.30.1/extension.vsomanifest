@@ -1,0 +1,148 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/DataDog/datadog-ci-azure-devops"
+    },
+    "contributions": [
+        {
+            "id": "synthetics-application-testing",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "SyntheticsRunTestsTask"
+            }
+        },
+        {
+            "id": "datadog-ci-service-endpoint",
+            "description": "Service endpoint type for Datadog CI",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "helpMarkDown": "[Learn More](https://docs.datadoghq.com/account_management/api-app-keys/)",
+            "properties": {
+                "name": "datadog-ci",
+                "displayName": "Datadog CI",
+                "url": {
+                    "displayName": "Datadog Site",
+                    "isVisible": "false",
+                    "value": "https://app.datadoghq.com",
+                    "dependsOn": {
+                        "input": "site",
+                        "map": [
+                            {
+                                "key": "us1",
+                                "value": "https://app.datadoghq.com/"
+                            },
+                            {
+                                "key": "us3",
+                                "value": "https://us3.datadoghq.com/"
+                            },
+                            {
+                                "key": "us5",
+                                "value": "https://us5.datadoghq.com/"
+                            },
+                            {
+                                "key": "eu",
+                                "value": "https://app.datadoghq.eu/"
+                            },
+                            {
+                                "key": "us1-fed",
+                                "value": "https://app.ddog-gov.com/"
+                            }
+                        ]
+                    }
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "site",
+                        "name": "Datadog Site",
+                        "description": "Datadog site to connect to",
+                        "inputMode": "combo",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 300
+                        },
+                        "values": {
+                            "inputId": "siteValues",
+                            "defaultValue": "us1",
+                            "possibleValues": [
+                                {
+                                    "value": "us1",
+                                    "displayValue": "US1"
+                                },
+                                {
+                                    "value": "us3",
+                                    "displayValue": "US3"
+                                },
+                                {
+                                    "value": "us5",
+                                    "displayValue": "US5"
+                                },
+                                {
+                                    "value": "eu",
+                                    "displayValue": "EU"
+                                },
+                                {
+                                    "value": "us1-fed",
+                                    "displayValue": "US1-FED"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "subdomain",
+                        "name": "Custom subdomain",
+                        "description": "The name of the custom subdomain set to access your Datadog application. If the URL used to access Datadog is `myorg.datadoghq.com`, this value needs to be set to `myorg`.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string",
+                            "maxLength": 300
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "_comment": "We need to override this input and keep the original ID from the `ms.vss-endpoint.endpoint-auth-scheme-token` scheme",
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "Your Datadog API key. This key is created by your [Datadog organization](https://docs.datadoghq.com/account_management/api-app-keys/).",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "appkey",
+                                "name": "Application Key",
+                                "description": "Your Datadog application key. This key is created by your [Datadog organization](https://docs.datadoghq.com/account_management/api-app-keys/).",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
