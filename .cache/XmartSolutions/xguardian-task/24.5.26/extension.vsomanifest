@@ -1,0 +1,76 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "xguardiantask"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Xguardian connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Xguardian",
+                "displayName": "XGuardian Service Connection",
+                "description": "Configure a autenticação com o XGuardian",
+                "icons": {
+                    "default": "images/icon.png"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "E-mail",
+                                "description": "E-mail do usuário para autenticação",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Senha",
+                                "description": "Senha do usuário para autenticação",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "datasources": [
+                    {
+                        "name": "XguardianAuth",
+                        "endpointUrl": "https://auth.xguardianplatform.io/login",
+                        "requestMethod": "POST",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "requestBody": "{\"email\":\"{{username}}\",\"password\":\"{{password}}\"}",
+                        "resultSelector": "$.token",
+                        "logLevel": "debug"
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
