@@ -1,0 +1,68 @@
+{
+    "manifestVersion": 1,
+    "scopes": [],
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "CodeAnt AI",
+                "description": "Pull Request Review",
+                "informationUrl": "https://aka.ms/vsoextensions",
+                "inputDescriptors": [
+                    {
+                        "id": "access_token",
+                        "isRequired": true,
+                        "name": "Access Token",
+                        "description": "Access token with appropriate permissions",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "base_url",
+                        "isRequired": true,
+                        "name": "Base URL",
+                        "description": "Base URL for API requests",
+                        "inputMode": "textbox",
+                        "defaultValue": "https://ved6vc7dkvz3veaigrllnasa4y0kmqbw.lambda-url.ap-south-1.on.aws"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "prReview",
+                        "name": "CodeAnt AI - Pull Request Review",
+                        "description": "Triggers CodeAnt AI pull request review",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{base_url}}}/pr/azure_devops/pr_review/processPullRequestAzureDevops?access_token={{{access_token}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    },
+                    {
+                        "id": "prComment",
+                        "name": "CodeAnt AI - Pull Request Question Answering",
+                        "description": "Triggers CodeAnt AI question answering on pull request",
+                        "supportedEventTypes": [
+                            "ms.vss-code.git-pullrequest-comment-event"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{base_url}}}/pr/azure_devops/pr_review/processPullRequestAzureDevops?access_token={{{access_token}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
