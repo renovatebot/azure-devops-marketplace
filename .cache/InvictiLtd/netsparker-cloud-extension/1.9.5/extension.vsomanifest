@@ -1,0 +1,102 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.build",
+        "vso.serviceendpoint",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "netsparker-cloud-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/NetsparkerCloud"
+            }
+        },
+        {
+            "id": "ne-build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Invicti Enterprise Scan Report",
+                "uri": "ne-reportTab.html"
+            }
+        },
+        {
+            "id": "ne-endpoint",
+            "description": "Invicti Enterprise Connection",
+            "type": "ms.vss-endpoint.ne-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ne",
+                "displayName": "Invicti Enterprise",
+                "url": {
+                    "displayName": "URL",
+                    "value": "https://www.netsparkercloud.com/",
+                    "helpText": "By default, netsparkercloud.com is assigned. Optionally, our onpremises customers can write their own domains.",
+                    "required": true,
+                    "isVisible": true
+                },
+                "dataSources": [
+                    {
+                        "name": "Websites",
+                        "endpointUrl": "{{endpoint.url}}api/1.0/scans/PluginWebSiteModels",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "Profiles",
+                        "endpointUrl": "{{endpoint.url}}api/1.0/scans/PluginWebSiteModels",
+                        "resultSelector": "jsonpath:$[*].WebsiteProfiles[?(@.WebsiteId =='{{scanWebSites}}')]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "User ID",
+                                "description": "User ID for connecting to the endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Token",
+                                "description": "Token for connecting to the endpoint",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
