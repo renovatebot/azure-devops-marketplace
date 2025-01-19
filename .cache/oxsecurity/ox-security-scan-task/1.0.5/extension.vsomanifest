@@ -1,0 +1,62 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "ox-task"
+            }
+        },
+        {
+            "id": "ox-service-connection-endpoint",
+            "description": "OX Security Authentication",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "OXSecurityAuth",
+                "displayName": "OX Security Authentication",
+                "url": "https://api.cloud.ox.security",
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "OX Security API key",
+                                "description": "Log into your <a href=\"https://app.ox.security\">OX Security account</a> to get your <a href=\"https://app.ox.security/settings?tab=apiKey\">API key</a>.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Log into your OX Security account."
+            }
+        },
+        {
+            "id": "ox-build-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "OX Security Scan",
+                "uri": "ox-build-results-tab/index.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
