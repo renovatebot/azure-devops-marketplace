@@ -1,0 +1,128 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.loadtest",
+        "vso.test",
+        "vso.work"
+    ],
+    "CustomerQnASupport": {
+        "enablemarketplaceqna": false,
+        "url": "http://support.north52.com",
+        "enableMarketplaceQnA": false
+    },
+    "contributions": [
+        {
+            "id": "n52custom-service-endpoint",
+            "description": "North52 Service Endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "north52",
+                "displayName": "North52",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url of your Dynamics365 environment"
+                },
+                "dataSources": [
+                    {
+                        "name": "North52",
+                        "endpointUrl": "{{endpoint.url}}api/projects/index",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-cert",
+                        "inputDescriptors": [
+                            {
+                                "id": "appid",
+                                "name": "App Id",
+                                "description": "Azure App Id",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "certificate",
+                                "name": "ClientSecret",
+                                "description": "Client Secret",
+                                "inputMode": "TextBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://support.north52.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "North52-Execute-Data-Packager",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "North52-Execute-Data-Packager"
+            }
+        },
+        {
+            "id": "North52-Create-ConfigurationRecord",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "North52-Create-ConfigurationRecord"
+            }
+        },
+        {
+            "id": "North52-Execute-Test-Runner",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "North52-Execute-Test-Runner"
+            }
+        },
+        {
+            "id": "North52-Update-ConfigurationRecord",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "North52-Update-ConfigurationRecord"
+            }
+        },
+        {
+            "id": "TestShield.Results.Viewer",
+            "type": "ms.vss-web.hub",
+            "description": "Adds a hub to Test Plans for viewing North52 Test Results",
+            "targets": [
+                "ms.vss-test-web.test-hub-group"
+            ],
+            "properties": {
+                "name": "North52 TestShield",
+                "iconAsset": "North52SoftwareApplicationsLimited.North52AzureDevops/North52-UI-Extension/images/TestResult32.png",
+                "_sharedData": {
+                    "assets": [
+                        "North52SoftwareApplicationsLimited.North52AzureDevops/North52-UI-Extension/images/TestResult32.png"
+                    ]
+                },
+                "order": 99,
+                "uri": "North52-UI-Extension/n52start.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
