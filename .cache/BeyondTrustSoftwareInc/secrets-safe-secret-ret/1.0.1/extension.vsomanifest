@@ -1,0 +1,190 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Secret Safe API connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "SecretsSafeConnection",
+                "displayName": "Secrets Safe server connection",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify the URL of your Secrets Safe server to connect to. For example, https://example.com:443/Beyondtrust/api/public/v3"
+                },
+                "icon": "images/task-icon.png",
+                "dataSources": [
+                    {
+                        "name": "SecretsSafeAPI Projects",
+                        "endpointUrl": "{{endpoint.url}}api/projects/index",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-cert",
+                        "displayName": "Basic Authentication",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "API Username",
+                                "description": "The username of a BeyondInsight user that has been granted permission to use the API key.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "requireAny": [
+                                        {
+                                            "id": "password",
+                                            "message": "API Username and API Key must be provided."
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API Key",
+                                "description": "The API key configured in BeyondInsight for your application.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "requireAny": [
+                                        {
+                                            "id": "username",
+                                            "message": "API Username and API Key must be provided."
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "certificate_key",
+                                "name": "Certificate Key",
+                                "description": "Certificate private key (key.pem)",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "certificate",
+                                "name": "Certificate",
+                                "description": "Content of the certificate (cert.pem)",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "insecure_skip_verify",
+                                "name": "Skip Server Certificate Verification",
+                                "description": "Warning: Insecure, instructs the Secrets Safe task to not verify the Secrets Safe certificate authority",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "Client Credentials",
+                        "inputDescriptors": [
+                            {
+                                "id": "client_id",
+                                "name": "Client ID",
+                                "description": "The client ID configured in BeyondInsight.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "requireAny": [
+                                        {
+                                            "id": "client_secret",
+                                            "message": "Client ID and Client Secret must be provided."
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "client_secret",
+                                "name": "Client Secret",
+                                "description": "The client secret configured in BeyondInsight.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "requireAny": [
+                                        {
+                                            "id": "client_id",
+                                            "message": "Client ID and Client Secret must be provided."
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "certificate_key",
+                                "name": "Certificate Key",
+                                "description": "Certificate private key (key.pem)",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "certificate",
+                                "name": "Certificate",
+                                "description": "Content of the certificate (cert.pem)",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "insecure_skip_verify",
+                                "name": "Skip Server Certificate Verification",
+                                "description": "Warning: Insecure, instructs the Secrets Safe task to not verify the Secrets Safe certificate authority",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://www.beyondtrust.com/docs/beyondinsight-password-safe/\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "custom-secrets-safe-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildandreleasetask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
