@@ -1,0 +1,52 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "panto-ado-ext-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "panto-ado-ext-consumer",
+                "name": "Panto AI: Code Review",
+                "description": "Panto AI Code Review",
+                "informationLink": "https://docs.pantomax.com",
+                "inputDescriptors": [
+                    {
+                        "id": "panto_webhook_url",
+                        "name": "Panto Webhook URL",
+                        "description": "Panto Webhook URL",
+                        "isRequired": true,
+                        "inputMode": "textbox",
+                        "values": {
+                            "defaultValue": "https://app.pantomax.co/api/azuredevops/webhook"
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "send_pr_event",
+                        "name": "Send PR Event",
+                        "description": "Sends a pull request event to the configured webhook URL.",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated",
+                            "git.pullrequest.merged",
+                            "git.pullrequest.deleted",
+                            "ms.vss-code.git-pullrequest-comment-event"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{panto_webhook_url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

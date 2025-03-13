@@ -1,0 +1,64 @@
+{
+    "manifestVersion": 1,
+    "overview": "overview.md",
+    "contributions": [
+        {
+            "id": "panto-ado-ext-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "panto-ado-ext-consumer",
+                "name": "Panto AI: Code Review",
+                "description": "Panto AI Code Review",
+                "informationLink": "https://docs.pantomax.com",
+                "inputDescriptors": [
+                    {
+                        "id": "panto_webhook_url",
+                        "name": "Panto Webhook URL",
+                        "description": "Panto Webhook URL",
+                        "inputMode": "textbox",
+                        "values": {
+                            "defaultValue": "https://app.pantomax.co/api/azuredevops/webhook"
+                        },
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "pat",
+                        "name": "Personal Access Token",
+                        "description": "Personal Access Token for accessing repositories",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "dataType": "string",
+                            "isRequired": false
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "send_pr_event",
+                        "name": "Panto Webhook Action",
+                        "description": "Sends a pull request event to the configured webhook URL.",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated",
+                            "ms.vss-code.git-pullrequest-comment-event"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{panto_webhook_url}}}?pat={{{pat}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
