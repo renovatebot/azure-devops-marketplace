@@ -1,0 +1,82 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/aquasecurity/trivy-azure-pipelines-task"
+    },
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "trivy-task"
+            }
+        },
+        {
+            "id": "trivy-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Results for trivy scan(s)",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Trivy",
+                "uri": "index.html",
+                "supportsTasks": [
+                    "8f9cb13f-f551-439c-83e4-fac6801c3fab",
+                    "3612b9ee-fd2a-11ef-8d14-00155d47a2a9"
+                ]
+            }
+        },
+        {
+            "id": "endpoint-auth-scheme-token",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "AquaPlatform",
+                "displayName": "Aqua Security Platform",
+                "icon": "images/aqua-logo.png",
+                "url": {
+                    "value": "https://api.cloudsploit.com",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "aquaKey",
+                                "name": "Aqua Platform API Key",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "aquaSecret",
+                                "name": "Aqua Platform API Secret",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributionTypes": []
+}
