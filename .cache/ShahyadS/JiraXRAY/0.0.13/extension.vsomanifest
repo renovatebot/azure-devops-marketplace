@@ -1,0 +1,115 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "PublishJiraXRAY",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "description": "Publish Test Results to Xray Test Management for Jira",
+            "properties": {
+                "name": "PublishJiraXRAY"
+            }
+        },
+        {
+            "id": "JiraXRAYToken-service-endpoint",
+            "description": "Service endpoint type for connectring to XRAY Test Management for Jira",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "JiraXRAYToken",
+                "displayName": "XRAY Test Management for Jira",
+                "url": {
+                    "displayName": "Jira URL",
+                    "helpText": "Jira Url, e.g. https://jira.mydomain/ or  https://mysite.atlassian.net/"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "jira Server on premise",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ endpoint.apitoken }}"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Personal Access Token",
+                                "description": "use the token that you already generated for your Jira account. if not then you can generate from jira user profile > Personal Access Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "Jira Cloud",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username e.g. johnsmith@domain.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API token",
+                                "description": "use the token that you already generated for your Jira account. if not you can generate from jira user Account Settings > Security > API Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}rest/raven/2.0/api/xraylicense",
+                        "resourceUrl": "",
+                        "resultSelector": "jsonpath:$.values[*]"
+                    }
+                ],
+                "helpMarkDown": "Jira OnPrem: user profile > Personal Access Token / Jira Cloud: Account Settings > Security > API Token"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
