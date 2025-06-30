@@ -43,25 +43,31 @@ function format-taskmanifests
 
     (Get-ChildItem -Path $path -Recurse -Filter "task.json" -File) | foreach-object {
         $taskJsonFile = $_
-        $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
-        $result = [ordered]@{
-            id = $taskJson.id
-            name = $taskJson.name
-            version = [ordered]@{
-                Major = ($taskJson.version.Major ?? $taskJson.version.major ?? 0)
-                Minor = ($taskJson.version.Minor ?? $taskJson.version.minor ?? 0)
-                Patch = ($taskJson.version.Patch ?? $taskJson.version.patch ?? 0)
+        try {
+            $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
+                $result = [ordered]@{
+                    id = $taskJson.id
+                    name = $taskJson.name
+                    version = [ordered]@{
+                        Major = ($taskJson.version.Major ?? $taskJson.version.major ?? 0)
+                        Minor = ($taskJson.version.Minor ?? $taskJson.version.minor ?? 0)
+                        Patch = ($taskJson.version.Patch ?? $taskJson.version.patch ?? 0)
+                }
+                friendlyName = $taskJson.friendlyName
+                description = $taskJson.description
+                preview = $taskJson.preview ?? $false
+                deprecated = $taskJson.deprecated ?? $false
+                author = $taskJson.author
             }
-            friendlyName = $taskJson.friendlyName
-            description = $taskJson.description
-            preview = $taskJson.preview ?? $false
-            deprecated = $taskJson.deprecated ?? $false
-            author = $taskJson.author
+
+            write-output "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
+
+            ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
         }
-
-        write-output "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
-
-        ConvertTo-Json -Depth 100 $result | Set-Content -Path $taskJsonFile.FullName
+        catch {
+            write-output "Deleting corrupt task manifest: $($taskJsonFile.FullName)"
+            remove-item $taskJsonFile.FullName -Force
+        }
     }
 }
 
