@@ -1,0 +1,128 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Contrast-Security-OSS/contrast-azure-pipeline-plugin"
+    },
+    "license": {
+        "path": "license.md"
+    },
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://www.contrastsecurity.com/contact-us"
+    },
+    "contributions": [
+        {
+            "id": "contrast-service-endpoint",
+            "description": "Service endpoint type for Contrast connection",
+            "type": "ms.vss-endpoint.endpoint-types",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "contrast",
+                "displayName": "Contrast",
+                "inputDescriptors": [
+                    {
+                        "id": "orgId",
+                        "name": "Organization UUID",
+                        "description": "Located in the 'Your API Keys' section under your User Settings.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "logging",
+                        "name": "Logging",
+                        "description": "Enable or disable logging.",
+                        "inputMode": "checkbox",
+                        "defaultValue": false,
+                        "isConfidential": false,
+                        "validation": {
+                            "dataType": "boolean"
+                        },
+                        "values": {
+                            "inputId": "logging",
+                            "defaultValue": false
+                        }
+                    }
+                ],
+                "url": {
+                    "displayName": "Contrast URL",
+                    "helpText": "This should be the address to your TeamServer (https://{{hostname}}) from which vulnerability data should be retrieved."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.username \":\" endpoint.apitoken }}"
+                            },
+                            {
+                                "name": "API-Key",
+                                "value": "{{endpoint.apikey}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Your Contrast Username.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apitoken",
+                                "name": "Service key",
+                                "description": "Located in the 'Your API Keys' section under your User Settings.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "apikey",
+                                "name": "API Key",
+                                "description": "Located in the 'Your API Keys' section under your User Settings.",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "contrastAssessSecurity",
+            "type": "ms.vss-distributed-task.task",
+            "properties": {
+                "name": "task/contrast-assess-security",
+                "uri": "task/contrast-assess-security/task.json"
+            }
+        },
+        {
+            "id": "contrastLocalScanner",
+            "type": "ms.vss-distributed-task.task",
+            "properties": {
+                "name": "task/contrast-local-scan",
+                "uri": "task/contrast-local-scan/task.json"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

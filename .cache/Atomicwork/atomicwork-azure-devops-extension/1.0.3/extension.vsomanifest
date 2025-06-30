@@ -1,0 +1,82 @@
+{
+    "manifestVersion": 1,
+    "overview": "overview.md",
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Atomicwork connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Atomicwork",
+                "displayName": "Atomicwork connection",
+                "url": {
+                    "displayName": "Atomicwork Url",
+                    "helpText": "Url of the Atomicwork instance to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/access-keys/verify",
+                        "resultSelector": "jsonpath:$.valid"
+                    },
+                    {
+                        "name": "Workspace",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/workspaces",
+                        "resultSelector": "jsonpath:$.data[?(@.is_change_enabled == true)]"
+                    },
+                    {
+                        "name": "ChangeTemplate",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/workspaces/$(workspaceId)/change-management/templates",
+                        "resultSelector": "jsonpath:$.data[?(@.is_active == true)]"
+                    },
+                    {
+                        "name": "DesiredExitStatus",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/forms/CHANGE/status/entities?workspace_id=$(workspaceId)&is_flattened_nested_field_required=false",
+                        "resultSelector": "jsonpath:$.data[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "x-api-key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "changemanagement-servergate-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/CreateChangeRequest"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}

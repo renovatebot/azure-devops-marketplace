@@ -14,7 +14,7 @@ function Import-Extensions
         [int]$PageSize
     )
 
-    $maxRetries = 3
+    $maxRetries = 4
     $retryDelay = 15
     $attempt = 1
     
