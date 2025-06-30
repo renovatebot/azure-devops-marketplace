@@ -123,7 +123,7 @@ write-output "::group::Installing tfx"
 
 if (-not (get-command -all "tfx" -ErrorAction SilentlyContinue))
 {
-    & npm install tfx-cli@^0.14 -g --no-fund
+    & npm install tfx-cli@^0.21.1 -g --no-fund
 }
 $token = $env:AZURE_DEVOPS_PAT
 $marketplace = "https://marketplace.visualstudio.com"
