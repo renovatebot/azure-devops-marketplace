@@ -51,7 +51,7 @@ foreach ($extension in $extensions) {
         {
             $localpath = ".cache/$publisherId/$extensionId/$extensionVersion/$($taskContribution.properties.name)"
 
-            $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json -Recurse
+            $taskManifestFiles = Get-ChildItem -Path "$localpath/*" -Filter task.json -Recurse -ErrorAction SilentlyContinue
 
             foreach ($taskManifestFile in $taskManifestFiles)
             {
