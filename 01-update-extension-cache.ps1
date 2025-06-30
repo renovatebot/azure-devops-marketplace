@@ -14,24 +14,48 @@ function Import-Extensions
         [int]$PageSize
     )
 
-    $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
-        -Method "POST" `
-        -Headers @{
-        "authority"="marketplace.visualstudio.com"
-        "method"="POST"
-        "path"="/_apis/public/gallery/extensionquery"
-        "scheme"="https"
-        "accept"="application/json;api-version=7.1-preview.1;excludeUrls=true"
-        "accept-encoding"="gzip, deflate, br"
-        "accept-language"="en-US,en;q=0.9"
-        "cache-control"="no-cache"
-        "origin"="https://marketplace.visualstudio.com"
-        "x-vss-reauthenticationaction"="Suppress"
-        } `
-        -ContentType "application/json" `
-        -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}"
+    $maxRetries = 3
+    $retryDelay = 15
+    $attempt = 1
+    
+    do {
+        try {
+            if ($attempt -gt 1) {
+                Write-Output "Retrying web request (attempt $attempt of $maxRetries) for page $Page..."
+                Start-Sleep -Seconds $retryDelay
+            }
+            
+            $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
+                -Method "POST" `
+                -Headers @{
+                "authority"="marketplace.visualstudio.com"
+                "method"="POST"
+                "path"="/_apis/public/gallery/extensionquery"
+                "scheme"="https"
+                "accept"="application/json;api-version=7.1-preview.1;excludeUrls=true"
+                "accept-encoding"="gzip, deflate, br"
+                "accept-language"="en-US,en;q=0.9"
+                "cache-control"="no-cache"
+                "origin"="https://marketplace.visualstudio.com"
+                "x-vss-reauthenticationaction"="Suppress"
+                } `
+                -ContentType "application/json" `
+                -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}"
 
-    return ($result.Content | ConvertFrom-Json).results[0];
+            # If we get here, the request succeeded
+            return ($result.Content | ConvertFrom-Json).results[0];
+        }
+        catch {
+            Write-Output "Web request failed on attempt $attempt for page $Page`: $($_.Exception.Message)"
+            
+            if ($attempt -eq $maxRetries) {
+                Write-Error "Failed to retrieve data after $maxRetries attempts for page $Page. Last error: $($_.Exception.Message)"
+                throw
+            }
+            
+            $attempt++
+        }
+    } while ($attempt -le $maxRetries)
 }
 
 function format-taskmanifests

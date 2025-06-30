@@ -1,0 +1,62 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.code",
+        "vso.serviceendpoint",
+        "vso.extension.data_write"
+    ],
+    "contributions": [
+        {
+            "id": "dotnet-framework-validator-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/tasks/dotnetFrameworkValidator"
+            }
+        },
+        {
+            "id": "dotnet-framework-validator-service-endpoint",
+            "description": ".NET Framework Validator Settings",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "dotnetFrameworkValidator",
+                "displayName": ".NET Framework Validator Settings",
+                "url": {
+                    "displayName": "Service URL",
+                    "value": "https://dev.azure.com/",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "Configuration",
+                        "inputDescriptors": [
+                            {
+                                "id": "frameworkWhitelist",
+                                "name": "Allowed .NET Framework versions",
+                                "description": "List of allowed .NET framework versions (one per line)",
+                                "inputMode": "textArea",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "defaultValue": "net6.0\nnet5.0\nnetcoreapp3.1"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Configure which .NET Framework versions are allowed in your organization."
+            }
+        }
+    ],
+    "contributionTypes": []
+}
