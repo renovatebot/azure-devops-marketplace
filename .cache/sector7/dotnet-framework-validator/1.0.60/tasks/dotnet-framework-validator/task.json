@@ -1,0 +1,71 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "8D1C8A0B-7B97-43C0-B091-73CCA0AE0239",
+    "name": "DotNetFrameworkValidator",
+    "friendlyName": ".NET Framework Validator",
+    "description": "Validates that .NET projects only use approved framework versions",
+    "helpMarkDown": "[Learn more about this task](https://github.com/your-repo-url)",
+    "category": "Utility",
+    "author": "Sector7",
+    "version": {
+        "Major": 1,
+        "Minor": 0,
+        "Patch": 49
+    },
+    "instanceNameFormat": ".NET Framework Validator",
+    "releaseNotes": "Fixed authentication issues when accessing Azure DevOps Extension Data Service.",
+    "inputs": [
+        {
+            "name": "projectPath",
+            "type": "filePath",
+            "label": "Project path",
+            "defaultValue": "**/*.csproj",
+            "required": true,
+            "helpMarkDown": "Path to the .NET project files to validate. Supports wildcards."
+        },
+        {
+            "name": "overrideWhitelist",
+            "type": "multiLine",
+            "label": "Override framework whitelist",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Comma-separated list of allowed framework versions (e.g., net6.0,net5.0). Leave empty to use the globally configured whitelist.",
+            "properties": {
+                "resizable": true,
+                "rows": "3"
+            }
+        },
+        {
+            "name": "failOnInvalidFramework",
+            "type": "boolean",
+            "label": "Fail on invalid framework",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "If true, the build will fail when a project uses a framework not in the whitelist. If false, a warning will be issued but the build will succeed."
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        },
+        "Node16": {
+            "target": "index.js"
+        }
+    },
+    "prejobexecution": {
+        "Node10": {
+            "target": "prejob.js"
+        },
+        "Node16": {
+            "target": "prejob.js"
+        }
+    },
+    "messages": {
+        "FrameworkValidationSuccess": "All projects use approved framework versions! 🎉",
+        "FrameworkValidationFailure": "Found %s project(s) using non-approved framework versions",
+        "NoProjectsFound": "No .NET project files found matching pattern: %s",
+        "UsingWhitelistFromVariables": "Using whitelist from pipeline variables: %s",
+        "UsingDefaultWhitelist": "No whitelist found, using default: %s",
+        "ErrorAccessingWhitelist": "Error accessing whitelist, using default: %s"
+    }
+}
