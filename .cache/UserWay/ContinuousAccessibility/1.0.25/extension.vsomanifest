@@ -1,0 +1,104 @@
+{
+    "manifestVersion": 1,
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://help.userway.org"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://bitbucket.org/userway/cicd-azure/"
+    },
+    "contributions": [
+        {
+            "id": "1bde8599-2a75-4cdc-8e3c-36b7b9e7dfc4",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/tasks/ContinuousAccessibilityAnalyze"
+            }
+        },
+        {
+            "id": "330b0ddd-2bb7-4296-ad5f-bef3db40787b",
+            "description": "Service endpoint type for C11Ay",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cicdc11yprod",
+                "displayName": "UserWay Continuous Accessibility",
+                "url": {
+                    "displayName": "Server Url",
+                    "value": "https://api.userway.org/",
+                    "isVisible": false
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/ca/v0/cicd/organizations/alm/azure/namespaces/repositories/verify",
+                        "resultSelector": "jsonpath:$.payload"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "x-project-token",
+                                "value": "{{endpoint.apitoken}}"
+                            },
+                            {
+                                "name": "x-project-name",
+                                "value": "{{endpoint.projectname}}"
+                            },
+                            {
+                                "name": "x-organization-slug",
+                                "value": "{{endpoint.organizationslug}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Api Token",
+                                "description": "Authentication Token generated you can find in project settings",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "projectname",
+                                "name": "Project Name",
+                                "description": "Project name",
+                                "inputMode": "textBox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "organizationslug",
+                                "name": "Organization Slug",
+                                "description": "Organization Slug",
+                                "inputMode": "textBox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Go to <a href=\"https://cicd.qa.userway.dev\" target=\"_blank\">your Azure Devops project settings</a> to get a token."
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
