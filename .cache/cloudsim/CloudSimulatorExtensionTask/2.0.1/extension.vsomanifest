@@ -1,0 +1,57 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.release",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "cloudsim-extension-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "CloudSimulatorExtensionTask"
+            }
+        },
+        {
+            "id": "cloudsim-extension-service-endpoint",
+            "description": "Service endpoint for CloudSimulator Extension APIs",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "CloudSimulatorExtensionAPIConnection",
+                "displayName": "Service endpoint for CloudSimulator Extension APIs",
+                "url": {
+                    "displayName": "CloudSimulator API URL",
+                    "value": "https://cloudsimdtapiapp.victoriouswater-b6d12e5c.eastus2.azurecontainerapps.io",
+                    "isVisible": "true",
+                    "helpMarkDown": "URL of the CloudSimulator API",
+                    "dependsOn": {
+                        "input": "dtApiUrl",
+                        "map": [
+                            {
+                                "key": "Dev",
+                                "value": "https://cloudsimdtapiapp-dev.victoriouswater-b6d12e5c.eastus2.azurecontainerapps.io"
+                            },
+                            {
+                                "key": "Prod",
+                                "value": "https://cloudsimdtapiapp-prod.victoriouswater-b6d12e5c.eastus2.azurecontainerapps.io"
+                            }
+                        ]
+                    }
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-workload-identity-federation",
+                        "displayName": "Federated Identity Credentials (recommended)"
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
