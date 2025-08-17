@@ -6,8 +6,7 @@ $skipCommit = $env:SKIP_COMMIT -eq "true"
 
 $ErrorActionPreference = "Stop"
 
-function Import-Extensions
-{
+function Import-Extensions {
     [cmdletbinding()]
     Param (
         [int]$Page,
@@ -28,17 +27,17 @@ function Import-Extensions
             $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
                 -Method "POST" `
                 -Headers @{
-                "authority"="marketplace.visualstudio.com"
-                "method"="POST"
-                "path"="/_apis/public/gallery/extensionquery"
-                "scheme"="https"
-                "accept"="application/json;api-version=7.1-preview.1;excludeUrls=true"
-                "accept-encoding"="gzip, deflate, br"
-                "accept-language"="en-US,en;q=0.9"
-                "cache-control"="no-cache"
-                "origin"="https://marketplace.visualstudio.com"
-                "x-vss-reauthenticationaction"="Suppress"
-                } `
+                "authority"                    = "marketplace.visualstudio.com"
+                "method"                       = "POST"
+                "path"                         = "/_apis/public/gallery/extensionquery"
+                "scheme"                       = "https"
+                "accept"                       = "application/json;api-version=7.1-preview.1;excludeUrls=true"
+                "accept-encoding"              = "gzip, deflate, br"
+                "accept-language"              = "en-US,en;q=0.9"
+                "cache-control"                = "no-cache"
+                "origin"                       = "https://marketplace.visualstudio.com"
+                "x-vss-reauthenticationaction" = "Suppress"
+            } `
                 -ContentType "application/json" `
                 -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}"
 
@@ -58,8 +57,7 @@ function Import-Extensions
     } while ($attempt -le $maxRetries)
 }
 
-function format-taskmanifests
-{
+function format-taskmanifests {
     [CmdletBinding()]
     param (
         $path
@@ -69,19 +67,19 @@ function format-taskmanifests
         $taskJsonFile = $_
         try {
             $taskJson = Get-Content -Path $taskJsonFile.FullName -Raw | ConvertFrom-Json -AsHashtable
-                $result = [ordered]@{
-                    id = $taskJson.id
-                    name = $taskJson.name
-                    version = [ordered]@{
-                        Major = ($taskJson.version.Major ?? $taskJson.version.major ?? 0)
-                        Minor = ($taskJson.version.Minor ?? $taskJson.version.minor ?? 0)
-                        Patch = ($taskJson.version.Patch ?? $taskJson.version.patch ?? 0)
+            $result = [ordered]@{
+                id           = $taskJson.id
+                name         = $taskJson.name
+                version      = [ordered]@{
+                    Major = ($taskJson.version.Major ?? $taskJson.version.major ?? 0)
+                    Minor = ($taskJson.version.Minor ?? $taskJson.version.minor ?? 0)
+                    Patch = ($taskJson.version.Patch ?? $taskJson.version.patch ?? 0)
                 }
                 friendlyName = $taskJson.friendlyName
-                description = $taskJson.description
-                preview = $taskJson.preview ?? $false
-                deprecated = $taskJson.deprecated ?? $false
-                author = $taskJson.author
+                description  = $taskJson.description
+                preview      = $taskJson.preview ?? $false
+                deprecated   = $taskJson.deprecated ?? $false
+                author       = $taskJson.author
             }
 
             write-output "Normalizing task manifest: $($taskJson.name) $($taskJson.version.Major).$($taskJson.version.Minor).$($taskJson.version.Patch)"
@@ -95,8 +93,7 @@ function format-taskmanifests
     }
 }
 
-function write-commit
-{
+function write-commit {
     [cmdletbinding()]
     Param (
         [string]$message
@@ -106,10 +103,8 @@ function write-commit
 
     & git add . | Out-Null
     (& git diff HEAD --exit-code) | Out-null
-    if ($LASTEXITCODE -ne 0)
-    {
-        if ($skipCommit)
-        {
+    if ($LASTEXITCODE -ne 0) {
+        if ($skipCommit) {
             return
         }
 
@@ -121,15 +116,12 @@ function write-commit
 
 write-output "::group::Installing tfx"
 
-if (-not (get-command -all "tfx" -ErrorAction SilentlyContinue))
-{
-    & npm install tfx-cli@^0.21.3 -g --no-fund
-}
+& npm install tfx-cli@0.21.3 -g --no-fund
+
 $token = $env:AZURE_DEVOPS_PAT
 $marketplace = "https://marketplace.visualstudio.com"
 & tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
-if ($LASTEXITCODE -ne 0)
-{
+if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to login to marketplace"
     exit 1
 }
@@ -137,7 +129,7 @@ if ($LASTEXITCODE -ne 0)
 write-output "::endgroup::"
 
 write-output "::group::Fetching Extension Metadata"
-$pageSize= 100;
+$pageSize = 100;
 $page = 1
 $totalFetched = 0
 $max = 0
@@ -145,10 +137,8 @@ $extensions = @()
 $cacheFile = ".cache/extensions.json"
 mkdir -path ".cache" -Force | out-null
 
-if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
-{
-    do
-    {
+if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
+    do {
         $ProgressPreference = "silentlycontinue"
         $result = Import-Extensions -PageSize $pageSize -Page $page
         $totalFetched += $result.extensions.Count
@@ -164,11 +154,10 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache))
     while ($totalFetched -lt $max)
 
     # Remove properties that we don't need to prevent unwanted cache commits
-    foreach ($extension in $extensions)
-    {
+    foreach ($extension in $extensions) {
         if ($extension.versions) { $extension.versions = @() }
         if ($extension.statistics) { $extension.statistics = @() }
-        if ($extension.installationTargets) { $extension.installationTargets= @() }
+        if ($extension.installationTargets) { $extension.installationTargets = @() }
         if ($extension.categories) { $extension.categories = @() }
         if ($extension.tags) { $extension.tags = @() }
     }
@@ -185,8 +174,7 @@ else {
 write-output "::endgroup::"
 
 $extensionsProcessed = 0
-foreach ($extension in $extensions)
-{
+foreach ($extension in $extensions) {
     $ProgressPreference = "continue"
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
@@ -201,17 +189,14 @@ foreach ($extension in $extensions)
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     $fetchExtensionData = $true
-    if (Test-Path -Path $extensionDataFile -PathType Leaf)
-    {
+    if (Test-Path -Path $extensionDataFile -PathType Leaf) {
         $extensionData = get-content -raw -Path $extensionDataFile | ConvertFrom-Json -Depth 100
-        if ($extensionData.lastUpdated -ge $extension.lastUpdated)
-        {
+        if ($extensionData.lastUpdated -ge $extension.lastUpdated) {
             $fetchExtensionData = $false
         }
     }
 
-    if ($fetchExtensionData)
-    {
+    if ($fetchExtensionData) {
         $extensionData = (& tfx extension show --auth-type pat --token $token --service-url $marketplace --publisher $publisherId --extension-id $extensionId --json --no-color --no-prompt) | ConvertFrom-Json
         ($extensionData.versions ?? @()) | foreach-object { $_.files = $_.files | where-object { $_.assetType -in @("Microsoft.VisualStudio.Services.VSIXPackage", "Microsoft.VisualStudio.Services.VsixManifest") } }
         $extensionData | ConvertTo-Json -Depth 100 | Set-Content -Path $extensionDataFile
@@ -229,28 +214,26 @@ foreach ($extension in $extensions)
         if (
             -not (Test-Path -Path $extractedPath -PathType Container) -or
             (-not $vsixManifestUrl -and -not (test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf))
-            )
-        {
+        ) {
             write-output "Downloading VSIX: $($version.version)"
-            try{
+            try {
                 Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
 
                 format-taskmanifests -path $extractedPath
 
                 # For extensions that contain no tasks, make sure we commit the folder for caching
-                if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf))
-                {
+                if (-not (Test-Path -Path "$extractedPath/extension.vsomanifest" -PathType Leaf)) {
                     mkdir $extractedPath -Force | out-null
                     Set-Content -path "$extractedPath/.completed" -value "true" -Force
                 }
-            }finally{
+            }
+            finally {
                 Remove-Item $savepath
             }
         }
 
-        if ($vsixManifestUrl -and (-not(test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf)))
-        {
+        if ($vsixManifestUrl -and (-not(test-path -path "$extractedPath/extension.vsixmanifest" -PathType Leaf))) {
             write-output "Downloading VSIX Manifest: $($version.version)"
             mkdir $extractedPath -Force | out-null
             Invoke-WebRequest -Uri $vsixManifestUrl -OutFile "$extractedPath/extension.vsixmanifest"
@@ -262,8 +245,7 @@ foreach ($extension in $extensions)
 }
 
 write-commit -message "Update .cache"
-if (-not $skipCommit)
-{
+if (-not $skipCommit) {
     & git push
 }
 
