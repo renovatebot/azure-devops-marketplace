@@ -116,7 +116,7 @@ function write-commit {
 
 write-output "::group::Installing tfx"
 
-& npm install tfx-cli@0.21.3 -g --no-fund
+npm install tfx-cli@0.21.3 -g --no-fund
 
 $token = $env:AZURE_DEVOPS_PAT
 $marketplace = "https://marketplace.visualstudio.com"
