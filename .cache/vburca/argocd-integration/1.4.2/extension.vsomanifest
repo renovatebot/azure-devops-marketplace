@@ -1,0 +1,156 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/vasiliiburca/argocd-azure-devops-integration-extention"
+    },
+    "badges": [
+        {
+            "href": "https://github.com/vasiliiburca/argocd-azure-devops-integration-extention",
+            "uri": "https://img.shields.io/badge/version-1.4.2-blue.svg",
+            "description": "Extension Version"
+        }
+    ],
+    "scopes": [
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "argocd-service-endpoint",
+            "description": "Service endpoint type for ArgoCD connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vburca-argocd",
+                "displayName": "ArgoCD Integration",
+                "icon": "service-endpoint/extention_service_connection.png",
+                "url": {
+                    "displayName": "ArgoCD Server URL",
+                    "helpText": "URL of the ArgoCD server (e.g., https://argocd.example.com)",
+                    "isRequired": true
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "skipCertificateValidation",
+                        "name": "Skip Certificate Validation",
+                        "description": "Skip TLS certificate validation (use for self-signed certificates)",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "JWT Token Authentication",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "ArgoCD JWT API Token (generate using: argocd account generate-token)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 3000
+                                }
+                            }
+                        ],
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}api/v1/applications",
+                        "resultSelector": "jsonpath:$.items[*].metadata.name",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            },
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ArgoCDApplications",
+                        "endpointUrl": "{{endpoint.url}}api/v1/applications{{#project}}?project={{project}}{{/project}}",
+                        "resultSelector": "jsonpath:$.items[?(@.spec.project=='{{project}}' || '{{project}}'=='')].metadata.name",
+                        "resultTemplate": "{\"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\"}",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            },
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ArgoCDProjects",
+                        "endpointUrl": "{{endpoint.url}}api/v1/projects",
+                        "resultSelector": "jsonpath:$.items[*].metadata.name",
+                        "resultTemplate": "{\"Value\" : \"{{{defaultResultKey}}}\", \"DisplayValue\" : \"{{{defaultResultKey}}}\"}",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            },
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "ArgoCDVersion",
+                        "endpointUrl": "{{endpoint.url}}api/version",
+                        "resultSelector": "jsonpath:$.Version"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://argo-cd.readthedocs.io/en/stable/user-guide/ci_automation/\" target=\"_blank\"><b>Learn More about ArgoCD CI Integration</b></a>"
+            }
+        },
+        {
+            "id": "argocd-sync-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArgocdSync"
+            }
+        },
+        {
+            "id": "argocd-refresh-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/ArgocdRefresh"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
