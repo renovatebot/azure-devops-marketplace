@@ -1,0 +1,56 @@
+{
+    "manifestVersion": 1,
+    "keywords": [
+        "AI",
+        "Code Review",
+        "Pull Request",
+        "Azure OpenAI",
+        "Automation"
+    ],
+    "contributions": [
+        {
+            "id": "ai-pr-review-service",
+            "type": "ms.vss-servicehooks.consumer",
+            "description": "AI PR Review Service Hook Consumer",
+            "targets": [
+                "ms.vss-code.git-pullrequest-created-event",
+                "ms.vss-code.git-pullrequest-updated-event"
+            ],
+            "properties": {
+                "serviceName": "AI PR Reviewer AT",
+                "consumerId": "ai-pr-reviewer-at",
+                "consumerActionId": "reviewPullRequest",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "name": "Webhook URL",
+                        "description": "The URL to post PR events to",
+                        "inputMode": "textBox",
+                        "isConfidential": false,
+                        "validation": {
+                            "dataType": "uri"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "ai-pr-reviewer-hub",
+            "type": "ms.vss-web.hub",
+            "description": "AI PR Reviewer Configuration Hub",
+            "targets": [
+                "ms.vss-code.code-hub-group"
+            ],
+            "properties": {
+                "name": "AI PR Reviewer AT",
+                "order": 30,
+                "uri": "dist/hub.html"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.code",
+        "vso.code_write"
+    ],
+    "contributionTypes": []
+}
