@@ -1,0 +1,97 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "Cloudanix Security Web Hook",
+                "description": "Send Azure DevOps code events to an API endpoint",
+                "informationUrl": "https://cloudanix.com",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": true,
+                        "name": "Cloudanix Security Web Hook URL",
+                        "description": "URL to send Azure DevOps events to Cloudanix for security analysis.",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "performAction",
+                        "name": "Send event to webhook",
+                        "description": "Sends the complete event payload to the specified webhook URL as a JSON POST request",
+                        "supportedEventTypes": [
+                            "git.push",
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "cloudanix-image-scanner-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "cloudanix-image-scanner-task"
+            }
+        },
+        {
+            "id": "pr-status-service",
+            "type": "ms.vss-web.hub-group",
+            "description": "Pull Request Status Service",
+            "targets": [
+                "ms.vss-code-web.pr-details-view"
+            ],
+            "properties": {
+                "name": "Code Analysis",
+                "order": 100
+            }
+        },
+        {
+            "id": "pr-status-tab",
+            "type": "ms.vss-web.tab",
+            "description": "Shows code analysis results for the pull request",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "Code Analysis",
+                "uri": "dist/pr-status-tab.html"
+            }
+        },
+        {
+            "id": "settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Settings for the Code Analysis extension",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Code Analysis Settings",
+                "uri": "dist/settings.html"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.code",
+        "vso.code_write",
+        "vso.build"
+    ],
+    "contributionTypes": []
+}
