@@ -1,0 +1,264 @@
+{
+    "manifestVersion": 1,
+    "CustomerQnASupport": {
+        "enableqna": true,
+        "url": "https://connect.uipath.com/marketplace/components/uipath-tasks-for-azure-devops/questions"
+    },
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/UiPath/Extensions"
+    },
+    "contributions": [
+        {
+            "id": "vsts-eventlog-to-tests",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V1"
+            }
+        },
+        {
+            "id": "uipath-assets-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathAssets/dist"
+            }
+        },
+        {
+            "id": "uipath-install-platform-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathInstallPlatform/dist"
+            }
+        },
+        {
+            "id": "uipath-pack-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathPack/dist"
+            }
+        },
+        {
+            "id": "uipath-deploy-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathDeploy/dist"
+            }
+        },
+        {
+            "id": "uipath-test-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathTest/dist"
+            }
+        },
+        {
+            "id": "uipath-runjob-preview",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "V2/UiPathRunJob/dist"
+            }
+        },
+        {
+            "id": "vsts-uipath-orchestrator-preview-endpoint-type",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vsts-uipath-orchestrator-preview",
+                "displayName": "UiPath Orchestrator Connection (Preview)",
+                "url": {
+                    "displayName": "Orchestrator URL",
+                    "helpText": "The URL of the Orchestrator server to connect to."
+                },
+                "helpMarkDown": "UiPath Orchestrator",
+                "dataSources": [
+                    {
+                        "name": "AccessToken",
+                        "endpointUrl": "{{{configuration.Url}}}/identity_/connect/token",
+                        "requestVerb": "Post",
+                        "requestContent": "grant_type=authorization_code&code={{{#uriDataEncode 1 AuthorizationCode}}}{{{/uridataencode}}}&client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}&redirect_uri={{{#uriDataEncode 1 RedirectUrl}}}{{{/uridataencode}}}",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "RefreshToken",
+                        "endpointUrl": "{{{configuration.Url}}}/identity_/connect/token",
+                        "requestVerb": "Post",
+                        "requestContent": "grant_type=refresh_token&refresh_token={{{#uriDataEncode 1 RefreshToken}}}{{{/uridataencode}}}&client_id={{{#uriDataEncode 1 configuration.ClientId}}}{{{/uridataencode}}}&client_secret={{{#uriDataEncode 1 configuration.ClientSecret}}}{{{/uridataencode}}}",
+                        "resultSelector": "jsonpath:$",
+                        "headers": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/x-www-form-urlencoded"
+                            }
+                        ]
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "tenant",
+                                "name": "Tenant",
+                                "description": "Tenant",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "accountName",
+                                "name": "Account Name",
+                                "description": "Account Logical Name",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "API key for connection to endpoint (User Key)",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "tenant",
+                                "name": "Tenant",
+                                "description": "Tenant Logical Name",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-oauth2",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{{endpoint.AccessToken}}}"
+                            }
+                        ],
+                        "displayName": "Grant authorization",
+                        "authorizationUrl": "{{{configuration.Url}}}/identity_/connect/authorize?response_type=code&client_id={{{configuration.ClientId}}}&scope=OR.TestSets.Read%20OR.TestSetExecutions.Read%20OR.TestSetSchedules.Read%20OR.Robots.Read%20OR.Machines.Read%20OR.Users.Read%20OR.TestDataQueues.Read%20offline_access&redirect_uri={{{RedirectUrl}}}",
+                        "inputDescriptors": [
+                            {
+                                "id": "accountName",
+                                "name": "Account Name",
+                                "description": "Account Logical Name",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            },
+                            {
+                                "id": "tenant",
+                                "name": "Tenant",
+                                "description": "Tenant Logical Name",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ],
+                        "dataSourceBindings": [
+                            {
+                                "target": "AccessToken",
+                                "dataSourceName": "AccessToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}"
+                            },
+                            {
+                                "target": "RefreshToken",
+                                "dataSourceName": "RefreshToken",
+                                "resultTemplate": "{\"AccessToken\" : \"{{{access_token}}}\", \"RefreshToken\" : \"{{{refresh_token}}}\", \"ExpiresIn\" : \"{{{expires_in}}}\", \"TokenType\" : \"{{{token_type}}}\", \"Scope\" : \"{{{scope}}}\", \"Error\" : \"{{{error}}}\", \"ErrorDescription\" : \"{{{error_description}}}\"}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
