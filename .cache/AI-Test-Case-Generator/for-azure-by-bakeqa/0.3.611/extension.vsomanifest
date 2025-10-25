@@ -1,0 +1,174 @@
+{
+    "manifestVersion": 1,
+    "author": {
+        "name": "Bake Technologies Pty Ltd"
+    },
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Azure connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "for-azure-by-bakeqa",
+                "displayName": "BakeQA connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the server to connect to.",
+                    "value": "https://api.bakeqa.com",
+                    "isVisible": "false"
+                },
+                "dataSources": [
+                    {
+                        "name": "Orchestrator",
+                        "endpointUrl": "{{endpoint.url}}/orchestrators/request-orchestrator",
+                        "requestVerb": "PUT",
+                        "requestContent": "{{{body}}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "StatusCheck",
+                        "endpointUrl": "{{endpoint.url}}/orchestrator/runtime/webhooks/durabletask/instances/{{id}}?taskHub=bakeqa&connection=Storage&code={{code}}",
+                        "resultSelector": "jsonpath:$"
+                    },
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/azure-devops-verify",
+                        "resultSelector": "jsonpath:$"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "BakeQA-Auth-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://aitestcasegenerator.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "feature-bakeqa-visible-for-project",
+            "type": "ms.vss-web.feature",
+            "description": "Enable feature for a specific project",
+            "targets": [],
+            "properties": {
+                "name": "Feature",
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ],
+                "defaultState": true
+            }
+        },
+        {
+            "id": "bakeqa-work-item-form-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "AI Test Case Generator group",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "AI Test Case Generator",
+                "uri": "dist/WorkItemFormGroup/index.html",
+                "height": 300
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "AI-Test-Case-Generator.for-azure-by-bakeqa.feature-bakeqa-visible-for-project"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "bakeqa-admin-hub",
+            "type": "ms.vss-web.hub",
+            "description": "AI Test Case Generator admin page",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "AI Test Case Generator",
+                "uri": "dist/AdminGroup/index.html",
+                "height": 600
+            }
+        },
+        {
+            "id": "bulk-menu-item",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Generate Test Cases",
+                "title": "Generate Test Cases with AI Test Case Generator",
+                "groupId": "actions",
+                "uri": "dist/BulkContextMenu/BulkContextMenu.html",
+                "iconName": "EditNote",
+                "registeredObjectId": "bulk-menu"
+            }
+        },
+        {
+            "id": "bulk-panel-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/BulkPanel/BulkPanel.html"
+            }
+        },
+        {
+            "id": "select-endpoint-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/ServiceEndpoint/ServiceEndpoint.html"
+            }
+        },
+        {
+            "id": "settings-panel-content",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "uri": "dist/SettingsPanel/SettingsPanel.html"
+            }
+        }
+    ],
+    "licensing": {
+        "overrides": [
+            {
+                "id": "service-endpoint",
+                "behavior": " AlwaysInclude"
+            },
+            {
+                "id": "select-endpoint-content",
+                "behavior": " AlwaysInclude"
+            },
+            {
+                "id": "bakeqa-work-item-form-group",
+                "behavior": " AlwaysInclude"
+            }
+        ]
+    },
+    "CustomerQnASupport": {
+        "enablemarketplaceqna": true,
+        "url": "https://intercom.help/aitestcasegenerator/en/",
+        "enableMarketplaceQnA": true
+    },
+    "scopes": [
+        "vso.serviceendpoint_manage",
+        "vso.memberentitlementmanagement",
+        "vso.identity",
+        "vso.security_manage",
+        "vso.work_full",
+        "vso.project",
+        "vso.test_write",
+        "vso.features_write"
+    ],
+    "contributionTypes": []
+}
