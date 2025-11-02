@@ -1,0 +1,131 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "opkey-service-endpoint",
+            "description": "Service Endpoint type for OpKey SaaS connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "OpKey",
+                "displayName": "OpKey SaaS",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for OpKey SaaS."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "/TMTRestAPI/getProjects",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyProjectsRESTCall",
+                        "endpointUrl": "/TMTRestAPI/getProjects",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeySuiteRESTCall",
+                        "endpointUrl": "/TMTRestAPI/GetSuites?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyAgentsRESTCall",
+                        "endpointUrl": "/TMTRestAPI/getAgents?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyAgentPluginsRESTCall",
+                        "endpointUrl": "/TMTRestAPI/getAgentSpecificPlugin?projectName=$(opkeyProject)&agentName=$(opkeyAgent)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyBuildsRESTCall",
+                        "endpointUrl": "/TMTRestAPI/getBuilds?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVRESTCall",
+                        "endpointUrl": "/TMTRestAPI/getGlobalVariablesForVSTS?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE1Call",
+                        "endpointUrl": "/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName1)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE2Call",
+                        "endpointUrl": "/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName2)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE3Call",
+                        "endpointUrl": "/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName3)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE4Call",
+                        "endpointUrl": "/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName4)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE5Call",
+                        "endpointUrl": "/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName5)",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username for connecting to the endpoint.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "value": "",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API Key",
+                                "description": "API Key for connecting to the endpoint.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "value": "",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": ""
+            }
+        },
+        {
+            "id": "opkey-custom-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "description": "Adds OpKey type Build Task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildtask"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.release"
+    ],
+    "contributionTypes": []
+}
