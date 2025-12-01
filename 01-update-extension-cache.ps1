@@ -217,7 +217,7 @@ foreach ($extension in $extensions) {
         ) {
             write-output "Downloading VSIX: $($version.version)"
             try {
-                Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath
+                Invoke-WebRequest -Uri $vsixUrl -OutFile $savePath -TimeoutSec 300
                 (& 7z x $savePath "-o$extractedPath" "task.json" "extension.vsixmanifest" "extension.vsomanifest" -y -r -bd -aoa -spd -bb0) | out-null
 
                 format-taskmanifests -path $extractedPath
@@ -248,4 +248,5 @@ write-commit -message "Update .cache"
 if (-not $skipCommit) {
     & git push
 }
+
 
