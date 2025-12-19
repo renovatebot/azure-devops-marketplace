@@ -92,12 +92,17 @@ foreach ($extension in $extensions) {
                     }
                 }
 
-                $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
+                try {
+                    $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
 
-                add-version -name "$($taskManifest.name)" -version $versionString
-                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
-                add-version -name "$($taskManifest.id)" -version $versionString
-                add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                    add-version -name "$($taskManifest.name)" -version $versionString
+                    add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
+                    add-version -name "$($taskManifest.id)" -version $versionString
+                    add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                }
+                catch {
+                    write-output "Could not parse version for task $($taskManifest.name) in $publisherId/$extensionId version $extensionVersion"
+                }
             }
         }
     }
