@@ -1,0 +1,105 @@
+{
+    "manifestVersion": 1,
+    "scopes": [],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/shankarcdant/codeant-azure-devops-extensions"
+    },
+    "contributions": [
+        {
+            "id": "codeant-quality-gate",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "codeant-quality-gate-task"
+            }
+        },
+        {
+            "id": "codeant-ci-scan",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "codeant-ci-scan-task"
+            }
+        },
+        {
+            "id": "codeant-coverage-upload",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "codeant-coverage-upload-task"
+            }
+        },
+        {
+            "id": "consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "consumer",
+                "name": "CodeAnt AI",
+                "description": "Pull Request Review",
+                "informationUrl": "https://codeant.ai",
+                "inputDescriptors": [
+                    {
+                        "id": "access_token",
+                        "isRequired": true,
+                        "name": "Access Token",
+                        "description": "Access token with appropriate permissions",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "base_url",
+                        "isRequired": true,
+                        "name": "Base URL",
+                        "description": "Base URL for API requests",
+                        "inputMode": "textbox",
+                        "values": {
+                            "inputId": "base_url",
+                            "defaultValue": "https://api.codeant.ai"
+                        }
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "prReview",
+                        "name": "CodeAnt PR Analysis - Pull Request Review",
+                        "description": "Triggers CodeAnt analysis on pull request events",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{base_url}}}/pr/azure_devops/pr_review/processPullRequestAzureDevops?access_token={{{access_token}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    },
+                    {
+                        "id": "prComment",
+                        "name": "CodeAnt PR Analysis - Question Answering",
+                        "description": "Triggers CodeAnt AI question answering on pull request comments",
+                        "supportedEventTypes": [
+                            "ms.vss-code.git-pullrequest-comment-event"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{base_url}}}/pr/azure_devops/handle_comment/handleAzureDevopsPRComment?access_token={{{access_token}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
