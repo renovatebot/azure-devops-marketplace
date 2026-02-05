@@ -1,0 +1,71 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "codethreat-security-service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "codethreat-security-service",
+                "displayName": "CodeThreat Security Service",
+                "description": "Service connection for CodeThreat security scanning service",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "CodeThreat server URL (e.g., https://your-instance.codethreat.com)",
+                    "value": "https://app.codethreat.com",
+                    "isVisible": true
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "displayName": "API Key",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "Enter your CodeThreat API key",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Create a service connection to securely store your CodeThreat API credentials."
+            }
+        },
+        {
+            "id": "codethreat-security-scan-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/CodeThreatSecurityScan"
+            }
+        },
+        {
+            "id": "codethreat-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "CodeThreat Results",
+                "uri": "dist/results-tab.html"
+            }
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/CodeThreat/codethreat-appsec-azure-extension"
+    },
+    "scopes": [],
+    "contributionTypes": []
+}
