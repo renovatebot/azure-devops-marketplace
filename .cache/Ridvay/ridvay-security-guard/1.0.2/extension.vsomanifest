@@ -1,0 +1,113 @@
+{
+    "$schema": "http://json.schemastore.org/vss-extension",
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ridvay/ridvay-azuredevops-extension"
+    },
+    "badges": [
+        {
+            "href": "https://ridvay.com",
+            "uri": "https://img.shields.io/badge/Ridvay-Security%20Guard-blue",
+            "description": "Ridvay Security Guard"
+        }
+    ],
+    "scopes": [
+        "vso.code",
+        "vso.code_write",
+        "vso.code_status"
+    ],
+    "contributions": [
+        {
+            "id": "ridvay-security-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-code-web.code-hub-group"
+            ],
+            "properties": {
+                "name": "Security Guard",
+                "order": 100,
+                "uri": "dist/hub/hub.html",
+                "icon": "images/icon.png"
+            }
+        },
+        {
+            "id": "ridvay-pr-status",
+            "type": "ms.vss-code-web.pr-status-section",
+            "targets": [
+                "ms.vss-code-web.pr-details-view"
+            ],
+            "properties": {
+                "name": "Ridvay Security",
+                "uri": "dist/pr-status/pr-status.html",
+                "order": 10
+            }
+        },
+        {
+            "id": "ridvay-service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ridvay-security",
+                "displayName": "Ridvay Security Guard",
+                "description": "Connect to Ridvay Security Guard for AI-powered code scanning",
+                "url": {
+                    "displayName": "Ridvay API URL",
+                    "value": "https://api.ridvay.com",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "Your Ridvay API token from https://ridvay.com/settings/api",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Get your API token from <a href='https://ridvay.com/settings/api' target='_blank'>Ridvay Dashboard</a>"
+            }
+        },
+        {
+            "id": "ridvay-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/security-scan"
+            }
+        },
+        {
+            "id": "ridvay-settings-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Ridvay Security",
+                "order": 100,
+                "uri": "dist/settings/settings.html",
+                "icon": "images/icon.png"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
