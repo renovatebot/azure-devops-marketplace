@@ -1,0 +1,87 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "HCL-endpoint-Boards",
+            "description": "Service endpoint connection to HCL AppScan on Cloud/HCL AppScan 360°. Enables secure integration with AppScan services for scanning applications.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Application Security Boards",
+                "displayName": "HCL AppScan – Boards Integration Connection",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Specify an AppScan on Cloud/HCL AppScan 360° Server URL for the connection."
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v4/Apps?$select=Name,Id&$orderby=Name",
+                        "resultSelector": "jsonpath:$.[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{ #getTokenUsingBasicAuth { 'KeyId' : 'endpoint.username', 'KeySecret' : 'endpoint.password', 'resultSelector' : 'jsonpath:$.Token', 'method':'post', 'authServerUrl':'endpoint.url/api/v4/Account/ApiKeyLogin', 'body' : {'KeyId' : 'endpoint.username', 'keySecret' : 'endpoint.password'} } }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "KeyID",
+                                "description": "The API key ID.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "KeySecret",
+                                "description": "The API key secret.",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "acceptUntrustedCerts",
+                                "name": "Allow Untrusted Connections",
+                                "description": "Allows Untrusted Connections to the AppScan service.",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "defaultValue": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "appscanboardsintegrationtask",
+            "description": "Update Azure Boards work items with issues from HCL AppScan on Cloud/HCL AppScan 360° scans.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "updateBoardsTask/v1/boards"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
