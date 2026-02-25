@@ -1,0 +1,1810 @@
+{
+    "manifestVersion": 1,
+    "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+    "demands": [
+        "api-version/5.0"
+    ],
+    "eventCallbacks": {
+        "versionCheck": {
+            "uri": "{{DeploymentUrl \"0000003C-0000-8888-8000-000000000000\"}}_apis/public/extensions/vdisc"
+        },
+        "preInstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postInstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postUninstall": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        },
+        "postEnable": {
+            "uri": "{{ServiceUrl \"0000003C-0000-8888-8000-000000000000\" \"Application\"}}_apis/public/Analytics/ExtensionEvents/handle?api-version=3.0-preview"
+        }
+    },
+    "contributions": [
+        {
+            "id": "analytics-basic-demand",
+            "type": "ms.vss-analytics.analytics-demand",
+            "description": "Demand for basic analytics services (this demand is a placeholder, installing the extension provides this naturally)",
+            "detached": true
+        },
+        {
+            "id": "analytics-views-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-work-web.work-hub-group"
+            ],
+            "properties": {
+                "name": "Analytics views",
+                "order": 30,
+                "areaAware": true,
+                "defaultRoute": "ms.vss-analytics.analytics-hub-route",
+                "iconName": "AnalyticsView"
+            },
+            "includes": [
+                "ms.vss-tfs-web.perf-section-diag-action-monitor",
+                "ms.vss-features.ui-core-content",
+                "ms.vss-features.ui-layer-content",
+                "ms.vss-features.ui-messagebar-content",
+                "ms.vss-features.ui-date-picker-content",
+                "ms.vss-features.directory"
+            ],
+            "restrictedTo": [
+                "Member+ms.vss-work.agile"
+            ],
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                },
+                {
+                    "name": "AnalyticsEnabled"
+                },
+                {
+                    "name": "Stakeholder",
+                    "inverse": true
+                }
+            ]
+        },
+        {
+            "id": "analytics-hub-route",
+            "type": "ms.vss-web.route",
+            "targets": [
+                "ms.vss-analytics.analytics-views-hub"
+            ],
+            "properties": {
+                "hostType": "ProjectCollection",
+                "commandName": "AnalyticsViews.index",
+                "routeTemplates": [
+                    "{project}/_analytics",
+                    "{project}/_analytics/{name}",
+                    "{project}/_analytics/{name}/{viewId}"
+                ]
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-views-route-redirect",
+            "type": "ms.vss-web.request-handler",
+            "targets": [
+                "ms.vss-analytics.analytics-hub-route"
+            ],
+            "properties": {
+                "name": "TFS.RedirectRequestHandler",
+                "targetRoute": "ms.vss-tfs-web.project-overview-route"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "ms.vss-analytics.analytics-views-hub"
+                    }
+                },
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.DoNotRequireMarketplaceExtension"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-service-context-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "ServiceContext data for the Analytics service.",
+            "targets": [
+                ".analytics-views-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.ServiceContext",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "dataType": "ServiceContext",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-views-permissions-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable analytics views permissions.",
+            "targets": [
+                ".analytics-views-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsViewsPermissions",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-editable-views-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable Views properties.",
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsEditableViews",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-feature-availability-data-provider",
+            "type": "ms.vss-web.data-provider",
+            "description": "Data provider for Editable Views feature flag states",
+            "targets": [
+                ".analytics-views-hub"
+            ],
+            "properties": {
+                "name": "Analytics.DataProviders.AnalyticsFeatureAvailability",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "resolution": "Server",
+                "propertyProvider": "WebPlatformPropertyProvider"
+            }
+        },
+        {
+            "id": "analytics-views-favorite",
+            "type": "ms.vss-favorites.favorite-provider",
+            "targets": [
+                "ms.vss-favorites.favorite-provider-collection"
+            ],
+            "properties": {
+                "artifactType": "Microsoft.TeamFoundation.Analytics.AnalyticsView",
+                "serviceInstanceType": "0000003C-0000-8888-8000-000000000000",
+                "pluralName": "Analytics views",
+                "order": 30,
+                "iconName": "AnalyticsView",
+                "artifactDeletedMessage": "This analytics view has been deleted"
+            },
+            "constraints": [
+                {
+                    "group": 1,
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                },
+                {
+                    "group": 2,
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.RestApi.Editable"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-shared-view-menu",
+            "type": "ms.vss-web.menu",
+            "description": "Menu for a Shared analytics view.",
+            "targets": [
+                "ms.vss-analytics.analytics-views-hub"
+            ]
+        },
+        {
+            "id": "analytics-shared-view-security-menu",
+            "type": "ms.vss-web.action-provider",
+            "description": "Menu item for pushing the admin dialog for a view",
+            "targets": [
+                "ms.vss-analytics.analytics-shared-view-menu"
+            ],
+            "properties": {
+                "content": {
+                    "require": [
+                        "Dashboards/Scripts/Analytics/SharedViewSecurityMenu"
+                    ]
+                }
+            },
+            "constraints": [
+                {
+                    "name": "FeatureFlag",
+                    "properties": {
+                        "featureName": "Analytics.Views.EditableUI"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-management",
+            "type": "ms.vss-web.tab",
+            "targets": [
+                "ms.vss-admin-web.collection-admin-hub-tab-group"
+            ],
+            "properties": {
+                "name": "Analytics",
+                "itemKey": "analytics",
+                "order": 80,
+                "iconProps": {
+                    "iconName": "StackedLineChart",
+                    "className": "admin-tab-icon"
+                },
+                "componentType": "analyticsManagement",
+                "dependencies": [
+                    "ms.vss-analytics.analytics-management-component"
+                ],
+                "_sharedData": {
+                    "assets": [
+                        "ms.vss-analytics/analytics-management-content/assets/choicegroup-bar-selected.png",
+                        "ms.vss-analyticsshared-web/analytics-shared-common/images/axextension-not-installed.svg"
+                    ],
+                    "routes": [
+                        "ms.vss-analytics.analytics-management-route"
+                    ]
+                }
+            },
+            "constraints": [
+                {
+                    "name": "ExecutionEnvironment",
+                    "properties": {
+                        "hosted": false
+                    }
+                }
+            ]
+        },
+        {
+            "id": "analytics-management-component",
+            "includes": [
+                "ms.vss-analytics.analytics-management-content"
+            ]
+        },
+        {
+            "id": "analytics-management-route",
+            "type": "ms.vss-web.route",
+            "targets": [
+                ".analytics-management",
+                "ms.vss-analytics.analytics-management"
+            ],
+            "properties": {
+                "hostType": "ProjectCollection",
+                "routeTemplates": [
+                    "_settings/analytics"
+                ],
+                "defaults": {
+                    "controller": "Apps",
+                    "action": "ContributedHub"
+                }
+            }
+        },
+        {
+            "id": "analytics-views-ui",
+            "description": "Analytics views UI content in new web platform",
+            "type": "ms.vss-web.component",
+            "targets": [
+                "ms.vss-analytics.analytics-views-hub"
+            ],
+            "includes": [
+                "ms.vss-analytics.analytics-views-content"
+            ],
+            "properties": {
+                "componentRegion": "content",
+                "componentType": "analytics-views"
+            }
+        },
+        {
+            "id": "ms.vss-analytics.analytics-common",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.core-content",
+                "ms.vss-web.platform-content",
+                "ms.vss-reporting.reporting-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-common/Resources.js",
+                        "hashCode": "wHrn18JYXbg13uVGJHNGNUed8E5g06fraPIAWtX5Qkk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2229
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/Analytics.js",
+                        "hashCode": "sAsN15YtDc+trRb4B9udOzC/L3HJqVFVC939V84c/6M=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2623
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/AnalyticsExceptionUtilities.js",
+                        "hashCode": "RDG4bTENd56KbpyPOqWe6qCjxkw/Iv5Z3muxuigtcN0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 5381
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchRequestUtilities.js",
+                        "hashCode": "eYci5sJmQfUWwpeRf1uRX5xt0/jorNUy5P5yCqZSsAo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4725
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchResponseUtilities.js",
+                        "hashCode": "tXrerEdEXiG0C8p02H59LpqkDhTKRcw0Oti+XW+cT5E=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 7097
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/GuidGenerator.js",
+                        "hashCode": "iVFp79XDAyt3Fb+EIDwtJS3DUcWceoWJF0Svg14SBXE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1656
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/DateSKParser.js",
+                        "hashCode": "pPWYsttOC3vxXCglctQssVwky6jMzbnvLHKbmLiKlX0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2255
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/QueryUtilities.js",
+                        "hashCode": "3bbcnxniknqcsDMY97tH+t2ra7p+3YHMcJos1AGt1F0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 3677
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/ODataClientUtilities.js",
+                        "hashCode": "/MbLnLyxuRz40sKuODFV55g1WiIuUVCfNOJqDi6EG8I=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2564
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/AnalyticsODataClient.js",
+                        "hashCode": "uiE0CAcz+60dHQN1QkAs8oy7p0nU8T/BT/Z1VlgCub8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 9948
+                    },
+                    {
+                        "asset": "analytics-common/AnalyticsCacheableQueryBase.js",
+                        "hashCode": "tazakx3RIMfFgGUigYADq0c+elGUe812POesnxhSgwM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 6516
+                    },
+                    {
+                        "asset": "analytics-common/Contracts/WorkItemTrackingDataContracts.js",
+                        "hashCode": "p2Z6VnGkNxz+p0s+Xbyhr5YeYyYdZw5wfCeMqVGpzGM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 3532
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/PublicProjectsQueryHelper.js",
+                        "hashCode": "rJ46kEznUrVbncAwecNf28wwgniQ0ZV3qJZVB7KpoNc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1472
+                    },
+                    {
+                        "asset": "analytics-common/AnalyticsCacheableQueryBase.js.map",
+                        "hashCode": "QbHE1SLgWYWuo3KUecPd+qAcWgnqCsLsRgwTswRELV4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 10224
+                    },
+                    {
+                        "asset": "analytics-common/Contracts/WorkItemTrackingDataContracts.js.map",
+                        "hashCode": "pq5M9Q7gNSDtGvwJ1tPI350qQo9Gn5zB0Teaik8GNfo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 5508
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/Analytics.js.map",
+                        "hashCode": "Pn9dACJ5R3RwEU7sj1V7MQ6xF/hoe5VGOkxOb9v8lgI=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4562
+                    },
+                    {
+                        "asset": "analytics-common/RestClient/AnalyticsODataClient.js.map",
+                        "hashCode": "y5jP2izOQeSRZMJXcnbS/ZwW3I/GV8JLsnezLA9txvg=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 16258
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/AnalyticsExceptionUtilities.js.map",
+                        "hashCode": "flrpD+p19zXaFb4Fo6g3J+UpSppXA52oxQQzQ+MB9zc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 8698
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchRequestUtilities.js.map",
+                        "hashCode": "y43DhzTimNQKvnOlbbmZydfZHK2uqUhBRTtdC4YTdR4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 7755
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/BatchResponseUtilities.js.map",
+                        "hashCode": "Ry79KlAJo6RgPVdh9EpgLgH3BJ/+fPiIJ5AWRYH5bZQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 11899
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/DateSKParser.js.map",
+                        "hashCode": "qb4WvZcFJNup2agPDolWYrLEnKHgfQTix40YnSeACo0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 3325
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/GuidGenerator.js.map",
+                        "hashCode": "Owc9RKbut8VHkjIiXNPr4F4xSAX97vx9EGm9es/N3kY=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2328
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/ODataClientUtilities.js.map",
+                        "hashCode": "ImI2nHmPf7H+K4CE4oJ3bQZ0ovfUtxN1TIcaaY7iFfE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4074
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/PublicProjectsQueryHelper.js.map",
+                        "hashCode": "pIGMNBLOMTg4i0gqEvF+AhLdEoXRVH0K9PdhQj9By18=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2392
+                    },
+                    {
+                        "asset": "analytics-common/Utilities/QueryUtilities.js.map",
+                        "hashCode": "1fv4VeSWe13YMlfAr+KiVuIwFUxQkiF8j8UrhNR314s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 5615
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.es6.js",
+                        "hashCode": "RW/G1KIO+FO5jdftv/ez7UPwm3WU+VSy+LXGBQtO4Cc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 56288
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.es6.min.js",
+                        "hashCode": "hYVMyphphWRljNEM4WO2VNreojUIrGxyV+hODa8sdgg=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 16889
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.compat.js",
+                        "hashCode": "jk2xBxHJ5axa5/+eCyq92pFh+QDebgMd16sVNw//Ufs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 68902
+                    },
+                    {
+                        "asset": "analytics-common/ms.vss-analytics.analytics-common.compat.min.js",
+                        "hashCode": "ADDqy93GHDHx5mfnw435nGbFUBsM/XvFP8zNQnNpx18=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 19500
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Common"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-views-common",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.core-content",
+                "ms.vss-web.platform-content"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.es6.js",
+                        "hashCode": "2f5gcofXKN0LA7VKh/Rm1+KB32s/O3aJez5X3Xcl49Y=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 338
+                    },
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.es6.min.js",
+                        "hashCode": "mSE2doZ1MvY6t7yy6c3BMhRV0ZL9hPoSiOfpSQ++MGE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 139
+                    },
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.compat.js",
+                        "hashCode": "w8+7KcAu48WsviIxzz7lo3mSmWKta9DaBK6D367XhUs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 279
+                    },
+                    {
+                        "asset": "analytics-views-common/ms.vss-analytics.analytics-views-common.compat.min.js",
+                        "hashCode": "mSE2doZ1MvY6t7yy6c3BMhRV0ZL9hPoSiOfpSQ++MGE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 139
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "analyticsviews/common"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-queries/PingServiceQuery.js",
+                        "hashCode": "2aaPb7gQuPkW7ya9otUBZ19faQQUZl9GZZcEn3yPOvE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1597
+                    },
+                    {
+                        "asset": "analytics-queries/ProjectsQuery.js",
+                        "hashCode": "9QWeLgvLE9Zm66t0vdURI0kIwjsivEylWwopOqYGJv8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1320
+                    },
+                    {
+                        "asset": "analytics-queries/PingServiceQuery.js.map",
+                        "hashCode": "Iuha446nWkxgpTYu2z76EVdnXrvgVLf74tl3MxEjkaQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2156
+                    },
+                    {
+                        "asset": "analytics-queries/ProjectsQuery.js.map",
+                        "hashCode": "qz7h2H/muzZxGzssi191ezkJ1scJ31mH0nipoJvtz7Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 1895
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.es6.js",
+                        "hashCode": "F5nC8yJ5NkxmJ4DsbduauVyzrvugBO8KlVB8kWmHI3o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 3360
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.es6.min.js",
+                        "hashCode": "OzaxtSLsA/rf9MUCuEQdPMTkhQ2LkcP2LHKYUMGqUYQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 1084
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.compat.js",
+                        "hashCode": "qJ5r/XVn5zp1oTgnLROOT2Yw3EqexQQ3UF6wWIhKWw4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 3984
+                    },
+                    {
+                        "asset": "analytics-queries/ms.vss-analytics.analytics-queries.compat.min.js",
+                        "hashCode": "C970Pt4FoiHJnShptAkDBnlD4ICA35xkStM2HU9y9ns=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 1238
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Queries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-boards-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-boards-queries/Resources.js",
+                        "hashCode": "pNEMU3HCXF7AW+9OL60/CcYUrdrBurWqqMwCq+uYfiU=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 388
+                    },
+                    {
+                        "asset": "analytics-boards-queries/AggregationFieldsQuery.js",
+                        "hashCode": "3O9n56LBjbOBoTpHrGNGg4ywHE7aQP+f49x4csdGNOs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 3495
+                    },
+                    {
+                        "asset": "analytics-boards-queries/BacklogsQuery.js",
+                        "hashCode": "I45vGv+Jlxu8eyMjstqpWXTVqIQ34V0VtKvf4rXaGHI=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1960
+                    },
+                    {
+                        "asset": "analytics-boards-queries/DataContracts.js",
+                        "hashCode": "IIEGRtCCvBtT+96NJqCpkGiFOY0EAXxcmwt0VG+tVb8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 3947
+                    },
+                    {
+                        "asset": "analytics-boards-queries/IterationsQuery.js",
+                        "hashCode": "C77ms5xsRJxKslCV6mp+1YSmp9Cj0eb5Jk6c7l0R4qs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 7305
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ProcessesQuery.js",
+                        "hashCode": "HuWRuVlLZyd76XTzfyXEb+/z/QZPtTttQCCIWk9vX1o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2609
+                    },
+                    {
+                        "asset": "analytics-boards-queries/TeamsQuery.js",
+                        "hashCode": "kDbGlJkHkaIMB8WW6yhyMHesbnYJMufty5xkHG57x6I=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1356
+                    },
+                    {
+                        "asset": "analytics-boards-queries/WitFieldUtilities.js",
+                        "hashCode": "2ZqOR66CVZplgfjZXkUD2nWVd93EuoZ68TAU+qF2RGw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 13300
+                    },
+                    {
+                        "asset": "analytics-boards-queries/AggregationFieldsQuery.js.map",
+                        "hashCode": "eh4Y0MXcBqWZ+ICAuAYZEaMpsHciGHeM5lN1C+dU3lw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 5421
+                    },
+                    {
+                        "asset": "analytics-boards-queries/BacklogsQuery.js.map",
+                        "hashCode": "8dipDJgVMo1okZ7C7prQuFht7mzqkl4bBdJYPjXmviQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 3269
+                    },
+                    {
+                        "asset": "analytics-boards-queries/DataContracts.js.map",
+                        "hashCode": "+plRgvlpVNHiFRnfEiz89dCJJge/BkAJAouXL9CmOaE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 8186
+                    },
+                    {
+                        "asset": "analytics-boards-queries/IterationsQuery.js.map",
+                        "hashCode": "D1UIKo+GQT4+L72NYnh/HZnpWhqXSkfwPLWhzUU6wSY=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 13048
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ProcessesQuery.js.map",
+                        "hashCode": "Rc6H0+DtECgnSde4/P25N7UfNL9mL152e3Dc4cbZEis=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4640
+                    },
+                    {
+                        "asset": "analytics-boards-queries/TeamsQuery.js.map",
+                        "hashCode": "DRYqMgiQuGOc5mOYxPbjONRll67pPC0C5uI2Ia4vx4Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2142
+                    },
+                    {
+                        "asset": "analytics-boards-queries/WitFieldUtilities.js.map",
+                        "hashCode": "Eq7ros5bS5knuZSxCoE+Wvmi4LegPzkxXN1IWdjZk/E=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 20788
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ms.vss-analytics.analytics-boards-queries.es6.js",
+                        "hashCode": "dgFB9P5LgN56PJL+cPxuAWTtwaRaxp2vcK8barRg7xI=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 35019
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ms.vss-analytics.analytics-boards-queries.es6.min.js",
+                        "hashCode": "u81wcNNySySAsHdLdz+AcYohmqDMRjEwNzsJwZWr+ro=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 12655
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ms.vss-analytics.analytics-boards-queries.compat.js",
+                        "hashCode": "vLZ1QorQ5KbDcGI4YkY+8UUP3E1iF9b9gEKUYdvwafQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 39462
+                    },
+                    {
+                        "asset": "analytics-boards-queries/ms.vss-analytics.analytics-boards-queries.compat.min.js",
+                        "hashCode": "GO9ZjAnDA7El+Z5MixZ+v1ZXNOecubd8IM1/nGbF1zg=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 13352
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Boards/BoardsQueries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.velocity-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common",
+                "ms.vss-analytics.analytics-boards-queries"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "velocity-queries/VelocityQueryBase.js",
+                        "hashCode": "6OdkKQYN+nokzTz9h1VcygMhX++ftbBmlMenmty8BXE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1360
+                    },
+                    {
+                        "asset": "velocity-queries/AggregationWorkItemTypeFieldsQuery.js",
+                        "hashCode": "xQCFhQWeUEy72BvJ5krSFSKPtWzdG1bO5MJpfzjFASc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1576
+                    },
+                    {
+                        "asset": "velocity-queries/VelocityDataHelper.js",
+                        "hashCode": "oMbHcl45Ugizj7Sp5I5Li0DVEDHSOcEcGxu79QrFoss=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1582
+                    },
+                    {
+                        "asset": "velocity-queries/CompletedLateMetastateByIterationsQuery.js",
+                        "hashCode": "bqAzxNkjy0tdMSsHj65g+oV+SPcRPA/zyASmECTS06s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4896
+                    },
+                    {
+                        "asset": "velocity-queries/CompletedLateMetastateByIterationDetailsQuery.js",
+                        "hashCode": "ngQpiAg5mncU1jmTt0D8kvYmhCg/U5VzrT/bHE+rwUM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2794
+                    },
+                    {
+                        "asset": "velocity-queries/MetastateByIterationDetailsQuery.js",
+                        "hashCode": "GLDF5TbPp6V9rRUr+lU9PP/ef97LzoumYsGwvGM7tdA=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2023
+                    },
+                    {
+                        "asset": "velocity-queries/MetastateByIterationsQuery.js",
+                        "hashCode": "0xgJ0t9ONJSc2uTri/va3J0QRDFRpAlB6HJ7hZWDX18=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2696
+                    },
+                    {
+                        "asset": "velocity-queries/PlannedWorkByDayQuery.js",
+                        "hashCode": "8Y5eTQyB2LQNEWVoeRYB23LO0jOxjuEiIbGtbvHiVao=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 5518
+                    },
+                    {
+                        "asset": "velocity-queries/PlannedWorkByDayDetailsQuery.js",
+                        "hashCode": "jj3wCl5lGStUKZmZQSXFsi/+UjIj9faqfful/5dy3A0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2565
+                    },
+                    {
+                        "asset": "velocity-queries/AggregationWorkItemTypeFieldsQuery.js.map",
+                        "hashCode": "PGEQzn++3S6hqGlqE2+Do5teJLN8JNDe4XxXumh/uC4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2188
+                    },
+                    {
+                        "asset": "velocity-queries/CompletedLateMetastateByIterationDetailsQuery.js.map",
+                        "hashCode": "/W+VR1ymdGxRiCA3flhlph7I7RvXgDHxXX2/SdGHEQE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4282
+                    },
+                    {
+                        "asset": "velocity-queries/CompletedLateMetastateByIterationsQuery.js.map",
+                        "hashCode": "02yTaX1VgHEcXn0EMGcEYvxgsFFyCLxx4PEdD7tKEj4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 8240
+                    },
+                    {
+                        "asset": "velocity-queries/MetastateByIterationDetailsQuery.js.map",
+                        "hashCode": "KEhU/BuE6U/FIuQRym0wlC0pSCbExEGqSWaB0Q9tW6o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 3058
+                    },
+                    {
+                        "asset": "velocity-queries/MetastateByIterationsQuery.js.map",
+                        "hashCode": "F2BYn4HXxrt2y4rW6Li3Js9WBQD0JuApaDKUCjJoZ6Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4277
+                    },
+                    {
+                        "asset": "velocity-queries/PlannedWorkByDayDetailsQuery.js.map",
+                        "hashCode": "k282hbWKkjmi+ak6mhQ6PF55wewKSSBKVQ/DOyZtp/8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4011
+                    },
+                    {
+                        "asset": "velocity-queries/PlannedWorkByDayQuery.js.map",
+                        "hashCode": "GmTMMUSS6GJIwV0kOJflrcmZvlhPfHcvK0qP9J/28Ys=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 9407
+                    },
+                    {
+                        "asset": "velocity-queries/VelocityDataHelper.js.map",
+                        "hashCode": "L2zuRrTqVs2cKhMr/nOxw/Iv2pvBmOEzh8PsV/p3xW0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2103
+                    },
+                    {
+                        "asset": "velocity-queries/VelocityQueryBase.js.map",
+                        "hashCode": "W3gEm1Auc7vdxsOieaOMNS2aeaphzQ11vZxDPdI6M4o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 1983
+                    },
+                    {
+                        "asset": "velocity-queries/ms.vss-analytics.velocity-queries.es6.js",
+                        "hashCode": "I8XHyt7Bew2XFTisBAopC6ePi3wEhT5MB4fr3hilQT8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 24815
+                    },
+                    {
+                        "asset": "velocity-queries/ms.vss-analytics.velocity-queries.es6.min.js",
+                        "hashCode": "EKnpHYruWYxjB5G0Q1q5wLiSKQzYCSFuHuAykCh1jUk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 8393
+                    },
+                    {
+                        "asset": "velocity-queries/ms.vss-analytics.velocity-queries.compat.js",
+                        "hashCode": "E+rMCg0RnfU3dAPAwzdMcgRx3E3/71WmmvwstFDfqrM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 29873
+                    },
+                    {
+                        "asset": "velocity-queries/ms.vss-analytics.velocity-queries.compat.min.js",
+                        "hashCode": "rxxVRbZaVx26Ag6D2Xyxjo+0llLaH5faWAwt+JnSBx8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 9401
+                    }
+                ],
+                "moduleNamespaces": [
+                    "Analytics/Boards/VelocityQueries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.burndown-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common",
+                "ms.vss-analytics.analytics-boards-queries"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "burndown-queries/BurndownConfigurationContracts.js",
+                        "hashCode": "C6/wZ1oG3F/7HGJCPm+qLSmEwli1Qn9aqtkuUBSepi8=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1322
+                    },
+                    {
+                        "asset": "burndown-queries/BurndownDataContract.js",
+                        "hashCode": "Fy6lkrYnsC+iAzlbsDhE4NP08M67dcKCKlgYGs0HUJo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 397
+                    },
+                    {
+                        "asset": "burndown-queries/BurndownQueryBase.js",
+                        "hashCode": "0g1VFp0FqqfjXz6Z+nb+CEhBG0Z5BqObl3EIGDPZyWk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1089
+                    },
+                    {
+                        "asset": "burndown-queries/CompletedWorkItemsQuery.js",
+                        "hashCode": "W/3t+zZaDA3+Ny8p9Ufcsd03q7hBvJURZcVWdcteS1k=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 3566
+                    },
+                    {
+                        "asset": "burndown-queries/CurrentEffortQuery.js",
+                        "hashCode": "ndvCXDS8doWf1chstGnmE7Quaofb7HxBmbzuOnTnU1M=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 5512
+                    },
+                    {
+                        "asset": "burndown-queries/EffortSnapshotsQuery.js",
+                        "hashCode": "dCd0e7j5gqprdgq8tvgm1/1uQHIhaESIhHE8ERJglEE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 5549
+                    },
+                    {
+                        "asset": "burndown-queries/ProjectsIterationsByDateQuery.js",
+                        "hashCode": "036Es6du+BaWub6taf/TjZ7slmINfFZ2MFz/y1Hugxo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2730
+                    },
+                    {
+                        "asset": "burndown-queries/ProjectsIterationsByIdQuery.js",
+                        "hashCode": "BKRJGwGTF+hXGjEg7J6S1Gx1+qd1lvlnqn2ijiXy4EI=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2756
+                    },
+                    {
+                        "asset": "burndown-queries/UnestimatedWorkItemsQueries.js",
+                        "hashCode": "2WavaJQbzECWeEtht70d0VLW5/0Df6A61JePMEa2wf0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4331
+                    },
+                    {
+                        "asset": "burndown-queries/WorkItemIdsSnapshotQuery.js",
+                        "hashCode": "BhBEvuwLS+V58KngkH2HpTY5ezWaLp2z5vazmNzASVM=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4145
+                    },
+                    {
+                        "asset": "burndown-queries/WorkItemTypeFieldsQuery.js",
+                        "hashCode": "pEonyZaPgjaVQOyAki9rT49n0uTfDsvN/WHMRGA1wrc=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4835
+                    },
+                    {
+                        "asset": "burndown-queries/BurndownConfigurationContracts.js.map",
+                        "hashCode": "Ff3ABDu9V0Lke5jsiTn/pvhN3U9FBo+VP7qXzAUL42o=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2050
+                    },
+                    {
+                        "asset": "burndown-queries/BurndownDataContract.js.map",
+                        "hashCode": "NHsqzGKPzjZ9IQypIzQYt8mJ0JYfLh3JKRxVanTb7kU=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 807
+                    },
+                    {
+                        "asset": "burndown-queries/BurndownQueryBase.js.map",
+                        "hashCode": "Xb9Ff21tqZZ2eLHjWB+pJ8k6nlQD4ardGe7qYWeFgJs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 1448
+                    },
+                    {
+                        "asset": "burndown-queries/CompletedWorkItemsQuery.js.map",
+                        "hashCode": "JAHJAHXc4x8F4jn4EDqcx4WTN69aUoVm8CrFYxkPj8s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 6174
+                    },
+                    {
+                        "asset": "burndown-queries/CurrentEffortQuery.js.map",
+                        "hashCode": "AbMFA0qS167eyBCnjysKvyeK4F0MBZs3htQJdWHUb+w=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 8810
+                    },
+                    {
+                        "asset": "burndown-queries/EffortSnapshotsQuery.js.map",
+                        "hashCode": "XGCumvRIwbPtDhQimYWwGqfg8S5HBEC4nniKjGeS8w0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 9524
+                    },
+                    {
+                        "asset": "burndown-queries/ProjectsIterationsByDateQuery.js.map",
+                        "hashCode": "IDofDjRyF4nWVee6ZlBh3vGRkaiBQcfgDGM1+EDdPQQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4704
+                    },
+                    {
+                        "asset": "burndown-queries/ProjectsIterationsByIdQuery.js.map",
+                        "hashCode": "+Bdb3MMULMjKQheBJ5AiBs1EA6DJZfsUAsBp6NvcMwk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 4220
+                    },
+                    {
+                        "asset": "burndown-queries/UnestimatedWorkItemsQueries.js.map",
+                        "hashCode": "57jCe6HIkbKrmBoz0voSCNhSi15jg+c+m9wnGFpbEi0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 8163
+                    },
+                    {
+                        "asset": "burndown-queries/WorkItemIdsSnapshotQuery.js.map",
+                        "hashCode": "hO7bp4EPmDsY8DwQm+7KQeTBoMHQyTQhSWsSBvtdj9Y=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 7481
+                    },
+                    {
+                        "asset": "burndown-queries/WorkItemTypeFieldsQuery.js.map",
+                        "hashCode": "IGOkO1jkw+xwgp/N3fzEjxd0y+PBUQQsSVH1ofK9trE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 7583
+                    },
+                    {
+                        "asset": "burndown-queries/ms.vss-analytics.burndown-queries.es6.js",
+                        "hashCode": "ZJu54DQ+v/SD8x7BsN3kBVxdIwugJcCOqNPopjKQHds=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 34961
+                    },
+                    {
+                        "asset": "burndown-queries/ms.vss-analytics.burndown-queries.es6.min.js",
+                        "hashCode": "Sa3p51KiARHmnr3WNejzG1l+YZ6r+o8gaarHf2yxXcg=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 11151
+                    },
+                    {
+                        "asset": "burndown-queries/ms.vss-analytics.burndown-queries.compat.js",
+                        "hashCode": "uANYfF+GV2AhH+35Ak+LUZWIpjRVsWhwX/IZhlSerdE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 41345
+                    },
+                    {
+                        "asset": "burndown-queries/ms.vss-analytics.burndown-queries.compat.min.js",
+                        "hashCode": "3f6qnScRb/T3ta2RPUsdVz22YoEtPIEdgUFFZoBvArY=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 12558
+                    }
+                ],
+                "moduleNamespaces": [
+                    "Analytics/Boards/BurndownQueries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-management-content",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-features.ui-widgets-content",
+                "ms.vss-web.core-content",
+                "ms.vss-features.ui-core-content",
+                "ms.vss-features.ui-page-content",
+                "ms.vss-web.platform-content",
+                "ms.vss-features.ui-zerodata-content",
+                "ms.vss-features.ui-status-content",
+                "ms.vss-features.ui-layer-content",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-management-content/assets/choicegroup-bar-selected.png",
+                        "hashCode": "yYakFYDe0FggRWKmE8yYFv6FYYycwE2ki+ybBM5MK3s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "content",
+                        "lengthInBytes": 263
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsDialogComponent.css",
+                        "hashCode": "P3tTsX032tPqexpGedTpdQtnGdGMIa8TB7Lo3jRHm2A=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "stylesheet",
+                        "lengthInBytes": 293,
+                        "versioned": true
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsManagement.css",
+                        "hashCode": "q+TJNMRW23JqXqJtkxysHSnXxhlP9aHRwo+V6U5wZKs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "stylesheet",
+                        "lengthInBytes": 462,
+                        "versioned": true
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsStatusComponent.css",
+                        "hashCode": "6Wnu51MM84Y5Uv1FLlM8eaTBubPkJw7JeoyrOnVHMkA=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "stylesheet",
+                        "lengthInBytes": 120,
+                        "versioned": true
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.css",
+                        "hashCode": "MitcP8WzXdkzbeQ26vfRaS4DjU4b0ajD2LbOIm8AymQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "stylesheet.bundle",
+                        "lengthInBytes": 1129,
+                        "versioned": true
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.min.css",
+                        "hashCode": "eR8Lriq3zoODw5YDD751Wm6IiS60B/j94kyn5yfyIJQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "stylesheet.min.bundle",
+                        "lengthInBytes": 550,
+                        "versioned": true
+                    },
+                    {
+                        "asset": "analytics-management-content/Resources.js",
+                        "hashCode": "ObHfaXoTaDKgn/MmiFCuMptXuiEVcTTHR1uHXh22uM0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4067
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsDialogComponent.js",
+                        "hashCode": "8jc7RMX5v67qCn0Xd09wLrk5mUWIpRMkKUs6D2fwPRg=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4294
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsStatusComponent.js",
+                        "hashCode": "XXKReMNus6E5jCIdLxwSUVOHWMZ70vE1RZIBo7qA9ws=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1468
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsManagement.js",
+                        "hashCode": "MCAOW4aSk+H81GsDJPBI5Insb0HXdyhXkasI9U/O30M=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 16011
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsDialogComponent.js.map",
+                        "hashCode": "QwCXoQSyFqf0TsDqI3pn5LRS9Z7iRzq5NB7uYQN851E=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 7818
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsManagement.js.map",
+                        "hashCode": "QGEwKEQRKMjtoLuBc12I/tJrJZ8BK7N14pmGeDnhKzk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 26062
+                    },
+                    {
+                        "asset": "analytics-management-content/AnalyticsStatusComponent.js.map",
+                        "hashCode": "Ir8fRcRqPToT/uuPuWky1uGG59ZrHqnqCJrDtZvfwrQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2305
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.es6.js",
+                        "hashCode": "P73CWnK+Irb0WFr6kr9oQuOvCpe6xSlNOdsDea8t7ho=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 27459
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.es6.min.js",
+                        "hashCode": "vKRmFAQN0Mk11X0zQNGf3w1zmJMgiga525oD6irkouY=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 14234
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.compat.js",
+                        "hashCode": "zCpBnzpRh2S1oIuVJzChF+njLHlIgTTCcJViUEZgAfk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 33634
+                    },
+                    {
+                        "asset": "analytics-management-content/ms.vss-analytics.analytics-management-content.compat.min.js",
+                        "hashCode": "2B/VtBfgWuNqj9ev0jcLvF6oz4/ehlN4lFgAByINRjw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 15707
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Management"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.cumulative-flow-diagram-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "cumulative-flow-diagram-queries/Resources.js",
+                        "hashCode": "ZxlGie+dNUuu2QVYwt292VWXl/73y+/7u96KaLIQCJw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 403
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardColumnsQuery.js",
+                        "hashCode": "ZEBDkOWCXe00W1dChOHl2/H4cMFnl7B9SG1ep0/+ewQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 4131
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardsQuery.js",
+                        "hashCode": "5dhiD+/Qb4AjtzANWUHcARuWZthuucLqp4xP+fCTLyk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1462
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardSwimlaneQuery.js",
+                        "hashCode": "563nRNrVHXMlbHn5eIJespSfT8xDFmlFlLT+AUWA1E0=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 1528
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/CumulativeFlowHistoryQuery.js",
+                        "hashCode": "VgELy4hTcCZv+ragVy3MmGQpTO7t3rGD7qJyCLKYu4U=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2448
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/LowestLevelVisibleBoardQuery.js",
+                        "hashCode": "AcHqkcqRcG+jiERKKyLiViYLORMA0GNtp5YrGPjH/Ys=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 2530
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardColumnsQuery.js.map",
+                        "hashCode": "KOz1/3JYFbqLKoDJBxfaeAcx33UDZTX9Mee9/tb/87g=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 7242
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardsQuery.js.map",
+                        "hashCode": "ccolBb3F4C+nIGLCBa8YjFblnjhkBkQ6nt/TEM2QoUY=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2808
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/BoardSwimlaneQuery.js.map",
+                        "hashCode": "Wd/jCJ1lrsh1SWEAp5eRzce+IxFdeg+4jOvEtil7AkE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 2210
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/CumulativeFlowHistoryQuery.js.map",
+                        "hashCode": "E87dsZ2yjFRkBZ6KNJJrDWCCnhqGewngvKljEY+QMok=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 5441
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/LowestLevelVisibleBoardQuery.js.map",
+                        "hashCode": "CkEY3WqqPQEFhuI/WFA2DjDAMzhrq5cTyjvVejIww0M=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 3563
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/ms.vss-analytics.cumulative-flow-diagram-queries.es6.js",
+                        "hashCode": "jYUMC+TYJkFxt3UfTwQbR1dGgKaBv1/2GznUhkz8uVo=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 12793
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/ms.vss-analytics.cumulative-flow-diagram-queries.es6.min.js",
+                        "hashCode": "RlHgg1ELsbaMwC3FqIoQ14RCKM8yVAc4FmxI094MpcQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 4101
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/ms.vss-analytics.cumulative-flow-diagram-queries.compat.js",
+                        "hashCode": "tV9TYjke/G3btU8UX/OS27nw5RT4bufWiMNvFT35f3Q=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 15303
+                    },
+                    {
+                        "asset": "cumulative-flow-diagram-queries/ms.vss-analytics.cumulative-flow-diagram-queries.compat.min.js",
+                        "hashCode": "GVTqeua8ToZVbbhh5qchMPLLCq9cSmo8AoeTIsdU2aw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 4710
+                    }
+                ],
+                "moduleNamespaces": [
+                    "Analytics/Boards/CumulativeFlowDiagramQueries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.analytics-views-content",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.core-content",
+                "ms.vss-web.platform-content",
+                "ms.vss-web.legacy-content",
+                "ms.vss-features.ui-core-content",
+                "ms.vss-features.ui-layer-content",
+                "ms.vss-features.ui-messagebar-content",
+                "ms.vss-features.directory"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "analytics-views-content/AnalyticsViews.js",
+                        "hashCode": "eVRKWL5u18yPtrdde31yqcUUggfYUCSNUTM05wIA+6Y=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 759
+                    },
+                    {
+                        "asset": "analytics-views-content/AnalyticsViews.js.map",
+                        "hashCode": "7O2jb53XM5597n2mJQZWkABpK69rbDH0+9DzAvDXn5A=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 1209
+                    },
+                    {
+                        "asset": "analytics-views-content/ms.vss-analytics.analytics-views-content.es6.js",
+                        "hashCode": "2MKL1f8wMemvgszMB3bk8HXlpFpQjJjv/b90ltBDtSw=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 1261
+                    },
+                    {
+                        "asset": "analytics-views-content/ms.vss-analytics.analytics-views-content.es6.min.js",
+                        "hashCode": "fxUOgUnXyAC6NUod4eKNugN7r+FITgBjshpACRFWm8s=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 598
+                    },
+                    {
+                        "asset": "analytics-views-content/ms.vss-analytics.analytics-views-content.compat.js",
+                        "hashCode": "swhxmYlxvkQD8sJzbi7RCEeu+at+EJoFtU2bKKyZ8LE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 1514
+                    },
+                    {
+                        "asset": "analytics-views-content/ms.vss-analytics.analytics-views-content.compat.min.js",
+                        "hashCode": "AaNeAf//OffPRkzYu+cRBrGbR0FyU4oXGXtdYEF+OfA=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 707
+                    }
+                ],
+                "loaderPriority": "TTI",
+                "moduleNamespaces": [
+                    "Analytics/Views"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        },
+        {
+            "id": "ms.vss-analytics.rollup-queries",
+            "type": "ms.vss-web.content",
+            "includes": [
+                "ms.vss-web.platform-content",
+                "ms.vss-analytics.analytics-boards-queries",
+                "ms.vss-analytics.analytics-common"
+            ],
+            "properties": {
+                "content": [
+                    {
+                        "asset": "rollup-queries/Contracts.js",
+                        "hashCode": "7zswm2ePiaKGV2BySKXT0tih2vWmOV5kxJ/NUCLVPmQ=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 932
+                    },
+                    {
+                        "asset": "rollup-queries/RollupQuery.js",
+                        "hashCode": "ViDLF/iKjfvlylyZk88SGHOcS3/5CngVIStSoH4w7I4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017",
+                        "lengthInBytes": 8211
+                    },
+                    {
+                        "asset": "rollup-queries/Contracts.js.map",
+                        "hashCode": "HY/0sHYlxU6lif2fom06GUA4uahc8HWPA7X1gbIBuMs=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 859
+                    },
+                    {
+                        "asset": "rollup-queries/RollupQuery.js.map",
+                        "hashCode": "b0HvL/XyfYPKTXjvyAuNmX9e91RM0fJuob6YRCDs078=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "",
+                        "lengthInBytes": 14124
+                    },
+                    {
+                        "asset": "rollup-queries/ms.vss-analytics.rollup-queries.es6.js",
+                        "hashCode": "oEMSjtCeWsenfiURj/gGvWsSjFtn877s2sWm+4O5VS4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.bundle",
+                        "lengthInBytes": 9668
+                    },
+                    {
+                        "asset": "rollup-queries/ms.vss-analytics.rollup-queries.es6.min.js",
+                        "hashCode": "0rRJ8fjtk90T3KElpzctzo03mAgRvVH2CRvP+9VJskE=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "ES2017.min.bundle",
+                        "lengthInBytes": 3018
+                    },
+                    {
+                        "asset": "rollup-queries/ms.vss-analytics.rollup-queries.compat.js",
+                        "hashCode": "xP/my5KIS3crk5pkhntemlnrUinNbBIt2l1o8ebmUuk=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.bundle",
+                        "lengthInBytes": 10734
+                    },
+                    {
+                        "asset": "rollup-queries/ms.vss-analytics.rollup-queries.compat.min.js",
+                        "hashCode": "k2XiaCmdq2T0VrCDUvCwhK1fcfQnxWghbI9GYp6PZg4=",
+                        "hashType": "sha256",
+                        "lang": null,
+                        "type": "javascript.min.bundle",
+                        "lengthInBytes": 3170
+                    }
+                ],
+                "moduleNamespaces": [
+                    "Analytics/Boards/RollupQueries"
+                ]
+            },
+            "restrictedTo": [
+                "Anonymous",
+                "Public",
+                "Member"
+            ],
+            "visibleTo": [
+                "ms"
+            ]
+        }
+    ],
+    "contributionTypes": [
+        {
+            "id": "analytics-demand",
+            "name": "Demand for Analytics",
+            "description": "Demand type for analytics services"
+        }
+    ],
+    "scopes": []
+}
