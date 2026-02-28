@@ -1,0 +1,100 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build"
+    ],
+    "demands": [
+        "api-version/4.0"
+    ],
+    "contributions": [
+        {
+            "id": "b624813e-e2ea-4bc9-a5f8-d6b31fe91757",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analysis"
+            }
+        },
+        {
+            "id": "39e5a0fd-9fdb-4b3d-b95b-75c67cb48f7d",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analysis-dast"
+            }
+        },
+        {
+            "id": "d6090d4f-cf61-49f5-a557-aec5c54dd80a",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analysis-sca"
+            }
+        },
+        {
+            "id": "results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "DerScanner code analysis results",
+                "uri": "results-tab.html",
+                "supportsTasks": [
+                    "b624813e-e2ea-4bc9-a5f8-d6b31fe91757",
+                    "39e5a0fd-9fdb-4b3d-b95b-75c67cb48f7d",
+                    "d6090d4f-cf61-49f5-a557-aec5c54dd80a"
+                ]
+            }
+        },
+        {
+            "id": "endpoint-derscanner",
+            "description": "Service endpoint type for DerScanner connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "derscanner",
+                "displayName": "DerScanner server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "required": true,
+                    "helpText": "Client connection endpoint for the cluster. Prefix the value with &quot;https://&quot;. Should contain trailing slash and API version as well."
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "acceptUntrustedCerts",
+                        "name": "Accept untrusted SSL certificates",
+                        "description": "By default SSL Validation Check will be performed. Choose this setting to override the check.",
+                        "inputMode": "checkbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "boolean"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
