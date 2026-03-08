@@ -1,0 +1,109 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "observes-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Adds a 'Observes' hub group at the project/team-level",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Observes",
+                "order": 100,
+                "icon": "images/logo.png"
+            }
+        },
+        {
+            "id": "observes-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Adds a SPA hub to the Observes hub group",
+            "targets": [
+                ".observes-hub-group"
+            ],
+            "properties": {
+                "name": "Observes SPA",
+                "uri": "spa/index.html",
+                "order": 99,
+                "iconAsset": "Observesio.observes/images/logo.png",
+                "includesData": {
+                    "assets": [
+                        "Observesio.observes/images/logo.png"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "observes-scanner",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/observes"
+            }
+        },
+        {
+            "id": "observes-endpoint",
+            "description": "Service connection for Observes Scanner",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "observes-endpoint-service",
+                "displayName": "Observes Azure DevOps Scanner",
+                "description": "Service connection for Observes Scanner",
+                "helpText": "Service connection for Observes Scanner",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Azure DevOps Url.",
+                    "value": "https://dev.azure.com/",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Organization",
+                                "description": "Azure DevOps organization name",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "PAT Token",
+                                "description": "Personal Access Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "multiOrg",
+                                "name": "Multi-organization PAT",
+                                "description": "If the PAT is created for multiple organizations, set this to true. This will allow the overriding of the organization in the task.",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "boolean",
+                                    "isRequired": false
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
