@@ -1,0 +1,169 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/nelssec/qualys-ado"
+    },
+    "scopes": [
+        "vso.build",
+        "vso.work"
+    ],
+    "contributions": [
+        {
+            "id": "qualys-endpoint",
+            "description": "Service connection for Qualys API",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "QualysApiConnection",
+                "displayName": "Qualys API Connection",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://qualysapi.qualys.com",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "id": "accessToken",
+                                "name": "Access Token",
+                                "description": "Qualys Access Token from Container Security > Configuration > Access Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "pod",
+                                "name": "Pod",
+                                "description": "Qualys platform region",
+                                "inputMode": "combo",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "values": {
+                                    "inputId": "podValues",
+                                    "defaultValue": "US1",
+                                    "possibleValues": [
+                                        {
+                                            "value": "US1",
+                                            "displayValue": "US1 (US Platform 1)"
+                                        },
+                                        {
+                                            "value": "US2",
+                                            "displayValue": "US2 (US Platform 2)"
+                                        },
+                                        {
+                                            "value": "US3",
+                                            "displayValue": "US3 (US Platform 3)"
+                                        },
+                                        {
+                                            "value": "US4",
+                                            "displayValue": "US4 (US Platform 4)"
+                                        },
+                                        {
+                                            "value": "EU1",
+                                            "displayValue": "EU1 (Europe 1)"
+                                        },
+                                        {
+                                            "value": "EU2",
+                                            "displayValue": "EU2 (Europe 2)"
+                                        },
+                                        {
+                                            "value": "CA1",
+                                            "displayValue": "CA1 (Canada)"
+                                        },
+                                        {
+                                            "value": "IN1",
+                                            "displayValue": "IN1 (India)"
+                                        },
+                                        {
+                                            "value": "AU1",
+                                            "displayValue": "AU1 (Australia)"
+                                        },
+                                        {
+                                            "value": "UK1",
+                                            "displayValue": "UK1 (United Kingdom)"
+                                        },
+                                        {
+                                            "value": "AE1",
+                                            "displayValue": "AE1 (UAE)"
+                                        },
+                                        {
+                                            "value": "KSA1",
+                                            "displayValue": "KSA1 (Saudi Arabia)"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Create a connection to Qualys using your Access Token from Container Security. [Learn more](https://docs.qualys.com)"
+            }
+        },
+        {
+            "id": "qualys-container-scan-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "QualysContainerScan"
+            }
+        },
+        {
+            "id": "qualys-code-scan-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "QualysCodeScan"
+            }
+        },
+        {
+            "id": "qualys-image-scan-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Displays Qualys Container Image scan results",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Qualys Image Scan",
+                "uri": "ui/scan-results-tab/scan-results-tab.html",
+                "supportsTasks": [
+                    "e624f1c1-2db6-4bc5-83ce-ecb3be3d6980"
+                ],
+                "order": 50,
+                "dynamic": true
+            }
+        },
+        {
+            "id": "qualys-code-scan-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Displays Qualys Code scan results",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Qualys Code Scan",
+                "uri": "ui/scan-results-tab/scan-results-tab.html",
+                "supportsTasks": [
+                    "d36c10e1-9ca0-450c-b5b0-8e78bb878c98"
+                ],
+                "order": 51,
+                "dynamic": true
+            }
+        }
+    ],
+    "contributionTypes": []
+}
