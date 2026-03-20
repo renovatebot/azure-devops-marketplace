@@ -1,0 +1,60 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "claude-api-endpoint",
+            "description": "Service endpoint type for Anthropic Claude API",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ClaudeAPI",
+                "displayName": "Anthropic Claude API Connection",
+                "url": {
+                    "displayName": "API Base URL",
+                    "helpText": "Base URL for the Anthropic API. Default: https://api.anthropic.com",
+                    "value": "https://api.anthropic.com",
+                    "isVisible": "true"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "x-api-key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Key",
+                                "description": "Anthropic API Key",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://console.anthropic.com/\" target=\"_blank\"><b>Get an Anthropic API Key</b></a>"
+            }
+        },
+        {
+            "id": "claude-code-review-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "ClaudeCodeReviewTask"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
