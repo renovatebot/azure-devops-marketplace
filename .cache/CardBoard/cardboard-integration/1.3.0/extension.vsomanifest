@@ -1,0 +1,97 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.hooks_write",
+        "vso.project"
+    ],
+    "contributions": [
+        {
+            "id": "cardboard-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "cardboard",
+                "name": "CardBoard",
+                "description": "Send work item events to CardBoard for real-time story map sync",
+                "informationUrl": "https://cardboardit.com/integrations/azure-devops",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": true,
+                        "name": "CardBoard Webhook URL",
+                        "description": "Webhook endpoint provided by CardBoard",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "secret",
+                        "isRequired": true,
+                        "isConfidential": true,
+                        "name": "Webhook Secret",
+                        "description": "Authentication secret for this webhook",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "workItemCreated",
+                        "name": "Work item created",
+                        "description": "Notify CardBoard when a work item is created",
+                        "supportedEventTypes": [
+                            "workitem.created"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    },
+                    {
+                        "id": "workItemUpdated",
+                        "name": "Work item updated",
+                        "description": "Notify CardBoard when a work item is updated",
+                        "supportedEventTypes": [
+                            "workitem.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    },
+                    {
+                        "id": "workItemDeleted",
+                        "name": "Work item deleted",
+                        "description": "Notify CardBoard when a work item is deleted",
+                        "supportedEventTypes": [
+                            "workitem.deleted"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "cardboard-admin-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "CardBoard",
+                "uri": "admin-hub.html",
+                "icon": "images/cardboard-logo.png",
+                "supportsMobile": false
+            }
+        }
+    ],
+    "contributionTypes": []
+}
