@@ -1,0 +1,261 @@
+{
+  "manifestVersion": 1,
+  "scopes": [
+    "vso.work_write",
+    "vso.project_write",
+    "vso.analytics",
+    "vso.extension"
+  ],
+  "contributions": [
+    {
+      "id": "nooga-nav-host",
+      "type": "ms.vss-web.feature",
+      "targets": [
+        "ms.vss-web.managed-features"
+      ],
+      "properties": {
+        "name": "[Nooga] Make Portfolio extension the 'Nooga' hub",
+        "description": "Own the 'Nooga' group; other Nooga hubs will nest under it, only select one hub otherwise you will see duplicate hubs",
+        "hostConfigurable": true,
+        "userConfigurable": false,
+        "defaultState": false,
+        "hostScopes": [
+          "organization",
+          "project"
+        ]
+      }
+    },
+    {
+      "id": "nooga-hub-group",
+      "type": "ms.vss-web.hub-group",
+      "description": "Nooga",
+      "targets": [
+        "ms.vss-web.project-hub-groups-collection"
+      ],
+      "properties": {
+        "name": "Nooga",
+        "order": 100,
+        "icon": {
+          "light": "asset://static/nooga-icon.png",
+          "dark": "asset://static/nooga-icon.png"
+        }
+      },
+      "visibleTo": [
+        "nooga"
+      ],
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-portfolio.nooga-nav-host"
+          }
+        }
+      ]
+    },
+    {
+      "id": "nooga-hub-group-portfolio",
+      "type": "ms.vss-web.hub-group",
+      "description": "Nooga Portfolio",
+      "targets": [
+        "ms.vss-web.project-hub-groups-collection"
+      ],
+      "properties": {
+        "name": "Nooga Portfolio",
+        "order": 100,
+        "icon": {
+          "light": "asset://static/nooga-icon.png",
+          "dark": "asset://static/nooga-icon.png"
+        }
+      },
+      "visibleTo": [
+        "nooga"
+      ],
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-portfolio.nooga-nav-host"
+          },
+          "inverse": "true"
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-scale.nooga-nav-host"
+          },
+          "inverse": "true"
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-risk.nooga-nav-host"
+          },
+          "inverse": "true"
+        }
+      ]
+    },
+    {
+      "id": "admin",
+      "type": "ms.vss-web.hub",
+      "targets": [
+        "ms.vss-web.collection-admin-hub-group"
+      ],
+      "includes": [
+        "ms.vss-tfs-web.tfs-page-data-service",
+        "ms.vss-features.host-navigation-service",
+        "ms.vss-features.extension-data-service",
+        "ms.vss-features.host-dialog-service"
+      ],
+      "properties": {
+        "name": "Nooga Portfolio settings",
+        "uri": "dist/Admin/Admin.html",
+        "iconName": "Settings",
+        "supportsMobile": true
+      }
+    },
+    {
+      "id": "portfolio",
+      "type": "ms.vss-web.hub",
+      "targets": [
+        "nooga.nooga-portfolio.nooga-hub-group"
+      ],
+      "includes": [
+        "ms.vss-tfs-web.tfs-page-data-service",
+        "ms.vss-features.host-navigation-service",
+        "ms.vss-features.extension-data-service",
+        "ms.vss-features.host-dialog-service"
+      ],
+      "properties": {
+        "name": "Portfolio",
+        "uri": "dist/Hub/Hub.html",
+        "iconName": "FlowChart",
+        "order": 100,
+        "supportsMobile": true
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-portfolio.nooga-nav-host"
+          }
+        }
+      ]
+    },
+    {
+      "id": "portfolio-scale",
+      "type": "ms.vss-web.hub",
+      "targets": [
+        "nooga.nooga-scale.nooga-hub-group"
+      ],
+      "includes": [
+        "ms.vss-tfs-web.tfs-page-data-service",
+        "ms.vss-features.host-navigation-service",
+        "ms.vss-features.extension-data-service",
+        "ms.vss-features.host-dialog-service"
+      ],
+      "properties": {
+        "order": 100,
+        "name": "Portfolio",
+        "uri": "dist/Hub/Hub.html",
+        "iconName": "FlowChart"
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-scale.nooga-nav-host"
+          },
+          "inverse": false
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-risk.nooga-nav-host"
+          },
+          "inverse": true
+        }
+      ]
+    },
+    {
+      "id": "portfolio-risk",
+      "type": "ms.vss-web.hub",
+      "targets": [
+        "nooga.nooga-risk.nooga-hub-group"
+      ],
+      "includes": [
+        "ms.vss-tfs-web.tfs-page-data-service",
+        "ms.vss-features.host-navigation-service",
+        "ms.vss-features.extension-data-service",
+        "ms.vss-features.host-dialog-service"
+      ],
+      "properties": {
+        "order": 100,
+        "name": "Portfolio",
+        "uri": "dist/Hub/Hub.html",
+        "iconName": "FlowChart"
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-scale.nooga-nav-host"
+          },
+          "inverse": true
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-risk.nooga-nav-host"
+          },
+          "inverse": false
+        }
+      ]
+    },
+    {
+      "id": "portfolio-standalone",
+      "type": "ms.vss-web.hub",
+      "targets": [
+        "nooga.nooga-portfolio.nooga-hub-group-portfolio"
+      ],
+      "includes": [
+        "ms.vss-tfs-web.tfs-page-data-service",
+        "ms.vss-features.host-navigation-service",
+        "ms.vss-features.extension-data-service",
+        "ms.vss-features.host-dialog-service"
+      ],
+      "properties": {
+        "name": "Nooga Portfolio",
+        "order": 100,
+        "uri": "dist/Hub/Hub.html",
+        "iconName": "FlowChart"
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-risk.nooga-nav-host"
+          },
+          "inverse": true,
+          "group": 1
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-scale.nooga-nav-host"
+          },
+          "inverse": true,
+          "group": 1
+        },
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "nooga.nooga-portfolio.nooga-nav-host"
+          },
+          "inverse": true,
+          "group": 1
+        }
+      ]
+    }
+  ],
+  "contributionTypes": []
+}
