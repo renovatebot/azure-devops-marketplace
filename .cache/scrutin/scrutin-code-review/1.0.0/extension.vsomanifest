@@ -1,0 +1,108 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code",
+        "vso.code_write"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://gitlab.com/scrutin/codedtor"
+    },
+    "contributions": [
+        {
+            "id": "scrutin-service-hook-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "scrutin",
+                "name": "Scrutin Code Review",
+                "description": "Send Pull Request events to Scrutin for AI-powered code review analysis",
+                "informationUrl": "https://scrutin.dev/docs/integrations/azure-devops",
+                "imageUrl": "images/logo.png",
+                "inputDescriptors": [
+                    {
+                        "id": "apiKey",
+                        "isRequired": true,
+                        "name": "Scrutin API Key",
+                        "description": "Your organization's API key. Find it at scrutin.dev → Settings → Integrations → Azure DevOps.",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "baseUrl",
+                        "isRequired": false,
+                        "name": "Scrutin API URL",
+                        "description": "Custom API URL for self-hosted Scrutin instances. Leave empty for cloud (api.scrutin.dev).",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "analyze-pull-request",
+                        "name": "Analyze Pull Request",
+                        "description": "Triggers Scrutin AI analysis when a pull request is created or updated",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{baseUrl||https://api.scrutin.dev}}}/api/webhooks/azure-devops",
+                            "headers": {
+                                "X-Scrutin-Api-Key": "{{{apiKey}}}",
+                                "X-Scrutin-Source": "azure-devops-extension"
+                            },
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    },
+                    {
+                        "id": "track-merge",
+                        "name": "Track Pull Request Merge",
+                        "description": "Notifies Scrutin when a pull request is merged to update analytics",
+                        "supportedEventTypes": [
+                            "git.pullrequest.merged"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{baseUrl||https://api.scrutin.dev}}}/api/webhooks/azure-devops",
+                            "headers": {
+                                "X-Scrutin-Api-Key": "{{{apiKey}}}",
+                                "X-Scrutin-Source": "azure-devops-extension"
+                            },
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "none",
+                            "detailedMessagesToSend": "none"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "scrutin-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-code-web.code-hub-group"
+            ],
+            "properties": {
+                "name": "Scrutin",
+                "order": 99,
+                "uri": "dist/hub/hub.html",
+                "icon": "images/logo.png"
+            }
+        },
+        {
+            "id": "scrutin-pr-status",
+            "type": "ms.vss-web.tab",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "Scrutin Review",
+                "order": 99,
+                "uri": "dist/pr-status/pr-status.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
