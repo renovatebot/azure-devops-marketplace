@@ -1,0 +1,106 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/ClinicalSupportSystems/supercheck-azdo"
+    },
+    "contributions": [
+        {
+            "id": "supercheck-service-endpoint",
+            "description": "Service connection for Supercheck instances",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "supercheck",
+                "displayName": "Supercheck",
+                "url": {
+                    "displayName": "Supercheck URL",
+                    "helpText": "URL of your Supercheck instance (e.g. https://supercheck.yourdomain.com)",
+                    "value": "https://supercheck.clinicalsupportsystems.com",
+                    "isVisible": "true"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/health",
+                        "resultSelector": "jsonpath:$.status"
+                    },
+                    {
+                        "name": "ListJobs",
+                        "endpointUrl": "{{endpoint.url}}/api/jobs",
+                        "resultSelector": "jsonpath:$.data[*]"
+                    },
+                    {
+                        "name": "ListMonitors",
+                        "endpointUrl": "{{endpoint.url}}/api/monitors",
+                        "resultSelector": "jsonpath:$.data[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CLI Token",
+                                "description": "Supercheck CLI token (sck_live_* or sck_test_*). Create one in Project Settings → CLI Tokens.",
+                                "inputMode": "passwordBox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "pattern": "^sck_(live|test)_.+",
+                                    "patternMismatchErrorMessage": "Supercheck CLI token must start with sck_live_ or sck_test_."
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://supercheck.io/docs/api/authentication\" target=\"_blank\"><b>Learn more</b></a>"
+            }
+        },
+        {
+            "id": "supercheck-trigger-job",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/trigger-job"
+            }
+        },
+        {
+            "id": "supercheck-deploy-config",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/deploy-config"
+            }
+        },
+        {
+            "id": "supercheck-health-check",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "src/health-check"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
