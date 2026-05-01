@@ -1,0 +1,156 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.work",
+        "vso.code_write",
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Qualys CS connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "csConnection",
+                "displayName": "Qualys CS server connection",
+                "url": {
+                    "displayName": "Qualys API Server:",
+                    "helpText": "Qualys Platform URL link to connect - Example: https://qualysapi.qualys.com. For more information, refer to https://www.qualys.com/platform-identification/."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "headers": [
+                            {
+                                "name": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Content-Type",
+                                "value": "application/xml"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Qualys Api Username/ ClientId",
+                                "description": "Qualys Username/ ClientId",
+                                "isConfidential": false,
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Qualys Api Password/ ClientSecret",
+                                "description": "Qualys Password/ ClientSecret",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "AuthenticationType",
+                                "name": "Authentication Type",
+                                "isConfidential": false,
+                                "description": "Enter 'BasicAuth' for Basic Authentication or 'OIDC' for OIDC Authentication.",
+                                "inputMode": "textbox",
+                                "defaultValue": "BasicAuth",
+                                "helpMarkDown": "Enter 'BasicAuth' for Basic Authentication or 'OIDC' for OIDC Authentication.",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "useProxy",
+                                "name": "Use Proxy",
+                                "description": "Select the checkbox to use the proxy",
+                                "inputMode": "checkbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "boolean"
+                                }
+                            },
+                            {
+                                "id": "proxyServer",
+                                "name": "Proxy Server",
+                                "description": "Enter the proxy URL - Examples: 10.15.201.155, corp.proxyserver.company.com",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPort",
+                                "name": "Proxy Port",
+                                "description": "Enter the proxy port",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyUsername",
+                                "name": "Proxy Username",
+                                "description": "Enter the proxy username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "proxyPassword",
+                                "name": "Proxy Password",
+                                "description": "Enter the proxy password",
+                                "inputMode": "passwordbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "<a href=\"https://www.qualys.com\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Qualys Image Scan Result",
+                "uri": "infoTab.html"
+            }
+        },
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildAndReleaseTask"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
