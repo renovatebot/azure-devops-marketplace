@@ -168,7 +168,8 @@ function Import-Extensions {
     $resultMetaData = $null
     $skippedExtensions = @()
 
-    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize. Splitting the batch into smaller batches."
+    $startPosition = $offset + 1
+    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (positions $startPosition-$endOffset). Splitting the batch into smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
         $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
@@ -259,6 +260,7 @@ $page = 1
 $totalFetched = 0
 $max = 0
 $extensions = @()
+$skippedExtensions = @()
 $cacheFile = ".cache/extensions.json"
 mkdir -path ".cache" -Force | out-null
 
@@ -267,6 +269,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         $ProgressPreference = "silentlycontinue"
         $result = Import-Extensions -PageSize $pageSize -Page $page
         $totalFetched += $result.extensions.Count + $result.skippedExtensions.Count
+        $skippedExtensions += $result.skippedExtensions
         if ($result.resultMetaData) {
             $max = $result.resultMetaData[0].metadataItems[0].count
         }
@@ -286,6 +289,23 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         $page += 1
     }
     while ($totalFetched -lt $max)
+
+    if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
+        Write-Error "Fetched $($extensions.Count) extensions and skipped $($skippedExtensions.Count), but marketplace reported $max extensions."
+    }
+
+    $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
+    if ($duplicateSkippedPositions) {
+        Write-Error "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
+    }
+
+    $duplicateExtensions = $extensions |
+        ForEach-Object { "$($_.publisher.publisherName)/$($_.extensionName)" } |
+        Group-Object |
+        Where-Object { $_.Count -gt 1 }
+    if ($duplicateExtensions) {
+        Write-Error "Duplicate extension metadata returned for: $(($duplicateExtensions | ForEach-Object { $_.Name }) -join ', ')"
+    }
 
     # Remove properties that we don't need to prevent unwanted cache commits
     foreach ($extension in $extensions) {
