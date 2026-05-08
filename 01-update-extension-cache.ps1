@@ -168,8 +168,8 @@ function Import-Extensions {
     $resultMetaData = $null
     $skippedExtensions = @()
 
-    $startPosition = $offset + 1
-    $endPosition = $endOffset
+    $startPosition = (($Page - 1) * $PageSize) + 1
+    $endPosition = $startPosition + $PageSize - 1
     Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (marketplace positions $startPosition-$endPosition). Retrying with smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
