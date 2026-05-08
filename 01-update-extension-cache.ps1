@@ -204,7 +204,7 @@ function Get-ExtensionLastUpdated {
     )
 
     if (-not $Extension.lastUpdated) {
-        return $null
+        return [DateTimeOffset]::MinValue
     }
 
     return [DateTimeOffset]::Parse(
@@ -214,19 +214,21 @@ function Get-ExtensionLastUpdated {
     )
 }
 
-function Select-ExtensionCacheProperty {
+function ConvertTo-ExtensionCacheEntry {
     [cmdletbinding()]
+    [OutputType([object])]
     Param (
         $Extension
     )
 
-    if ($Extension.versions) { $Extension.versions = @() }
-    if ($Extension.statistics) { $Extension.statistics = @() }
-    if ($Extension.installationTargets) { $Extension.installationTargets = @() }
-    if ($Extension.categories) { $Extension.categories = @() }
-    if ($Extension.tags) { $Extension.tags = @() }
+    $cacheEntry = $Extension | Select-Object -Property * -ExcludeProperty versions, statistics, installationTargets, categories, tags
+    $cacheEntry | Add-Member -MemberType NoteProperty -Name versions -Value @()
+    $cacheEntry | Add-Member -MemberType NoteProperty -Name statistics -Value @()
+    $cacheEntry | Add-Member -MemberType NoteProperty -Name installationTargets -Value @()
+    $cacheEntry | Add-Member -MemberType NoteProperty -Name categories -Value @()
+    $cacheEntry | Add-Member -MemberType NoteProperty -Name tags -Value @()
 
-    return $Extension
+    return $cacheEntry
 }
 
 function Merge-ExtensionCache {
@@ -239,11 +241,7 @@ function Merge-ExtensionCache {
 
     $extensionByKey = @{}
 
-    foreach ($extension in @($CachedExtension)) {
-        $extensionByKey[(Get-ExtensionCacheKey -Extension $extension)] = $extension
-    }
-
-    foreach ($extension in @($UpdatedExtension)) {
+    foreach ($extension in (@($CachedExtension) + @($UpdatedExtension))) {
         $extensionByKey[(Get-ExtensionCacheKey -Extension $extension)] = $extension
     }
 
@@ -382,7 +380,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
 
     # Remove properties that we don't need to prevent unwanted cache commits
     for ($index = 0; $index -lt $updatedExtensions.Count; $index++) {
-        $updatedExtensions[$index] = Select-ExtensionCacheProperty -Extension $updatedExtensions[$index]
+        $updatedExtensions[$index] = ConvertTo-ExtensionCacheEntry -Extension $updatedExtensions[$index]
     }
 
     # Merge and sort the extensions to prevent unwanted cache commits
