@@ -10,7 +10,8 @@ function Import-Extensions {
     [cmdletbinding()]
     Param (
         [int]$Page,
-        [int]$PageSize
+        [int]$PageSize,
+        $HighWatermark
     )
 
     function Get-ExtensionQueryErrorText {
@@ -116,6 +117,19 @@ function Import-Extensions {
         return 1
     }
 
+    function Test-ReachedHighWatermark {
+        param (
+            $Extensions,
+            $HighWatermark
+        )
+
+        if (-not $HighWatermark) {
+            return $false
+        }
+
+        return @($Extensions | Where-Object { (Get-ExtensionLastUpdated -Extension $_) -lt $HighWatermark }).Count -gt 0
+    }
+
     $maxRetries = 4
     $retryDelay = 15
     $attempt = 1
@@ -171,12 +185,16 @@ function Import-Extensions {
     Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize. Splitting the batch into smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
-        $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
+        $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage -HighWatermark $HighWatermark
         $extensions += $childResult.extensions
         if (-not $resultMetaData -and $childResult.resultMetaData) {
             $resultMetaData = $childResult.resultMetaData
         }
         $skippedExtensions += $childResult.skippedExtensions
+
+        if (Test-ReachedHighWatermark -Extensions $childResult.extensions -HighWatermark $HighWatermark) {
+            break
+        }
     }
 
     return Get-ExtensionQueryResult -Extensions $extensions -ResultMetaData $resultMetaData -SkippedExtensions $skippedExtensions
@@ -345,7 +363,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     $stopPaging = $false
     do {
         $ProgressPreference = "silentlycontinue"
-        $result = Import-Extensions -PageSize $pageSize -Page $page
+        $result = Import-Extensions -PageSize $pageSize -Page $page -HighWatermark $highWatermark
         $pageExtensions = @($result.extensions)
         $totalFetched += $pageExtensions.Count + $result.skippedExtensions.Count
         if ($result.resultMetaData) {
