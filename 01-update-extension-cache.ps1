@@ -11,7 +11,7 @@ function Import-Extensions {
     Param (
         [int]$Page,
         [int]$PageSize,
-        $HighWatermark
+        [DateTimeOffset]$HighWatermark
     )
 
     function Get-ExtensionQueryErrorText {
@@ -117,17 +117,23 @@ function Import-Extensions {
         return 1
     }
 
-    function Test-ReachedHighWatermark {
+    function Test-ExtensionBelowHighWatermark {
         param (
-            $Extensions,
-            $HighWatermark
+            [object[]]$Extensions,
+            [DateTimeOffset]$HighWatermark
         )
 
         if (-not $HighWatermark) {
             return $false
         }
 
-        return @($Extensions | Where-Object { (Get-ExtensionLastUpdated -Extension $_) -lt $HighWatermark }).Count -gt 0
+        foreach ($extension in $Extensions) {
+            if ((Get-ExtensionLastUpdated -Extension $extension) -lt $HighWatermark) {
+                return $true
+            }
+        }
+
+        return $false
     }
 
     $maxRetries = 4
@@ -192,7 +198,7 @@ function Import-Extensions {
         }
         $skippedExtensions += $childResult.skippedExtensions
 
-        if (Test-ReachedHighWatermark -Extensions $childResult.extensions -HighWatermark $HighWatermark) {
+        if (Test-ExtensionBelowHighWatermark -Extensions $childResult.extensions -HighWatermark $HighWatermark) {
             break
         }
     }
