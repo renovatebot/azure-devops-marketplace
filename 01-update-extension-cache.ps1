@@ -170,7 +170,7 @@ function Import-Extensions {
 
     $startPosition = $offset + 1
     $endPosition = $endOffset
-    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (marketplace positions $startPosition-$endPosition). Splitting this same position range into smaller batches; child page numbers are recalculated for the smaller page size."
+    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (marketplace positions $startPosition-$endPosition). Retrying with smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
         $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
@@ -292,10 +292,10 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     while ($totalFetched -lt $max)
 
     if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
-        Write-Error "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions."
+        Write-Error "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions. Stopping to avoid writing an incomplete cache."
     }
 
-    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not (($_.PSObject.Properties.Name -contains "position") -and ($null -ne $_.position)) }
+    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { ($_.PSObject.Properties.Name -notcontains "position") -or ($null -eq $_.position) }
     if ($skippedExtensionsWithoutPosition) {
         Write-Error "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
     }
