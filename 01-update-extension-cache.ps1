@@ -13,7 +13,7 @@ function Import-Extensions {
         [int]$PageSize
     )
 
-    function Get-ExtensionQueryErrorMessage {
+    function Get-ExtensionQueryErrorText {
         param (
             $ErrorRecord
         )
@@ -27,6 +27,16 @@ function Import-Extensions {
             $message = $ErrorRecord.Exception.Response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
         }
 
+        return $message
+    }
+
+    function Get-ExtensionQueryErrorMessage {
+        param (
+            $ErrorRecord
+        )
+
+        $message = Get-ExtensionQueryErrorText -ErrorRecord $ErrorRecord
+
         try {
             $errorResponse = $message | ConvertFrom-Json
             if ($errorResponse.message) {
@@ -39,6 +49,14 @@ function Import-Extensions {
         }
 
         return $message
+    }
+
+    function Test-IsNullReferenceException {
+        param (
+            $ErrorRecord
+        )
+
+        return (Get-ExtensionQueryErrorText -ErrorRecord $ErrorRecord) -match "NullReferenceException"
     }
 
     function Get-ExtensionQueryResult {
@@ -121,6 +139,11 @@ function Import-Extensions {
             $attempt++
         }
     } while ($attempt -le $maxRetries)
+
+    if (-not (Test-IsNullReferenceException -ErrorRecord $lastError)) {
+        Write-Error "Failed to retrieve data after $maxRetries attempts for page $Page. Last error: $(Get-ExtensionQueryErrorMessage -ErrorRecord $lastError)"
+        throw $lastError
+    }
 
     if ($PageSize -eq 1) {
         $position = (($Page - 1) * $PageSize) + 1
