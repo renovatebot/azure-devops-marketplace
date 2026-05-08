@@ -13,49 +13,143 @@ function Import-Extensions {
         [int]$PageSize
     )
 
+    function Get-ExtensionQueryErrorMessage {
+        param (
+            $ErrorRecord
+        )
+
+        $message = $ErrorRecord.Exception.Message
+
+        if ($ErrorRecord.ErrorDetails.Message) {
+            $message = $ErrorRecord.ErrorDetails.Message
+        }
+        elseif ($ErrorRecord.Exception.Response.Content) {
+            $message = $ErrorRecord.Exception.Response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+        }
+
+        try {
+            $errorResponse = $message | ConvertFrom-Json
+            if ($errorResponse.message) {
+                return $errorResponse.message
+            }
+        }
+        catch {
+            # Return the raw error message when the response is not JSON.
+        }
+
+        return $message
+    }
+
+    function New-ExtensionQueryResult {
+        param (
+            $Extensions,
+            $ResultMetaData,
+            $SkippedExtensions
+        )
+
+        return [PSCustomObject]@{
+            extensions        = @($Extensions)
+            resultMetaData    = $ResultMetaData
+            skippedExtensions = @($SkippedExtensions)
+        }
+    }
+
+    function Invoke-ExtensionQuery {
+        param (
+            [int]$Page,
+            [int]$PageSize
+        )
+
+        $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
+            -Method "POST" `
+            -Headers @{
+            "authority"                    = "marketplace.visualstudio.com"
+            "method"                       = "POST"
+            "path"                         = "/_apis/public/gallery/extensionquery"
+            "scheme"                       = "https"
+            "accept"                       = "application/json;api-version=7.1-preview.1;excludeUrls=true"
+            "accept-encoding"              = "gzip, deflate, br"
+            "accept-language"              = "en-US,en;q=0.9"
+            "cache-control"                = "no-cache"
+            "origin"                       = "https://marketplace.visualstudio.com"
+            "x-vss-reauthenticationaction" = "Suppress"
+        } `
+            -ContentType "application/json" `
+            -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}" `
+            -MaximumRetryCount 5 -RetryIntervalSec 10
+
+        return ($result.Content | ConvertFrom-Json).results[0]
+    }
+
+    function Get-SplitPageSize {
+        param (
+            [int]$Page,
+            [int]$PageSize
+        )
+
+        $offset = ($Page - 1) * $PageSize
+        for ($candidate = [Math]::Floor($PageSize / 2); $candidate -ge 1; $candidate--) {
+            if (($PageSize % $candidate -eq 0) -and ($offset % $candidate -eq 0)) {
+                return $candidate
+            }
+        }
+
+        return 1
+    }
+
     $maxRetries = 4
     $retryDelay = 15
     $attempt = 1
-    
+    $lastError = $null
+
     do {
         try {
             if ($attempt -gt 1) {
                 Write-Output "Retrying web request (attempt $attempt of $maxRetries) for page $Page..."
                 Start-Sleep -Seconds $retryDelay
             }
-            
-            $result = Invoke-WebRequest -UseBasicParsing -Uri "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery" `
-                -Method "POST" `
-                -Headers @{
-                "authority"                    = "marketplace.visualstudio.com"
-                "method"                       = "POST"
-                "path"                         = "/_apis/public/gallery/extensionquery"
-                "scheme"                       = "https"
-                "accept"                       = "application/json;api-version=7.1-preview.1;excludeUrls=true"
-                "accept-encoding"              = "gzip, deflate, br"
-                "accept-language"              = "en-US,en;q=0.9"
-                "cache-control"                = "no-cache"
-                "origin"                       = "https://marketplace.visualstudio.com"
-                "x-vss-reauthenticationaction" = "Suppress"
-            } `
-                -ContentType "application/json" `
-                -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}" `
-                -MaximumRetryCount 5 -RetryIntervalSec 10
+
+            $result = Invoke-ExtensionQuery -PageSize $PageSize -Page $Page
 
             # If we get here, the request succeeded
-            return ($result.Content | ConvertFrom-Json).results[0];
+            return New-ExtensionQueryResult -Extensions $result.extensions -ResultMetaData $result.resultMetaData -SkippedExtensions @()
         }
         catch {
+            $lastError = $_
             Write-Output "Web request failed on attempt $attempt for page $Page`: $($_.Exception.Message)"
-            
-            if ($attempt -eq $maxRetries) {
-                Write-Error "Failed to retrieve data after $maxRetries attempts for page $Page. Last error: $($_.Exception.Message)"
-                throw
-            }
-            
             $attempt++
         }
     } while ($attempt -le $maxRetries)
+
+    if ($PageSize -eq 1) {
+        $position = (($Page - 1) * $PageSize) + 1
+        return New-ExtensionQueryResult -Extensions @() -ResultMetaData $null -SkippedExtensions @(
+            [PSCustomObject]@{
+                position = $position
+                message  = Get-ExtensionQueryErrorMessage -ErrorRecord $lastError
+            }
+        )
+    }
+
+    $splitPageSize = Get-SplitPageSize -Page $Page -PageSize $PageSize
+    $offset = ($Page - 1) * $PageSize
+    $endOffset = $offset + $PageSize
+    $extensions = @()
+    $resultMetaData = $null
+    $skippedExtensions = @()
+
+    Write-Warning "Failed to retrieve data after $maxRetries attempts for page $Page with page size $PageSize. Splitting the batch into smaller batches."
+    for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
+        $childPage = [int](($childOffset / $splitPageSize) + 1)
+        $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
+        $extensions += $childResult.extensions
+        if (-not $resultMetaData -and $childResult.resultMetaData) {
+            $resultMetaData = $childResult.resultMetaData
+        }
+        $skippedExtensions += $childResult.skippedExtensions
+    }
+
+    return New-ExtensionQueryResult -Extensions $extensions -ResultMetaData $resultMetaData -SkippedExtensions $skippedExtensions
 }
 
 function format-taskmanifests {
@@ -142,8 +236,17 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     do {
         $ProgressPreference = "silentlycontinue"
         $result = Import-Extensions -PageSize $pageSize -Page $page
-        $totalFetched += $result.extensions.Count
-        $max = $result.resultMetaData[0].metadataItems[0].count
+        $totalFetched += $result.extensions.Count + $result.skippedExtensions.Count
+        if ($result.resultMetaData) {
+            $max = $result.resultMetaData[0].metadataItems[0].count
+        }
+        elseif ($max -eq 0) {
+            Write-Error "Failed to retrieve extension metadata and could not determine the total extension count."
+        }
+
+        foreach ($skippedExtension in $result.skippedExtensions) {
+            Write-Warning "Skipping extension at position $($skippedExtension.position)/$max. Marketplace error message: $($skippedExtension.message)"
+        }
 
         $ProgressPreference = "continue"
         write-progress -activity "Fetching extension metadata" -status "Fetched $totalFetched of $max" -percentComplete (($totalFetched / $max) * 100)
