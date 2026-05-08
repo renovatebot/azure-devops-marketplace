@@ -11,7 +11,7 @@ function Import-Extensions {
     Param (
         [int]$Page,
         [int]$PageSize,
-        [DateTimeOffset]$HighWatermark
+        [AllowNull()][Nullable[DateTimeOffset]]$HighWatermark
     )
 
     function Get-ExtensionQueryErrorText {
@@ -120,7 +120,7 @@ function Import-Extensions {
     function Test-ExtensionBelowHighWatermark {
         param (
             [object[]]$Extensions,
-            [DateTimeOffset]$HighWatermark
+            [AllowNull()][Nullable[DateTimeOffset]]$HighWatermark
         )
 
         if (-not $HighWatermark) {
