@@ -169,7 +169,8 @@ function Import-Extensions {
     $skippedExtensions = @()
 
     $startPosition = $offset + 1
-    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (positions $startPosition-$endOffset). Splitting the batch into smaller batches."
+    $endPosition = $endOffset
+    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (positions $startPosition-$endPosition). Splitting the batch into smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
         $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
@@ -292,6 +293,11 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
 
     if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
         Write-Error "Fetched $($extensions.Count) extensions and skipped $($skippedExtensions.Count), but marketplace reported $max extensions."
+    }
+
+    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not $_.PSObject.Properties["position"] }
+    if ($skippedExtensionsWithoutPosition) {
+        Write-Error "Skipped extension metadata is missing position information."
     }
 
     $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
