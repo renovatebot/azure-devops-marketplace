@@ -292,12 +292,12 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     while ($totalFetched -lt $max)
 
     if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
-        Write-Error "Fetched $($extensions.Count) extensions and skipped $($skippedExtensions.Count), but marketplace reported $max extensions."
+        Write-Error "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions."
     }
 
-    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not ($_.PSObject.Properties["position"] -and $null -ne $_.position) }
+    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not ($_.PSObject.Properties.Name -contains "position" -and $null -ne $_.position) }
     if ($skippedExtensionsWithoutPosition) {
-        Write-Error "Skipped extension metadata is missing position information."
+        Write-Error "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
     }
     else {
         $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
