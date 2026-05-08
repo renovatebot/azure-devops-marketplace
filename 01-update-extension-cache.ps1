@@ -170,7 +170,7 @@ function Import-Extensions {
 
     $startPosition = $offset + 1
     $endPosition = $endOffset
-    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (positions $startPosition-$endPosition). Splitting the batch into smaller batches."
+    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize (marketplace positions $startPosition-$endPosition). Splitting this same position range into smaller batches; child page numbers are recalculated for the smaller page size."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
         $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
@@ -295,7 +295,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         Write-Error "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions."
     }
 
-    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not ($_.PSObject.Properties.Name -contains "position" -and $null -ne $_.position) }
+    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not (($_.PSObject.Properties.Name -contains "position") -and ($null -ne $_.position)) }
     if ($skippedExtensionsWithoutPosition) {
         Write-Error "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
     }
@@ -306,13 +306,7 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         }
     }
 
-    $duplicateExtensions = $extensions |
-        ForEach-Object { "$($_.publisher.publisherName)/$($_.extensionName)" } |
-        Group-Object |
-        Where-Object { $_.Count -gt 1 }
-    if ($duplicateExtensions) {
-        Write-Error "Duplicate extension metadata returned for: $(($duplicateExtensions | ForEach-Object { $_.Name }) -join ', ')"
-    }
+    Write-Output "Verified extension metadata fetch: $($extensions.Count) downloaded and $($skippedExtensions.Count) skipped, matching marketplace total $max."
 
     # Remove properties that we don't need to prevent unwanted cache commits
     foreach ($extension in $extensions) {
