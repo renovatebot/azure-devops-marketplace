@@ -407,7 +407,13 @@ else {
     write-output "Using cached extension list"
     $extensions = $cachedExtensions
     if ($changedExtensionsFile -and (Test-Path -Path $changedExtensionsFile -PathType Leaf)) {
-        $extensionsToProcess = @(Get-Content -raw -Path $changedExtensionsFile | ConvertFrom-Json)
+        $changedExtensionsJson = Get-Content -raw -Path $changedExtensionsFile
+        if ([string]::IsNullOrWhiteSpace($changedExtensionsJson)) {
+            $extensionsToProcess = @()
+        }
+        else {
+            $extensionsToProcess = @($changedExtensionsJson | ConvertFrom-Json)
+        }
         $changedExtensions = $extensionsToProcess
     }
     else {

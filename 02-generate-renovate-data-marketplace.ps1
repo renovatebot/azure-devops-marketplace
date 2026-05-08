@@ -3,7 +3,13 @@ $changedExtensionsFile = $env:CHANGED_EXTENSIONS_FILE
 $fullGenerate = $env:FULL_GENERATE -eq "true"
 
 if ($changedExtensionsFile -and (-not $fullGenerate) -and (Test-Path -Path $changedExtensionsFile -PathType Leaf)) {
-    $extensions = @(Get-Content -raw -Path $changedExtensionsFile | ConvertFrom-Json)
+    $changedExtensionsJson = Get-Content -raw -Path $changedExtensionsFile
+    if ([string]::IsNullOrWhiteSpace($changedExtensionsJson)) {
+        $extensions = @()
+    }
+    else {
+        $extensions = @($changedExtensionsJson | ConvertFrom-Json)
+    }
 }
 else {
     $extensions = @(Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json)
