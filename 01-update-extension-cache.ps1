@@ -136,6 +136,12 @@ function Import-Extensions {
         catch {
             $lastError = $_
             Write-Output "Web request failed on attempt $attempt for page $Page`: $($_.Exception.Message)"
+
+            if (Test-IsNullReferenceException -ErrorRecord $lastError) {
+                Write-Output "NullReferenceException encountered for page $Page. Splitting the batch without further retries."
+                break
+            }
+
             $attempt++
         }
     } while ($attempt -le $maxRetries)
@@ -162,7 +168,7 @@ function Import-Extensions {
     $resultMetaData = $null
     $skippedExtensions = @()
 
-    Write-Warning "Failed to retrieve data after $maxRetries attempts for page $Page with page size $PageSize. Splitting the batch into smaller batches."
+    Write-Warning "NullReferenceException encountered for page $Page with page size $PageSize. Splitting the batch into smaller batches."
     for ($childOffset = $offset; $childOffset -lt $endOffset; $childOffset += $splitPageSize) {
         $childPage = [int](($childOffset / $splitPageSize) + 1)
         $childResult = Import-Extensions -PageSize $splitPageSize -Page $childPage
