@@ -291,19 +291,20 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     }
     while ($totalFetched -lt $max)
 
-    if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
-        throw "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions. Stopping to avoid writing an incomplete cache."
+    $totalExtensions = $extensions.Count + $skippedExtensions.Count
+    if ($totalExtensions -ne $max) {
+        throw "Fetched $totalExtensions extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions. Stopping to avoid writing an incomplete cache."
     }
 
     $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { ($_.PSObject.Properties.Name -notcontains "position") -or ($null -eq $_.position) }
+    $skippedExtensionsWithPosition = $skippedExtensions | Where-Object { ($_.PSObject.Properties.Name -contains "position") -and ($null -ne $_.position) }
+    $duplicateSkippedPositions = $skippedExtensionsWithPosition | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
+    if ($duplicateSkippedPositions) {
+        throw "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
+    }
+
     if ($skippedExtensionsWithoutPosition) {
         throw "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
-    }
-    else {
-        $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
-        if ($duplicateSkippedPositions) {
-            throw "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
-        }
     }
 
     Write-Output "Verified extension metadata fetch: $($extensions.Count) downloaded and $($skippedExtensions.Count) skipped, matching marketplace total $max."
