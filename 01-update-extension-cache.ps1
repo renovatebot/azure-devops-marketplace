@@ -60,6 +60,7 @@ function Import-Extensions {
 
 function Get-ExtensionCacheKey {
     [CmdletBinding()]
+    [OutputType([string])]
     Param (
         $Extension
     )
@@ -73,6 +74,7 @@ function Get-ExtensionCacheKey {
 
 function Get-HighestLastUpdated {
     [CmdletBinding()]
+    [OutputType([System.DateTimeOffset])]
     Param (
         $Extensions
     )
@@ -89,19 +91,23 @@ function Get-HighestLastUpdated {
     return $null
 }
 
-function Remove-UnneededExtensionProperties {
+function Get-OldestLastUpdated {
     [CmdletBinding()]
+    [OutputType([System.DateTimeOffset])]
     Param (
         $Extensions
     )
 
-    foreach ($extension in $Extensions) {
-        if ($extension.versions) { $extension.versions = @() }
-        if ($extension.statistics) { $extension.statistics = @() }
-        if ($extension.installationTargets) { $extension.installationTargets = @() }
-        if ($extension.categories) { $extension.categories = @() }
-        if ($extension.tags) { $extension.tags = @() }
+    $lastUpdated = @($Extensions) |
+        Where-Object { $_.lastUpdated } |
+        Sort-Object -Property @{ Expression = { [System.DateTimeOffset]$_.lastUpdated } } |
+        Select-Object -First 1 -ExpandProperty lastUpdated
+
+    if ($lastUpdated) {
+        return [System.DateTimeOffset]$lastUpdated
     }
+
+    return $null
 }
 
 function format-taskmanifests {
@@ -213,13 +219,19 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         $extensionsToProcess += $newOrUpdatedExtensions
         $page += 1
 
-        $oldestFetched = Get-HighestLastUpdated -Extensions ($resultExtensions | Sort-Object -Property @{ Expression = { [System.DateTimeOffset]$_.lastUpdated } })
+        $oldestFetched = Get-OldestLastUpdated -Extensions $resultExtensions
         $reachedHighWatermark = $highWatermark -and $oldestFetched -and ($oldestFetched -le $highWatermark)
     }
     while (($totalFetched -lt $max) -and (-not $reachedHighWatermark))
 
     # Remove properties that we don't need to prevent unwanted cache commits
-    Remove-UnneededExtensionProperties -Extensions $extensionsToProcess
+    foreach ($extension in $extensionsToProcess) {
+        if ($extension.versions) { $extension.versions = @() }
+        if ($extension.statistics) { $extension.statistics = @() }
+        if ($extension.installationTargets) { $extension.installationTargets = @() }
+        if ($extension.categories) { $extension.categories = @() }
+        if ($extension.tags) { $extension.tags = @() }
+    }
 
     $extensionsById = @{}
     foreach ($extension in $cachedExtensions) {
@@ -251,8 +263,8 @@ foreach ($extension in $extensionsToProcess) {
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
 
-    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensions.count)) * 100)
-    write-output "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
+    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensionsToProcess.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensionsToProcess.count)) * 100)
+    write-output "Processing extensions | $extensionsProcessed - $($extensionsToProcess.count) | $publisherId/$extensionId"
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
 
