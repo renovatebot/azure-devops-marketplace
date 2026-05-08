@@ -1,6 +1,14 @@
 $skipCommit = $env:SKIP_COMMIT -eq "true"
+$changedExtensionsFile = $env:CHANGED_EXTENSIONS_FILE
+$fullGenerate = $env:FULL_GENERATE -eq "true"
 
-$extensions = Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json
+if ($changedExtensionsFile -and (-not $fullGenerate) -and (Test-Path -Path $changedExtensionsFile -PathType Leaf)) {
+    $extensions = @(Get-Content -raw -Path $changedExtensionsFile | ConvertFrom-Json)
+}
+else {
+    $extensions = @(Get-Content -raw -Path ".cache/extensions.json" | ConvertFrom-Json)
+    $fullGenerate = $true
+}
 
 function add-version
 {
@@ -15,10 +23,43 @@ function add-version
     $renovateData."$name" = $currentversions
 }
 
-$renovateData = @{}
-# Add the data needed for the unit tests.
-add-version -name "automatedanalysis-marketplace" -version "0.198.0"
-add-version -name "automatedanalysis-marketplace" -version "0.171.0"
+function add-extension-version
+{
+    param (
+        $PublisherId,
+        $ExtensionId,
+        $TaskContributionId,
+        $TaskName,
+        $TaskId,
+        $Version
+    )
+
+    add-version -name "$TaskName" -version $Version
+    add-version -name "$PublisherId.$ExtensionId.$TaskContributionId.$TaskName" -version $Version
+    add-version -name "$TaskId" -version $Version
+    add-version -name "$PublisherId.$ExtensionId.$TaskContributionId.$TaskId" -version $Version
+}
+
+function get-extension-reference-keys
+{
+    param (
+        $PublisherId,
+        $ExtensionId
+    )
+
+    $prefix = "$PublisherId.$ExtensionId.".ToLowerInvariant()
+    return @($renovateData.Keys | Where-Object { $_.ToLowerInvariant().StartsWith($prefix) })
+}
+
+if ($fullGenerate -or (-not (Test-Path -Path "azure-pipelines-marketplace-tasks.json" -PathType Leaf))) {
+    $renovateData = @{}
+    # Add the data needed for the unit tests.
+    add-version -name "automatedanalysis-marketplace" -version "0.198.0"
+    add-version -name "automatedanalysis-marketplace" -version "0.171.0"
+}
+else {
+    $renovateData = Get-Content -raw -Path "azure-pipelines-marketplace-tasks.json" | ConvertFrom-Json -AsHashtable
+}
 
 $extensionsProcessed = 0
 
@@ -31,6 +72,12 @@ foreach ($extension in $extensions) {
 
 
     write-output "::group::$publisherId/$extensionId"
+
+    if (-not $fullGenerate) {
+        foreach ($key in (get-extension-reference-keys -PublisherId $publisherId -ExtensionId $extensionId)) {
+            $renovateData.Remove($key)
+        }
+    }
 
     $extensionDataFile = ".cache/$publisherId/$extensionId/extension.json"
     if (-not (Test-Path -Path $extensionDataFile -PathType Leaf)) { continue }
@@ -95,10 +142,7 @@ foreach ($extension in $extensions) {
                 try {
                     $versionString = ([System.Version]"0$majorVersion.0$minorVersion.0$patchVersion").ToString()
 
-                    add-version -name "$($taskManifest.name)" -version $versionString
-                    add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.name)" -version $versionString
-                    add-version -name "$($taskManifest.id)" -version $versionString
-                    add-version -name "$publisherId.$extensionId.$($taskContribution.id).$($taskManifest.id)" -version $versionString
+                    add-extension-version -PublisherId $publisherId -ExtensionId $extensionId -TaskContributionId $taskContribution.id -TaskName $taskManifest.name -TaskId $taskManifest.id -Version $versionString
                 }
                 catch {
                     write-output "Could not parse version for task $($taskManifest.name) in $publisherId/$extensionId version $extensionVersion"

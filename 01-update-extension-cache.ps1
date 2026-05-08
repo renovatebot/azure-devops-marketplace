@@ -1,6 +1,7 @@
 $skipCache = $env:USE_CACHE -eq "false"
 $skipCommit = $env:SKIP_COMMIT -eq "true"
 $extensionListOnly = $env:EXTENSIONS_LIST_ONLY -eq "true"
+$changedExtensionsFile = $env:CHANGED_EXTENSIONS_FILE
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
@@ -339,6 +340,7 @@ $extensions = @()
 $extensionsToProcess = @()
 $updatedExtensions = @()
 $cacheFile = ".cache/extensions.json"
+$changedExtensions = @()
 mkdir -path ".cache" -Force | out-null
 $cachedExtensions = @()
 $highWatermark = $null
@@ -397,15 +399,26 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     # Merge and sort the extensions to prevent unwanted cache commits
     $extensions = Merge-ExtensionCache -CachedExtension $cachedExtensions -UpdatedExtension $updatedExtensions
     $extensionsToProcess = @($updatedExtensions | Sort-Object -Property extensionId)
+    $changedExtensions = $extensionsToProcess
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
     write-commit -message "Update extensions cache"
 }
 else {
     write-output "Using cached extension list"
     $extensions = $cachedExtensions
-    $extensionsToProcess = $extensions
+    if ($changedExtensionsFile -and (Test-Path -Path $changedExtensionsFile -PathType Leaf)) {
+        $extensionsToProcess = @(Get-Content -raw -Path $changedExtensionsFile | ConvertFrom-Json)
+        $changedExtensions = $extensionsToProcess
+    }
+    else {
+        $extensionsToProcess = $extensions
+    }
 }
 write-output "::endgroup::"
+
+if ($changedExtensionsFile) {
+    $changedExtensions | ConvertTo-Json -Depth 100 | Set-Content -Path $changedExtensionsFile
+}
 
 if ($extensionListOnly) {
     write-output "Skipping extension detail cache because EXTENSIONS_LIST_ONLY is true."

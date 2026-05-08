@@ -14,8 +14,11 @@ jobs:
     permissions:
       contents: write
     runs-on: windows-latest
+    env:
+      CHANGED_EXTENSIONS_FILE: ${{ runner.temp }}/changed-extensions.json
     outputs:
       extensions-changed: ${{ steps.changed.outputs.extensions-changed }}
+      full-generate: ${{ steps.changed.outputs.full-generate }}
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -35,27 +38,75 @@ jobs:
           .\01-update-extension-cache.ps1
           $after = git rev-parse HEAD
           $extensionsChanged = ($before -ne $after).ToString().ToLowerInvariant()
+          $fullGenerate = (("${{ github.event_name }}" -eq "workflow_dispatch") -or ((Get-Date).DayOfWeek -eq "Sunday")).ToString().ToLowerInvariant()
           "extensions-changed=$extensionsChanged" >> $env:GITHUB_OUTPUT
+          "full-generate=$fullGenerate" >> $env:GITHUB_OUTPUT
           if ($extensionsChanged -eq "true") {
+            if ((git rev-parse --is-shallow-repository) -eq "true") {
+              git fetch --unshallow origin main:refs/remotes/origin/main
+            }
+            else {
+              git fetch origin main:refs/remotes/origin/main
+            }
+            git rebase origin/main
             git push origin HEAD:main
           }
         shell: pwsh
 
   marketplace:
     needs: fetch-extensions
-    if: needs.fetch-extensions.outputs.extensions-changed == 'true'
+    if: needs.fetch-extensions.outputs.extensions-changed == 'true' || needs.fetch-extensions.outputs.full-generate == 'true'
     permissions:
       contents: write
     concurrency:
       group: create-renovate-data-json-${{ github.ref }}
       cancel-in-progress: false
     runs-on: windows-latest
+    env:
+      CHANGED_EXTENSIONS_FILE: ${{ runner.temp }}/changed-extensions.json
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           ref: main
+
+      - name: Find changed extensions
+        if: needs.fetch-extensions.outputs.full-generate != 'true'
+        run: |
+          $extensionCommits = @(git log --format=%H -n 2 -- .cache/extensions.json)
+          $currentExtensions = git show "$($extensionCommits[0]):.cache/extensions.json" | ConvertFrom-Json
+          if ($extensionCommits.Count -gt 1) {
+            $previousExtensions = git show "$($extensionCommits[1]):.cache/extensions.json" | ConvertFrom-Json
+          }
+          else {
+            $previousExtensions = @()
+          }
+
+          $previousByKey = @{}
+
+          foreach ($extension in $previousExtensions) {
+            $key = $extension.extensionId
+            if (-not $key) {
+              $key = "$($extension.publisher.publisherName)/$($extension.extensionName)"
+            }
+            $previousByKey[$key] = $extension
+          }
+
+          $changedExtensions = @()
+          foreach ($extension in $currentExtensions) {
+            $key = $extension.extensionId
+            if (-not $key) {
+              $key = "$($extension.publisher.publisherName)/$($extension.extensionName)"
+            }
+
+            if ((-not $previousByKey.ContainsKey($key)) -or ($previousByKey[$key].lastUpdated -ne $extension.lastUpdated)) {
+              $changedExtensions += $extension
+            }
+          }
+
+          $changedExtensions | ConvertTo-Json -Depth 100 | Set-Content -Path $env:CHANGED_EXTENSIONS_FILE
+        shell: pwsh
 
       - name: Use node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -75,11 +126,15 @@ jobs:
 
       - name: Generate azure-pipelines-marketplace-tasks.json
         run: |
+          $env:FULL_GENERATE = "${{ needs.fetch-extensions.outputs.full-generate }}"
           .\02-generate-renovate-data-marketplace.ps1
         shell: pwsh
 
       - name: Push changes
-        run: git push origin HEAD:main
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+          git rebase origin/main
+          git push origin HEAD:main
         shell: pwsh
 
   builtin:
@@ -110,5 +165,13 @@ jobs:
         shell: pwsh
 
       - name: Push changes
-        run: git push origin HEAD:main
+        run: |
+          if ((git rev-parse --is-shallow-repository) -eq "true") {
+            git fetch --unshallow origin main:refs/remotes/origin/main
+          }
+          else {
+            git fetch origin main:refs/remotes/origin/main
+          }
+          git rebase origin/main
+          git push origin HEAD:main
         shell: pwsh
