@@ -1,0 +1,114 @@
+{
+    "$schema": "http://json.schemastore.org/vss-extension",
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work_write"
+    ],
+    "contributions": [
+        {
+            "id": "ado-epic-budget-table-control-v1",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "description": "Financial budget planning table for Azure DevOps Epic work items.",
+            "properties": {
+                "name": "ADO Epic Budget Table",
+                "uri": "dist/index.html",
+                "height": 720,
+                "inputs": [
+                    {
+                        "id": "DataFieldRefName",
+                        "name": "JSON Storage Field",
+                        "description": "Plain Text (multiline) field that stores budget rows as JSON. Create a field named 'Financials Table JSON' with reference name Custom.FinancialsTableJson on your Epic.",
+                        "type": "WorkItemField",
+                        "defaultValue": "Custom.FinancialsTableJson",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "PlainText",
+                                "HTML"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "ApprovedBudgetFieldRef",
+                        "name": "Approved Budget Field",
+                        "description": "Decimal field to READ the approved budget from. Point this at whatever field holds your approved or allocated budget — e.g. Custom.ApprovedBudget, Custom.EstimatedBudget, or Microsoft.VSTS.Scheduling.OriginalEstimate. Displayed as 'Approved Budget' in the summary banner. Leave blank to hide budget comparison metrics.",
+                        "type": "WorkItemField",
+                        "defaultValue": "",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "Double",
+                                "Integer"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "TotalSpentFieldRef",
+                        "name": "Total Planned Spend Field",
+                        "description": "Decimal field to WRITE the computed total planned spend into (sum of all Q1-Q4 across all fiscal years). e.g. Custom.TotalPlannedSpend. Leave blank to skip writeback.",
+                        "type": "WorkItemField",
+                        "defaultValue": "",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "Double",
+                                "Integer"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "BudgetRemainingFieldRef",
+                        "name": "Budget Remaining Field",
+                        "description": "Decimal field to WRITE the computed remaining budget into (Approved Budget minus Total Planned Spend). e.g. Custom.TotalBudgetRemaining. Only written when Approved Budget is set. Leave blank to skip writeback.",
+                        "type": "WorkItemField",
+                        "defaultValue": "",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "Double",
+                                "Integer"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "PercentSpentFieldRef",
+                        "name": "Percent of Budget Field",
+                        "description": "Decimal field to WRITE the computed percentage of budget used. e.g. Custom.PercentOfBudget. Only written when Approved Budget is set. Leave blank to skip writeback.",
+                        "type": "WorkItemField",
+                        "defaultValue": "",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "Double",
+                                "Integer"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/deenuy/ado-epic-budget-data-table"
+    },
+    "contributionTypes": []
+}
