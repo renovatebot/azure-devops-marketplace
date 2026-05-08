@@ -94,7 +94,7 @@ function Import-Extensions {
             "x-vss-reauthenticationaction" = "Suppress"
         } `
             -ContentType "application/json" `
-            -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":2,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}" `
+            -Body "{`"assetTypes`":[],`"filters`":[{`"criteria`":[{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server`"},{`"filterType`":8,`"value`":`"Microsoft.TeamFoundation.Server.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Cloud.Integration`"},{`"filterType`":8,`"value`":`"Microsoft.VisualStudio.Services.Resource.Cloud`"},{`"filterType`":10,`"value`":`"target:\`"Microsoft.VisualStudio.Services\`" target:\`"Microsoft.VisualStudio.Services.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud\`" target:\`"Microsoft.TeamFoundation.Server\`" target:\`"Microsoft.TeamFoundation.Server.Integration\`" target:\`"Microsoft.VisualStudio.Services.Cloud.Integration\`" target:\`"Microsoft.VisualStudio.Services.Resource.Cloud\`" `"},{`"filterType`":12,`"value`":`"37888`"}],`"direction`":2,`"pageSize`":$PageSize,`"pageNumber`":$Page,`"sortBy`":1,`"sortOrder`":0,`"pagingToken`":null}],`"flags`":870}" `
             -MaximumRetryCount 5 -RetryIntervalSec 10
 
         return ($result.Content | ConvertFrom-Json).results[0]
@@ -182,6 +182,74 @@ function Import-Extensions {
     return Get-ExtensionQueryResult -Extensions $extensions -ResultMetaData $resultMetaData -SkippedExtensions $skippedExtensions
 }
 
+function Get-ExtensionCacheKey {
+    [cmdletbinding()]
+    [OutputType([string])]
+    Param (
+        $Extension
+    )
+
+    if ($Extension.extensionId) {
+        return $Extension.extensionId
+    }
+
+    return "$($Extension.publisher.publisherName)/$($Extension.extensionName)"
+}
+
+function Get-ExtensionLastUpdated {
+    [cmdletbinding()]
+    [OutputType([DateTimeOffset])]
+    Param (
+        $Extension
+    )
+
+    if (-not $Extension.lastUpdated) {
+        return $null
+    }
+
+    return [DateTimeOffset]::Parse(
+        $Extension.lastUpdated,
+        [Globalization.CultureInfo]::InvariantCulture,
+        [Globalization.DateTimeStyles]::AssumeUniversal
+    )
+}
+
+function Select-ExtensionCacheProperty {
+    [cmdletbinding()]
+    Param (
+        $Extension
+    )
+
+    if ($Extension.versions) { $Extension.versions = @() }
+    if ($Extension.statistics) { $Extension.statistics = @() }
+    if ($Extension.installationTargets) { $Extension.installationTargets = @() }
+    if ($Extension.categories) { $Extension.categories = @() }
+    if ($Extension.tags) { $Extension.tags = @() }
+
+    return $Extension
+}
+
+function Merge-ExtensionCache {
+    [cmdletbinding()]
+    [OutputType([object[]])]
+    Param (
+        $CachedExtension,
+        $UpdatedExtension
+    )
+
+    $extensionByKey = @{}
+
+    foreach ($extension in @($CachedExtension)) {
+        $extensionByKey[(Get-ExtensionCacheKey -Extension $extension)] = $extension
+    }
+
+    foreach ($extension in @($UpdatedExtension)) {
+        $extensionByKey[(Get-ExtensionCacheKey -Extension $extension)] = $extension
+    }
+
+    return @($extensionByKey.Values | Sort-Object -Property extensionId)
+}
+
 function format-taskmanifests {
     [CmdletBinding()]
     param (
@@ -259,14 +327,29 @@ $page = 1
 $totalFetched = 0
 $max = 0
 $extensions = @()
+$extensionsToProcess = @()
+$updatedExtensions = @()
 $cacheFile = ".cache/extensions.json"
 mkdir -path ".cache" -Force | out-null
+$cachedExtensions = @()
+$highWatermark = $null
+
+if (Test-Path -path $cacheFile -PathType Leaf) {
+    $cachedExtensions = @(Get-Content -raw -Path $cacheFile | ConvertFrom-Json)
+    $highWatermark = @($cachedExtensions | ForEach-Object { Get-ExtensionLastUpdated -Extension $_ } | Where-Object { $_ } | Sort-Object -Descending | Select-Object -First 1)[0]
+}
 
 if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
+    if ($highWatermark) {
+        write-output "Fetching extensions updated since $($highWatermark.ToString("o"))"
+    }
+
+    $stopPaging = $false
     do {
         $ProgressPreference = "silentlycontinue"
         $result = Import-Extensions -PageSize $pageSize -Page $page
-        $totalFetched += $result.extensions.Count + $result.skippedExtensions.Count
+        $pageExtensions = @($result.extensions)
+        $totalFetched += $pageExtensions.Count + $result.skippedExtensions.Count
         if ($result.resultMetaData) {
             $max = $result.resultMetaData[0].metadataItems[0].count
         }
@@ -282,39 +365,47 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         write-progress -activity "Fetching extension metadata" -status "Fetched $totalFetched of $max" -percentComplete (($totalFetched / $max) * 100)
         write-output "Fetching extension metadata | Fetched $totalFetched of $max"
 
-        $extensions += $result.extensions
+        if ($highWatermark) {
+            $pageExtensionsToProcess = @($pageExtensions | Where-Object { (Get-ExtensionLastUpdated -Extension $_) -ge $highWatermark })
+            $updatedExtensions += $pageExtensionsToProcess
+            if ($pageExtensionsToProcess.Count -lt $pageExtensions.Count) {
+                $stopPaging = $true
+            }
+        }
+        else {
+            $updatedExtensions += $pageExtensions
+        }
+
         $page += 1
     }
-    while ($totalFetched -lt $max)
+    while (($totalFetched -lt $max) -and (-not $stopPaging))
 
     # Remove properties that we don't need to prevent unwanted cache commits
-    foreach ($extension in $extensions) {
-        if ($extension.versions) { $extension.versions = @() }
-        if ($extension.statistics) { $extension.statistics = @() }
-        if ($extension.installationTargets) { $extension.installationTargets = @() }
-        if ($extension.categories) { $extension.categories = @() }
-        if ($extension.tags) { $extension.tags = @() }
+    for ($index = 0; $index -lt $updatedExtensions.Count; $index++) {
+        $updatedExtensions[$index] = Select-ExtensionCacheProperty -Extension $updatedExtensions[$index]
     }
 
-    # Sort the extensions to prevent unwanted cache commits
-    $extensions = $extensions | Sort-Object -Property extensionId
+    # Merge and sort the extensions to prevent unwanted cache commits
+    $extensions = Merge-ExtensionCache -CachedExtension $cachedExtensions -UpdatedExtension $updatedExtensions
+    $extensionsToProcess = @($updatedExtensions | Sort-Object -Property extensionId)
     Set-Content -path $cacheFile -Value ($extensions | ConvertTo-Json -Depth 100)
     write-commit -message "Update extensions cache"
 }
 else {
     write-output "Using cached extension list"
-    $extensions = Get-Content -raw -Path $cacheFile | ConvertFrom-Json
+    $extensions = $cachedExtensions
+    $extensionsToProcess = $extensions
 }
 write-output "::endgroup::"
 
 $extensionsProcessed = 0
-foreach ($extension in $extensions) {
+foreach ($extension in $extensionsToProcess) {
     $ProgressPreference = "continue"
     $publisherId = $extension.publisher.publisherName
     $extensionId = $extension.extensionName
 
-    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensions.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensions.count)) * 100)
-    write-output "Processing extensions | $extensionsProcessed - $($extensions.count) | $publisherId/$extensionId"
+    write-progress -activity "Processing extensions" -status "$extensionsProcessed - $($extensionsToProcess.count) | $publisherId/$extensionId" -percentComplete (($extensionsProcessed / $($extensionsToProcess.count)) * 100)
+    write-output "Processing extensions | $extensionsProcessed - $($extensionsToProcess.count) | $publisherId/$extensionId"
     $ProgressPreference = "silentlycontinue"
     $extensionsProcessed += 1
 
