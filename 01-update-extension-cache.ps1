@@ -292,17 +292,17 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
     while ($totalFetched -lt $max)
 
     if (($extensions.Count + $skippedExtensions.Count) -ne $max) {
-        Write-Error "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions. Stopping to avoid writing an incomplete cache."
+        throw "Fetched $($extensions.Count + $skippedExtensions.Count) extensions ($($extensions.Count) successful, $($skippedExtensions.Count) skipped), but marketplace reported $max extensions. Stopping to avoid writing an incomplete cache."
     }
 
     $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { ($_.PSObject.Properties.Name -notcontains "position") -or ($null -eq $_.position) }
     if ($skippedExtensionsWithoutPosition) {
-        Write-Error "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
+        throw "Skipped extension metadata is missing position information for $($skippedExtensionsWithoutPosition.Count) extension(s)."
     }
     else {
         $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
         if ($duplicateSkippedPositions) {
-            Write-Error "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
+            throw "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
         }
     }
 
