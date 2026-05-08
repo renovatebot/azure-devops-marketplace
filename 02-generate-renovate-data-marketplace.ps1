@@ -127,6 +127,5 @@ if (-not $skipCommit)
     if ($LASTEXITCODE -ne 0)
     {
         & git commit -m "azure-pipelines-marketplace-tasks.json"
-        & git push
     }
 }

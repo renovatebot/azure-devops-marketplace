@@ -1,5 +1,6 @@
 $skipCache = $env:USE_CACHE -eq "false"
 $skipCommit = $env:SKIP_COMMIT -eq "true"
+$extensionListOnly = $env:EXTENSIONS_LIST_ONLY -eq "true"
 
 & git config --local user.email "jesse.houwing@gmail.com"
 & git config --local user.name "Jesse Houwing"
@@ -329,20 +330,6 @@ function write-commit {
     write-output "::endgroup::"
 }
 
-write-output "::group::Installing tfx"
-
-npm install tfx-cli@0.22.6 -g --no-fund
-
-$token = $env:AZURE_DEVOPS_PAT
-$marketplace = "https://marketplace.visualstudio.com"
-& tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to login to marketplace"
-    exit 1
-}
-
-write-output "::endgroup::"
-
 write-output "::group::Fetching Extension Metadata"
 $pageSize = 100;
 $page = 1
@@ -420,6 +407,25 @@ else {
 }
 write-output "::endgroup::"
 
+if ($extensionListOnly) {
+    write-output "Skipping extension detail cache because EXTENSIONS_LIST_ONLY is true."
+    return
+}
+
+write-output "::group::Installing tfx"
+
+npm install tfx-cli@0.22.6 -g --no-fund
+
+$token = $env:AZURE_DEVOPS_PAT
+$marketplace = "https://marketplace.visualstudio.com"
+& tfx login --auth-type pat --token $token --service-url $marketplace --no-color --no-prompt
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Failed to login to marketplace"
+    exit 1
+}
+
+write-output "::endgroup::"
+
 $extensionsProcessed = 0
 foreach ($extension in $extensionsToProcess) {
     $ProgressPreference = "continue"
@@ -492,9 +498,6 @@ foreach ($extension in $extensionsToProcess) {
 }
 
 write-commit -message "Update .cache"
-if (-not $skipCommit) {
-    & git push
-}
 
 
 

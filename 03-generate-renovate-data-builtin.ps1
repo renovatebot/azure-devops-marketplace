@@ -63,6 +63,5 @@ if (-not $skipCommit)
     if ($LASTEXITCODE -ne 0)
     {
         & git commit -m "azure-pipelines-builtin-tasks.json"
-        & git push
     }
 }
