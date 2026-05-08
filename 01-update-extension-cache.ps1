@@ -35,12 +35,13 @@ function Import-Extensions {
         }
         catch {
             # Return the raw error message when the response is not JSON.
+            Write-Verbose "Marketplace error response was not JSON."
         }
 
         return $message
     }
 
-    function New-ExtensionQueryResult {
+    function Get-ExtensionQueryResult {
         param (
             $Extensions,
             $ResultMetaData,
@@ -112,7 +113,7 @@ function Import-Extensions {
             $result = Invoke-ExtensionQuery -PageSize $PageSize -Page $Page
 
             # If we get here, the request succeeded
-            return New-ExtensionQueryResult -Extensions $result.extensions -ResultMetaData $result.resultMetaData -SkippedExtensions @()
+            return Get-ExtensionQueryResult -Extensions $result.extensions -ResultMetaData $result.resultMetaData -SkippedExtensions @()
         }
         catch {
             $lastError = $_
@@ -123,7 +124,7 @@ function Import-Extensions {
 
     if ($PageSize -eq 1) {
         $position = (($Page - 1) * $PageSize) + 1
-        return New-ExtensionQueryResult -Extensions @() -ResultMetaData $null -SkippedExtensions @(
+        return Get-ExtensionQueryResult -Extensions @() -ResultMetaData $null -SkippedExtensions @(
             [PSCustomObject]@{
                 position = $position
                 message  = Get-ExtensionQueryErrorMessage -ErrorRecord $lastError
@@ -149,7 +150,7 @@ function Import-Extensions {
         $skippedExtensions += $childResult.skippedExtensions
     }
 
-    return New-ExtensionQueryResult -Extensions $extensions -ResultMetaData $resultMetaData -SkippedExtensions $skippedExtensions
+    return Get-ExtensionQueryResult -Extensions $extensions -ResultMetaData $resultMetaData -SkippedExtensions $skippedExtensions
 }
 
 function format-taskmanifests {
