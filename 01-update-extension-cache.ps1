@@ -295,14 +295,15 @@ if ((-not (Test-Path -path $cacheFile -PathType Leaf)) -or (-not $skipCache)) {
         Write-Error "Fetched $($extensions.Count) extensions and skipped $($skippedExtensions.Count), but marketplace reported $max extensions."
     }
 
-    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not $_.PSObject.Properties["position"] }
+    $skippedExtensionsWithoutPosition = $skippedExtensions | Where-Object { -not ($_.PSObject.Properties["position"] -and $null -ne $_.position) }
     if ($skippedExtensionsWithoutPosition) {
         Write-Error "Skipped extension metadata is missing position information."
     }
-
-    $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
-    if ($duplicateSkippedPositions) {
-        Write-Error "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
+    else {
+        $duplicateSkippedPositions = $skippedExtensions | Group-Object -Property position | Where-Object { $_.Count -gt 1 }
+        if ($duplicateSkippedPositions) {
+            Write-Error "Duplicate skipped extension positions found: $(($duplicateSkippedPositions | ForEach-Object { $_.Name }) -join ', ')"
+        }
     }
 
     $duplicateExtensions = $extensions |
