@@ -1,0 +1,76 @@
+{
+  "manifestVersion": 1,
+  "id": "pipeline-html-report-viewer",
+  "publisher": "SwissReJAZZTeam",
+  "version": "1.0.3",
+  "name": "HTML Report Tabs for Pipelines",
+  "description": "Publish HTML reports (Living Doc, Coverage Dashboard) as build result tabs",
+  "public": true,
+  "categories": ["Azure Pipelines"],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "icons": {
+    "default": "images/icon.png"
+  },
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "files": [
+    {
+      "path": "task",
+      "addressable": false
+    },
+    {
+      "path": "tab",
+      "addressable": true
+    },
+    {
+      "path": "images",
+      "addressable": true
+    },
+    {
+      "path": "overview.md",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "publish-html-report-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "task"
+      }
+    },
+    {
+      "id": "living-doc-tab",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "Living Documentation Report",
+      "targets": ["ms.vss-build-web.build-results-view"],
+      "properties": {
+        "name": "Living Doc",
+        "uri": "tab/tab.html?tabName=living-doc",
+        "supportsTasks": ["f80fcf7f-5080-4847-92ec-d4ea199f5be6"],
+        "order": 50
+      }
+    },
+    {
+      "id": "coverage-dashboard-tab",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "Coverage Dashboard",
+      "targets": ["ms.vss-build-web.build-results-view"],
+      "properties": {
+        "name": "Coverage Dashboard",
+        "uri": "tab/tab.html?tabName=coverage-dashboard",
+        "supportsTasks": ["f80fcf7f-5080-4847-92ec-d4ea199f5be6"],
+        "order": 51
+      }
+    }
+  ],
+  "scopes": ["vso.build"]
+}
