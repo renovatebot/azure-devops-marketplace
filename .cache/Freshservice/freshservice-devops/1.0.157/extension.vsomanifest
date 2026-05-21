@@ -1,0 +1,255 @@
+{
+    "manifest_version": 1,
+    "contributions": [
+        {
+            "id": "freshservice-change-management-server-change-creation-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Server-Change-Creation"
+            }
+        },
+        {
+            "id": "freshservice-change-management-release-gate-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Release-Gate"
+            }
+        },
+        {
+            "id": "freshservice-change-management-agent-change-creation-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Agent-Change-Creation"
+            }
+        },
+        {
+            "id": "freshservice-change-management-server-associate-pipeline-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Server-Associate-Pipeline"
+            }
+        },
+        {
+            "id": "freshservice-change-management-agent-associate-pipeline-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Agent-Associate-Pipeline"
+            }
+        },
+        {
+            "id": "freshservice-change-management-agent-change-update-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Agent-Change-Update"
+            }
+        },
+        {
+            "id": "freshservice-change-management-agent-add-note-to-change-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Tasks/Add-Note-To-Change"
+            }
+        },
+        {
+            "id": "service-endpoint",
+            "description": "Service endpoint type for Freshservice connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "freshservice",
+                "displayName": "Freshservice server connection",
+                "url": {
+                    "displayName": "Your Freshservice Domain",
+                    "helpText": "Url for the Freshservice account to connect to."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{#base64 endpoint.apitoken \":\"X\"}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection to endpoint",
+                                "inputMode": "textbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 300
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "changeStatus",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_status')].choices[*]"
+                    },
+                    {
+                        "name": "workspace",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_workspace')].choices[*]"
+                    },
+                    {
+                        "name": "changeType",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_change_type')].choices[*]"
+                    },
+                    {
+                        "name": "priority",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_priority')].choices[*]"
+                    },
+                    {
+                        "name": "impact",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_impact')].choices[*]"
+                    },
+                    {
+                        "name": "risk",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_risk')].choices[*]"
+                    },
+                    {
+                        "name": "group",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/groups?workspace_id={{workspace_id}}",
+                        "resultSelector": "jsonpath:$.groups[*]"
+                    },
+                    {
+                        "name": "agent",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/agents?per_page=30&page={{page}}",
+                        "resultSelector": "jsonpath:$.agents[*]",
+                        "callbackContextTemplate": "{\"page\": \"{{add page 1}}\"}",
+                        "callbackRequiredTemplate": "{{#if agents.length}}true{{else}}false{{/if}}",
+                        "initialContextTemplate": "{\"page\": \"1\"}"
+                    },
+                    {
+                        "name": "department",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/departments",
+                        "resultSelector": "jsonpath:$.departments[*]"
+                    },
+                    {
+                        "name": "category",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_category')].choices[*]"
+                    },
+                    {
+                        "name": "subcategory",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_category')].choices[?(@.value=='{{category}}')].nested_options[*]"
+                    },
+                    {
+                        "name": "itemCategory",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/change_form_fields",
+                        "resultSelector": "jsonpath:$.change_fields[?(@.field_type=='default_category')].choices[?(@.value=='{{category}}')].nested_options[?(@.value=='{{sub_category}}')].nested_options[*]"
+                    },
+                    {
+                        "name": "DevOpsConnection",
+                        "endpointUrl": "{{endpoint.url}}api/v2/devops-platform/connections?installed_application_id={{installed_application_id}}",
+                        "resultSelector": "jsonpath:$.connections[*]"
+                    },
+                    {
+                        "name": "installedApplications",
+                        "endpointUrl": "{{endpoint.url}}/api/v2/devops-platform/applications/installed",
+                        "resultSelector": "jsonpath:$.[?(@.name=='azure_devops')]"
+                    }
+                ],
+                "helpMarkDown": "<a href=\"url-to-documentation\" target=\"_blank\"><b>Learn More</b></a>"
+            }
+        },
+        {
+            "id": "freshservice-service-connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "FreshserviceChangeManagement",
+                "displayName": "Freshservice Change Management",
+                "helpMarkDown": "Connect to Freshservice to manage Changes in Azure DevOps Pipelines",
+                "url": {
+                    "displayName": "Freshservice URL",
+                    "description": "The URL of your Freshservice account, e.g. https://yourcompany.freshservice.com"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "description": "Freshservice URL",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 200
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": [],
+    "manifestVersion": 1
+}
