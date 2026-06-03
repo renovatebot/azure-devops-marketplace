@@ -1,0 +1,96 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "lynx-oslc-client-work-item-form-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "Lynx item previews",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Lynx item previews",
+                "uri": "dist/apps/devops-oslc-client-app/browser/index.html",
+                "height": 600
+            }
+        },
+        {
+            "id": "lynx-oslc-client-settings-page",
+            "type": "ms.vss-web.hub",
+            "description": "Lynx OSLC client",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Lynx OSLC client",
+                "uri": "dist/apps/devops-oslc-client-settings/browser/index.html"
+            }
+        },
+        {
+            "id": "lynx-oslc-client-polarion-service-endpoint",
+            "description": "Service endpoint type for Polarion connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Polarion OSLC Provider",
+                "displayName": "Polarion OSLC Provider server connection",
+                "url": {
+                    "displayName": "Polarion OSLC Url",
+                    "helpText": "Url for the Polarion server to connect to."
+                },
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": "Basic {{ #base64 endpoint.username \":\" endpoint.password }}"
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "getEntireXML",
+                        "endpointUrl": "{{{endpoint.url}}}/api/resource",
+                        "resultSelector": "xpath:/",
+                        "resultTemplate": "{{this}}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Polarion User name",
+                                "description": "Username",
+                                "isConfidential": false,
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Password",
+                                "description": "Password for the account",
+                                "inputMode": "passwordbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.project_manage",
+        "vso.serviceendpoint",
+        "vso.serviceendpoint_query"
+    ],
+    "contributionTypes": []
+}
