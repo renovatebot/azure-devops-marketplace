@@ -1,0 +1,174 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "observes-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Adds a 'Observes' hub group at the project/team-level",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Observes",
+                "order": 100,
+                "icon": "images/logo.png"
+            }
+        },
+        {
+            "id": "observes-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Adds a SPA hub to the Observes hub group",
+            "targets": [
+                ".observes-hub-group"
+            ],
+            "properties": {
+                "name": "Observes SPA",
+                "uri": "spa/index.html",
+                "order": 99,
+                "iconAsset": "Observesio.observes/images/logo.png",
+                "includesData": {
+                    "assets": [
+                        "Observesio.observes/images/logo.png"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "observes-scanner",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/observes"
+            }
+        },
+        {
+            "id": "observes-endpoint",
+            "description": "Service connection for Observes Scanner",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "observes-endpoint-service",
+                "displayName": "Observes Azure DevOps Scanner",
+                "description": "Service connection for Observes Scanner",
+                "helpText": "Service connection for Observes Scanner",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Azure DevOps Url.",
+                    "value": "https://dev.azure.com/",
+                    "isVisible": false
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "password",
+                                "name": "PAT Token",
+                                "description": "Personal Access Token",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "username",
+                                "name": "Username - ignored",
+                                "description": "Ignored",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "tenantId",
+                                "name": "Tenant ID",
+                                "description": "Microsoft Entra tenant ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "clientId",
+                                "name": "Client ID",
+                                "description": "Application client ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "apitoken",
+                                "name": "Client Secret",
+                                "description": "Application client secret",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-cert",
+                        "inputDescriptors": [
+                            {
+                                "id": "tenantId",
+                                "name": "Tenant ID",
+                                "description": "Microsoft Entra tenant ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "clientId",
+                                "name": "Client ID",
+                                "description": "Application client ID",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            },
+                            {
+                                "id": "certificate",
+                                "name": "Client Certificate",
+                                "description": "PEM certificate content for the application credential",
+                                "inputMode": "TextArea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "dataType": "string",
+                                    "isRequired": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
