@@ -1,0 +1,81 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.build",
+        "vso.serviceendpoint",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "invicti-platform-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/InvictiPlatform"
+            }
+        },
+        {
+            "id": "ip-build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Invicti Platform Scan Report",
+                "uri": "ip-reportTab.html"
+            }
+        },
+        {
+            "id": "invictiplatform-endpoint",
+            "description": "Invicti Platform Connection",
+            "type": "ms.vss-endpoint.invictiplatform-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "invictiplatform",
+                "displayName": "Invicti Platform",
+                "url": {
+                    "displayName": "URL",
+                    "value": "https://platform.invicti.com/",
+                    "helpText": "The URL of your Invicti Platform instance.",
+                    "required": true,
+                    "isVisible": true
+                },
+                "dataSources": [
+                    {
+                        "name": "Targets",
+                        "endpointUrl": "{{endpoint.url}}api/v1/targets",
+                        "resultSelector": "jsonpath:$.targets[*]"
+                    },
+                    {
+                        "name": "ScanningProfiles",
+                        "endpointUrl": "{{endpoint.url}}api/v1/scanning_profiles",
+                        "resultSelector": "jsonpath:$.scanning_profiles[*]"
+                    },
+                    {
+                        "name": "ReportTemplates",
+                        "endpointUrl": "{{endpoint.url}}api/v1/report_templates",
+                        "resultSelector": "jsonpath:$.templates[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "X-Auth",
+                                "value": "{{ endpoint.apitoken }}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
