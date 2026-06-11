@@ -1,0 +1,137 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code"
+    ],
+    "demands": [],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/glenntec/workspace-adopilot"
+    },
+    "CustomerQnASupport": {
+        "enablemarketplaceqna": true,
+        "enableMarketplaceQnA": true
+    },
+    "licensing": {
+        "overrides": [
+            {
+                "id": "adopilot-pr-action",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "adopilot-settings-hub",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "adopilot-consumer",
+                "behavior": "AlwaysInclude"
+            }
+        ]
+    },
+    "contributions": [
+        {
+            "id": "adopilot-pr-action",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-code-web.pull-request-action-menu"
+            ],
+            "properties": {
+                "text": "Run AI Review",
+                "title": "Trigger an ADO Pilot AI code review for this pull request",
+                "icon": "static/icon-action.png",
+                "uri": "dist/pr-action/pr-action.html"
+            }
+        },
+        {
+            "id": "adopilot-settings-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "ADO Pilot",
+                "uri": "dist/settings-hub/settings-hub.html",
+                "icon": {
+                    "light": "static/icon-hub-light.png",
+                    "dark": "static/icon-hub-dark.png"
+                },
+                "supportsMobile": false
+            }
+        },
+        {
+            "id": "adopilot-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "description": "ADO Pilot branded service hook consumer with external-config edit redirect.",
+            "properties": {
+                "id": "adopilot",
+                "name": "ADO Pilot",
+                "description": "AI-powered PR reviews. Subscriptions are managed at adopilot.dev.",
+                "informationUrl": "https://adopilot.dev",
+                "authenticationType": "none",
+                "supportedDeploymentTypes": "hosted",
+                "externalConfiguration": {
+                    "createSubscriptionUrl": "https://adopilot.dev/dashboard/subscriptions/new",
+                    "editSubscriptionPropertyName": "editSubscriptionUrl"
+                },
+                "inputDescriptors": [],
+                "actions": [
+                    {
+                        "id": "reviewPullRequest",
+                        "name": "Review pull request",
+                        "description": "Trigger an ADO Pilot AI review for a pull request event.",
+                        "supportedEventTypes": [
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}?jwt={{{webhookJwt}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "none",
+                            "detailedMessagesToSend": "none"
+                        },
+                        "inputDescriptors": [
+                            {
+                                "id": "url",
+                                "name": "Webhook URL",
+                                "description": "Backend ingress endpoint set by adopilot.dev during onboarding.",
+                                "inputMode": "textbox",
+                                "isRequired": true
+                            },
+                            {
+                                "id": "webhookJwt",
+                                "name": "Webhook authorization token",
+                                "description": "Pre-signed JWT issued by adopilot.dev. Rotated automatically; do not edit by hand.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "isRequired": true,
+                                "useInDefaultDescription": false
+                            },
+                            {
+                                "id": "editSubscriptionUrl",
+                                "name": "Manage at adopilot.dev",
+                                "description": "Per-subscription dashboard URL. The Service Hooks 'Edit' button opens this.",
+                                "inputMode": "textbox",
+                                "isRequired": false
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "lifecycle": {
+        "postInstall": {
+            "uri": "dist/post-install/post-install.html"
+        },
+        "postUninstall": {
+            "uri": "dist/post-uninstall/post-uninstall.html"
+        },
+        "postUpdate": {
+            "uri": "dist/post-update/post-update.html"
+        }
+    },
+    "contributionTypes": []
+}
