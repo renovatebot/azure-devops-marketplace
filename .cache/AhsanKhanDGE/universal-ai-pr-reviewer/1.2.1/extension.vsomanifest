@@ -1,0 +1,56 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "universal-ai-pr-reviewer-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "task"
+            }
+        },
+        {
+            "id": "pr-dashboard-hub",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-code-web.code-hub-group"
+            ],
+            "properties": {
+                "name": "Pull Request Dashboard",
+                "uri": "dist/index.html",
+                "icon": "images/extension-icon.png"
+            }
+        },
+        {
+            "id": "ai-provider-endpoint",
+            "description": "Service connection that stores an AI provider's endpoint URL and API key",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "AiPrReviewerEndpoint",
+                "displayName": "AI PR Reviewer — AI Provider",
+                "url": {
+                    "displayName": "Endpoint URL",
+                    "helpText": "Base URL of the AI provider. OpenAI: https://api.openai.com/v1 · Azure OpenAI: https://<resource>.openai.azure.com/ · DeepSeek: https://api.deepseek.com · or your self-hosted/Foundry endpoint."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    }
+                ],
+                "helpMarkDown": "Stores an AI provider's endpoint URL and API key so pipelines can reference them without wiring secret variables."
+            }
+        }
+    ],
+    "scopes": [
+        "vso.code",
+        "vso.code_status",
+        "vso.code_write",
+        "vso.project"
+    ],
+    "contributionTypes": []
+}
