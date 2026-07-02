@@ -1,0 +1,136 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cycodehq/azure-devops-extension"
+    },
+    "scopes": [
+        "vso.build_execute"
+    ],
+    "contributions": [
+        {
+            "id": "cycode-ado-connection",
+            "description": "Cycode service connection — region-aware credentials for the scan task.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "cycode-ado-connection",
+                "displayName": "Cycode",
+                "url": {
+                    "displayName": "Cycode API URL",
+                    "helpText": "Used only for the Custom region; for US/EU the URL is derived from the region.",
+                    "value": "https://api.cycode.com",
+                    "isVisible": "false"
+                },
+                "dataSources": [],
+                "inputDescriptors": [
+                    {
+                        "id": "region",
+                        "name": "Region",
+                        "description": "Cycode region. Choose Custom to provide your own API/App URLs.",
+                        "inputMode": "combo",
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string"
+                        },
+                        "values": {
+                            "inputId": "region",
+                            "defaultValue": "US",
+                            "possibleValues": [
+                                {
+                                    "value": "US",
+                                    "displayValue": "US"
+                                },
+                                {
+                                    "value": "EU",
+                                    "displayValue": "EU"
+                                },
+                                {
+                                    "value": "Custom",
+                                    "displayValue": "Custom"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "id": "apiUrl",
+                        "name": "Custom API URL",
+                        "description": "API URL for the Custom region, e.g. https://api.self-hosted.example.com",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "appUrl",
+                        "name": "Custom App URL",
+                        "description": "App URL for the Custom region, e.g. https://app.self-hosted.example.com",
+                        "inputMode": "textbox",
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Client ID",
+                                "description": "Cycode API Client ID.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Client Secret",
+                                "description": "Cycode API Client Secret.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "cycode-build-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Cycode security scan results tab in the build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Cycode Security Scan",
+                "uri": "index.html",
+                "supportsTasks": [
+                    "4768243e-4e7e-49bc-9415-19b25231f25e"
+                ]
+            }
+        },
+        {
+            "id": "cycodescan",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "cycodescan"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
