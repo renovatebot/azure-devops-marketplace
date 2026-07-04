@@ -1,0 +1,150 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.work_write",
+        "vso.project",
+        "vso.project_write",
+        "vso.build",
+        "vso.build_execute",
+        "vso.code",
+        "vso.extension",
+        "vso.extension.data",
+        "vso.extension.data_write",
+        "vso.hooks_write"
+    ],
+    "contributions": [
+        {
+            "id": "testsigma-admin-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Testsigma for Azure DevOps Configuration Hub",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Testsigma for Azure DevOps",
+                "order": 30,
+                "uri": "static/admin/build/index.html",
+                "icon": "images/admin-icon.png",
+                "supportsMobile": true
+            }
+        },
+        {
+            "id": "testsigma-work-item-form-page",
+            "type": "ms.vss-work-web.work-item-form-page",
+            "description": "Testsigma Test Management Page by Testsigma",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Test Management by Testsigma",
+                "uri": "static/work-item-panel/build/index.html",
+                "icon": "images/logo.png"
+            }
+        },
+        {
+            "id": "testsigma-popup-modal",
+            "type": "ms.vss-web.control",
+            "description": "Testsigma Popup Modal Dialog",
+            "targets": [],
+            "properties": {
+                "uri": "static/popup-modal/build/index.html"
+            }
+        },
+        {
+            "id": "testsigma-service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "Testsigma Service Connection",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "testsigma",
+                "displayName": "Testsigma",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "URL of your Testsigma server (e.g., https://app.testsigma.com)"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestSigma",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API Token",
+                                "description": "API Token for connection to Testsigma",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "testsigma-webhook-consumer",
+            "type": "ms.vss-servicehooks.consumer",
+            "targets": [
+                "ms.vss-servicehooks.consumers"
+            ],
+            "properties": {
+                "id": "testsigma-consumer",
+                "name": "Testsigma Webhook Consumer",
+                "description": "Receives webhooks from Azure DevOps for Testsigma integration",
+                "informationUrl": "https://testsigma.com/docs",
+                "inputDescriptors": [
+                    {
+                        "id": "url",
+                        "isRequired": true,
+                        "name": "Webhook URL",
+                        "description": "Your Testsigma webhook endpoint",
+                        "inputMode": "textbox"
+                    },
+                    {
+                        "id": "organizationId",
+                        "isRequired": false,
+                        "name": "Organization ID",
+                        "description": "Azure DevOps Organization identifier",
+                        "inputMode": "textbox"
+                    }
+                ],
+                "actions": [
+                    {
+                        "id": "sendWebhook",
+                        "name": "Send Webhook",
+                        "description": "Send webhook to Testsigma",
+                        "supportedEventTypes": [
+                            "workitem.created",
+                            "workitem.updated",
+                            "workitem.deleted",
+                            "git.push",
+                            "git.pullrequest.created",
+                            "git.pullrequest.updated"
+                        ],
+                        "publishEvent": {
+                            "url": "{{{url}}}",
+                            "resourceDetailsToSend": "all",
+                            "messagesToSend": "all",
+                            "detailedMessagesToSend": "all"
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
