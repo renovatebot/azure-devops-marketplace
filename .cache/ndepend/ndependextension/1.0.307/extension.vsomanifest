@@ -1,0 +1,105 @@
+{
+    "manifestVersion": 1,
+    "licensing": {
+        "overrides": [
+            {
+                "id": "NDepend.Hub",
+                "behavior": "AlwaysInclude"
+            },
+            {
+                "id": "ndepend-task",
+                "behavior": "AlwaysInclude"
+            }
+        ]
+    },
+    "contributions": [
+        {
+            "id": "ndepend-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "NDependTask"
+            }
+        },
+        {
+            "id": "NDepend.Hub",
+            "type": "ms.vss-web.hub",
+            "description": "NDepend Hub.",
+            "targets": [
+                "ms.vss-web.home-hub-group"
+            ],
+            "properties": {
+                "name": "NDepend",
+                "order": 122,
+                "iconAsset": "ndepend.ndependextension/images/HubLogo.png",
+                "_sharedData": {
+                    "assets": [
+                        "ndepend.ndependextension/images/HubLogo.png"
+                    ]
+                },
+                "uri": "ndepend.html"
+            }
+        },
+        {
+            "id": "ndependprivate-endpoint-type",
+            "description": "Service Endpoint type for NDepend connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "NDependPrivate",
+                "displayName": "NDepend server connection",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Url for the NDepend server to connect to."
+                },
+                "dataSources": [
+                    {
+                        "name": "Projects",
+                        "endpointUrl": "{{endpoint.url}}api/projects/index",
+                        "resultSelector": "jsonpath:$[*].nm"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token"
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username",
+                                "inputMode": "textbox",
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "NDepend License",
+                                "description": "NDepend",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.build"
+    ],
+    "contributionTypes": []
+}
