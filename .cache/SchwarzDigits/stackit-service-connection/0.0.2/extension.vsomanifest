@@ -1,0 +1,75 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.serviceendpoint"
+    ],
+    "contributions": [
+        {
+            "id": "stackit-service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "icons": {
+                "default": "images/stackit-icon.jpg"
+            },
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "stackit",
+                "displayName": "STACKIT",
+                "description": "Authenticate to STACKIT using EXACTLY ONE of two methods: (1) Workload Identity Federation (WIF) with Service Account Name, or (2) Key Flow with Service Account Credentials JSON. Both fields cannot be empty or filled simultaneously. If misconfigured, the pipeline task will fail with a clear error message.",
+                "url": {
+                    "displayName": "STACKIT API URL",
+                    "helpText": "Base URL for STACKIT API (e.g., https://api.stackit.cloud)",
+                    "value": "https://api.stackit.cloud",
+                    "isVisible": false
+                },
+                "dataSources": [],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "inputDescriptors": [
+                            {
+                                "groupName": "Workload Identity Federation",
+                                "id": "serviceAccountName",
+                                "name": "Service Account Name",
+                                "description": "Name of the STACKIT service account (for WIF authentication). Leave empty if using Key Flow credentials instead.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "groupName": "Key Flow",
+                                "id": "credentials",
+                                "name": "Service Account Credentials (JSON)",
+                                "description": "Full JSON credentials from STACKIT service account (for Key Flow authentication). Leave empty if using WIF service account name instead. Copy and paste the entire JSON file.",
+                                "inputMode": "textarea",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "stackit-authenticate-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/stackit-authenticate"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
