@@ -1,0 +1,180 @@
+{
+    "manifestVersion": 1,
+    "demands": [
+        "api-version/3.0"
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.graph",
+        "vso.features",
+        "vso.features_write",
+        "vso.test",
+        "vso.wiki",
+        "vso.code",
+        "vso.memberentitlementmanagement"
+    ],
+    "contributions": [
+        {
+            "id": "feature-show-left-nav",
+            "type": "ms.vss-web.feature",
+            "description": "Show 'Export to Excel' in left navigation",
+            "properties": {
+                "name": "Show extension in left navigation",
+                "defaultState": true,
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ]
+            }
+        },
+        {
+            "id": "feature-show-context-excel",
+            "type": "ms.vss-web.feature",
+            "description": "Show 'Export to Excel' in context menu",
+            "properties": {
+                "name": "Show Excel export in context menu",
+                "defaultState": true,
+                "userConfigurable": false,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ]
+            }
+        },
+        {
+            "id": "export-to-excel-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Export to Excel",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Export to Excel",
+                "icon": {
+                    "light": "dist/assets/img/excel/logofinalexcel-160.png",
+                    "dark": "dist/assets/img/excel/logofinalexcel-160.png"
+                },
+                "order": 1
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "Documentero.export-to-excel.feature-show-left-nav"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "export-to-excel-settings",
+            "type": "ms.vss-web.hub",
+            "description": "Export to Excel - Templates",
+            "targets": [
+                ".export-to-excel-hub-group"
+            ],
+            "properties": {
+                "name": "Document Templates",
+                "icon": {
+                    "light": "dist/assets/img/DOC-160.png",
+                    "dark": "dist/assets/img/DOC-160.png"
+                },
+                "uri": "dist/integration/settings/settings.html"
+            }
+        },
+        {
+            "id": "export-to-excel-organization",
+            "type": "ms.vss-web.hub",
+            "description": "Export to Excel",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Export to Excel",
+                "icon": {
+                    "light": "dist/assets/img/DOC-160.png",
+                    "dark": "dist/assets/img/DOC-160.png"
+                },
+                "uri": "dist/integration/organization/organization.html"
+            }
+        },
+        {
+            "id": "export-to-excel-project-settings",
+            "type": "ms.vss-web.hub",
+            "description": "Export to Excel",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Export to Excel - Settings",
+                "icon": {
+                    "light": "dist/assets/img/DOC-160.png",
+                    "dark": "dist/assets/img/DOC-160.png"
+                },
+                "uri": "dist/integration/project/project.html"
+            }
+        },
+        {
+            "id": "export-to-excel-project",
+            "type": "ms.vss-web.hub",
+            "description": "Export to Excel - Templates",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Export to Excel - Templates",
+                "icon": {
+                    "light": "dist/assets/img/DOC-160.png",
+                    "dark": "dist/assets/img/DOC-160.png"
+                },
+                "uri": "dist/integration/settings/settings.html"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "Documentero.export-to-excel.feature-show-left-nav"
+                    },
+                    "inverse": true
+                }
+            ]
+        },
+        {
+            "id": "export-to-excel-context",
+            "type": "ms.vss-web.action",
+            "description": "Export to Excel",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu",
+                "ms.vss-work-web.work-item-query-results-toolbar-menu",
+                "ms.vss-test-web.test-run-grid-menu",
+                "ms.vss-test-web.test-plans-suites-context"
+            ],
+            "properties": {
+                "text": "Export to Excel",
+                "title": "Export to Excel",
+                "toolbarText": "Export to Excel",
+                "icon": "dist/assets/img/excel/excel-16.png",
+                "uri": "dist/integration/context-excel/context-excel.html",
+                "registeredObjectId": "export-to-excel-context"
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "Documentero.export-to-excel.feature-show-context-excel"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "generate-view",
+            "type": "ms.vss-web.external-content",
+            "description": "View to generate documents",
+            "targets": [],
+            "properties": {
+                "uri": "dist/integration/generate/generate.html?ids={{ids}}"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
