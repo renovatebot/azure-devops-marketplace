@@ -1,0 +1,77 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "tb-main",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tb-main"
+            }
+        },
+        {
+            "id": "tb-stop-tunnel",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tb-stop-tunnel"
+            }
+        },
+        {
+            "id": "tb-upload-app",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tb-upload-app"
+            }
+        },
+        {
+            "id": "tb-endpoint-type",
+            "description": "TestingBot Credentials",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "testingbot",
+                "displayName": "TestingBot Credentials",
+                "url": "https://api.testingbot.com/v1/",
+                "dataSources": [
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getBuildFullJobs",
+                        "endpointUrl": "https://api.testingbot.com/v1/builds/{{build}}?offset={{offset}}"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic"
+                    }
+                ]
+            }
+        },
+        {
+            "id": "build-info-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "Build Results View",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "TestingBot",
+                "uri": "tb-build-info/infoTab.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
