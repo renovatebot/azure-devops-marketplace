@@ -1,0 +1,70 @@
+{
+    "$schema": "https://json.schemastore.org/azure-devops-extension-manifest-1.0.json",
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code",
+        "vso.project"
+    ],
+    "contributions": [
+        {
+            "id": "test-health",
+            "type": "ms.vss-web.hub",
+            "targets": [
+                "ms.vss-test-web.test-hub-group"
+            ],
+            "properties": {
+                "name": "Azure Test Health",
+                "uri": "dist/index.html",
+                "defaultRoute": "test-health-prod.test-health.route-hub",
+                "icon": {
+                    "dark": "static/icons/dark/icon.png",
+                    "light": "static/icons/light/icon.png"
+                }
+            },
+            "constraints": [
+                {
+                    "name": "Feature",
+                    "properties": {
+                        "featureId": "test-health-prod.test-health.extension-preview"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "extension-preview",
+            "type": "ms.vss-web.feature",
+            "description": "Azure Test Health (Preview)",
+            "targets": [
+                "ms.vss-web.managed-features"
+            ],
+            "properties": {
+                "name": "Azure Test Health (Preview)",
+                "userConfigurable": true,
+                "hostConfigurable": true,
+                "hostScopes": [
+                    "project"
+                ],
+                "defaultState": false
+            }
+        },
+        {
+            "id": "route-hub",
+            "type": "ms.vss-web.route",
+            "targets": [
+                ".test-health"
+            ],
+            "properties": {
+                "hostType": "ProjectCollection",
+                "defaults": {
+                    "controller": "Apps",
+                    "action": "ContributedHub"
+                },
+                "routeTemplates": [
+                    "{project}/{team}/_apps/testhealth",
+                    "{project}/_apps/testhealth"
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
