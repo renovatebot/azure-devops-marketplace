@@ -1,0 +1,59 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "CiApmTrace",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "CiApmTrace"
+            }
+        },
+        {
+            "id": "apm-service-endpoint",
+            "description": "Elastic APM service connection",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "apm",
+                "displayName": "Elastic APM",
+                "description": "Connection to an Elastic APM Server",
+                "url": {
+                    "displayName": "APM Server URL",
+                    "helpText": "URL of your Elastic APM Server, e.g. https://apm.example.com:8200"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apmSecretToken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apmSecretToken",
+                                "name": "APM Secret Token",
+                                "description": "Secret token used to authenticate with the APM Server",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": false,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Enter the URL and secret token of your Elastic APM Server. The secret token can be left blank if the APM Server is configured without authentication."
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
