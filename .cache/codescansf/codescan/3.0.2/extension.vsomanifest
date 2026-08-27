@@ -1,0 +1,189 @@
+{
+    "manifestVersion": 1,
+    "CustomerQnASupport": {
+        "enableqna": "true",
+        "url": "https://www.code-scan.com/contact/"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/codescan-io/sonar-scanner-vsts-master"
+    },
+    "baseUri": "https://app.codescan.io",
+    "scopes": [
+        "vso.build",
+        "vso.code",
+        "vso.test"
+    ],
+    "contributions": [
+        {
+            "id": "674f161f-1733-4238-a8f8-2b37fe5f02c1",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/prepare"
+            }
+        },
+        {
+            "id": "6d6bf390-8504-42e2-bfcf-9be00dd89226",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/analyze"
+            }
+        },
+        {
+            "id": "65751afb-5038-48f6-ae57-342a3a210165",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/publish"
+            }
+        },
+        {
+            "id": "3c598f25-01c1-4c09-97c6-926476882688",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog",
+                ".e56c6ff0-c6f9-43d0-bdef-b3f1aa0dc6dd"
+            ],
+            "properties": {
+                "name": "Code Quality",
+                "description": "Shows the current quality status of your project based on Codescan Cloud.",
+                "catalogIconUrl:": "/integration/vsts/images/sonarcloud-icon.png",
+                "previewImageUrl": "/integration/vsts/images/sonarcloud-icon.png",
+                "uri": "/integration/vsts/index.html?type=widget&contribution=3c598f25-01c1-4c09-97c6-926476882688",
+                "supportedSizes": [
+                    {
+                        "rowSpan": 1,
+                        "columnSpan": 1
+                    }
+                ],
+                "supportedScopes": [
+                    "project_team"
+                ]
+            }
+        },
+        {
+            "id": "6cf9c451-5b60-4eb6-a1b2-265f6a507b22",
+            "description": "Service endpoint type for CodeScanCloud Connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "codescancloud",
+                "displayName": "CodeScanCloud",
+                "icon": "icons/CodeScanCloud_endpoint.png",
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Basic {{ #base64 endpoint.apitoken \":\" }}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "CodeScanCloud Token",
+                                "description": "Authentication Token generated through CodeScanCloud (go to My Account > Security > Generate Tokens)",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.serverUrl}}api/organizations/search?member=true",
+                        "resultSelector": "jsonpath:$.organizations[*]"
+                    }
+                ],
+                "helpMarkDown": "Go to <a href=\"https://<serverUrl>/account/security/\" target=\"_blank\">your CodeScan Cloud account security page</a> to generate a token."
+            }
+        },
+        {
+            "id": "b8c99f95-9530-4f0b-b75f-32a9c7e196bb",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/salesforce"
+            }
+        },
+        {
+            "id": "7ae27005-05c8-46d3-a5f2-06b3b15d608b",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/maven"
+            }
+        },
+        {
+            "id": "b17d1503-2143-4e01-aada-5f8e29759a32",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/gradle"
+            }
+        },
+        {
+            "id": "5f882e5A-b102-4fe4-b0b2-de4c812d1e18",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/netcore"
+            }
+        },
+        {
+            "id": "05fc4e32-1887-480d-93bf-337f6072348e",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/netdesktop"
+            }
+        },
+        {
+            "id": "f2dcb989-20d1-4a5c-b138-0dd8f53bcf97",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/otherfile"
+            }
+        },
+        {
+            "id": "1d772a94-aac4-4395-baf6-7d2d0cb17e5d",
+            "type": "ms.vss-build.template",
+            "targets": [
+                "ms.vss-build.templates"
+            ],
+            "properties": {
+                "name": "templates/othermanual"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
