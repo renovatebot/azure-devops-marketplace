@@ -1,0 +1,60 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "scanhive-service-connection",
+            "description": "Service connection for a ScanHive server.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "ScanHive",
+                "displayName": "ScanHive",
+                "url": {
+                    "displayName": "Org URL",
+                    "helpText": "Base URL of your ScanHive instance, for example https://scanhive.sechivelabs.com."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "ScanHive API key",
+                                "description": "API key (a JWT) created in ScanHive under Identity & Access Management > API Keys.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 2000
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Create an API key in ScanHive under Settings > Identity & Access Management > API Keys. The key is a JWT, longer than the previous format -- if you saved an old key before this update, generate a new one."
+            }
+        },
+        {
+            "id": "upload-sarif-task",
+            "description": "Upload SARIF results to ScanHive.",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/scanhive"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
