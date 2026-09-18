@@ -1,0 +1,138 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "semantic-language",
+            "type": "ms.vss-features.code-editor-language",
+            "description": "Native Monaco/Monarch syntax highlighting for Semantic source files.",
+            "targets": [
+                "ms.vss-features.editor"
+            ],
+            "properties": {
+                "extensions": [
+                    ".se",
+                    ".sp"
+                ],
+                "mimetypes": [
+                    "text/x-semantic",
+                    "text/plain"
+                ],
+                "language": {
+                    "displayName": "Semantic Programming Language",
+                    "defaultToken": "",
+                    "tokenPostfix": ".semantic",
+                    "ignoreCase": false,
+                    "keywords": [
+                        "program",
+                        "object",
+                        "list",
+                        "ranges",
+                        "types",
+                        "type",
+                        "scopes",
+                        "scope",
+                        "nodes",
+                        "node",
+                        "relations"
+                    ],
+                    "constants": [
+                        "true",
+                        "false",
+                        "null",
+                        "unknown"
+                    ],
+                    "tokenizer": {
+                        "root": [
+                            [
+                                "#.*$",
+                                "comment"
+                            ],
+                            [
+                                "^\\s*(se|sp)\\s+\\d+\\s*$",
+                                "keyword"
+                            ],
+                            [
+                                "\"([^\"\\\\]|\\\\.)*\"",
+                                "string"
+                            ],
+                            [
+                                "%\\d+",
+                                "variable"
+                            ],
+                            [
+                                "@\\d+",
+                                "type"
+                            ],
+                            [
+                                "\\b\\d+\\s*-\\s*\\d+\\b",
+                                "number"
+                            ],
+                            [
+                                "[+-]?(?:0[xX][0-9A-Fa-f]+|(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?)",
+                                "number"
+                            ],
+                            [
+                                "[A-Za-z_][A-Za-z0-9_.-]*",
+                                {
+                                    "cases": {
+                                        "@keywords": "keyword",
+                                        "@constants": "constant",
+                                        "@default": "identifier"
+                                    }
+                                }
+                            ],
+                            [
+                                "->|=",
+                                "operator"
+                            ],
+                            [
+                                "[{}\\[\\]()]",
+                                "delimiter.bracket"
+                            ],
+                            [
+                                "[:,;]",
+                                "delimiter"
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": "semantic-code-editor-contribution",
+            "type": "ms.vss-code-web.code-editor-contribution",
+            "description": "Legacy SDK language registration fallback for Semantic source files.",
+            "targets": [
+                "ms.vss-code-web.code-editor-contribution-collection"
+            ],
+            "properties": {
+                "uri": "dist/CodeEditorContribution/CodeEditorContribution.html",
+                "registeredObjectId": "semantic-code-editor-contribution"
+            }
+        },
+        {
+            "id": "semantic-content-renderer",
+            "type": "ms.vss-code-web.content-renderer",
+            "description": "TextMate-driven rendered preview for Semantic .se and .sp source files.",
+            "targets": [
+                "ms.vss-code-web.content-renderer-collection"
+            ],
+            "properties": {
+                "name": "Semantic source preview",
+                "uri": "dist/SemanticRenderer/index.html",
+                "fileExtensions": [
+                    "se",
+                    "sp"
+                ],
+                "mimeTypes": [
+                    "text/x-semantic",
+                    "text/plain"
+                ],
+                "defaultBehavior": "showRenderedContent",
+                "registeredObjectId": "semantic_content_renderer"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
