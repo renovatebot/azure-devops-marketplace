@@ -1,0 +1,136 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "opkey-v7-service-endpoint",
+            "description": "Service Endpoint type for OpKey V7 connections",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "OpKeyV7",
+                "displayName": "OpKey V7",
+                "url": {
+                    "displayName": "Server Url",
+                    "helpText": "Root URL of the OpKey V7 server, for example https://<tenant>.opkeyone.com/"
+                },
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getProjects",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyProjectsRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getProjects",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeySuiteRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getAzureDevOpsSuites?projectName=$(opkeyProject)&artifactSearch=$(opkeyArtifactSearch)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyTestCaseRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getAzureDevOpsTestCases?projectName=$(opkeyProject)&artifactSearch=$(opkeyArtifactSearch)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyAgentsRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getAgents?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyAgentPluginsRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getAgentSpecificPlugin?projectName=$(opkeyProject)&agentName=$(opkeyAgent)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyBuildsRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getBuilds?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVRESTCall",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGlobalVariablesForVSTS?projectName=$(opkeyProject)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE1Call",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName1)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE2Call",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName2)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE3Call",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName3)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE4Call",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName4)",
+                        "resultSelector": "jsonpath:$[*]"
+                    },
+                    {
+                        "name": "OpKeyGVVALUE5Call",
+                        "endpointUrl": "/api/v1/TMTRestAPI/getGVValueForVSTS?projectName=$(opkeyProject)&agentName=$(opkeyAgent)&gvName=$(opkeyGVName5)",
+                        "resultSelector": "jsonpath:$[*]"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "Username for connecting to the endpoint.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "value": "",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "API Key",
+                                "description": "API Key for connecting to the endpoint.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "value": "",
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": ""
+            }
+        },
+        {
+            "id": "opkey-v7-custom-build-task",
+            "type": "ms.vss-distributed-task.task",
+            "description": "Adds the OpKey V7 build task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "BuildTask"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work",
+        "vso.release"
+    ],
+    "contributionTypes": []
+}
