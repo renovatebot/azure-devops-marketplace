@@ -1,0 +1,132 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work_write",
+        "vso.project",
+        "vso.graph"
+    ],
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/jkewley/ado-work-item-approval"
+    },
+    "contributions": [
+        {
+            "id": "group-approval-control",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Approval button scoped to a named group.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Work Item Approval Button",
+                "uri": "ApprovalControl/ApprovalControl.html",
+                "height": 32,
+                "supportsReadOnly": true,
+                "inputs": [
+                    {
+                        "id": "GroupName",
+                        "name": "Group name",
+                        "description": "The group this control approves for, e.g. IT, QA, Business. Shown on the button as '<Group name> Approver'.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "ApproverField",
+                        "name": "Approver field",
+                        "description": "Identity field that stores who granted approval. Create one per group in your inherited process, e.g. Custom.ITApprover. Create this field before adding the control.",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "Identity"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "ApprovedOnField",
+                        "name": "Approved on field (optional)",
+                        "description": "DateTime field that stores when the approval was given, e.g. Custom.ITApprovedOn. Create this field before adding the control.",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "DateTime"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "ApproverTeam",
+                        "name": "Approver group (optional)",
+                        "description": "Name of the ADO team or security group whose members may approve, e.g. 'IT Approvers' or 'Release Security'. Leave blank to allow anyone. Must match the group name exactly.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "AdminTeam",
+                        "name": "Admin group (optional)",
+                        "description": "Name of the ADO team or security group whose members may reset anyone's approval. Leave blank to allow only the original approver to reset. Must match the group name exactly.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "PreventCreatorApproval",
+                        "name": "Prevent creator approval",
+                        "description": "When enabled, the person who created the work item cannot approve it.",
+                        "type": "boolean",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "VisibilityField",
+                        "name": "Visibility field (optional)",
+                        "description": "Reference name of a field that controls whether this button is shown, e.g. Custom.ReleaseType. Leave blank to always show the button.",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "PlainText",
+                                "Integer",
+                                "Double",
+                                "Boolean",
+                                "Guid"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "VisibilityValue",
+                        "name": "Visibility value (optional)",
+                        "description": "The value that the visibility field must equal for the button to appear, e.g. Emergency. Comparison is case-insensitive.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "contributionTypes": []
+}
