@@ -1,0 +1,154 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/OscarArguedas/RestDataMappingPicklist"
+    },
+    "scopes": [
+        "vso.work",
+        "vso.work_write"
+    ],
+    "contributions": [
+        {
+            "id": "rest-data-mapping-picklist",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "A searchable picklist whose values come from a REST endpoint.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Rest Data Mapping Picklist",
+                "uri": "/dist/selector.html",
+                "height": 36,
+                "inputs": [
+                    {
+                        "id": "FieldName",
+                        "name": "Field",
+                        "description": "The work item field this picklist fills in.",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "PlainText",
+                                "HTML"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "RestServiceAddress",
+                        "name": "REST endpoint URL",
+                        "description": "HTTPS address that returns JSON, e.g. https://api.contoso.com/customers. Insert work item values in the path with $(Field.ReferenceName). Tip: build and test these settings in Organization settings › REST Picklist.",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "RestCallParameters",
+                        "name": "URL parameters (JSON)",
+                        "description": "Added to the query string, e.g. { \"status\": \"active\", \"region\": \"$(Custom.Region)\" }. The list reloads when a referenced field changes.",
+                        "inputMode": "TextArea",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServiceUserName",
+                        "name": "Authentication: user name, Bearer or Basic",
+                        "description": "Leave empty for public endpoints. Type Bearer to send the token below as a bearer token; any other value signs in with HTTP Basic.",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServicePassword",
+                        "name": "Password or token",
+                        "description": "Sent from the browser of whoever opens the work item, so treat it as visible to them. Use a read-only token limited to this API.",
+                        "inputMode": "PasswordBox",
+                        "isConfidential": true,
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "PathToArray",
+                        "name": "JSON path to the array",
+                        "description": "Where the list sits in the response, e.g. data.result. Leave empty when the response is the list itself.",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServiceKeyField",
+                        "name": "Value property",
+                        "description": "The property of each item that is listed and saved in the field, e.g. name. Use dots for nested properties, e.g. owner.email.",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "FieldMap",
+                        "name": "Copy to other fields (JSON)",
+                        "description": "When a value is picked, copy properties of the same item into other fields, e.g. { \"Custom.CustomerId\": \"id\", \"Custom.CustomerEmail\": \"contact.email\" }",
+                        "inputMode": "TextArea",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "LoadOnFormOpen",
+                        "name": "Load the list when the work item opens",
+                        "description": "Checked: the list is fetched as soon as the form opens, so it appears instantly. Unchecked (faster forms): nothing is requested until someone opens the list; the field shows its value or “Select…”.",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "Required",
+                        "name": "Show as required when empty",
+                        "description": "Outlines the field in red while it’s empty. To also block saving, make the field required on the work item type; the control detects that automatically.",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "ErrorMessage",
+                        "name": "Message when the value isn’t in the list",
+                        "description": "Shown under the field when its saved value is no longer offered by the service, e.g. This customer is no longer active.",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "rest-picklist-setup",
+            "type": "ms.vss-web.hub",
+            "description": "Build and test REST Picklist settings, then copy them into a process.",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "REST Picklist",
+                "uri": "/dist/configurator.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
