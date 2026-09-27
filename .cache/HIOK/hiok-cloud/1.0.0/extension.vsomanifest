@@ -1,0 +1,78 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/HIOK-Official/hiok-azure-devops"
+    },
+    "contributions": [
+        {
+            "id": "hiok-service-endpoint",
+            "description": "HIOK Cloud service principal",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "hiok",
+                "displayName": "HIOK Cloud",
+                "icon": "images/icon.png",
+                "url": {
+                    "displayName": "API endpoint",
+                    "value": "https://hiokcloud.com",
+                    "helpText": "Leave as is unless you run a private HIOK deployment."
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Client ID",
+                                "description": "Service principal client ID (console → Identity).",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "guid"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Client secret",
+                                "description": "The secret shown when the service principal was created.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "hiok-cli-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/HiokCli"
+            }
+        },
+        {
+            "id": "hiok-api-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/HiokApi"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
