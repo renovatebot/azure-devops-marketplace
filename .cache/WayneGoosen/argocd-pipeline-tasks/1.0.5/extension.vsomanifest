@@ -1,0 +1,157 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/WayneGoosen/azdo-argocd-tasks"
+    },
+    "contributions": [
+        {
+            "id": "argocd-service-endpoint",
+            "description": "Service connection for an Argo CD server",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "argocdrest",
+                "displayName": "Argo CD",
+                "url": {
+                    "displayName": "Server URL",
+                    "helpText": "Base URL of the Argo CD server, for example https://argocd.example.com or https://example.com/argocd"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "caCertificate",
+                        "name": "Custom CA certificate (PEM)",
+                        "description": "PEM-encoded certificate authority bundle, for an Argo CD server using an internal PKI.",
+                        "inputMode": "TextArea",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "insecureSkipTlsVerify",
+                        "name": "Skip TLS verification",
+                        "description": "Set to true to accept any server certificate. Traffic stays encrypted but the server identity is not verified. Prefer a custom CA.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    },
+                    {
+                        "id": "grpcWebRootPath",
+                        "name": "Root path",
+                        "description": "Sub-path the Argo CD server is served under, for example /argocd. Only needed when it is not served at the domain root.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": false,
+                            "dataType": "string"
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API token",
+                                "description": "An Argo CD project role token (argocd proj role create-token) or account API token. Project role tokens are preferred: they are scoped to one AppProject and can be revoked individually.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none"
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{endpoint.url}}/api/v1/session/userinfo",
+                        "resultSelector": "jsonpath:$.loggedIn"
+                    }
+                ],
+                "helpMarkDown": "Create an Argo CD project role token with <code>argocd proj role create-token &lt;project&gt; &lt;role&gt; --expires-in 90d</code>. See the <a href=\"https://waynegoosen.github.io/azdo-argocd-tasks/security/\" target=\"_blank\">security guide</a> for the RBAC policy to grant it."
+            }
+        },
+        {
+            "id": "argocd-app-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDAppV1"
+            }
+        },
+        {
+            "id": "argocd-install-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDInstallV1"
+            }
+        },
+        {
+            "id": "argocd-cli-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDCliV1"
+            }
+        },
+        {
+            "id": "argocd-project-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDProjectV1"
+            }
+        },
+        {
+            "id": "argocd-account-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDAccountV1"
+            }
+        },
+        {
+            "id": "argocd-appset-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/ArgoCDAppSetV1"
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
