@@ -1,0 +1,129 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "aireview-foundry-endpoint",
+            "description": "Microsoft Foundry connection used by the AI Review task",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "aireview-foundry",
+                "displayName": "Epsilon AI Assistant: Microsoft Foundry",
+                "url": {
+                    "displayName": "Foundry resource URL",
+                    "helpText": "https://<resource>.services.ai.azure.com"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "model",
+                        "name": "Model deployment",
+                        "description": "Name of the Claude model deployment in Foundry, e.g. claude-sonnet-5. The task can override it.",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 200
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API key",
+                                "description": "Foundry API key (stored encrypted, never shown again).",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 500
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "id": "aireview-task",
+            "description": "AI code review of the current pull request",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/AIReviewV1"
+            }
+        },
+        {
+            "id": "aiimplement-task",
+            "description": "Plans and implements a work item on a feature branch",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/AIImplementV1"
+            }
+        },
+        {
+            "id": "aiimplement-menu",
+            "description": "AI Implement: plan and implement this work item",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-work-web.work-item-toolbar-menu",
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "AI Implement",
+                "title": "Plan and implement this work item with AI",
+                "icon": "images/icon.png",
+                "uri": "web/implement-menu.html"
+            }
+        },
+        {
+            "id": "aiimplement-dialog",
+            "description": "AI Implement dialog content",
+            "type": "ms.vss-web.control",
+            "targets": [],
+            "properties": {
+                "uri": "web/implement-dialog.html"
+            }
+        },
+        {
+            "id": "aireview-menu",
+            "description": "AI Review: review this pull request on demand",
+            "type": "ms.vss-web.action",
+            "targets": [
+                "ms.vss-code-web.pull-request-action-menu"
+            ],
+            "properties": {
+                "text": "AI Review",
+                "title": "Run the AI review for this pull request",
+                "icon": "images/icon.png",
+                "uri": "web/review-menu.html"
+            }
+        },
+        {
+            "id": "aireview-dialog",
+            "description": "AI Review dialog content",
+            "type": "ms.vss-web.control",
+            "targets": [],
+            "properties": {
+                "uri": "web/review-dialog.html"
+            }
+        }
+    ],
+    "scopes": [
+        "vso.build_execute",
+        "vso.work",
+        "vso.code"
+    ],
+    "contributionTypes": []
+}
