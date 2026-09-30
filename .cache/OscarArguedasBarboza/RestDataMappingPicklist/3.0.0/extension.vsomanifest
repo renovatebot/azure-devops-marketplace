@@ -1,0 +1,243 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/OscarArguedas/RestDataMappingPicklist"
+    },
+    "scopes": [
+        "vso.work",
+        "vso.work_write",
+        "vso.extension.data_write"
+    ],
+    "contributions": [
+        {
+            "id": "rest-data-mapping-picklist",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Searchable picklist filled from any REST API",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Rest Data Mapping Picklist",
+                "uri": "/dist/selector.html",
+                "height": 36,
+                "inputs": [
+                    {
+                        "id": "FieldName",
+                        "name": "Field to fill in",
+                        "description": "Text fields. A picklist works only if it accepts values people type: the extension can’t add items to it",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "PlainText",
+                                "HTML"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    },
+                    {
+                        "id": "SavedConfiguration",
+                        "name": "Use a saved configuration. Enter its name, or leave empty and fill in the settings below",
+                        "description": "Saved by other controls in this process. Settings below override it; passwords stay per control",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServiceAddress",
+                        "name": "REST endpoint URL. Example: https://api.contoso.com/customers",
+                        "description": "HTTPS only. Insert values with $(Field.ReferenceName). Test it in Organization settings › REST Picklist",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestCallParameters",
+                        "name": "URL parameters (JSON). Example: { \"status\": \"active\", \"region\": \"$(Custom.Region)\" }",
+                        "description": "Added to the query string. The list reloads when a $(field) changes",
+                        "inputMode": "TextArea",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "AuthMethod",
+                        "name": "Sign-in: None, Basic, Bearer token or API key",
+                        "description": "API key is sent in the x-api-key header; change it in Advanced settings",
+                        "inputMode": "Combo",
+                        "values": {
+                            "possibleValues": [
+                                {
+                                    "value": "None",
+                                    "displayValue": "None"
+                                },
+                                {
+                                    "value": "Basic",
+                                    "displayValue": "Basic"
+                                },
+                                {
+                                    "value": "Bearer token",
+                                    "displayValue": "Bearer token"
+                                },
+                                {
+                                    "value": "API key",
+                                    "displayValue": "API key"
+                                }
+                            ],
+                            "isLimitedToPossibleValues": true
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServiceUserName",
+                        "name": "User name (Basic sign-in only)",
+                        "description": "In older setups, Bearer here still means bearer token sign-in",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServicePassword",
+                        "name": "Password, token or API key. Visible to anyone who opens the work item, so use a read-only one",
+                        "description": "Never included in saved configurations",
+                        "inputMode": "PasswordBox",
+                        "isConfidential": true,
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "PathToArray",
+                        "name": "JSON path to the list. Example: data.result. Leave empty to find it automatically",
+                        "description": "Dots for nesting, brackets for positions, like data.items[0]",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "RestServiceKeyField",
+                        "name": "Value property. Example: name, or owner.email. Leave empty to pick one automatically",
+                        "description": "Automatic picks the most name-like text. Set it to keep the choice stable",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "SecondLineProperty",
+                        "name": "Second line (optional). Example: email",
+                        "description": "Shown smaller under each value and searched too. Tells apart equal names",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "FieldMap",
+                        "name": "Copy to other fields (JSON). Example: { \"Custom.CustomerId\": \"id\", \"Custom.Email\": \"contact.email\" }",
+                        "description": "Field reference name → property of the picked item",
+                        "inputMode": "TextArea",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "AllowMultiple",
+                        "name": "Allow multiple values. Saved as A; B; C, so use a multi-line text field for long lists",
+                        "description": "Single-line text fields hold up to 255 characters",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "LoadOnFormOpen",
+                        "name": "Load the list when the work item opens. Off: it loads when someone opens the list",
+                        "description": "Turn on for small, fast APIs so the list appears instantly",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "Required",
+                        "name": "Mark as required when empty. Fields required by work item rules are detected automatically",
+                        "description": "Red outline only. To block saving, require the field on the work item type",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "ErrorMessage",
+                        "name": "Message when the value isn’t in the list. Example: This customer is no longer active",
+                        "description": "Shown under the field. Leave empty for a standard message",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "AdvancedSettings",
+                        "name": "Advanced settings (JSON): paging, API key header and more. Build it in Organization settings › REST Picklist",
+                        "description": "Example: { \"paging\": { \"type\": \"nextLink\", \"nextLink\": \"@odata.nextLink\" } }",
+                        "inputMode": "TextArea",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "SaveConfiguration",
+                        "name": "Save as a reusable configuration for this process",
+                        "description": "Other controls in this process can use it by name. Passwords aren’t shared",
+                        "inputMode": "CheckBox",
+                        "validation": {
+                            "dataType": "Boolean",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "SavedConfigurationName",
+                        "name": "Reusable configuration name. Leave empty to use this control’s label",
+                        "description": "Names must be unique within the process",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "rest-picklist-setup",
+            "type": "ms.vss-web.hub",
+            "description": "Build and test REST Picklist settings, manage saved configurations and the security policy.",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "properties": {
+                "name": "REST Picklist",
+                "uri": "/dist/configurator.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
