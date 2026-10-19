@@ -1,0 +1,206 @@
+{
+    "manifestVersion": 1,
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/f-steff/ado-static"
+    },
+    "scopes": [
+        "vso.extension.data_write",
+        "vso.code",
+        "vso.build"
+    ],
+    "contributions": [
+        {
+            "id": "static-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Top-level Pages hub group.",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Static",
+                "order": 100,
+                "iconName": "Folder",
+                "icon": "images/icon-32.png"
+            }
+        },
+        {
+            "id": "static",
+            "type": "ms.vss-web.hub",
+            "description": "Pages hub: lists this project's published pages.",
+            "targets": [
+                ".static-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service"
+            ],
+            "properties": {
+                "name": "Pages",
+                "order": 2,
+                "icon": "images/icon-pages.png",
+                "uri": "dist/hub/index.html"
+            }
+        },
+        {
+            "id": "static-pipelines-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Pipelines hub: lists the project's pipelines with brief statistics.",
+            "targets": [
+                ".static-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service"
+            ],
+            "properties": {
+                "name": "Pipelines",
+                "order": 3,
+                "icon": "images/icon-pipelines.png",
+                "uri": "dist/pipelines/index.html"
+            }
+        },
+        {
+            "id": "static-pr-hub",
+            "type": "ms.vss-web.hub",
+            "description": "PR hub: lists the project's pull requests with brief details.",
+            "targets": [
+                ".static-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service"
+            ],
+            "properties": {
+                "name": "PR",
+                "order": 4,
+                "icon": "images/icon-pr.png",
+                "uri": "dist/pr/index.html"
+            }
+        },
+        {
+            "id": "static-links-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Links hub: a curated list of bookmarkable links into this project.",
+            "targets": [
+                ".static-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service"
+            ],
+            "properties": {
+                "name": "Links",
+                "order": 1,
+                "icon": "images/icon-links.png",
+                "uri": "dist/links/index.html"
+            }
+        },
+        {
+            "id": "static-repos-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Repos hub: lists the project's repositories with brief statistics.",
+            "targets": [
+                ".static-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service"
+            ],
+            "properties": {
+                "name": "Repos",
+                "order": 5,
+                "icon": "images/icon-repos.png",
+                "uri": "dist/repos/index.html"
+            }
+        },
+        {
+            "id": "static-admin-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Project settings: manage the page list.",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service"
+            ],
+            "properties": {
+                "name": "Static",
+                "order": 50,
+                "icon": "images/icon-32.png",
+                "uri": "dist/admin/index.html"
+            }
+        },
+        {
+            "id": "static-org-admin-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Organization settings: Pages usage across projects.",
+            "targets": [
+                "ms.vss-web.collection-admin-hub-group"
+            ],
+            "includes": [
+                "ms.vss-features.host-navigation-service",
+                "ms.vss-features.extension-data-service"
+            ],
+            "properties": {
+                "name": "Static",
+                "order": 50,
+                "icon": "images/icon-32.png",
+                "uri": "dist/orgadmin/index.html"
+            }
+        },
+        {
+            "id": "PublishPage",
+            "type": "ms.vss-distributed-task.task",
+            "description": "Publishes a page's content to the Pages extension.",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "PublishPage"
+            }
+        },
+        {
+            "id": "PublishLink",
+            "type": "ms.vss-distributed-task.task",
+            "description": "Publishes a fixed link to the Static extension.",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "PublishLink"
+            }
+        },
+        {
+            "id": "StaticAdmin",
+            "type": "ms.vss-distributed-task.task",
+            "description": "Backs up and restores every project's Static data.",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "StaticAdmin"
+            }
+        },
+        {
+            "id": "static-page-report-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "View a page attached to the build by a PublishPage run (only when tabName was set).",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Static page",
+                "uri": "dist/reporttab/index.html",
+                "registeredObjectId": "registerStaticPageReport",
+                "supportsTasks": [
+                    "7b3f3d2e-9c4a-4a6f-9d2b-1f0c5e6a7b8c"
+                ],
+                "dynamic": true
+            },
+            "includes": [
+                "ms.vss-releaseManagement-web.release-service-data-external",
+                "ms.vss-features.host-navigation-service"
+            ]
+        }
+    ],
+    "contributionTypes": []
+}
