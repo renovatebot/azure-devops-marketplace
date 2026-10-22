@@ -1,0 +1,83 @@
+{
+    "manifestVersion": 1,
+    "contributions": [
+        {
+            "id": "infisical-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "dist/tasks/run"
+            }
+        },
+        {
+            "id": "37dd1d1e-9ebf-4e51-bad2-53bec51757a5",
+            "description": "Service connection for accessing Infisical secrets",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "Infisical",
+                "displayName": "Infisical",
+                "url": {
+                    "displayName": "Infisical URL",
+                    "helpText": "Location of your Infisical server (e.g. https://app.infisical.com or your self-hosted URL).",
+                    "value": "https://app.infisical.com"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "displayName": "Universal Auth",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Client ID",
+                                "description": "Universal Auth Client ID for the Infisical machine identity.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "Client Secret",
+                                "description": "Universal Auth Client Secret for the Infisical machine identity.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-none",
+                        "displayName": "OIDC",
+                        "inputDescriptors": [
+                            {
+                                "id": "identityId",
+                                "name": "Identity ID",
+                                "description": "The ID of the Infisical machine identity that accepts your Azure DevOps issuer.",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                },
+                                "required": true
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "Configure access to your Infisical instance for fetching secrets in pipelines. <a href=\"https://infisical.com/docs\" target=\"_blank\">Learn more</a>."
+            }
+        }
+    ],
+    "scopes": [],
+    "contributionTypes": []
+}
