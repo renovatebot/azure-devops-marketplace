@@ -1,0 +1,154 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work_write",
+        "vso.project"
+    ],
+    "contributions": [
+        {
+            "id": "smart-grid",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Editable grid with typed columns, dependent dropdowns, formulas, totals, Excel/CSV import-export and child work item creation.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Smart Grid",
+                "uri": "dist/grid/index.html",
+                "height": 360,
+                "inputs": [
+                    {
+                        "id": "GridName",
+                        "name": "Grid name",
+                        "description": "Name of a grid defined in Project settings → Grid & Rules.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "DataField",
+                        "name": "Data field",
+                        "description": "Optional. Leave EMPTY to use the data field set for the grid in Project settings → Grid & Rules (recommended, so the grid and its calculations always read the same field).",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "PlainText",
+                                "Html"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    },
+                    {
+                        "id": "ConfigJson",
+                        "name": "Grid configuration (JSON, optional)",
+                        "description": "Advanced: inline grid definition. Overrides the named grid.",
+                        "type": "string",
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "smart-dropdown",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Picklist that only offers values valid for the parent field (Dependent dropdowns).",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Smart Dropdown",
+                "uri": "dist/dropdown/index.html",
+                "height": 44,
+                "inputs": [
+                    {
+                        "id": "FieldName",
+                        "name": "Field",
+                        "description": "The dependent picklist field this control edits.",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "String",
+                                "Integer",
+                                "Double"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "readonly-value",
+            "type": "ms.vss-work-web.work-item-form-control",
+            "description": "Shows a field's value read-only, so users cannot edit values the extension calculates (calculation results, grid totals).",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Read-only Value",
+                "uri": "dist/readonly/index.html",
+                "height": 34,
+                "inputs": [
+                    {
+                        "id": "FieldName",
+                        "name": "Field",
+                        "description": "The calculated field to show read-only (a calculation result or grid total).",
+                        "type": "WorkItemField",
+                        "properties": {
+                            "workItemFieldTypes": [
+                                "Integer",
+                                "Double",
+                                "String",
+                                "PlainText",
+                                "DateTime",
+                                "Boolean"
+                            ]
+                        },
+                        "validation": {
+                            "dataType": "String",
+                            "isRequired": true
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "id": "rules-observer",
+            "type": "ms.vss-work-web.work-item-notifications",
+            "description": "Evaluates the configured rules and dependent-dropdown validation on work item forms.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "Grid & Rules observer",
+                "uri": "dist/observer/index.html"
+            }
+        },
+        {
+            "id": "rules-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Visual rule builder, dependent dropdown and grid designer.",
+            "targets": [
+                "ms.vss-web.project-admin-hub-group"
+            ],
+            "properties": {
+                "name": "Grid & Rules",
+                "order": 1,
+                "uri": "dist/hub/index.html"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
