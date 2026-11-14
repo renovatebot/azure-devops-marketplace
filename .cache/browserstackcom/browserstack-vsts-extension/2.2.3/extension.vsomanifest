@@ -1,0 +1,122 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.build_execute",
+        "vso.serviceendpoint_manage"
+    ],
+    "contributions": [
+        {
+            "id": "browserstack-config-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/configTask"
+            }
+        },
+        {
+            "id": "stop-local-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/stopLocalTask"
+            }
+        },
+        {
+            "id": "reports-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/reportsTask"
+            }
+        },
+        {
+            "id": "app-upload-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/uploadAppTask"
+            }
+        },
+        {
+            "id": "browserstack-results-tab",
+            "type": "ms.vss-build-web.build-results-tab",
+            "description": "A tab contributing to build results view",
+            "targets": [
+                "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "BrowserStack",
+                "uri": "reporting/report.html"
+            }
+        },
+        {
+            "id": "browserstack-auth-service-endpoint",
+            "description": "BrowserStack service endpoint.",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "browserstack-basic-service",
+                "displayName": "BrowserStack",
+                "url": "https://api.browserstack.com/",
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "https://api.browserstack.com/automate/plan.json",
+                        "resultSelector": "jsonpath:$[*].automate_plan"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getAutomateSessionDetails",
+                        "endpointUrl": "https://api.browserstack.com/automate/sessions/{{sessionId}}.json"
+                    },
+                    {
+                        "resultSelector": "jsonpath:$",
+                        "name": "getAppAutomateSessionDetails",
+                        "endpointUrl": "https://api.browserstack.com/app-automate/sessions/{{sessionId}}.json"
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-basic",
+                        "inputDescriptors": [
+                            {
+                                "id": "username",
+                                "name": "Username",
+                                "description": "BrowserStack Username",
+                                "inputMode": "textbox",
+                                "isConfidential": false,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            },
+                            {
+                                "id": "password",
+                                "name": "AccessKey",
+                                "description": "BrowserStack AccessKey",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "You can find credentials at <a href=\"https://www.browserstack.com/accounts/settings\" target=\"_blank\"><b>BrowserStack Account Settings</b></a> page."
+            }
+        }
+    ],
+    "contributionTypes": []
+}
