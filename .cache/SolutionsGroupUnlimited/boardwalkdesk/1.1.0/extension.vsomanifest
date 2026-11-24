@@ -1,0 +1,120 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.work"
+    ],
+    "contributions": [
+        {
+            "id": "work-item-group",
+            "type": "ms.vss-work-web.work-item-form-group",
+            "description": "Shows whether the work item is a BoardwalkDesk customer ticket, and opens it in BoardwalkDesk or shares it with a customer.",
+            "targets": [
+                "ms.vss-work-web.work-item-form"
+            ],
+            "properties": {
+                "name": "BoardwalkDesk",
+                "uri": "out/group.html",
+                "height": 96
+            }
+        },
+        {
+            "id": "work-item-open-action",
+            "type": "ms.vss-web.action",
+            "description": "Opens the work item in BoardwalkDesk.",
+            "targets": [
+                "ms.vss-work-web.work-item-context-menu"
+            ],
+            "properties": {
+                "text": "Open in BoardwalkDesk",
+                "title": "Open this work item in BoardwalkDesk",
+                "icon": "images/menu-icon.png",
+                "uri": "out/action.html",
+                "registeredObjectId": "boardwalkdesk-open-action"
+            }
+        },
+        {
+            "id": "boardwalkdesk-service-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "A connection to a BoardwalkDesk desk: its address and a desk API key. Used by the BoardwalkDesk: Add release version task.",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "boardwalkdesk",
+                "displayName": "BoardwalkDesk",
+                "icon": "images/icon.png",
+                "url": {
+                    "displayName": "Server URL",
+                    "value": "https://boardwalkdesk.com/",
+                    "isVisible": "false"
+                },
+                "inputDescriptors": [
+                    {
+                        "id": "slug",
+                        "name": "Desk address",
+                        "description": "Your desk's address: the part after boardwalkdesk.com/d/ (for boardwalkdesk.com/d/acme it is acme).",
+                        "inputMode": "textbox",
+                        "isConfidential": false,
+                        "validation": {
+                            "isRequired": true,
+                            "dataType": "string",
+                            "maxLength": 40,
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{1,38}[A-Za-z0-9]$",
+                            "patternMismatchErrorMessage": "A desk address has 3 to 40 letters, digits and hyphens, for example acme."
+                        }
+                    }
+                ],
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "Desk API key",
+                                "description": "A key from Desk settings > 1 Connection > API keys (it starts with bwd_). It works only for this desk's API, never for its tickets or settings.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 200
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dataSources": [
+                    {
+                        "name": "TestConnection",
+                        "endpointUrl": "{{{endpoint.url}}}api/v1/desks/{{{endpoint.slug}}}/products",
+                        "resultSelector": "jsonpath:$.products"
+                    },
+                    {
+                        "name": "BoardwalkDeskProducts",
+                        "endpointUrl": "{{{endpoint.url}}}api/v1/desks/{{{endpoint.slug}}}/products",
+                        "resultSelector": "jsonpath:$.products[*].name"
+                    }
+                ],
+                "helpMarkDown": "Connects pipelines to your BoardwalkDesk desk, so the <b>BoardwalkDesk: Add release version</b> task can add release versions to its products. <a href=\"https://marketplace.visualstudio.com/items?itemName=SolutionsGroupUnlimited.boardwalkdesk\" target=\"_blank\"><b>Learn more</b></a>"
+            }
+        },
+        {
+            "id": "boardwalkdesk-version-task",
+            "type": "ms.vss-distributed-task.task",
+            "description": "BoardwalkDesk: Add release version. Adds a release version to a product on a BoardwalkDesk desk.",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/BoardwalkDeskVersion"
+            }
+        }
+    ],
+    "contributionTypes": []
+}
