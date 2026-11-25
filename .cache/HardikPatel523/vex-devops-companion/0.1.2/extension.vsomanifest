@@ -1,0 +1,202 @@
+{
+    "manifestVersion": 1,
+    "scopes": [
+        "vso.code",
+        "vso.work",
+        "vso.project",
+        "vso.extension.data_write",
+        "vso.serviceendpoint_query"
+    ],
+    "contributions": [
+        {
+            "id": "vex-hub-group",
+            "type": "ms.vss-web.hub-group",
+            "description": "Vex — its own entry at the end of the project navigation, after Boards, Repos, Pipelines and the others.",
+            "targets": [
+                "ms.vss-web.project-hub-groups-collection"
+            ],
+            "properties": {
+                "name": "Vex",
+                "icon": {
+                    "light": "static/vex-hub.png",
+                    "dark": "static/vex-hub.png"
+                },
+                "order": 10000
+            }
+        },
+        {
+            "id": "vex-team-pulse-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Vex Team Pulse: contributions, levels and titles.",
+            "targets": [
+                ".vex-hub-group"
+            ],
+            "properties": {
+                "name": "Team Pulse",
+                "icon": {
+                    "light": "static/icons/team-pulse-light.png",
+                    "dark": "static/icons/team-pulse-dark.png"
+                },
+                "uri": "dist/index.html?start=team",
+                "order": 20
+            }
+        },
+        {
+            "id": "vex-dashboards-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Vex work-item dashboards.",
+            "targets": [
+                ".vex-hub-group"
+            ],
+            "properties": {
+                "name": "Dashboards",
+                "icon": {
+                    "light": "static/icons/dashboards-light.png",
+                    "dark": "static/icons/dashboards-dark.png"
+                },
+                "uri": "dist/index.html?start=dashboards",
+                "order": 10
+            }
+        },
+        {
+            "id": "vex-branch-intelligence-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Vex Branch Intelligence.",
+            "targets": [
+                ".vex-hub-group"
+            ],
+            "properties": {
+                "name": "Branches",
+                "icon": {
+                    "light": "static/icons/branches-light.png",
+                    "dark": "static/icons/branches-dark.png"
+                },
+                "uri": "dist/index.html?start=branches",
+                "order": 40
+            }
+        },
+        {
+            "id": "vex-models-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Vex Model Intelligence.",
+            "targets": [
+                ".vex-hub-group"
+            ],
+            "properties": {
+                "name": "Models",
+                "icon": {
+                    "light": "static/icons/models-light.png",
+                    "dark": "static/icons/models-dark.png"
+                },
+                "uri": "dist/index.html?start=models",
+                "order": 30
+            }
+        },
+        {
+            "id": "vex-api-key-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "API key in header (Vex) — read by Vex dashboards through Azure DevOps (read-only).",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vex-api-key",
+                "displayName": "API key in header (Vex)",
+                "url": {
+                    "displayName": "API address",
+                    "helpText": "Base address of the API, e.g. https://api.example.com"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "api-key",
+                                "value": "{{endpoint.apitoken}}"
+                            },
+                            {
+                                "name": "X-API-Key",
+                                "value": "{{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API key",
+                                "description": "The key of the API. Stored encrypted by Azure DevOps; nobody can read it back, Vex included.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 2000
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "For APIs that expect the key in an <b>api-key</b> or <b>X-API-Key</b> header. Vex only reads from the API. Under Security, choose who may use this connection: only you, or your team."
+            }
+        },
+        {
+            "id": "vex-api-bearer-endpoint",
+            "type": "ms.vss-endpoint.service-endpoint-type",
+            "description": "API bearer token (Vex) — read by Vex dashboards through Azure DevOps (read-only).",
+            "targets": [
+                "ms.vss-endpoint.endpoint-types"
+            ],
+            "properties": {
+                "name": "vex-api-bearer",
+                "displayName": "API bearer token (Vex)",
+                "url": {
+                    "displayName": "API address",
+                    "helpText": "Base address of the API, e.g. https://api.example.com"
+                },
+                "authenticationSchemes": [
+                    {
+                        "type": "ms.vss-endpoint.endpoint-auth-scheme-token",
+                        "headers": [
+                            {
+                                "name": "Authorization",
+                                "value": "Bearer {{endpoint.apitoken}}"
+                            }
+                        ],
+                        "inputDescriptors": [
+                            {
+                                "id": "apitoken",
+                                "name": "API key",
+                                "description": "The key of the API. Stored encrypted by Azure DevOps; nobody can read it back, Vex included.",
+                                "inputMode": "passwordbox",
+                                "isConfidential": true,
+                                "validation": {
+                                    "isRequired": true,
+                                    "dataType": "string",
+                                    "maxLength": 2000
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "helpMarkDown": "For APIs that expect <b>Authorization: Bearer &lt;token&gt;</b>. Vex only reads from the API. Under Security, choose who may use this connection: only you, or your team."
+            }
+        },
+        {
+            "id": "vex-settings-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Vex settings: who may use Vex, people’s photos.",
+            "targets": [
+                ".vex-hub-group"
+            ],
+            "properties": {
+                "name": "Settings",
+                "icon": {
+                    "light": "static/icons/settings-light.png",
+                    "dark": "static/icons/settings-dark.png"
+                },
+                "uri": "dist/index.html?start=admin",
+                "order": 90
+            }
+        }
+    ],
+    "contributionTypes": []
+}
